@@ -1,0 +1,20 @@
+.horizontal-legend {
+    list-style: none;
+}
+
+.horizontal-legend .legend-list {
+    float: left;
+    margin-right: 10px;
+}
+
+.horizontal-legend .legend-swatch {
+    float: left; width: 15px;
+    height: 15px;
+    margin: 2px;
+    border-radius: 2px;
+    background-color: #EEE;
+}
+
+.horizontal-legend .legend-label {
+}
+

@@ -1,0 +1,24 @@
+/**
+ * CSS for the time axis used in charts etc.
+ */
+
+.xaxis_label, .yaxis_label {
+    font-size: 11px;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+
+.x.axis .minor {
+    stroke-opacity: .5;
+}
+
+/*.x.axis line.tick {stroke: #b7b7b7;}*/
+
+.x.axis > .tick > line {
+    stroke: #DBDBDB;
+    stroke-opacity: 0.5;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
