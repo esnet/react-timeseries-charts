@@ -14,21 +14,47 @@ var EventRect = React.createClass({
 
     displayName: "EventRect",
 
+    zoom: function() {
+        /*
+        var t = d3.event.translate[0] - this.state.translate[0];
+        var s = d3.event.scale;
+        var mouse = d3.mouse(this.getDOMNode());
+
+        var center = this.props.scale.invert(mouse[0]).getTime(); //mouse position in ms since 1970
+        var begin = this.props.scale.domain()[0].getTime();       //begin of range in ms
+        var end = this.props.scale.domain()[1].getTime();         //end of range in ms
+
+        var offset = this.props.scale.invert(-t).getTime() - begin;  //translation offset in ms
+
+        var beforeDuration = center - begin;                      //ms before mouse position
+        var afterDuration = end - center;                         //ms after mouse position
+
+        var newBeforeDuration = parseInt(beforeDuration / this.state.scale * s); // scaled ms before mouse
+        var newAfterDuration = parseInt(afterDuration / this.state.scale * s);    // scaled ms after mouse
+
+        var newBegin;
+        var newEnd;
+        if (s === this.state.scale) {
+            newBegin = new Date(begin + offset);
+            newEnd = new Date(end + offset);
+        } else {
+            newBegin = new Date(center - newBeforeDuration);
+            newEnd = new Date(center + newAfterDuration);
+        }
+
+        if (this.props.onZoom) {
+            this.props.onZoom(newBegin, newEnd);
+        }
+        */
+    },
+
     renderEventSurface: function(scale, width, height) {
         var self = this;
 
         //Remove the old touch rect from under this DOM node
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
-        this.zoom = d3.behavior.zoom().on("zoom", function() {
-            var x = d3.event.translate[0];
-            var scale = d3.event.scale;
-            if (self.props.onZoom) {
-                self.props.onZoom(x, scale);
-            }
-        });
-
-        //Construct a new overlay rect for catching events
+        //Construct a new overlay rect for catching events and attach a zoom behavior
         d3.select(this.getDOMNode()).append("rect")
             .style("fill", "none")
             .attr("id", "chart-touch-surface")
@@ -37,7 +63,7 @@ var EventRect = React.createClass({
             .attr("pointer-events", "all")
             .call(this.zoom);
 
-        //Events
+        //Mouse move events
         d3.select(this.getDOMNode())
             .on("mousemove", function() {
                 var xpos = d3.mouse(this)[0];
@@ -46,13 +72,22 @@ var EventRect = React.createClass({
                     self.props.onMouseMove(time);
                 }
             });
-
         d3.select(this.getDOMNode())
             .on("mouseout", function() {
                 if (self.props.onMouseOut) {
                     self.props.onMouseOut();
                 }
             });
+    },
+
+    getInitialState: function() {
+        return {"translate": [0,0],
+                "scale": 1};
+    },
+
+    componentWillMount: function() {
+        this.zoom = d3.behavior.zoom()
+            .on("zoom", this.zoom);
     },
 
     componentDidMount: function() {
@@ -63,11 +98,20 @@ var EventRect = React.createClass({
         var scale = nextProps.scale;
         var width = nextProps.width;
         var height = nextProps.height;
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-            this.props.width !== width ||
+
+        //If the size changes we have to rebuild the event rect
+        if (this.props.width !== width ||
             this.props.height !== height) {
             this.renderEventSurface(scale, width, height);
         }
+
+        //If the scale has changed, we can keep the rect, but reset the start point of
+        //any zooming that might be in progress
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+            this.setState({"translate": this.zoom.translate(),
+                           "scale": this.zoom.scale()});
+        }
+
     },
 
     shouldComponentUpdate: function() {

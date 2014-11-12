@@ -2,17 +2,15 @@
 
 "use strict";
 
-var React = require("react");
+var React = require("react/addons");
 var d3 = require("d3");
+var _ = require("underscore");
 
-var TimeAxis  = require("./timeaxis");
 var YAxis     = require("./yaxis");
 var AreaChart = require("./areachart");
 var LineChart = require("./linechart");
 var Tracker   = require("./tracker");
 var EventRect = require("./eventrect");
-
-var AXIS_WIDTH = 40;
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
@@ -56,8 +54,16 @@ var ChartRow = React.createClass({
         }
     },
 
+    handleZoom: function(beginTime, endTime) {
+        if (this.props.onTimeRangeChanged) {
+            this.props.onTimeRangeChanged(beginTime, endTime);
+        }
+    },
+
     render: function() {
         var self = this;
+
+        var slotWidth = this.props.slotWidth;
         var yAxisList = [];
         var chartList = [];
         var xAxis;
@@ -70,31 +76,63 @@ var ChartRow = React.createClass({
 
         var usedLeftAxisSlots = 0;
         var usedRightAxisSlots = 0;
-        var yAxisMap = {};
-        var leftAxisList = [];
-        var rightAxisList = [];
 
-        var MARGIN = 5;
+        var yAxisMap = {};          // Maps axis id -> axis element
+        var yAxisScaleMap = {};     // Maps axis id -> axis scale
+        var leftAxisList = [];      // Ordered list of left axes ids
+        var rightAxisList = [];     // Ordered list of right axes ids
+
+        var MARGIN = this.props.margin || 5;
         var innerHeight = Number(this.props.height) - MARGIN*2;
 
-        React.Children.forEach(this.props.children, function(child) {
+        //
+        // Build a map of elements that occupy left or right slots next to the chart.
+        //
+        // If an element has both and id and a min/max range, then we consider it to be a y axis.
+        // For those we calculate a d3 scale that can be reference by a chart. That scale will
+        // also be available to the axis when it renders.
+        //
 
-            if (child instanceof YAxis) {
+        React.Children.forEach(this.props.children, function(child) {
+            var props = child.props;
+            if (_.has(props, "align") && (props.align === "left" || props.align === "right")) {
                 var yaxis = child;
                 
-                //Axis scale and properties
-                yAxisMap[yaxis.props.id] = yaxis.props;
-                yAxisMap[yaxis.props.id].scale = d3.scale.linear()
-                    .domain([yaxis.props.min, yaxis.props.max])
-                    .range([innerHeight, 0])
-                    .nice();
+                //Relate id to the axis itself
+                yAxisMap[yaxis.props.id] = yaxis;
 
-                //Axis slots
+                //If we know it's a YAxis we go ahead and calculate the scale
+                if (yaxis instanceof YAxis ||
+                    _.has(props, "id") && _.has(props, "min") && _.has(props, "max")) {
+
+                    //Relate id to a d3 scale generated from the max, min and scaleType props
+                    var type = props.type || "linear";
+                    if (type === "linear") {
+                        yAxisScaleMap[yaxis.props.id] = d3.scale.linear()
+                            .domain([yaxis.props.min, yaxis.props.max])
+                            .range([innerHeight, 0])
+                            .nice();
+                    } else if (type === "log") {
+                        var base = yaxis.props.logBase || 10;
+                        yAxisScaleMap[yaxis.props.id] = d3.scale.log()
+                            .base(base)
+                            .domain([yaxis.props.min, yaxis.props.max])
+                            .range([innerHeight, 0]);
+                    
+                    } else if (type === "power") {
+                        var power = yaxis.props.powerExponent || 2;
+                        yAxisScaleMap[yaxis.props.id] = d3.scale.pow()
+                            .exponent(power)
+                            .domain([yaxis.props.min, yaxis.props.max])
+                            .range([innerHeight, 0]);
+                    }
+                }
+
+                //Slot counts
                 if (yaxis.props.align === "left") {
                     usedLeftAxisSlots++;
                     leftAxisList.push(yaxis.props.id);
-                }
-                if (yaxis.props.align === "right") {
+                } else if (yaxis.props.align === "right") {
                     usedRightAxisSlots++;
                     rightAxisList.push(yaxis.props.id);
                 }
@@ -105,20 +143,36 @@ var ChartRow = React.createClass({
         // Push each axis onto the yAxisList, transforming each into its slot
         //
 
+        var x, y;
         var transform;
-        var i = 0;
         var id;
+        var props;
+        var axis;
+
+        var i = 0;
         for (var leftIndex=Number(this.props.leftAxisSlots)-usedLeftAxisSlots;
              leftIndex < this.props.leftAxisSlots;
              leftIndex++) {
-            transform = "translate(" + Number(leftIndex*AXIS_WIDTH + (AXIS_WIDTH-MARGIN)) + "," + MARGIN + ")";
+
             id = leftAxisList[i];
+
+            //Transform of the axis
+            x = leftIndex*slotWidth;
+            y = MARGIN;
+            transform = "translate(" + x + "," + y + ")";
+
+            props = {"width": slotWidth-MARGIN,
+                     "height": innerHeight};
+            if (_.has(yAxisScaleMap, id)) {
+                props.scale = yAxisScaleMap[id];
+            }
+
+            //Cloned axis
+            axis = React.addons.cloneWithProps(yAxisMap[id], props);
+
             yAxisList.push(
                 <g transform={transform}>
-                    <YAxis align="left"
-                           width={AXIS_WIDTH-MARGIN} height={innerHeight}
-                           scale={yAxisMap[id].scale}
-                           absolute={yAxisMap[id].absolute}/>
+                    {axis}
                 </g>
             );
             i++;
@@ -128,15 +182,27 @@ var ChartRow = React.createClass({
         for (var rightIndex=Number(this.props.rightAxisSlots)-usedRightAxisSlots;
              rightIndex < this.props.rightAxisSlots;
              rightIndex++) {
-            var x = this.props.width - (rightIndex+1)*AXIS_WIDTH;
-            transform = "translate(" + x + "," + MARGIN + ")";
+
             id = rightAxisList[j];
+
+            //Transform of the axis
+            x = this.props.width - (rightIndex+1)*slotWidth;
+            y = MARGIN;
+            transform = "translate(" + x + "," + y + ")";
+
+            //Props to mix into the axis
+            props = {"width": slotWidth-MARGIN,
+                     "height": innerHeight};
+            if (_.has(yAxisScaleMap, id)) {
+                props.scale = yAxisScaleMap[id];
+            }
+
+            //Cloned axis
+            axis = React.addons.cloneWithProps(yAxisMap[id], props);
+
             yAxisList.push(
                 <g transform={transform}>
-                    <YAxis align="right"
-                           width={AXIS_WIDTH - MARGIN} height={innerHeight}
-                           scale={yAxisMap[id].scale}
-                           absolute={yAxisMap[id].absolute}/>
+                    {axis}
                 </g>
             );
             j++;
@@ -147,37 +213,29 @@ var ChartRow = React.createClass({
         // and specifying its width.
         //
 
-        var chartWidth = this.props.width - this.props.leftAxisSlots*AXIS_WIDTH - this.props.rightAxisSlots*AXIS_WIDTH - 5;
-        var chartTransform = "translate(" + this.props.leftAxisSlots*AXIS_WIDTH + "," + MARGIN + ")";
+        var chartWidth = this.props.width - this.props.leftAxisSlots*slotWidth - this.props.rightAxisSlots*slotWidth - 5;
+        var chartTransform = "translate(" + this.props.leftAxisSlots*slotWidth + "," + MARGIN + ")";
 
+        var keyCount = 0;
         React.Children.forEach(this.props.children, function(child) {
-            var attr;
+
+            //
+            // TODO: Do we want to whitelist charts that can be added here
+            //      or just depend on align="center" or something?
+            //
             
-            if (child instanceof AreaChart) {
-                var areaChart = child;
-                attr = areaChart.props.axis;
-
-               //TODO: This should transfer props to whatever chart is the child
-
-                chartList.push(
-                    <AreaChart width={chartWidth} height={innerHeight}
-                               data={areaChart.props.data}
-                               timeScale={self.props.timeScale}
-                               yScale={yAxisMap[attr].scale}/>
-                );
-            } else if (child instanceof LineChart) {
-                var lineChart = child;
-                attr = lineChart.props.axis;
-
-               //TODO: This should transfer props to whatever chart is the child
-
-                chartList.push(
-                    <LineChart width={chartWidth} height={innerHeight}
-                               data={lineChart.props.data}
-                               timeScale={self.props.timeScale}
-                               yScale={yAxisMap[attr].scale}/>
-                );
+            if (child instanceof AreaChart ||
+                child instanceof LineChart) {
+                var props = {
+                    key: "chart-" + keyCount,
+                    width: chartWidth,
+                    height: innerHeight,
+                    timeScale: self.props.timeScale,
+                    yScale: yAxisScaleMap[child.props.axis],
+                };
+                chartList.push(React.addons.cloneWithProps(child, props));
             }
+            keyCount++;
         });
        
         return (
@@ -185,20 +243,21 @@ var ChartRow = React.createClass({
 
                 {yAxisList}
 
-                <g transform={chartTransform}>
+                <g transform={chartTransform} key="chart-group">
                     {chartList}
                 </g>
 
-                <g transform={chartTransform}>
+                <g transform={chartTransform} key="tracker-group">
                     <Tracker height={innerHeight}
                              scale={self.props.timeScale} position={self.props.trackerPosition} />
                 </g>
 
-                <g transform={chartTransform}>
+                <g transform={chartTransform} key="event-rect-group">
                     <EventRect width={chartWidth} height={innerHeight}
                                scale={self.props.timeScale}
                                onMouseOut={self.handleMouseOut}
-                               onMouseMove={self.handleMouseMove}/>
+                               onMouseMove={self.handleMouseMove}
+                               onZoom={self.handleZoom}/>
                 </g>
 
                 {xAxis}

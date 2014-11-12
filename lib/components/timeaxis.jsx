@@ -7,6 +7,10 @@ var d3 = require("d3");
 
 require("./timeaxis.css");
 
+function scaleAsString(scale) {
+    return scale.domain().toString() + "-" + scale.range().toString();
+}
+
 /**
  * Renders a horizontal time axis
  */
@@ -16,6 +20,9 @@ var TimeAxis = React.createClass({
     displayName: "TimeAxis",
 
     renderTimeAxis: function(scale) {
+
+        console.log("Rendering time axis");
+
         var axis = d3.svg.axis().scale(scale).orient("bottom");
 
         //Remove the old axis from under this DOM node
@@ -39,7 +46,9 @@ var TimeAxis = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         var scale = nextProps.scale;
-        this.renderTimeAxis(scale);
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+            this.renderTimeAxis(scale);
+        }
     },
 
     shouldComponentUpdate: function() {

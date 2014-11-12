@@ -25,9 +25,16 @@ var ChartContainer = React.createClass({
         }
     },
 
+    handleTimeRangeChanged: function(beginTime, endTime) {
+        if (this.props.onTimeRangeChanged) {
+            this.props.onTimeRangeChanged(beginTime, endTime);
+        }
+    },
+
     render: function() {
         var self = this;
         var chartRows = [];
+        var slotWidth = this.props.slotWidth || AXIS_WIDTH;
 
         //
         // How much room does the axes of all the charts take up on the right and left.
@@ -42,14 +49,12 @@ var ChartContainer = React.createClass({
             var rightCount = 0;
             if (childRow instanceof ChartRow) {
                 React.Children.forEach(childRow.props.children, function(child) {
-                    if (child instanceof YAxis) {
-                        var axis = child;
-                        if (axis.props.align === "left") {
-                            leftCount++;
-                        }
-                        if (axis.props.align === "right") {
-                            rightCount++;
-                        }
+                    var axis = child;
+                    if (axis.props.align === "left") {
+                        leftCount++;
+                    }
+                    if (axis.props.align === "right") {
+                        rightCount++;
                     }
                 });
             }
@@ -68,14 +73,15 @@ var ChartContainer = React.createClass({
         // TODO: time axis should be defined (or not) the way the YAxis is defined, and should
         //       be more general (i.e. support linear, categories etc)
 
-        var timeAxisRowStyle = {height: AXIS_WIDTH,
+        var X_AXIS_HEIGHT = 35;
+        var timeAxisRowStyle = {height: X_AXIS_HEIGHT,
                                 borderWidth: "1px",
                                 borderStyle: "solid",
                                 borderColor: "#F7F0F0",
                                 background: "#FAFAFA"};
 
-        var transform = "translate(" + leftAxisSlots*AXIS_WIDTH + ",0)";
-        var timeAxisWidth = this.props.width - leftAxisSlots*AXIS_WIDTH - rightAxisSlots*AXIS_WIDTH - 5;
+        var transform = "translate(" + leftAxisSlots*slotWidth + ",0)";
+        var timeAxisWidth = this.props.width - leftAxisSlots*slotWidth - rightAxisSlots*slotWidth - 5;
         var timeScale = d3.time.scale()
             .domain([this.props.beginTime, this.props.endTime])
             .range([0, timeAxisWidth]);
@@ -83,7 +89,7 @@ var ChartContainer = React.createClass({
         var timeAxis = (
             <div className="row">
                 <div className="col-md-12" style={timeAxisRowStyle}>
-                    <svg width={this.props.width} height={AXIS_WIDTH}>
+                    <svg width={this.props.width} height={X_AXIS_HEIGHT}>
                         <g transform={transform}>
                             <TimeAxis scale={timeScale}/>
                         </g>
@@ -109,17 +115,18 @@ var ChartContainer = React.createClass({
                                 borderColor: "#F7F0F0",
                                 background: "#FAFAFA"};
 
-                //TODO: Use clone with props here?
                 chartRows.push(
                     <div className="row">
                         <div className="col-md-12" style={rowStyle}>
                             <ChartRow width={self.props.width}
                                       height={chartRow.props.height}
+                                      slotWidth={slotWidth}
                                       timeScale={timeScale}
                                       rightAxisSlots={rightAxisSlots}
                                       leftAxisSlots={leftAxisSlots}
                                       onTrackerChanged={self.handleTrackerChanged}
-                                      trackerPosition={self.props.trackerPosition}>
+                                      trackerPosition={self.props.trackerPosition}
+                                      onTimeRangeChanged={self.handleTimeRangeChanged}>
                                 {chartRow.props.children}
                             </ChartRow>
                         </div>

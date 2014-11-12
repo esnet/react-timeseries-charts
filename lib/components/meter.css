@@ -1,0 +1,15 @@
+/**
+ * CSS for the simple VU meter
+ */
+
+.meter {
+    height: 22px;
+    background: #71A6D3;
+    border-right-style: solid;
+    border-right-color: #428bca;
+}
+
+.meter-background {
+    width: 100%;
+    background: #F0F0F0;
+}

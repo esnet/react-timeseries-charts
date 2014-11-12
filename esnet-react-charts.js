@@ -13,9 +13,13 @@ module.exports = {
     ChartContainer: require('./lib/components/chartcontainer.jsx'),
     ChartRow: require('./lib/components/chartrow.jsx'),
     EventRect: require('./lib/components/eventrect.jsx'),
+    LabelAxis: require('./lib/components/labelaxis.jsx'),
     Legend: require('./lib/components/legend.jsx'),
     LineChart: require('./lib/components/linechart.jsx'),
+    Map: require('./lib/components/linechart.jsx'),
+    Meter: require('./lib/components/meter.jsx'),
     TimeAxis: require('./lib/components/timeaxis.jsx'),
     Tracker: require('./lib/components/tracker.jsx'),
+    ValueAxis: require('./lib/components/valueaxis.jsx'),
     YAxis: require('./lib/components/yaxis.jsx')
 }

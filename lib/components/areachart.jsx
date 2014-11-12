@@ -6,19 +6,17 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+require("./areachart.css");
+
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
 var AreaChart = React.createClass({
 
+    renderAreaChart: function(data, timeScale, yScale, classed) {
 
-
-    renderAreaChart: function(data, timeScale, yScale) {
-
-        console.log("RENDER AREA CHART!", timeScale.domain().toString(), timeScale.range().toString());
-
-        var colorMap = [["#448fdd", "#a7cff9"], ["#ff8a00", "#ffc784"]];
+        console.log("RENDERING AREA CHART!!", classed);
 
         if (!data[0]) {
             return null;
@@ -80,68 +78,63 @@ var AreaChart = React.createClass({
         }
 
         //
-        // Up chart drawing
+        // Stacked area drawing up
         //
 
-        //Make a group 'upchartarea' for each stacked area
-        var upChart = d3.select(this.getDOMNode()).selectAll(".upchartarea")
+        //Make a group 'areachart-up-group' for each stacked area
+        var upChart = d3.select(this.getDOMNode()).selectAll(".areachart-up-group")
             .data(up)
           .enter().append("g")
             .attr("id", function() {
-                return _.uniqueId("up-chart-area-");})
-            .attr("class", "upchartarea");
+                return _.uniqueId("areachart-up-");})
+            .attr("class", "areachart-up-group");
 
-        // Append the area chart path onto the upchartarea group
+        // Append the area chart path onto the areachart-up-group group
         upChart.append("path")
-            .attr("class", "area")
             .attr("d", function(d) {
                 return upArea(d.values);
             })
-            //.attr("clip-path", clipURL)
-            .style("fill", function(d, i) {
-                return colorMap[0][i];
-            })
-            .style("fill-opacity", 0.85);
+            .attr("class", function(d, i) {
+                return "areachart-area-up stack-"+(i+1);
+            });
 
         //
-        // Down chart drawing
-        // TODO: test this!
+        // Stacked area drawing down
+        //
 
-        //Make a group 'upchartarea' for each stacked area
-        var downChart = d3.select(this.getDOMNode()).selectAll(".downchartarea")
+        //Make a group 'areachart-down-group' for each stacked area
+        var downChart = d3.select(this.getDOMNode()).selectAll(".areachart-down-group")
             .data(down)
           .enter().append("g")
             .attr("id", function() {
-                return _.uniqueId("down-chart-area-");})
-            .attr("class", "downchartarea");
+                return _.uniqueId("areachart-down-");})
+            .attr("class", "areachart-down-group");
 
-        // Append the area chart path onto the downchartarea group
+        // Append the area chart path onto the areachart-down-group group
         downChart.append("path")
-            .attr("class", "area")
             .attr("d", function(d) {
                 return downArea(d.values);
             })
-            //.attr("clip-path", clipURL)
-            .style("fill", function(d, i) {
-                return colorMap[0][i];
-            })
-            .style("fill-opacity", 0.85);
+            .attr("class", function(d, i) {
+                return "areachart-area-down stack-"+(i+1);
+            });
 
     },
 
     componentDidMount: function() {
-        this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale);
+        this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed);
     },
 
     componentWillReceiveProps: function(nextProps) {
         var data = nextProps.data;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
+        var classed = this.props.classed;
         if (this.props.data[0].time !== data[0].time ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
 
-            this.renderAreaChart(data, timeScale, yScale);
+            this.renderAreaChart(data, timeScale, yScale, classed);
         }
     },
 
