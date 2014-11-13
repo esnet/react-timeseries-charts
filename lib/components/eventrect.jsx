@@ -92,6 +92,9 @@ var EventRect = React.createClass({
 
     componentDidMount: function() {
         this.renderEventSurface(this.props.scale, this.props.width, this.props.height);
+        if (this.props.onResize) {
+            this.props.onResize(this.props.width, this.props.height);
+        }
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -100,9 +103,11 @@ var EventRect = React.createClass({
         var height = nextProps.height;
 
         //If the size changes we have to rebuild the event rect
-        if (this.props.width !== width ||
-            this.props.height !== height) {
+        if (this.props.width !== width || this.props.height !== height) {
             this.renderEventSurface(scale, width, height);
+            if (this.props.onResize) {
+                this.props.onResize(width, height);
+            }
         }
 
         //If the scale has changed, we can keep the rect, but reset the start point of

@@ -60,6 +60,12 @@ var ChartRow = React.createClass({
         }
     },
 
+    handleResize: function(width, height) {
+        if (this.props.onChartResize) {
+            this.props.onChartResize(width, height);
+        }
+    },
+
     render: function() {
         var self = this;
 
@@ -231,7 +237,7 @@ var ChartRow = React.createClass({
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: self.props.timeScale,
-                    yScale: yAxisScaleMap[child.props.axis],
+                    yScale: yAxisScaleMap[child.props.axis]
                 };
                 chartList.push(React.addons.cloneWithProps(child, props));
             }
@@ -257,7 +263,8 @@ var ChartRow = React.createClass({
                                scale={self.props.timeScale}
                                onMouseOut={self.handleMouseOut}
                                onMouseMove={self.handleMouseMove}
-                               onZoom={self.handleZoom}/>
+                               onZoom={self.handleZoom}
+                               onResize={self.handleResize}/>
                 </g>
 
                 {xAxis}
