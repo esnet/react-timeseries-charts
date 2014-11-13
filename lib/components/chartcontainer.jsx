@@ -109,6 +109,7 @@ var ChartContainer = React.createClass({
 
             if (child instanceof ChartRow) {
                 var chartRow = child;
+
                 var rowStyle = {height: Number(chartRow.props.height)+5,
                                 borderWidth: "1px",
                                 borderStyle: "solid",
@@ -126,7 +127,8 @@ var ChartContainer = React.createClass({
                                       leftAxisSlots={leftAxisSlots}
                                       onTrackerChanged={self.handleTrackerChanged}
                                       trackerPosition={self.props.trackerPosition}
-                                      onTimeRangeChanged={self.handleTimeRangeChanged}>
+                                      onTimeRangeChanged={self.handleTimeRangeChanged}
+                                      onChartResize={chartRow.props.onChartResize}>
                                 {chartRow.props.children}
                             </ChartRow>
                         </div>
