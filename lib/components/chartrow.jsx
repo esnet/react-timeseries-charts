@@ -13,12 +13,62 @@ var Tracker   = require("./tracker");
 var EventRect = require("./eventrect");
 
 /**
+ * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
+ */
+var clipDefs = React.createClass({
+
+    renderClipPath: function(props) {
+        d3.select(this.getDOMNode()).selectAll("*").remove();
+
+        d3.select(this.getDOMNode())
+            .append("clipPath")
+            .attr("id", props.id)
+            .append("rect")
+            .attr("width", props.clipWidth)
+            .attr("height", props.clipHeight);
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.renderClipPath(nextProps);
+    },
+
+    componentDidMount: function() {
+        this.renderClipPath(this.props);
+    },
+
+    // For now we'll always update to ensure clipping id and rectangle track props
+    // Could probably optimize this to detect changes to width/height to avoid d3 touching
+    // the real DOM on every re-render.  
+    shouldComponentUpdate: function() {
+        return true;
+    },
+
+    render: function() {
+        return (
+            <defs></defs>
+        );
+    }
+});
+
+
+
+/**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
 var ChartRow = React.createClass({
 
     displayName: "ChartRow",
+
+    getInitialState: function() {
+        // id of clipping rectangle we will generate and use for each child chart
+        // Lives in state to ensure just one clipping rectangle and id per chart row instance; we don't
+        // want a fresh id generated on each render.
+        var clipId = _.uniqueId("clip_");
+        var clipPathURL = "url(#" + clipId + ")";
+
+        return {clipId: clipId, clipPathURL: clipPathURL};
+    },
 
     calculateMax: function(data) {
 
@@ -222,6 +272,7 @@ var ChartRow = React.createClass({
         var chartWidth = this.props.width - this.props.leftAxisSlots*slotWidth - this.props.rightAxisSlots*slotWidth - 5;
         var chartTransform = "translate(" + this.props.leftAxisSlots*slotWidth + "," + MARGIN + ")";
 
+
         var keyCount = 0;
         React.Children.forEach(this.props.children, function(child) {
 
@@ -236,6 +287,7 @@ var ChartRow = React.createClass({
                     key: "chart-" + keyCount,
                     width: chartWidth,
                     height: innerHeight,
+                    clipPathURL: self.state.clipPathURL,
                     timeScale: self.props.timeScale,
                     yScale: yAxisScaleMap[child.props.axis]
                 };
@@ -246,10 +298,10 @@ var ChartRow = React.createClass({
        
         return (
             <svg width={this.props.width} height={Number(this.props.height)}>
-
                 {yAxisList}
 
                 <g transform={chartTransform} key="chart-group">
+                    <clipDefs id={this.state.clipId} clipWidth={chartWidth} clipHeight={innerHeight} />
                     {chartList}
                 </g>
 
