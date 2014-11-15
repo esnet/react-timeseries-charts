@@ -20,9 +20,6 @@ var TimeAxis = React.createClass({
     displayName: "TimeAxis",
 
     renderTimeAxis: function(scale) {
-
-        console.log("Rendering time axis");
-
         var axis = d3.svg.axis().scale(scale).orient("bottom");
 
         //Remove the old axis from under this DOM node

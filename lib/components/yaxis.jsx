@@ -44,8 +44,6 @@ var YAxis = React.createClass({
     renderAxis: function(align, scale, width, absolute) {
         var yformat = d3.format(".2s");
 
-        console.log("Render axis", width);
-
         //TODO: Stop this from re-rendering so much!
         //console.log("renderAxis", absolute);
 
