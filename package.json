@@ -1,6 +1,6 @@
 {
   "name": "esnet-react-charts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": "true",
   "main": "esnet-react-charts.js",
   "author": "ESnet Tools Team <tools@es.net>",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "lodash": "^2.4.1",
-    "react": "0.11.1",
+    "react": "0.11.2",
     "react-tools": "0.11.1",
     "react-bootstrap": "0.11.1",
     "react-chosen": "0.3.6",
