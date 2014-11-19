@@ -15,7 +15,6 @@ var EventRect = React.createClass({
     displayName: "EventRect",
 
     zoom: function() {
-        /*
         var t = d3.event.translate[0] - this.state.translate[0];
         var s = d3.event.scale;
         var mouse = d3.mouse(this.getDOMNode());
@@ -45,7 +44,6 @@ var EventRect = React.createClass({
         if (this.props.onZoom) {
             this.props.onZoom(newBegin, newEnd);
         }
-        */
     },
 
     renderEventSurface: function(scale, width, height) {
