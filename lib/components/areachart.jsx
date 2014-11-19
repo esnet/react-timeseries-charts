@@ -14,7 +14,7 @@ function scaleAsString(scale) {
 
 var AreaChart = React.createClass({
 
-    renderAreaChart: function(data, timeScale, yScale, classed) {
+    renderAreaChart: function(data, timeScale, yScale, classed, options) {
         if (!data[0]) {
             return null;
         }
@@ -39,15 +39,19 @@ var AreaChart = React.createClass({
         // y0 here is the base, y1 is the top of the graph, and x is x.
         //
 
+        var interpolation = (options && _.has(options, "interpolation")) ? options.interpolation : "step-after";
+
         var upArea = d3.svg.area()
             .x(function(d)  { return timeScale(d.date); })
             .y0(function(d) { return yScale(d.y0); })
-            .y1(function(d) { return yScale(d.y0 + d.value); }); //.interpolate(self.options.interpolation
+            .y1(function(d) { return yScale(d.y0 + d.value); })
+            .interpolate(interpolation);
 
         var downArea = d3.svg.area()
             .x(function(d)  { return timeScale(d.date); })
             .y0(function(d) { return yScale(d.y0); })
-            .y1(function(d) { return yScale(d.y0 - d.value); }); //.interpolate(self.options.interpolation
+            .y1(function(d) { return yScale(d.y0 - d.value); })
+            .interpolate(interpolation);
 
         //
         // Our D3 stack. When this is evoked with data (an array of layers) it builds up
@@ -121,7 +125,8 @@ var AreaChart = React.createClass({
     },
 
     componentDidMount: function() {
-        this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed);
+        this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed,
+            this.props.options);
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -129,11 +134,13 @@ var AreaChart = React.createClass({
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
         var classed = this.props.classed;
+        var options = this.props.options;
         if (this.props.data !== data ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-
-            this.renderAreaChart(data, timeScale, yScale, classed);
+            scaleAsString(this.props.yScale) !== scaleAsString(yScale) ||
+            !_.isEqual(this.props.options,options)
+            ) {
+                this.renderAreaChart(data, timeScale, yScale, classed, options);
         }
     },
 
