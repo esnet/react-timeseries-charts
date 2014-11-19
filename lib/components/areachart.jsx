@@ -12,6 +12,17 @@ function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
+/**
+ * Extract minor secondary options from this.props as a single object to enable
+ * simple, efficient change detection and passing to render method.
+ * This serves as a whitelist of supported options.
+ * Default handling happens later  to minimize overhead during change detection. 
+ */
+function getOptions(props) {
+    // We use _.pick here so that keys not present in props will not be present in options
+    return _.pick(props, 'interpolation' /* , ... */ );
+}
+
 var AreaChart = React.createClass({
 
     renderAreaChart: function(data, timeScale, yScale, classed, options) {
@@ -124,9 +135,11 @@ var AreaChart = React.createClass({
 
     },
 
+
+
     componentDidMount: function() {
         this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed,
-            this.props.options);
+            getOptions(this.props));
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -134,11 +147,11 @@ var AreaChart = React.createClass({
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
         var classed = this.props.classed;
-        var options = this.props.options;
+        var options = getOptions(nextProps);
         if (this.props.data !== data ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale) ||
-            !_.isEqual(this.props.options,options)
+            !_.isEqual(getOptions(this.props),options)
             ) {
                 this.renderAreaChart(data, timeScale, yScale, classed, options);
         }
