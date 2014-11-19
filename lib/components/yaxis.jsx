@@ -44,9 +44,6 @@ var YAxis = React.createClass({
     renderAxis: function(align, scale, width, absolute) {
         var yformat = d3.format(".2s");
 
-        //TODO: Stop this from re-rendering so much!
-        //console.log("renderAxis", absolute);
-
         var axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
             axisGenerator = d3.svg.axis()
