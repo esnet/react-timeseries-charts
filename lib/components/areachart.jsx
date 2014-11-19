@@ -15,9 +15,6 @@ function scaleAsString(scale) {
 var AreaChart = React.createClass({
 
     renderAreaChart: function(data, timeScale, yScale, classed) {
-
-        console.log("RENDERING AREA CHART!!", classed);
-
         if (!data[0]) {
             return null;
         }

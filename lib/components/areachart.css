@@ -1,20 +1,31 @@
 
 path.areachart-area-up.stack-1 {
-    fill: #448fdd;
-    stroke: #448fdd;
+    fill: #2064AC;
+    stroke: #2064AC;
 }
 
 path.areachart-area-up.stack-2 {
-    fill: #a7cff9;
-    stroke: #a7cff9;
+    fill: #448FDD;
+    stroke: #448FDD;
 }
 
+path.areachart-area-up.stack-3 {
+    fill: #86B6E9;
+    stroke: #86B6E9;
+}
+
+
 path.areachart-area-down.stack-1 {
-    fill: #FD9924;
-    stroke: #FD9924;
+    fill: #FD8D0D;
+    stroke: #FD8D0D;
 }
 
 path.areachart-area-down.stack-2 {
-    fill: #F9C68A;
-    stroke: #F9C68A;
+    fill: #FDA949;
+    stroke: #FDA949;
+}
+
+path.areachart-area-down.stack-3 {
+    fill: #FEC686;
+    stroke: #FEC686;
 }

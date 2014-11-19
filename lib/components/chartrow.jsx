@@ -6,11 +6,13 @@ var React = require("react/addons");
 var d3 = require("d3");
 var _ = require("underscore");
 
-var YAxis     = require("./yaxis");
-var AreaChart = require("./areachart");
-var LineChart = require("./linechart");
-var Tracker   = require("./tracker");
-var EventRect = require("./eventrect");
+var AreaChart  = require("./areachart");
+var LineChart  = require("./linechart");
+var EventChart = require("./eventchart");
+
+var YAxis      = require("./yaxis");
+var Tracker    = require("./tracker");
+var EventRect  = require("./eventrect");
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
@@ -231,7 +233,8 @@ var ChartRow = React.createClass({
             //
             
             if (child instanceof AreaChart ||
-                child instanceof LineChart) {
+                child instanceof LineChart ||
+                child instanceof EventChart) {
                 var props = {
                     key: "chart-" + keyCount,
                     width: chartWidth,

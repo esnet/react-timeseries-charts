@@ -3,7 +3,9 @@
 "use strict";
 
 var React = require("react");
-require('./meter.css');
+var _     = require("underscore");
+
+require("./meter.css");
 
 /**
  * Renders a simple horizontal linear meter
@@ -38,20 +40,31 @@ var Meter = React.createClass({
 
     render: function() {
         var percent = parseInt(this.props.value/this.props.max*100, 10);
+        var val = this.props.value;
+
+        if (_.isUndefined(percent) || _.isNaN(percent) || percent < 0) {
+            percent = 0;
+            val = "-";
+        }
+        if (percent > this.props.max) {
+            percent = 100;
+        }
+
         var width = "" + percent + "%";
+
         return (
             <div className="row">
-                <div className="col-md-1">
+                <div className="col-md-2">
                     {this.props.label}
                 </div>
-                <div className="col-md-9">
+                <div className="col-md-8">
                     <div className="meter-background">
                         <div className="meter" style={{width: width}} />
                     </div>
                 </div>
 
                 <div className="col-md-2">
-                    {this.props.value} {this.props.units}
+                    {val} {this.props.units}
                 </div>
             </div>
         );
