@@ -126,7 +126,7 @@ var AreaChart = React.createClass({
         var data = nextProps.data;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
-        var classed = this.props.classed;
+        var classed = nextProps.classed;
         if (this.props.data[0].time !== data[0].time ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
