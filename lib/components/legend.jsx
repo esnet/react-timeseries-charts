@@ -13,12 +13,11 @@ var Legend = React.createClass({
 
     render: function() {
         var items = [];
-
         _.each(this.props.categories, function(categoryClass, categoryLabel) {
             var swatchClass = "legend-swatch " + categoryClass;
             var labelClass = "legend-label " + categoryClass;
             items.push(
-                <li key={"legend-item-" + i} className="legend-list">
+                <li key={"legend-item-" + categoryLabel} className="legend-list">
                     <span className={swatchClass} />
                     <span className={labelClass}> {categoryLabel} </span>
                 </li>

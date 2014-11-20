@@ -229,7 +229,7 @@ var ChartRow = React.createClass({
             axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
             yAxisList.push(
-                <g key={"y-axis-" + j} transform={transform}>
+                <g key={"y-axis-left-" + i} transform={transform}>
                     {axis}
                 </g>
             );
@@ -259,7 +259,7 @@ var ChartRow = React.createClass({
             axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
             yAxisList.push(
-                <g transform={transform}>
+                <g key={"y-axis-right-" + j}  transform={transform}>
                     {axis}
                 </g>
             );
