@@ -15,9 +15,6 @@ function scaleAsString(scale) {
 var LineChart = React.createClass({
 
     renderLineChart: function(data, timeScale, yScale, classed) {
-
-        console.log("Linechart: RENDERING LINE CHART!!", classed);
-
         if (!data[0]) {
             return null;
         }
@@ -34,8 +31,6 @@ var LineChart = React.createClass({
             pathClasses[classed] = true;
         }
 
-        console.log("pathClasses", pathClasses);
-
         d3.select(this.getDOMNode()).append("path")
             .datum(data)
             .classed(pathClasses)
@@ -44,7 +39,6 @@ var LineChart = React.createClass({
     },
 
     componentDidMount: function() {
-        console.log("Linechart: componentDidMount");
         this.renderLineChart(this.props.data,
                              this.props.timeScale,
                              this.props.yScale,
@@ -53,7 +47,6 @@ var LineChart = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        console.log("Linechart: componentWillReceiveProps");
         var data = nextProps.data;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
@@ -63,21 +56,16 @@ var LineChart = React.createClass({
             this.props.data.time !== data.time ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            console.log("   Linechart: componentWillReceiveProps: UPDATE");
             this.renderLineChart(data, timeScale, yScale, classed);
-        } else {
-            console.log("   Linechart: componentWillReceiveProps: NO UPDATE");
         }
     },
 
     shouldComponentUpdate: function() {
-        console.log("Linechart: shouldComponentUpdate");
         return false;
     },
 
     //TODO: props.attr should be required
     render: function() {
-        console.log("Linechart: render");
         return (
             <g></g>
         );
