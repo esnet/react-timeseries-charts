@@ -10,6 +10,7 @@
 
 module.exports = {
     AreaChart: require('./lib/components/areachart.jsx'),
+    Brush: require('./lib/components/brush.jsx'),
     ChartContainer: require('./lib/components/chartcontainer.jsx'),
     ChartRow: require('./lib/components/chartrow.jsx'),
     EventChart: require('./lib/components/eventchart.jsx'),
@@ -18,6 +19,7 @@ module.exports = {
     Legend: require('./lib/components/legend.jsx'),
     LineChart: require('./lib/components/linechart.jsx'),
     Meter: require('./lib/components/meter.jsx'),
+    Resizable: require('./lib/components/resizable.jsx'),
     TimeAxis: require('./lib/components/timeaxis.jsx'),
     Tracker: require('./lib/components/tracker.jsx'),
     ValueAxis: require('./lib/components/valueaxis.jsx'),

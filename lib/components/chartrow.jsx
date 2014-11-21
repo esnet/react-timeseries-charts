@@ -9,6 +9,7 @@ var _ = require("underscore");
 var AreaChart  = require("./areachart");
 var LineChart  = require("./linechart");
 var EventChart = require("./eventchart");
+var Brush      = require("./brush");
 
 var YAxis      = require("./yaxis");
 var Tracker    = require("./tracker");
@@ -277,12 +278,11 @@ var ChartRow = React.createClass({
 
         var keyCount = 0;
         React.Children.forEach(this.props.children, function(child) {
-
             //
             // TODO: Do we want to whitelist charts that can be added here
             //      or just depend on align="center" or something?
             //
-            
+           
             if (child instanceof AreaChart ||
                 child instanceof LineChart ||
                 child instanceof EventChart) {
@@ -299,6 +299,26 @@ var ChartRow = React.createClass({
             keyCount++;
         });
        
+        // Push each child Brush on to the brush list.  We need brushed to be rendered last (on top) of
+        // everything else in the Z order, both for visual correctness and to ensure that the brush gets
+        // mouse events before anything underneath
+        var brushList=[];
+        keyCount=0;
+        React.Children.forEach(this.props.children, function(child) {
+            if (child instanceof Brush) {
+                var props = {
+                    key: "brush-" + keyCount,
+                    width: chartWidth,
+                    height: innerHeight,
+                    timeScale: self.props.timeScale,
+                    yScale: yAxisScaleMap[child.props.axis]
+                };
+                brushList.push(React.addons.cloneWithProps(child, props));
+            }
+            keyCount++;
+
+        });
+
         return (
             <svg width={this.props.width} height={Number(this.props.height)}>
                 {yAxisList}
@@ -320,6 +340,10 @@ var ChartRow = React.createClass({
                                onMouseMove={self.handleMouseMove}
                                onZoom={self.handleZoom}
                                onResize={self.handleResize}/>
+                </g>
+
+                <g transform={chartTransform} key="brush-group">
+                    {brushList}
                 </g>
 
                 {xAxis}
