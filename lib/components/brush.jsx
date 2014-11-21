@@ -17,7 +17,6 @@ var Brush = React.createClass({
 
     handleBrushed: function(brush) {
         var extent = brush.extent();
-        console.log("handleBrushed! ", extent);
         if (this.props.onBrushed) {
             this.props.onBrushed(brush,extent[0],extent[1]);
         }
