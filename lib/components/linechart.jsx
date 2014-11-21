@@ -59,7 +59,8 @@ var LineChart = React.createClass({
         var yScale = nextProps.yScale;
         var classed = nextProps.classed;
 
-        if (this.props.data.time !== data.time ||
+        if (this.props.data !== nextProps.data ||
+            this.props.data.time !== data.time ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
             console.log("   Linechart: componentWillReceiveProps: UPDATE");
