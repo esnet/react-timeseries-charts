@@ -28,7 +28,7 @@ var LineChart = React.createClass({
             .interpolate("basis")
             .x(function(d) { return timeScale(d.time); })
             .y(function(d) { return yScale(d.value); });
-        
+
         var pathClasses = {"linechart-line": true};
         if (classed) {
             pathClasses[classed] = true;
@@ -39,7 +39,8 @@ var LineChart = React.createClass({
         d3.select(this.getDOMNode()).append("path")
             .datum(data)
             .classed(pathClasses)
-            .attr("d", line);
+            .attr("d", line)
+            .attr("clip-path",this.props.clipPathURL);
     },
 
     componentDidMount: function() {
