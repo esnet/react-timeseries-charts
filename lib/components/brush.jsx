@@ -5,6 +5,10 @@
 var d3 = require("d3");
 var React = require("react");
 
+function scaleAsString(scale) {
+    return scale.domain().toString() + "-" + scale.range().toString();
+}
+
 var Brush = React.createClass({
 
     displayName: "Brush",
@@ -32,9 +36,20 @@ var Brush = React.createClass({
                     self.handleBrushed(d3brush);
                 });
             this.setState({"d3brush": d3brush});
+            d3brush.extent([beginTime,endTime]);
+        } else {
+            var currentExtent = d3brush.extent();
+            var curBegin = currentExtent[0];
+            var curEnd = currentExtent[1];
+            /* This check is critical to break feedback cycles that will cause the brush
+             * to get very confused.
+             */
+            if (curBegin.getTime()!==beginTime.getTime() || curEnd.getTime()!==endTime.getTime()) {
+                d3brush.extent([beginTime,endTime]);
+            } else {
+                return;
+            }
         }
-        d3brush.extent([beginTime,endTime]);
-
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
         d3.select(this.getDOMNode())
@@ -55,9 +70,9 @@ var Brush = React.createClass({
         var beginTime = nextProps.beginTime;
         var endTime = nextProps.endTime;
 
-        if (this.props.timeScale != timeScale ||
-            this.props.beginTime != beginTime ||
-            this.props.endTime != endTime) {
+        if (scaleAsString(this.props.timeScale) != scaleAsString(timeScale) ||
+            this.props.beginTime.getTime() != beginTime.getTime() ||
+            this.props.endTime.getTime() != endTime.getTime() ) {
                 this.renderBrush(timeScale,beginTime,endTime);
         }
     },
