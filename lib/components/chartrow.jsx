@@ -230,7 +230,7 @@ var ChartRow = React.createClass({
             axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
             yAxisList.push(
-                <g transform={transform}>
+                <g key={"y-axis-left-" + i} transform={transform}>
                     {axis}
                 </g>
             );
@@ -260,7 +260,7 @@ var ChartRow = React.createClass({
             axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
             yAxisList.push(
-                <g transform={transform}>
+                <g key={"y-axis-right-" + j}  transform={transform}>
                     {axis}
                 </g>
             );
@@ -287,7 +287,7 @@ var ChartRow = React.createClass({
                 child instanceof LineChart ||
                 child instanceof EventChart) {
                 var props = {
-                    key: "chart-" + keyCount,
+                    key: child.props.key ? child.props.key : "chart-" + keyCount,
                     width: chartWidth,
                     height: innerHeight,
                     clipPathURL: self.state.clipPathURL,

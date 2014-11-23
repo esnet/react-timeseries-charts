@@ -106,7 +106,7 @@ var ChartContainer = React.createClass({
         //
 
         React.Children.forEach(this.props.children, function(child) {
-
+            var i = 0;
             if (child instanceof ChartRow) {
                 var chartRow = child;
 
@@ -117,7 +117,7 @@ var ChartContainer = React.createClass({
                                 background: "#FAFAFA"};
 
                 chartRows.push(
-                    <div className="row">
+                    <div key={"chart-row-" + i } className="row">
                         <div className="col-md-12" style={rowStyle}>
                             <ChartRow width={self.props.width}
                                       height={chartRow.props.height}
@@ -135,6 +135,7 @@ var ChartContainer = React.createClass({
                     </div>
                 );
             }
+            i++;
 
         });
 
