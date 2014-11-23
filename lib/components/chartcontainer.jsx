@@ -82,8 +82,9 @@ var ChartContainer = React.createClass({
 
         var transform = "translate(" + leftAxisSlots*slotWidth + ",0)";
         var timeAxisWidth = this.props.width - leftAxisSlots*slotWidth - rightAxisSlots*slotWidth - 5;
+
         var timeScale = d3.time.scale()
-            .domain([this.props.beginTime, this.props.endTime])
+            .domain([this.props.beginTime,this.props.endTime])
             .range([0, timeAxisWidth]);
 
         var timeAxis = (
@@ -123,6 +124,8 @@ var ChartContainer = React.createClass({
                                       height={chartRow.props.height}
                                       slotWidth={slotWidth}
                                       timeScale={timeScale}
+                                      minTime={self.props.minTime}
+                                      maxTime={self.props.maxTime}
                                       rightAxisSlots={rightAxisSlots}
                                       leftAxisSlots={leftAxisSlots}
                                       onTrackerChanged={self.handleTrackerChanged}

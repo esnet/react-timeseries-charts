@@ -347,6 +347,8 @@ var ChartRow = React.createClass({
                                onMouseMove={self.handleMouseMove}
                                enableZoom={enableZoom}
                                onZoom={zoomHandler}
+                               minTime={self.props.minTime}
+                               maxTime={self.props.maxTime}
                                onResize={self.handleResize}/>
                 </g>
 

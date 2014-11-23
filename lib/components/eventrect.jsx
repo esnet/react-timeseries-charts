@@ -41,8 +41,47 @@ var EventRect = React.createClass({
             newEnd = new Date(center + newAfterDuration);
         }
 
+        // constrain newBegin and newEnd by minTime and maxTime:
+        // If minTime or maxTime properties are present, ensure that
+        // beginTime >= minTime
+        // endTime <= maxTime
+        var cBeginTime = newBegin;
+        var cEndTime = newEnd;
+        var requestedDurationMS = newEnd.getTime() - newBegin.getTime();
+
+        var cDurationMS = requestedDurationMS;
+        if (this.props.minTime && this.props.maxTime) {
+            var maxDurationMS = this.props.maxTime.getTime() - this.props.minTime.getTime();
+            cDurationMS = Math.min(maxDurationMS,requestedDurationMS);
+        }
+
+        var constraintsExceeded = false;
+        if (this.props.minTime && cBeginTime < this.props.minTime) {
+            constraintsExceeded = true;
+            cBeginTime = this.props.minTime;
+            cEndTime = new Date(cBeginTime.getTime() + cDurationMS);
+        }
+
+        if (this.props.maxTime && cEndTime > this.props.maxTime) {
+            constraintsExceeded = true;
+            cEndTime = this.props.maxTime;
+            cBeginTime = new Date(cEndTime.getTime() - cDurationMS);
+        }
+
+        // Set the zoom behavior x axis to the constrained begin / end time
+        // If omitted, user will need to spend considerable time zooming back to within
+        // the constrained region if they zoom out past minTime / maxTime
+        /*
+         * Unfortunately this does not work as expected.  For some reason making this call 
+         * to this.state.zoom.x results in the axis not being re-rendered.
+        if (constraintsExceeded) {
+            var d = this.props.scale.domain([cBeginTime,cEndTime]);
+            this.state.zoom.x(d);
+        }
+        */
+
         if (this.props.onZoom) {
-            this.props.onZoom(newBegin, newEnd);
+            this.props.onZoom(cBeginTime,cEndTime);
         }
     },
 
