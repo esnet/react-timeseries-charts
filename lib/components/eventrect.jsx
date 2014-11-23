@@ -14,7 +14,7 @@ var EventRect = React.createClass({
 
     displayName: "EventRect",
 
-    zoom: function() {
+    handleZoom: function() {
         var t = d3.event.translate[0] - this.state.translate[0];
         var s = d3.event.scale;
         var mouse = d3.mouse(this.getDOMNode());
@@ -53,13 +53,16 @@ var EventRect = React.createClass({
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
         //Construct a new overlay rect for catching events and attach a zoom behavior
-        d3.select(this.getDOMNode()).append("rect")
-            .style("fill", "none")
-            .attr("id", "chart-touch-surface")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("pointer-events", "all")
-            .call(this.zoom);
+        var overlayRect = 
+            d3.select(this.getDOMNode()).append("rect")
+                .style("fill", "none")
+                .attr("id", "chart-touch-surface")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("pointer-events", "all");
+
+        if (this.state.zoom)
+            overlayRect.call(this.state.zoom);
 
         //Mouse move events
         d3.select(this.getDOMNode())
@@ -80,12 +83,16 @@ var EventRect = React.createClass({
 
     getInitialState: function() {
         return {"translate": [0,0],
-                "scale": 1};
+                "scale": 1,
+                "zoom": null};
     },
 
     componentWillMount: function() {
-        this.zoom = d3.behavior.zoom()
-            .on("zoom", this.zoom);
+        if (this.props.enableZoom) {
+            var zoom = d3.behavior.zoom()
+                    .on("zoom", this.handleZoom);
+            this.setState({"zoom": zoom});
+        }
     },
 
     componentDidMount: function() {
@@ -94,6 +101,7 @@ var EventRect = React.createClass({
             this.props.onResize(this.props.width, this.props.height);
         }
     },
+
 
     componentWillReceiveProps: function(nextProps) {
         var scale = nextProps.scale;
@@ -110,11 +118,12 @@ var EventRect = React.createClass({
 
         //If the scale has changed, we can keep the rect, but reset the start point of
         //any zooming that might be in progress
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.setState({"translate": this.zoom.translate(),
-                           "scale": this.zoom.scale()});
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale) && this.state.zoom) {
+            this.setState({"translate": this.state.zoom.translate(),
+                           "scale": this.state.zoom.scale()});
         }
 
+        // TODO: support dynamically modifying zoomEnabled
     },
 
     shouldComponentUpdate: function() {

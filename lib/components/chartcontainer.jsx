@@ -128,7 +128,9 @@ var ChartContainer = React.createClass({
                                       onTrackerChanged={self.handleTrackerChanged}
                                       trackerPosition={self.props.trackerPosition}
                                       onTimeRangeChanged={self.handleTimeRangeChanged}
-                                      onChartResize={chartRow.props.onChartResize}>
+                                      onChartResize={chartRow.props.onChartResize}
+                                      enableZoom={chartRow.props.enableZoom}
+                                      >
                                 {chartRow.props.children}
                             </ChartRow>
                         </div>

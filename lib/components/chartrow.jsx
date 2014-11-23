@@ -319,6 +319,13 @@ var ChartRow = React.createClass({
 
         });
 
+        var enableZoom = _.has(this.props,'enableZoom') ? this.props.enableZoom : false;
+
+        var zoomHandler=null;
+        if (enableZoom) {
+            zoomHandler=self.handleZoom;
+        }
+
         return (
             <svg width={this.props.width} height={Number(this.props.height)}>
                 {yAxisList}
@@ -338,7 +345,8 @@ var ChartRow = React.createClass({
                                scale={self.props.timeScale}
                                onMouseOut={self.handleMouseOut}
                                onMouseMove={self.handleMouseMove}
-                               onZoom={self.handleZoom}
+                               enableZoom={enableZoom}
+                               onZoom={zoomHandler}
                                onResize={self.handleResize}/>
                 </g>
 
