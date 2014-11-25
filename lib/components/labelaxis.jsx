@@ -24,6 +24,10 @@ var LabelAxis = React.createClass({
         var VALWIDTH = 20;
         var rectWidth = this.props.width - VALWIDTH;
         var valXPos = rectWidth + 3; // padding
+
+        var format = _.has(this.props,"format") ? this.props.format : ".2f";
+        var maxStr = d3.format(format)(this.props.max);
+        var minStr = d3.format(format)(this.props.min);
         return (
             <g>
                 <rect x="0" y="0" width={rectWidth} height={this.props.height} 
@@ -32,10 +36,10 @@ var LabelAxis = React.createClass({
                     {this.props.label}
                 </text>
                 <text x={valXPos} y={0} dy="1.2em" style={detailStyle}>
-                    {this.props.max}
+                    {maxStr}
                 </text>
                 <text x={valXPos} y={this.props.height} style={detailStyle}>
-                    {this.props.min}
+                    {minStr}
                 </text>                
                 
             </g>
