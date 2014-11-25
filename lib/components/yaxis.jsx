@@ -37,12 +37,13 @@ var YAxis = React.createClass({
             "min": 0,                  // range
             "max": 1,
             "type": "linear",          // linear, log, or power
-            "absolute": false          // Display scale always positive
+            "absolute": false,          // Display scale always positive
+            "format": ".2s"            // Format string for d3.format
         };
     },
 
-    renderAxis: function(align, scale, width, absolute) {
-        var yformat = d3.format(".2s");
+    renderAxis: function(align, scale, width, absolute, format) {
+        var yformat = d3.format(format);
 
         var axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
@@ -74,7 +75,8 @@ var YAxis = React.createClass({
     },
 
     componentDidMount: function() {
-        this.renderAxis(this.props.align, this.props.scale, this.props.width, this.props.absolute);
+        this.renderAxis(this.props.align, this.props.scale, this.props.width,
+                        this.props.absolute, this.props.format);
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -82,9 +84,10 @@ var YAxis = React.createClass({
         var align = nextProps.align;
         var width = nextProps.width;
         var absolute = nextProps.absolute;
+        var format = nextProps.format;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.renderAxis(align, scale, width, absolute);
+            this.renderAxis(align, scale, width, absolute, format);
         }
     },
 

@@ -19,15 +19,25 @@ var LabelAxis = React.createClass({
     displayName: "LabelAxis",
 
     render: function() {
-        console.log("Rending LabelAxis", this.props);
         var labelStyle = {fontSize: 14, textAnchor: "middle", fill: "#838383"};
+        var detailStyle = {fontSize: 12, textAnchor: "left", fill: "#bdbdbd"};
+        var VALWIDTH = 20;
+        var rectWidth = this.props.width - VALWIDTH;
+        var valXPos = rectWidth + 3; // padding
         return (
             <g>
-                <rect x="0" y="0" width={this.props.width} height={this.props.height} 
+                <rect x="0" y="0" width={rectWidth} height={this.props.height} 
                       style={{fill: "#E4E4E4", fillOpacity: 0.65}}/>
-                <text x={parseInt(this.props.width/2)} y={20} style={labelStyle}>
+                <text x={parseInt(rectWidth/2)} y={20} dy="2.5em" style={labelStyle}>
                     {this.props.label}
                 </text>
+                <text x={valXPos} y={0} dy="1.2em" style={detailStyle}>
+                    {this.props.max}
+                </text>
+                <text x={valXPos} y={this.props.height} style={detailStyle}>
+                    {this.props.min}
+                </text>                
+                
             </g>
         );
     },

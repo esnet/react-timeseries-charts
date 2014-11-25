@@ -12,6 +12,17 @@ function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
+/**
+ * Extract minor secondary options from this.props as a single object to enable
+ * simple, efficient change detection and passing to render method.
+ * This serves as a whitelist of supported options.
+ * Default handling happens later  to minimize overhead during change detection. 
+ */
+function getOptions(props) {
+    // We use _.pick here so that keys not present in props will not be present in options
+    return _.pick(props, 'interpolate' /* , ... */ );
+}
+
 var AreaChart = React.createClass({
 
     renderAreaChart: function(data, timeScale, yScale, classed, options) {
@@ -39,19 +50,19 @@ var AreaChart = React.createClass({
         // y0 here is the base, y1 is the top of the graph, and x is x.
         //
 
-        var interpolation = (options && _.has(options, "interpolation")) ? options.interpolation : "step-after";
+        var interpolate = (options && _.has(options, "interpolate")) ? options.interpolate : "step-after";
 
         var upArea = d3.svg.area()
             .x(function(d)  { return timeScale(d.date); })
             .y0(function(d) { return yScale(d.y0); })
             .y1(function(d) { return yScale(d.y0 + d.value); })
-            .interpolate(interpolation);
+            .interpolate(interpolate);
 
         var downArea = d3.svg.area()
             .x(function(d)  { return timeScale(d.date); })
             .y0(function(d) { return yScale(d.y0); })
             .y1(function(d) { return yScale(d.y0 - d.value); })
-            .interpolate(interpolation);
+            .interpolate(interpolate);
 
         //
         // Our D3 stack. When this is evoked with data (an array of layers) it builds up
@@ -124,9 +135,11 @@ var AreaChart = React.createClass({
 
     },
 
+
+
     componentDidMount: function() {
         this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed,
-            this.props.options);
+            getOptions(this.props));
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -134,11 +147,11 @@ var AreaChart = React.createClass({
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
         var classed = nextProps.classed;
-        var options = this.props.options;
+        var options = getOptions(nextProps);
         if (this.props.data !== data ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale) ||
-            !_.isEqual(this.props.options,options)
+            !_.isEqual(getOptions(this.props),options)
             ) {
                 this.renderAreaChart(data, timeScale, yScale, classed, options);
         }

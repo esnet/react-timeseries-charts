@@ -10,6 +10,7 @@
 
 module.exports = {
     AreaChart: require('./lib/components/areachart.jsx'),
+    Brush: require('./lib/components/brush.jsx'),
     ChartContainer: require('./lib/components/chartcontainer.jsx'),
     ChartRow: require('./lib/components/chartrow.jsx'),
     EventChart: require('./lib/components/eventchart.jsx'),

@@ -20,7 +20,6 @@ var ValueAxis = React.createClass({
     displayName: "ValueAxis",
 
     render: function() {
-        console.log("Rendering value axis", this.props);
         var labelStyle = {fontSize: 16, textAnchor: "middle", fill: "#838383"};
         return (
             <g>
