@@ -1,3 +1,17 @@
-.y.axis line, .y.axis path {
-    fill: none; stroke: #000;
+.y.axis > line, .y.axis > path {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .5;
+}
+
+.y.axis > .tick > text {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+.y.axis > .tick > line {
+    stroke: #DBDBDB;
+    stroke-opacity: 0.5;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
 }

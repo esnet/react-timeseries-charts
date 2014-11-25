@@ -9,6 +9,8 @@ var ChartRow = require("./chartrow");
 var TimeAxis = require("./timeaxis");
 var YAxis    = require("./yaxis");
 
+require("./chartcontainer.css");
+
 var AXIS_WIDTH = 40;
 
 var ChartContainer = React.createClass({
@@ -74,11 +76,6 @@ var ChartContainer = React.createClass({
         //       be more general (i.e. support linear, categories etc)
 
         var X_AXIS_HEIGHT = 35;
-        var timeAxisRowStyle = {height: X_AXIS_HEIGHT,
-                                borderWidth: "1px",
-                                borderStyle: "solid",
-                                borderColor: "#F7F0F0",
-                                background: "#FAFAFA"};
 
         var transform = "translate(" + leftAxisSlots*slotWidth + ",0)";
         var timeAxisWidth = this.props.width - leftAxisSlots*slotWidth - rightAxisSlots*slotWidth - 5;
@@ -89,12 +86,14 @@ var ChartContainer = React.createClass({
 
         var timeAxis = (
             <div className="row">
-                <div className="col-md-12" style={timeAxisRowStyle}>
-                    <svg width={this.props.width} height={X_AXIS_HEIGHT}>
-                        <g transform={transform}>
-                            <TimeAxis scale={timeScale}/>
-                        </g>
-                    </svg>
+                <div className="col-md-12" style={{"height": X_AXIS_HEIGHT}}>
+                    <div className="chartcontainer timeaxis" >
+                        <svg width={this.props.width} height={X_AXIS_HEIGHT}>
+                            <g transform={transform}>
+                                <TimeAxis scale={timeScale}/>
+                            </g>
+                        </svg>
+                    </div>
                 </div>
             </div>
         );
@@ -110,32 +109,27 @@ var ChartContainer = React.createClass({
             var i = 0;
             if (child instanceof ChartRow) {
                 var chartRow = child;
-
-                var rowStyle = {height: Number(chartRow.props.height)+5,
-                                borderWidth: "1px",
-                                borderStyle: "solid",
-                                borderColor: "#F7F0F0",
-                                background: "#FAFAFA"};
-
                 chartRows.push(
                     <div key={"chart-row-" + i } className="row">
-                        <div className="col-md-12" style={rowStyle}>
-                            <ChartRow width={self.props.width}
-                                      height={chartRow.props.height}
-                                      slotWidth={slotWidth}
-                                      timeScale={timeScale}
-                                      minTime={self.props.minTime}
-                                      maxTime={self.props.maxTime}
-                                      rightAxisSlots={rightAxisSlots}
-                                      leftAxisSlots={leftAxisSlots}
-                                      onTrackerChanged={self.handleTrackerChanged}
-                                      trackerPosition={self.props.trackerPosition}
-                                      onTimeRangeChanged={self.handleTimeRangeChanged}
-                                      onChartResize={chartRow.props.onChartResize}
-                                      enableZoom={chartRow.props.enableZoom}
-                                      >
-                                {chartRow.props.children}
-                            </ChartRow>
+                        <div className="col-md-12">
+                            <div className="chartcontainer chartrow">
+                                <ChartRow width={self.props.width}
+                                          height={chartRow.props.height}
+                                          slotWidth={slotWidth}
+                                          timeScale={timeScale}
+                                          minTime={self.props.minTime}
+                                          maxTime={self.props.maxTime}
+                                          rightAxisSlots={rightAxisSlots}
+                                          leftAxisSlots={leftAxisSlots}
+                                          onTrackerChanged={self.handleTrackerChanged}
+                                          trackerPosition={self.props.trackerPosition}
+                                          onTimeRangeChanged={self.handleTimeRangeChanged}
+                                          onChartResize={chartRow.props.onChartResize}
+                                          enableZoom={chartRow.props.enableZoom}>
+                                    {chartRow.props.children}
+                                </ChartRow>
+                            </div>
+
                         </div>
                     </div>
                 );
@@ -150,7 +144,7 @@ var ChartContainer = React.createClass({
         //
 
         return (
-            <div>
+            <div className="chartcontainer">
                 {chartRows}
                 {timeAxis}
             </div>

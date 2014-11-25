@@ -2,11 +2,7 @@
  * CSS for the time axis used in charts etc.
  */
 
-.xaxis_label, .yaxis_label {
-    font-size: 11px;
-}
-
-.axis {
+.x.axis {
     shape-rendering: crispEdges;
 }
 
@@ -14,7 +10,14 @@
     stroke-opacity: .5;
 }
 
-/*.x.axis line.tick {stroke: #b7b7b7;}*/
+.x.axis > path.domain {
+    fill: none;
+}
+
+.x.axis > .tick > text {
+    font-size: 11px;
+    opacity: 0.5;
+}
 
 .x.axis > .tick > line {
     stroke: #DBDBDB;
