@@ -1,0 +1,11 @@
+.chartcontainer.timeaxis {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #F7F0F0;
+}
+
+.chartcontainer.chartrow {
+    background: #FAFAFA;
+    padding-top: 5px;
+    padding-left: 5px;
+}
