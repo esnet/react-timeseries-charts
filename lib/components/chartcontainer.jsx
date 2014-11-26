@@ -105,18 +105,20 @@ var ChartContainer = React.createClass({
         // we pass through the original Chart children of each of the rows.
         //
 
+        var i = 0;
         React.Children.forEach(this.props.children, function(child) {
-            var i = 0;
             if (child instanceof ChartRow) {
                 var chartRow = child;
+                var rowKey = child.props.key ? child.props.key : "chart-row-row-" + i;
                 chartRows.push(
-                    <div key={"chart-row-" + i } className="row">
+                    <div key={"chart-row-div-" + i } className="row">
                         <div className="col-md-12">
                             <div className="chartcontainer chartrow">
                                 <ChartRow width={self.props.width}
                                           height={chartRow.props.height}
                                           slotWidth={slotWidth}
                                           timeScale={timeScale}
+                                          margin={chartRow.props.margin}
                                           minTime={self.props.minTime}
                                           maxTime={self.props.maxTime}
                                           rightAxisSlots={rightAxisSlots}
