@@ -32,7 +32,7 @@ var LabelAxis = React.createClass({
             <g>
                 <rect x="0" y="0" width={rectWidth} height={this.props.height} 
                       style={{fill: "#E4E4E4", fillOpacity: 0.65}}/>
-                <text x={parseInt(rectWidth/2)} y={20} dy="2.5em" style={labelStyle}>
+                <text x={parseInt(rectWidth/2)} y={this.props.height/2} style={labelStyle}>
                     {this.props.label}
                 </text>
                 <text x={valXPos} y={0} dy="1.2em" style={detailStyle}>

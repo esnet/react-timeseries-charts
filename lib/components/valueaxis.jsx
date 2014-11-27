@@ -20,16 +20,16 @@ var ValueAxis = React.createClass({
     displayName: "ValueAxis",
 
     render: function() {
-        var labelStyle = {fontSize: 16, textAnchor: "middle", fill: "#838383"};
+        var labelStyle = {fontSize: 14, textAnchor: "middle", fill: "#838383"};
         var detailStyle = {fontSize: 12, textAnchor: "middle", fill: "#9a9a9a"};
         return (
             <g>
                 <rect x="0" y="0" width={this.props.width} height={this.props.height} 
                       style={{fill: "#E4E4E4", fillOpacity: 0.65}}/>
-                <text x={parseInt(this.props.width/2)} y={this.props.height/2-10} style={labelStyle}>
+                <text x={parseInt(this.props.width/2)} y={this.props.height/2} style={labelStyle}>
                     {this.props.value}
                 </text>
-                <text x={parseInt(this.props.width/2)} y={this.props.height/2-10} dy="1.2em" style={detailStyle}>
+                <text x={parseInt(this.props.width/2)} y={this.props.height/2} dy="1.2em" style={detailStyle}>
                     {this.props.detail}
                 </text>
             </g>
