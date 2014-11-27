@@ -141,7 +141,7 @@ var ChartRow = React.createClass({
         var leftAxisList = [];      // Ordered list of left axes ids
         var rightAxisList = [];     // Ordered list of right axes ids
 
-        var MARGIN = _.has(this.props,'margin') ? this.props.margin : 5;
+        var MARGIN = (this.props.margin!==undefined) ? this.props.margin : 5;
         var innerHeight = Number(this.props.height) - MARGIN*2;
 
         //
