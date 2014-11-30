@@ -14,6 +14,7 @@ var Brush      = require("./brush");
 var YAxis      = require("./yaxis");
 var Tracker    = require("./tracker");
 var EventRect  = require("./eventrect");
+var PointIndicator = require("./pointindicator");
 
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
@@ -285,7 +286,8 @@ var ChartRow = React.createClass({
            
             if (child instanceof AreaChart ||
                 child instanceof LineChart ||
-                child instanceof EventChart) {
+                child instanceof EventChart ||
+                child instanceof PointIndicator) {
                 var props = {
                     key: child.props.key ? child.props.key : "chart-" + keyCount,
                     width: chartWidth,
