@@ -26,9 +26,6 @@ var PointIndicator = React.createClass({
     },
 
     renderPoint: function(timeScale, yScale, pointRadius, point, classed) {
-        if (!yScale || !point)
-            return;
-
         var data;
 
         if (point) {
@@ -38,6 +35,9 @@ var PointIndicator = React.createClass({
         }
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
+
+        if (!yScale)
+            return;
 
         var pointClasses = {"pointindicator-point": true};
         if (classed) {
