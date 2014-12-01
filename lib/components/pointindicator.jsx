@@ -36,10 +36,15 @@ var PointIndicator = React.createClass({
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
+        var pointClasses = {"pointindicator-point": true};
+        if (classed) {
+            pointClasses[classed] = true;
+        }
 
         d3.select(this.getDOMNode()).selectAll("dot")
             .data(data)
             .enter().append("circle")
+                .classed(pointClasses)
                 .attr("r", pointRadius)
                 .attr("cx", function (d) { return timeScale(d.time); })
                 .attr("cy", function (d) { return yScale(d.value); })

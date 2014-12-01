@@ -26,7 +26,7 @@ function getOptions(props) {
 var AreaChart = React.createClass({
 
     renderAreaChart: function(data, timeScale, yScale, classed, options) {
-        if (!data[0]) {
+        if (!yScale || !data[0]) {
             return null;
         }
 

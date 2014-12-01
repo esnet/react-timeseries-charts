@@ -167,7 +167,10 @@ var ChartRow = React.createClass({
 
                     //Relate id to a d3 scale generated from the max, min and scaleType props
                     var type = props.type || "linear";
-                    if (type === "linear") {
+                    if (yaxis.props.min===undefined || yaxis.props.min !== yaxis.props.min ||
+                        yaxis.props.max===undefined || yaxis.props.max !== yaxis.props.max) {
+                        yAxisScaleMap[yaxis.props.id] = null;
+                    } else if (type === "linear") {
                         yAxisScaleMap[yaxis.props.id] = d3.scale.linear()
                             .domain([yaxis.props.min, yaxis.props.max])
                             .range([innerHeight, 0])

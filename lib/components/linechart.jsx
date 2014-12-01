@@ -24,7 +24,7 @@ var LineChart = React.createClass({
 
     renderLineChart: function(data, timeScale, yScale, interpolate, 
                               showDataPoints, dataPointRadius, classed) {
-        if (!data[0]) {
+        if (!yScale || !data[0]) {
             return null;
         }
 
