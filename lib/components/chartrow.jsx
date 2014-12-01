@@ -145,6 +145,12 @@ var ChartRow = React.createClass({
         var MARGIN = (this.props.margin!==undefined) ? this.props.margin : 5;
         var innerHeight = Number(this.props.height) - MARGIN*2;
 
+        // We'll also add our own padding so that marks at the min or max of the 
+        // domain are visible:
+        var PADDING = (this.props.padding!==undefined) ? this.props.padding : 2;
+        var rangeBottom = innerHeight - PADDING;
+        var rangeTop = PADDING;
+
         //
         // Build a map of elements that occupy left or right slots next to the chart.
         //
@@ -161,6 +167,7 @@ var ChartRow = React.createClass({
                 //Relate id to the axis itself
                 yAxisMap[yaxis.props.id] = yaxis;
 
+
                 //If we know it's a YAxis we go ahead and calculate the scale
                 if (yaxis instanceof YAxis ||
                     _.has(props, "id") && _.has(props, "min") && _.has(props, "max")) {
@@ -173,21 +180,21 @@ var ChartRow = React.createClass({
                     } else if (type === "linear") {
                         yAxisScaleMap[yaxis.props.id] = d3.scale.linear()
                             .domain([yaxis.props.min, yaxis.props.max])
-                            .range([innerHeight, 0])
+                            .range([rangeBottom,rangeTop])
                             .nice();
                     } else if (type === "log") {
                         var base = yaxis.props.logBase || 10;
                         yAxisScaleMap[yaxis.props.id] = d3.scale.log()
                             .base(base)
                             .domain([yaxis.props.min, yaxis.props.max])
-                            .range([innerHeight, 0]);
+                            .range([rangeBottom,rangeTop]);
                     
                     } else if (type === "power") {
                         var power = yaxis.props.powerExponent || 2;
                         yAxisScaleMap[yaxis.props.id] = d3.scale.pow()
                             .exponent(power)
                             .domain([yaxis.props.min, yaxis.props.max])
-                            .range([innerHeight, 0]);
+                            .range([rangeBottom,rangeTop]);
                     }
                 }
 

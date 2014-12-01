@@ -26,6 +26,9 @@ var PointIndicator = React.createClass({
     },
 
     renderPoint: function(timeScale, yScale, pointRadius, point, classed) {
+        if (!yScale || !point)
+            return;
+
         var data;
 
         if (point) {
