@@ -25,6 +25,7 @@ require("./meter.css");
  *     .meter-background - used to draw the container and background area
  *     .meter            - used for drawing the meter itself
  */
+ 
 var Meter = React.createClass({
 
     displayName: "MeterView",
