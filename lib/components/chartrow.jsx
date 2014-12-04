@@ -14,6 +14,7 @@ var Brush      = require("./brush");
 var YAxis      = require("./yaxis");
 var Tracker    = require("./tracker");
 var EventRect  = require("./eventrect");
+var PointIndicator = require("./pointindicator");
 
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
@@ -141,7 +142,7 @@ var ChartRow = React.createClass({
         var leftAxisList = [];      // Ordered list of left axes ids
         var rightAxisList = [];     // Ordered list of right axes ids
 
-        var MARGIN = this.props.margin || 5;
+        var MARGIN = (this.props.margin!==undefined) ? this.props.margin : 5;
         var innerHeight = Number(this.props.height) - MARGIN*2;
 
         //
@@ -166,7 +167,10 @@ var ChartRow = React.createClass({
 
                     //Relate id to a d3 scale generated from the max, min and scaleType props
                     var type = props.type || "linear";
-                    if (type === "linear") {
+                    if (yaxis.props.min===undefined || yaxis.props.min !== yaxis.props.min ||
+                        yaxis.props.max===undefined || yaxis.props.max !== yaxis.props.max) {
+                        yAxisScaleMap[yaxis.props.id] = null;
+                    } else if (type === "linear") {
                         yAxisScaleMap[yaxis.props.id] = d3.scale.linear()
                             .domain([yaxis.props.min, yaxis.props.max])
                             .range([innerHeight, 0])
@@ -285,7 +289,8 @@ var ChartRow = React.createClass({
            
             if (child instanceof AreaChart ||
                 child instanceof LineChart ||
-                child instanceof EventChart) {
+                child instanceof EventChart ||
+                child instanceof PointIndicator) {
                 var props = {
                     key: child.props.key ? child.props.key : "chart-" + keyCount,
                     width: chartWidth,
