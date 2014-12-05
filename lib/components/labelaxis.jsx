@@ -48,7 +48,7 @@ var LabelAxis = React.createClass({
     render: function() {
         var labelStyle = {fontSize: 14, textAnchor: "middle", fill: "#838383"};
         var detailStyle = {fontSize: 12, textAnchor: "left", fill: "#bdbdbd"};
-        var VALWIDTH = 20;
+        var VALWIDTH = (this.props.valWidth) ? this.props.valWidth : 40;
         var rectWidth = this.props.width - VALWIDTH;
         var valXPos = rectWidth + 3; // padding
 

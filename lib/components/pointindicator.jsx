@@ -64,6 +64,9 @@ var PointIndicator = React.createClass({
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
+        if (!yScale)
+            return;
+
         var pointClasses = {"pointindicator-point": true};
         if (classed) {
             pointClasses[classed] = true;

@@ -146,6 +146,7 @@ var ChartContainer = React.createClass({
                                           slotWidth={slotWidth}
                                           timeScale={timeScale}
                                           margin={chartRow.props.margin}
+                                          padding={chartRow.props.padding}
                                           minTime={self.props.minTime}
                                           maxTime={self.props.maxTime}
                                           rightAxisSlots={rightAxisSlots}
