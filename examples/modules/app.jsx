@@ -35,7 +35,7 @@ var App = React.createClass({
       <div>
           <div className="row">
               <div className="col-md-12">
-                  <h2>Examples!!</h2>
+                  <h2>Examples</h2>
               </div>
           </div>
 
@@ -43,13 +43,31 @@ var App = React.createClass({
 
           <div className="row">
               <div className="col-md-12">
-                  <h3>Legend</h3>
+                  <h3>Horizontal Legend</h3>
               </div>
           </div>
 
           <div className="row">
-              <div className="col-md-6">
-                  <Legend categories={{"Oscars": "oscars", "Total": "total"}} />
+              <div className="col-md-3">
+                  Legend with lines
+              </div>
+              <div className="col-md-3">
+                  Legend with swatches
+              </div>
+              <div className="col-md-3">
+                  Legend with dots
+              </div>
+          </div>
+
+          <div className="row">
+              <div className="col-md-3">
+                  <Legend categories={{"AUD": "aust", "USD": "usa"}} style="line"/>
+              </div>
+              <div className="col-md-3">
+                  <Legend categories={{"Oscars": "oscars", "Total": "total"}} style="swatch" />
+              </div>
+              <div className="col-md-3">
+                  <Legend categories={{"Site": "site", "Router": "router"}} style="dot" />
               </div>
           </div>
 
@@ -65,7 +83,7 @@ var App = React.createClass({
               <div className="col-md-12">
                   <Resizable>
                     <ChartContainer beginTime={beginTime} endTime={endTime} slotWidth={60}>
-                        <ChartRow height="200">
+                        <ChartRow height="200" margin="0" padding="10">
                             <YAxis id="traffic" type="linear" align="left" min={0} max={20000000}/>
                             <LineChart axis="traffic"
                                        data={convertedCurrency}

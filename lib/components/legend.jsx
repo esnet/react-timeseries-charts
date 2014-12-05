@@ -38,14 +38,30 @@ var Legend = React.createClass({
 
     displayName: "Legend",
 
+    getDefaultProps: function() {
+        return {
+            "style": "swatch", //or "line" or "dot"
+        };
+    },
+
     render: function() {
+        var self = this;
+
         var items = [];
         _.each(this.props.categories, function(categoryClass, categoryLabel) {
-            var swatchClass = "legend-swatch " + categoryClass;
+            var styleClass;
+            if (self.props.style === "swatch") {
+                styleClass = "legend-swatch " + categoryClass;
+            } else if (self.props.style === "line") {
+                styleClass = "legend-line " + categoryClass;
+            } else if (self.props.style === "dot") {
+                styleClass = "legend-dot " + categoryClass;
+            }
+
             var labelClass = "legend-label " + categoryClass;
             items.push(
                 <li key={"legend-item-" + categoryLabel} className="legend-list">
-                    <span className={swatchClass} />
+                    <span className={styleClass} />
                     <span className={labelClass}> {categoryLabel} </span>
                 </li>
             );

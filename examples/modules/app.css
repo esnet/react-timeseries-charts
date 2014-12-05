@@ -10,6 +10,28 @@ body {
     background-color: #448FDD;
 }
 
+.horizontal-legend .legend-line.usa{
+    background-color: #ff7f0e;
+}
+
+.horizontal-legend .legend-line.aust{
+    background-color: #2ca02c;
+}
+
+.horizontal-legend .legend-dot.site{
+    background-color: #FAA;
+	width: 12px;
+	height: 12px;
+	margin-top: 4px;
+	border-radius: 6px;
+}
+
+.horizontal-legend .legend-dot.router{
+    background-color: #CCF;
+}
+
+
+
 .chartcontainer.chartrow {
     background: none;
 }
