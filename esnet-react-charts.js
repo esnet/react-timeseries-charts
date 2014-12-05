@@ -18,7 +18,6 @@ module.exports = {
     LabelAxis: require('./lib/components/labelaxis.jsx'),
     Legend: require('./lib/components/legend.jsx'),
     LineChart: require('./lib/components/linechart.jsx'),
-    Meter: require('./lib/components/meter.jsx'),
     PointIndicator: require('./lib/components/pointindicator.jsx'),
     Resizable: require('./lib/components/resizable.jsx'),
     TimeAxis: require('./lib/components/timeaxis.jsx'),
