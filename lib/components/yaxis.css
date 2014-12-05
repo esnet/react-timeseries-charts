@@ -37,7 +37,7 @@
 }
 
 .y.axis > .tick > line {
-    stroke: #DBDBDB;
+    stroke: #888686;
     stroke-opacity: 0.5;
     stroke-width: 1px;
     shape-rendering: crispEdges;

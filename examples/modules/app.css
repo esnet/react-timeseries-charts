@@ -36,7 +36,12 @@ body {
     background: none;
 }
 
-.linechart-line.currency {
-    stroke: steelblue;
+.linechart-line.aud {
+    stroke: #2ca02c;
+    stroke-width: 2px;
+}
+
+.linechart-line.euro {
+    stroke: #9467bd;
     stroke-width: 2px;
 }

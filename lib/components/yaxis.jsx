@@ -34,7 +34,7 @@ var d3 = require("d3");
 
 require("./yaxis.css");
 
-var MARGIN = 5;
+var MARGIN = 0;
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();

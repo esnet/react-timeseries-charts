@@ -19,15 +19,26 @@ _.each(currency, function(val) {
   convertedCurrency.push({"time": new Date(val.date), "value": val.value});
 });
 
-console.log(convertedCurrency);
+var aud = require("../data/usd_vs_aud.json");
+var audCurrency = [];
+_.each(aud.widget[0].data, function(val) {
+  audCurrency.push({"time": new Date(val[0]), "value": val[1]});
+})
+
+var euro = require("../data/usd_vs_euro.json");
+var euroCurrency = [];
+_.each(euro.widget[0].data, function(val) {
+  euroCurrency.push({"time": new Date(val[0]), "value": val[1]});
+})
+
 
 require('./app.css');
 
 var App = React.createClass({
   render: function() {
 
-    var beginTime = convertedCurrency[0].time;
-    var endTime = convertedCurrency[convertedCurrency.length-1].time;
+    var endTime = audCurrency[0].time;
+    var beginTime = audCurrency[audCurrency.length-1].time;
 
     console.log(beginTime, endTime);
 
@@ -84,10 +95,9 @@ var App = React.createClass({
                   <Resizable>
                     <ChartContainer beginTime={beginTime} endTime={endTime} slotWidth={60}>
                         <ChartRow height="200" margin="0" padding="10">
-                            <YAxis id="traffic" type="linear" align="left" min={0} max={20000000}/>
-                            <LineChart axis="traffic"
-                                       data={convertedCurrency}
-                                       classed="currency"/>
+                            <YAxis id="currency" type="linear" align="left" format="$,.2f" min={0.5} max={1.25}/>
+                            <LineChart axis="currency" data={audCurrency} classed="aud"/>
+                            <LineChart axis="currency" data={euroCurrency} classed="euro"/>
                         </ChartRow>
                     </ChartContainer>
                   </Resizable>
