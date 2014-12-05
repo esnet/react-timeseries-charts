@@ -11,6 +11,8 @@ var ChartRow = Charts.ChartRow;
 var YAxis = Charts.YAxis;
 var AreaChart = Charts.AreaChart;
 var LineChart = Charts.LineChart;
+var Baseline = Charts.Baseline;
+
 var Resizable = Charts.Resizable;
 
 var currency = require("../data/currency.json");
@@ -95,9 +97,10 @@ var App = React.createClass({
                   <Resizable>
                     <ChartContainer beginTime={beginTime} endTime={endTime} slotWidth={60}>
                         <ChartRow height="200" margin="0" padding="10">
-                            <YAxis id="currency" type="linear" align="left" format="$,.2f" min={0.5} max={1.25}/>
+                            <YAxis id="currency" type="linear" align="left" format="$,.2f" min={0.5} max={1.5}/>
                             <LineChart axis="currency" data={audCurrency} classed="aud"/>
                             <LineChart axis="currency" data={euroCurrency} classed="euro"/>
+                            <Baseline axis="currency"  value={1.0} label="USD Baseline" position="right"/>
                         </ChartRow>
                     </ChartContainer>
                   </Resizable>

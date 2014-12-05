@@ -35,6 +35,7 @@ var _ = require("underscore");
 
 var AreaChart  = require("./areachart");
 var LineChart  = require("./linechart");
+var Baseline   = require("./baseline");
 var EventChart = require("./eventchart");
 var Brush      = require("./brush");
 
@@ -174,9 +175,9 @@ var ChartRow = React.createClass({
 
         // We'll also add our own padding so that marks at the min or max of the 
         // domain are visible:
-        var PADDING = (this.props.padding!==undefined) ? this.props.padding : 2;
-        var rangeBottom = innerHeight - PADDING;
-        var rangeTop = PADDING;
+        var PADDING = (this.props.padding!==undefined) ? Number(this.props.padding) : 2;
+        var rangeBottom = Number(innerHeight - PADDING);
+        var rangeTop = Number(PADDING);
 
         //
         // Build a map of elements that occupy left or right slots next to the chart.
@@ -193,7 +194,6 @@ var ChartRow = React.createClass({
                 
                 //Relate id to the axis itself
                 yAxisMap[yaxis.props.id] = yaxis;
-
 
                 //If we know it's a YAxis we go ahead and calculate the scale
                 if (yaxis instanceof YAxis ||
@@ -324,7 +324,8 @@ var ChartRow = React.createClass({
             if (child instanceof AreaChart ||
                 child instanceof LineChart ||
                 child instanceof EventChart ||
-                child instanceof PointIndicator) {
+                child instanceof PointIndicator ||
+                child instanceof Baseline) {
                 var props = {
                     key: child.props.key ? child.props.key : "chart-" + keyCount,
                     width: chartWidth,
