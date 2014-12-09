@@ -24,6 +24,14 @@ http://localhost:8080/webpack-dev-server/
 
 From now on, if you change the source code, webpack will rebuild the examples bundle and the browser will refresh itself. Errors will also be reported in the browser window.
 
+NOTE: Both webpack and webpack-dev-server probably need to be installed globally for the cli to these tools to work. Also
+if your system can't fine these (i.e. if you install globally and then type `webpack` in the shell and get `command not found`) then this is because the global install location is not in your path. To find the location use this to find the prefix:
+
+```npm config list | grep prefix```
+
+You path should be prefix + "/bin" for installed cli.
+
+
 Copyright
 ---------
 

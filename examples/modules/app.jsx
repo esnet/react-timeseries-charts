@@ -8,6 +8,8 @@ var Charts = require("../../esnet-react-charts");
 var Legend = Charts.Legend;
 var ChartContainer = Charts.ChartContainer;
 var ChartRow = Charts.ChartRow;
+var ChartGroup = Charts.ChartGroup;
+var AxisGroup = Charts.AxisGroup;
 var YAxis = Charts.YAxis;
 var AreaChart = Charts.AreaChart;
 var LineChart = Charts.LineChart;
@@ -95,12 +97,19 @@ var App = React.createClass({
           <div className="row">
               <div className="col-md-12">
                   <Resizable>
-                    <ChartContainer beginTime={beginTime} endTime={endTime} slotWidth={60}>
-                        <ChartRow height="200" margin="0" padding="10">
-                            <YAxis id="currency" type="linear" align="left" format="$,.2f" min={0.5} max={1.5}/>
-                            <LineChart axis="currency" data={audCurrency} classed="aud"/>
-                            <LineChart axis="currency" data={euroCurrency} classed="euro"/>
-                            <Baseline axis="currency"  value={1.0} label="USD Baseline" position="right"/>
+                    <ChartContainer beginTime={beginTime} endTime={endTime} padding="5">
+                        <ChartRow height="200">
+                            <AxisGroup align="left">
+                                <YAxis id="axis1" min={0} max={2} width="40" type="linear" format="$,.2f"/>
+                            </AxisGroup>
+                            <ChartGroup>
+                                <LineChart axis="axis1" data={audCurrency} classed="aud"/>
+                                <LineChart axis="axis2" data={euroCurrency} classed="euro"/>
+                                <Baseline  axis="axis1" value={1.0} label="USD Baseline" position="right"/>
+                            </ChartGroup>
+                            <AxisGroup align="right">
+                                <YAxis id="axis2" min={0.65} max={0.85} width="80" type="linear" format="$,.2f"/>
+                            </AxisGroup>
                         </ChartRow>
                     </ChartContainer>
                   </Resizable>

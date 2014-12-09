@@ -1,3 +1,5 @@
+/** @jsx React.DOM */
+
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -24,26 +26,31 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
+ 
+"use strict";
 
- .y.axis > line, .y.axis > path {
-    fill: none;
-    stroke: #000;
-    stroke-opacity: .5;
-}
+var React = require("react/addons");
+var _ = require("underscore");
 
-.y.axis > .tick > text {
-    font-size: 11px;
-    opacity: 0.5;
-}
+/**
+ * A AxisGroup has a set of Y axes that may be collected together left or right
+ * of the main chart area on each row.
+ */
+var AxisGroup = React.createClass({
 
-.y.axis > .tick > line {
-    stroke: #888686;
-    stroke-opacity: 0.5;
-    stroke-width: 1px;
-    shape-rendering: crispEdges;
-}
+    displayName: "AxisGroup",
 
-.y-axis-debug {
-	fill: rgba(255, 0, 0, 0.06);
-	stroke: red;
-}
+    getInitialState: function() {
+        return {};
+    },
+
+    render: function() {
+        var self = this;
+        return (
+            <g className="axisgroup">
+            </g>
+        );
+    }
+});
+
+module.exports = AxisGroup;

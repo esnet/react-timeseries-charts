@@ -55,3 +55,9 @@ path.areachart-area-down.stack-3 {
     fill: #FEC686;
     stroke: #FEC686;
 }
+
+
+.chart-debug {
+    fill: rgba(0, 0, 255, 0.06);
+    stroke: blue;
+}

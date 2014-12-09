@@ -31,14 +31,14 @@
 
 var React = require("react");
 var d3 = require("d3");
+var _ = require("underscore");
 
 var ChartRow = require("./chartrow");
+var AxisGroup = require("./axisgroup");
 var TimeAxis = require("./timeaxis");
 var YAxis    = require("./yaxis");
 
 require("./chartcontainer.css");
-
-var AXIS_WIDTH = 40;
 
 var ChartContainer = React.createClass({
 
@@ -63,37 +63,62 @@ var ChartContainer = React.createClass({
     render: function() {
         var self = this;
         var chartRows = [];
-        var slotWidth = this.props.slotWidth || AXIS_WIDTH;
+        var padding = this.props.padding || 0;
 
         //
         // How much room does the axes of all the charts take up on the right and left.
-        // The result is a count of axis slots left and right
+        // The result is an array for left and right axis which contain the min column width
+        // needed to hold the axes widths at the pos for all rows.
+        //
+        // pos   1      0                     0        1        2
+        //     | Axis | Axis |   CHARTS    |  Axis  |                       Row 1
+        //            | Axis |   CHARTS    |  Axis  |  Axis  |  Axis |      Row 2     
+        //     ...............              ..........................
+        //          left cols              right cols
         //
 
-        var leftAxisSlots = 0;
-        var rightAxisSlots = 0;
+        var leftAxisWidths = [];
+        var rightAxisWidths = [];
 
         React.Children.forEach(this.props.children, function(childRow) {
-            var leftCount = 0;
-            var rightCount = 0;
             if (childRow instanceof ChartRow) {
-                React.Children.forEach(childRow.props.children, function(child) {
-                    var axis = child;
-                    if (axis.props.align === "left") {
-                        leftCount++;
-                    }
-                    if (axis.props.align === "right") {
-                        rightCount++;
+                console.log("CHART ROW:");
+                React.Children.forEach(childRow.props.children, function(childGroup) {
+                    if (childGroup instanceof AxisGroup) {
+                        var axisGroup = childGroup;
+                        var align = axisGroup.props.align;
+                        var pos = 0;
+
+                        console.log("   AXIS GROUP", align, childGroup.props);
+
+                        React.Children.forEach(axisGroup.props.children, function(axis) {
+                            var width = Number(axis.props.width) || 40;
+                            if (align === "left") {
+                                console.log("           Left", pos);
+                                leftAxisWidths[pos] = leftAxisWidths[pos] ?
+                                    Math.max(width, leftAxisWidths[pos]) : width;
+                            } else if (align === "right") {
+                                console.log("           Right", pos);
+                                rightAxisWidths[pos] = rightAxisWidths[pos] ?
+                                    Math.max(width, rightAxisWidths[pos]) : width;
+                            }
+                            pos++;
+                        });
                     }
                 });
             }
-            if (leftCount > leftAxisSlots) {
-                leftAxisSlots = leftCount;
-            }
-            if (rightCount > rightAxisSlots) {
-                rightAxisSlots = rightCount;
-            }
         });
+
+        //Extra space used by padding between columns
+        var leftExtra = (leftAxisWidths.length - 1) * padding;
+        var rightExtra = (rightAxisWidths.length - 1) * padding;
+        
+        //Space used by columns on left and right of charts
+        var leftWidth = _.reduce(leftAxisWidths, function(a, b) { return a + b; }, 0) + leftExtra;
+        var rightWidth = _.reduce(rightAxisWidths, function(a, b) { return a + b; }, 0) + rightExtra;
+
+        console.log("Left:", leftAxisWidths, leftWidth, padding, leftExtra);
+        console.log("Right:", rightAxisWidths, rightWidth, padding, rightExtra);
 
         //
         // Time scale and time axis elements
@@ -104,8 +129,11 @@ var ChartContainer = React.createClass({
 
         var X_AXIS_HEIGHT = 35;
 
-        var transform = "translate(" + leftAxisSlots*slotWidth + ",0)";
-        var timeAxisWidth = this.props.width - leftAxisSlots*slotWidth - rightAxisSlots*slotWidth - 5;
+
+        var transform = "translate(" + leftWidth + ",0)";
+        var timeAxisWidth = this.props.width - leftWidth - rightWidth - 5;
+
+        console.log("timeAxisWidth", timeAxisWidth);
 
         var timeScale = d3.time.scale()
             .domain([this.props.beginTime,this.props.endTime])
@@ -131,6 +159,8 @@ var ChartContainer = React.createClass({
         // are passed the number of left and right axis slots. Within each ChartRow
         // we pass through the original Chart children of each of the rows.
         //
+        // TODO: - Clone original ChartRow with new props on it
+        //       - Pass down timeScale as scale and max/minTime as max/min.
 
         var i = 0;
         React.Children.forEach(this.props.children, function(child) {
@@ -142,20 +172,27 @@ var ChartContainer = React.createClass({
                         <div className="col-md-12">
                             <div className="chartcontainer chartrow">
                                 <ChartRow width={self.props.width}
-                                          height={chartRow.props.height}
-                                          slotWidth={slotWidth}
+
                                           timeScale={timeScale}
+
+                                          leftAxisWidths={leftAxisWidths}
+                                          rightAxisWidths={rightAxisWidths}
+                                          
+                                          height={chartRow.props.height}
                                           margin={chartRow.props.margin}
-                                          padding={chartRow.props.padding}
+                                          padding={self.props.padding}
+
                                           minTime={self.props.minTime}
                                           maxTime={self.props.maxTime}
-                                          rightAxisSlots={rightAxisSlots}
-                                          leftAxisSlots={leftAxisSlots}
-                                          onTrackerChanged={self.handleTrackerChanged}
+
                                           trackerPosition={self.props.trackerPosition}
-                                          onTimeRangeChanged={self.handleTimeRangeChanged}
+
                                           onChartResize={chartRow.props.onChartResize}
-                                          enableZoom={chartRow.props.enableZoom}>
+                                          enableZoom={chartRow.props.enableZoom}
+
+                                          onTimeRangeChanged={self.handleTimeRangeChanged}
+                                          onTrackerChanged={self.handleTrackerChanged} >
+
                                     {chartRow.props.children}
                                 </ChartRow>
                             </div>
