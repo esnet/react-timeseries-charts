@@ -159,10 +159,7 @@ var AreaChart = React.createClass({
                 return "areachart-area-down stack-"+(i+1);
             })
             .attr("clip-path",this.props.clipPathURL);
-
     },
-
-
 
     componentDidMount: function() {
         this.renderAreaChart(this.props.data, this.props.timeScale, this.props.yScale, this.props.classed,

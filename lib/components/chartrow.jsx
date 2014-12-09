@@ -33,11 +33,6 @@ var React = require("react/addons");
 var d3 = require("d3");
 var _ = require("underscore");
 
-//var AreaChart  = require("./areachart");
-//var LineChart  = require("./linechart");
-//var Baseline   = require("./baseline");
-//var EventChart = require("./eventchart");
-
 var YAxis      = require("./yaxis");
 var AxisGroup  = require("./axisgroup");
 var ChartGroup = require("./chartgroup");
@@ -49,7 +44,7 @@ var PointIndicator = require("./pointindicator");
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
  */
-var clipDefs = React.createClass({
+var ClipDefs = React.createClass({
 
     renderClipPath: function(props) {
         d3.select(this.getDOMNode()).selectAll("*").remove();
@@ -101,7 +96,8 @@ var ChartRow = React.createClass({
         var clipId = _.uniqueId("clip_");
         var clipPathURL = "url(#" + clipId + ")";
 
-        return {clipId: clipId, clipPathURL: clipPathURL};
+        return {clipId: clipId,
+                clipPathURL: clipPathURL};
     },
 
     handleMouseMove: function(t) {
@@ -131,25 +127,18 @@ var ChartRow = React.createClass({
     render: function() {
         var self = this;
 
-        var slotWidth = this.props.slotWidth;
-        var yAxisList = [];
-        var chartList = [];
+        var yAxisList = [];   // Contains all the yAxis elements used in the render
+        var chartList = [];   // Contains all the chart elements used in the render
 
         var margin = (this.props.margin !== undefined) ? Number(this.props.margin) : 5;
         var padding = (this.props.padding !== undefined) ? Number(this.props.padding) : 2;
 
-        var axisTopMargin = 5;
-        var innerHeight = Number(this.props.height) - axisTopMargin * 2;
-
-        console.log("innerHeight", innerHeight, axisTopMargin, padding);
-
-        // We'll also add our own padding so that marks at the min or max of the 
-        // domain are visible:
+        // Extra padding above and below the axis since numbers need to be displayed there
+        var AXIS_MARGIN = 5;
+        var innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
+        var rangeTop = AXIS_MARGIN;
+        var rangeBottom = innerHeight - AXIS_MARGIN;
         
-        var rangeTop = axisTopMargin;
-        var rangeBottom = innerHeight - axisTopMargin;
-        
-
         //
         // Build a map of elements that occupy left or right slots next to the chart.
         //
@@ -164,29 +153,19 @@ var ChartRow = React.createClass({
 
         var yAxisMap = {};          // Maps axis id -> axis element
         var yAxisScaleMap = {};     // Maps axis id -> axis scale
-
-        var usedLeftAxisColumns = 0;
-        var usedRightAxisColumns = 0;
         var leftAxisList = [];      // Ordered list of left axes ids
         var rightAxisList = [];     // Ordered list of right axes ids
 
-
-        console.log("ROW", this.props);
         React.Children.forEach(this.props.children, function(childGroup) {
             //Each axis group
             if (childGroup instanceof AxisGroup) {
                 var axisGroup = childGroup;
                 var align = axisGroup.props.align;
                 var props = axisGroup.props;
-
                 React.Children.forEach(axisGroup.props.children, function(yaxis) {
+                    yAxisMap[yaxis.props.id] = yaxis; //Relate id to the axis itself
 
-                    console.log("   AXIS", yaxis);
-
-                    //Relate id to the axis itself
-                    yAxisMap[yaxis.props.id] = yaxis;
-
-                    //If its in an axis group, we assume it's a yaxis, however if it doesn't have
+                    // If it's in an axis group, we assume it's a yaxis, however if it doesn't have
                     // a min/max or id we throw up a warning. Otherwise, we go ahead and calculate the scale
                     if (yaxis instanceof YAxis ||
                         _.has(props, "id") && _.has(props, "min") && _.has(props, "max")) {
@@ -220,34 +199,24 @@ var ChartRow = React.createClass({
 
                     //Columns counts
                     if (align === "left") {
-                        usedLeftAxisColumns++;
                         leftAxisList.push(yaxis.props.id);
                     } else if (align === "right") {
-                        usedRightAxisColumns++;
                         rightAxisList.push(yaxis.props.id);
                     }
                 });
             }
         });
 
-        console.log("LEFT:", usedLeftAxisColumns, leftAxisList);
-        console.log("RIGHT:", usedLeftAxisColumns, rightAxisList);
-        console.log("MAPS:", yAxisMap, yAxisScaleMap);
-
         //
         // Push each axis onto the yAxisList, transforming each into its column location
         //
 
-        var x, y;
         var transform;
         var id;
         var props;
         var axis;
-
         var i = 0;
         var posx = 0;
-
-        console.log("GEOMETRY CACLULATIONS:");
 
         //Extra space used by padding between columns
         var leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
@@ -281,9 +250,14 @@ var ChartRow = React.createClass({
                 //Cloned axis, with new width, height and scale
                 axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
-                debug = (
-                    <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
-                );
+                //Debug rect
+                if (this.props.debug) {
+                    debug = (
+                        <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
+                    );
+                } else {
+                    debug = null;
+                }
 
                 yAxisList.push(
                     <g key={"y-axis-left-" + leftColumnIndex} transform={transform}>
@@ -311,9 +285,14 @@ var ChartRow = React.createClass({
                 //Cloned axis, with new width, height and scale
                 axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
-                debug = (
-                    <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
-                );
+                //Debug rect
+                if (this.props.debug) {
+                    debug = (
+                        <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
+                    );
+                } else {
+                    debug = null;
+                }
 
                 yAxisList.push(
                     <g key={"y-axis-right-" + rightColumnIndex} transform={transform}>
@@ -333,7 +312,6 @@ var ChartRow = React.createClass({
 
         var chartWidth = this.props.width - leftWidth - rightWidth;
         var chartTransform = "translate(" + leftWidth + "," + margin + ")";
-
 
         var keyCount = 0;
         React.Children.forEach(this.props.children, function(childGroup) {
@@ -383,14 +361,21 @@ var ChartRow = React.createClass({
             zoomHandler=self.handleZoom;
         }
 
+        var chartDebug = null;
+        if (this.props.debug) {
+            chartDebug = (
+                <rect className="chart-debug" x={leftWidth} y={margin} width={chartWidth} height={innerHeight} />
+            );
+        }
+
         return (
             <svg width={this.props.width} height={Number(this.props.height)}>
                 {yAxisList}
 
-                <rect className="chart-debug" x={leftWidth} y={margin} width={chartWidth} height={innerHeight} />
+                {chartDebug}
 
                 <g transform={chartTransform} key="chart-group">
-                    <clipDefs id={this.state.clipId} clipWidth={chartWidth} clipHeight={innerHeight} />
+                    <ClipDefs id={this.state.clipId} clipWidth={chartWidth} clipHeight={innerHeight} />
                     {chartList}
                 </g>
 

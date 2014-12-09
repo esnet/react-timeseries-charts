@@ -30,26 +30,17 @@
 "use strict";
 
 var React = require("react/addons");
-var _ = require("underscore");
 
 /**
  * A AxisGroup has a set of Y axes that may be collected together left or right
- * of the main chart area on each row.
+ * of the main chart area on each row. It does no rendering itself, but instead
+ * is used to organize children for rendering within ChartContainer and 
+ * ChartRow.
  */
 var AxisGroup = React.createClass({
-
     displayName: "AxisGroup",
-
-    getInitialState: function() {
-        return {};
-    },
-
     render: function() {
-        var self = this;
-        return (
-            <g className="axisgroup">
-            </g>
-        );
+        return null;
     }
 });
 

@@ -34,22 +34,13 @@ var _ = require("underscore");
 
 /**
  * A ChartGroup has a set of Y axes that may be collected together left or right
- * of the main chart area on each row.
+ * of the main chart area on each row. It does no actual rendering itself, but
+ * instead is used for organizing ChartRow children.
  */
 var ChartGroup = React.createClass({
-
     displayName: "ChartGroup",
-
-    getInitialState: function() {
-        return {};
-    },
-
     render: function() {
-        var self = this;
-        return (
-            <g className="ChartGroup">
-            </g>
-        );
+        return null;
     }
 });
 

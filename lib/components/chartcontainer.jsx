@@ -155,48 +155,38 @@ var ChartContainer = React.createClass({
 
         //
         // For valid children (those children which are ChartRows), we actually build
-        // a Bootstrap row wrapper around those and then create new ChartRows that
-        // are passed the number of left and right axis slots. Within each ChartRow
-        // we pass through the original Chart children of each of the rows.
+        // a Bootstrap row wrapper around those and then create cloned ChartRows that
+        // are passed the sizes of the determined axis columns. 
         //
-        // TODO: - Clone original ChartRow with new props on it
-        //       - Pass down timeScale as scale and max/minTime as max/min.
 
         var i = 0;
         React.Children.forEach(this.props.children, function(child) {
             if (child instanceof ChartRow) {
                 var chartRow = child;
                 var rowKey = child.props.key ? child.props.key : "chart-row-row-" + i;
+                
+                var props = {
+                    key: rowKey,
+                    width: self.props.width,                          // same as container width
+                    timeScale: timeScale,                             // x axis d3 scale
+                    leftAxisWidths: leftAxisWidths,                   // array with column sizes for axes
+                    rightAxisWidths: rightAxisWidths,
+                    padding: self.props.padding,                      // container padding setting
+                    minTime: self.props.minTime,                      // zoomable min/max times
+                    maxTime: self.props.maxTime,
+                    trackerPosition: self.props.trackerPosition,      // tracker position
+                    onTimeRangeChanged: self.handleTimeRangeChanged,  // zoom/pan callback
+                    onTrackerChanged: self.handleTrackerChanged       // tracker change callback
+                };
+
+                var row = React.addons.cloneWithProps(chartRow, props);
+
                 chartRows.push(
                     <div key={"chart-row-div-" + i } className="row">
                         <div className="col-md-12">
                             <div className="chartcontainer chartrow">
-                                <ChartRow width={self.props.width}
-
-                                          timeScale={timeScale}
-
-                                          leftAxisWidths={leftAxisWidths}
-                                          rightAxisWidths={rightAxisWidths}
-                                          
-                                          height={chartRow.props.height}
-                                          margin={chartRow.props.margin}
-                                          padding={self.props.padding}
-
-                                          minTime={self.props.minTime}
-                                          maxTime={self.props.maxTime}
-
-                                          trackerPosition={self.props.trackerPosition}
-
-                                          onChartResize={chartRow.props.onChartResize}
-                                          enableZoom={chartRow.props.enableZoom}
-
-                                          onTimeRangeChanged={self.handleTimeRangeChanged}
-                                          onTrackerChanged={self.handleTrackerChanged} >
-
-                                    {chartRow.props.children}
-                                </ChartRow>
+                                {row}
                             </div>
-
                         </div>
                     </div>
                 );

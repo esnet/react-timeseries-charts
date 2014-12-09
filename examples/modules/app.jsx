@@ -98,7 +98,7 @@ var App = React.createClass({
               <div className="col-md-12">
                   <Resizable>
                     <ChartContainer beginTime={beginTime} endTime={endTime} padding="5">
-                        <ChartRow height="200">
+                        <ChartRow height="200" debug={false}>
                             <AxisGroup align="left">
                                 <YAxis id="axis1" min={0} max={2} width="40" type="linear" format="$,.2f"/>
                             </AxisGroup>
