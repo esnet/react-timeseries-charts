@@ -31,7 +31,6 @@ body {
 }
 
 
-
 .chartcontainer.chartrow {
     background: none;
 }
@@ -44,4 +43,38 @@ body {
 .linechart-line.euro {
     stroke: #9467bd;
     stroke-width: 2px;
+}
+
+/* Weather example */
+.linechart-line.temp {
+    stroke: #2ca02c;
+    stroke-width: 2px;
+}
+.charts-yaxis-label.temp {
+    fill: #2ca02c;
+}
+
+.linechart-line.pressure {
+    stroke: #9467bd;
+    stroke-width: 2px;
+}
+.charts-yaxis-label.pressure {
+    fill: #9467bd;
+}
+
+.docs-sidenav {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.docs-sidebar .nav > li > a {
+    color: #666;
+    display: block;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.docs-sidebar .nav > li > a.active {
+    color: #000;
 }

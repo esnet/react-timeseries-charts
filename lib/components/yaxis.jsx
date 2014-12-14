@@ -64,8 +64,9 @@ var YAxis = React.createClass({
             "min": 0,                  // range
             "max": 1,
             "type": "linear",          // linear, log, or power
-            "absolute": false,          // Display scale always positive
-            "format": ".2s"            // Format string for d3.format
+            "absolute": false,         // Display scale always positive
+            "format": ".2s",           // Format string for d3.format
+            "labelOffset": 0           // Allows the user to tweak the position of the label
         };
     },
 
@@ -95,10 +96,21 @@ var YAxis = React.createClass({
 
         //Add the new axis
         var x = align === "left" ? width - MARGIN : 0;
+        var labelOffset = align === "left" ? this.props.labelOffset - 50 : 40 + this.props.labelOffset;
+        var classed = this.props.classed ? this.props.classed : "";
+        var axisClass = "charts-yaxis " + classed
+        var axisLabelClass = "charts-yaxis-label " + classed;
         d3.select(this.getDOMNode()).append("g")
             .attr("transform", "translate(" + x + ",0)")
-            .attr("class", "y axis")
-            .call(axisGenerator);
+            .attr("class", axisClass)
+            .call(axisGenerator)
+        .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("class", axisLabelClass)
+            .attr("y", labelOffset)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text(this.props.label);
     },
 
     componentDidMount: function() {
