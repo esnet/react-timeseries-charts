@@ -253,7 +253,7 @@ var ChartRow = React.createClass({
                 //Debug rect
                 if (this.props.debug) {
                     debug = (
-                        <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
+                        <rect className="yaxis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
                     );
                 } else {
                     debug = null;
@@ -288,7 +288,7 @@ var ChartRow = React.createClass({
                 //Debug rect
                 if (this.props.debug) {
                     debug = (
-                        <rect className="y-axis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
+                        <rect className="yaxis-debug" x="0" y="0" width={colWidth} height={innerHeight} />
                     );
                 } else {
                     debug = null;

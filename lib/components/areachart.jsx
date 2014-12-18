@@ -134,7 +134,7 @@ var AreaChart = React.createClass({
                 return upArea(d.values);
             })
             .attr("class", function(d, i) {
-                return "areachart-area-up stack-"+(i+1);
+                return "areachart-area-up " + classed + " stack-"+(i+1);
             })
             .attr("clip-path",this.props.clipPathURL);
 
@@ -156,7 +156,7 @@ var AreaChart = React.createClass({
                 return downArea(d.values);
             })
             .attr("class", function(d, i) {
-                return "areachart-area-down stack-"+(i+1);
+                return "areachart-area-down " + classed + " stack-"+(i+1);
             })
             .attr("clip-path",this.props.clipPathURL);
     },

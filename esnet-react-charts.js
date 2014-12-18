@@ -23,6 +23,7 @@ module.exports = {
     LineChart: require('./lib/components/linechart.jsx'),
     PointIndicator: require('./lib/components/pointindicator.jsx'),
     Resizable: require('./lib/components/resizable.jsx'),
+    ScatterChart: require('./lib/components/scatterchart.jsx'),
     TimeAxis: require('./lib/components/timeaxis.jsx'),
     Tracker: require('./lib/components/tracker.jsx'),
     ValueAxis: require('./lib/components/valueaxis.jsx'),

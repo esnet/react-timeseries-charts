@@ -98,8 +98,8 @@ var YAxis = React.createClass({
         var x = align === "left" ? width - MARGIN : 0;
         var labelOffset = align === "left" ? this.props.labelOffset - 50 : 40 + this.props.labelOffset;
         var classed = this.props.classed ? this.props.classed : "";
-        var axisClass = "charts-yaxis " + classed
-        var axisLabelClass = "charts-yaxis-label " + classed;
+        var axisClass = "yaxis " + classed
+        var axisLabelClass = "yaxis-label " + classed;
         d3.select(this.getDOMNode()).append("g")
             .attr("transform", "translate(" + x + ",0)")
             .attr("class", axisClass)

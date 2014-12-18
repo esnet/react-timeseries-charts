@@ -25,32 +25,7 @@
  * file for complete information.
  */
 
-.yaxis > line, 
-.yaxis > path {
-    fill: none;
-    stroke: #000;
-    stroke-opacity: .5;
-}
-
-.yaxis > .tick > text {
-    font-size: 11px;
-    opacity: 0.5;
-}
-
-.yaxis > text {
-    fill: #8B7E7E;
-    font-weight: 100;
-    font-size: 12px;
-}
-
-.yaxis > .tick > line {
-    stroke: #888686;
-    stroke-opacity: 0.5;
-    stroke-width: 1px;
-    shape-rendering: crispEdges;
-}
-
-.yaxis-debug {
-	fill: rgba(255, 0, 0, 0.06);
-	stroke: red;
+.scatterchart-point {
+    fill: rgb(31, 119, 180);
+    opacity: 0.7;
 }

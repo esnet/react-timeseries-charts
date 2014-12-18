@@ -35,6 +35,7 @@ body {
     background: none;
 }
 
+/* Currency example */
 .linechart-line.aud {
     stroke: #2ca02c;
     stroke-width: 2px;
@@ -47,20 +48,59 @@ body {
 
 /* Weather example */
 .linechart-line.temp {
-    stroke: #2ca02c;
+    stroke: #CA4040;
     stroke-width: 2px;
 }
-.charts-yaxis-label.temp {
-    fill: #2ca02c;
+.yaxis-label.temp {
+    fill: #CA4040;
 }
 
 .linechart-line.pressure {
     stroke: #9467bd;
     stroke-width: 2px;
 }
-.charts-yaxis-label.pressure {
+.yaxis-label.pressure {
     fill: #9467bd;
 }
+
+.linechart-line.wind {
+    stroke: rgb(31, 119, 180);
+    stroke-width: 2px;
+}
+
+.yaxis-label.wind {
+    fill: rgb(31, 119, 180);
+}
+
+.yaxis-label.wind-gust {
+    fill: rgb(239, 120, 36);
+}
+
+.scatterchart-point.wind {
+    fill: rgb(239, 120, 36);
+    opacity: 1.0;
+}
+
+.areachart-area-up.stack-1.rain {
+    fill: rgba(0, 127, 255, 0.29);
+    stroke: none;
+}
+
+.linechart-line.rain {
+    stroke: rgb(139, 207, 255);
+    stroke-width: 2px;
+}
+
+.yaxis-label.rain {
+    fill: rgb(139, 207, 255);
+}
+
+.yaxis-label.total-rain {
+    fill: rgb(139, 207, 255);
+}
+
+
+/* Nav */
 
 .docs-sidenav {
     margin-top: 20px;
