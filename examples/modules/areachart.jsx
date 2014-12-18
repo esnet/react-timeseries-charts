@@ -2,12 +2,12 @@
 
 var React = require('react');
 
-var Home = React.createClass({
+var AreaCharts = React.createClass({
   render: function() {
     return (
-      <div>Home</div>
+      <div>Area charts</div>
     );
   }
 });
 
-module.exports = Home;
+module.exports = AreaCharts;

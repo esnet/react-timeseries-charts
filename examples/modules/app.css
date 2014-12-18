@@ -31,11 +31,11 @@ body {
 }
 
 
-
 .chartcontainer.chartrow {
     background: none;
 }
 
+/* Currency example */
 .linechart-line.aud {
     stroke: #2ca02c;
     stroke-width: 2px;
@@ -44,4 +44,77 @@ body {
 .linechart-line.euro {
     stroke: #9467bd;
     stroke-width: 2px;
+}
+
+/* Weather example */
+.linechart-line.temp {
+    stroke: #CA4040;
+    stroke-width: 2px;
+}
+.yaxis-label.temp {
+    fill: #CA4040;
+}
+
+.linechart-line.pressure {
+    stroke: #9467bd;
+    stroke-width: 2px;
+}
+.yaxis-label.pressure {
+    fill: #9467bd;
+}
+
+.linechart-line.wind {
+    stroke: rgb(31, 119, 180);
+    stroke-width: 2px;
+}
+
+.yaxis-label.wind {
+    fill: rgb(31, 119, 180);
+}
+
+.yaxis-label.wind-gust {
+    fill: rgb(239, 120, 36);
+}
+
+.scatterchart-point.wind {
+    fill: rgb(239, 120, 36);
+    opacity: 1.0;
+}
+
+.areachart-area-up.stack-1.rain {
+    fill: rgba(0, 127, 255, 0.29);
+    stroke: none;
+}
+
+.linechart-line.rain {
+    stroke: rgb(139, 207, 255);
+    stroke-width: 2px;
+}
+
+.yaxis-label.rain {
+    fill: rgb(139, 207, 255);
+}
+
+.yaxis-label.total-rain {
+    fill: rgb(139, 207, 255);
+}
+
+
+/* Nav */
+
+.docs-sidenav {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.docs-sidebar .nav > li > a {
+    color: #666;
+    display: block;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.docs-sidebar .nav > li > a.active {
+    color: #000;
 }

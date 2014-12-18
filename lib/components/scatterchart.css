@@ -24,19 +24,8 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-.chartcontainer.timeaxis {
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-top-color: #F7F0F0;
-}
 
-.chartcontainer.chartrow {
-    background: #FFF;
-    padding-top: 5px;
-    padding-left: 5px;
-}
-
-.chartcontainer svg {
-    display:block;
+.scatterchart-point {
+    fill: rgb(31, 119, 180);
+    opacity: 0.7;
 }

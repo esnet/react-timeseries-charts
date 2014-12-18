@@ -1,3 +1,5 @@
+/** @jsx React.DOM */
+
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -25,18 +27,21 @@
  * file for complete information.
  */
  
-.chartcontainer.timeaxis {
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-top-color: #F7F0F0;
-}
+"use strict";
 
-.chartcontainer.chartrow {
-    background: #FFF;
-    padding-top: 5px;
-    padding-left: 5px;
-}
+var React = require("react/addons");
+var _ = require("underscore");
 
-.chartcontainer svg {
-    display:block;
-}
+/**
+ * A ChartGroup has a set of Y axes that may be collected together left or right
+ * of the main chart area on each row. It does no actual rendering itself, but
+ * instead is used for organizing ChartRow children.
+ */
+var ChartGroup = React.createClass({
+    displayName: "ChartGroup",
+    render: function() {
+        return null;
+    }
+});
+
+module.exports = ChartGroup;
