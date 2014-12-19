@@ -50,13 +50,9 @@ var Baseline = React.createClass({
             return null;
         }
 
-        console.log("Rendering baseline", this.props, this.props.yScale.range());
-
         var ymin = Math.min(this.props.yScale.range()[0], this.props.yScale.range()[1]);
-
         var y = this.props.yScale(this.props.value);
         var transform = "translate(0 " + y + ")";
-
         var textAnchor;
         var textPositionX;
 
@@ -78,8 +74,6 @@ var Baseline = React.createClass({
         pts.push(util.format("%d %d", 0, 0));
         pts.push(util.format("%d %d", this.props.width, 0));
         var points = pts.join(" ");
-
-        console.log("-->", y, points, ymin);
 
         return (
             <g className="baseline" transform={transform}>

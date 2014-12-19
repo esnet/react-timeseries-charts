@@ -11,6 +11,7 @@
 module.exports = {
     AreaChart: require('./lib/components/areachart.jsx'),
     AxisGroup: require('./lib/components/axisgroup.jsx'),
+    BarChart: require('./lib/components/barchart.jsx'),
     Baseline: require('./lib/components/baseline.jsx'),
     Brush: require('./lib/components/brush.jsx'),
     ChartContainer: require('./lib/components/chartcontainer.jsx'),

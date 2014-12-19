@@ -99,6 +99,24 @@ body {
     fill: rgb(139, 207, 255);
 }
 
+/**
+ Baselines
+*/
+.baseline-label {
+    fill: #DDD;
+}
+
+/**
+ Bar chart traffic examples
+ */
+
+.barchart-rect.traffic-out {
+    fill: #8C95A6;
+}
+
+.barchart-rect.traffic-in {
+    fill: #F1B46F;
+}
 
 /* Nav */
 

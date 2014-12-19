@@ -82,23 +82,18 @@ var ChartContainer = React.createClass({
 
         React.Children.forEach(this.props.children, function(childRow) {
             if (childRow instanceof ChartRow) {
-                console.log("CHART ROW:");
                 React.Children.forEach(childRow.props.children, function(childGroup) {
                     if (childGroup instanceof AxisGroup) {
                         var axisGroup = childGroup;
                         var align = axisGroup.props.align;
                         var pos = 0;
 
-                        console.log("   AXIS GROUP", align, childGroup.props);
-
                         React.Children.forEach(axisGroup.props.children, function(axis) {
                             var width = Number(axis.props.width) || 40;
                             if (align === "left") {
-                                console.log("           Left", pos);
                                 leftAxisWidths[pos] = leftAxisWidths[pos] ?
                                     Math.max(width, leftAxisWidths[pos]) : width;
                             } else if (align === "right") {
-                                console.log("           Right", pos);
                                 rightAxisWidths[pos] = rightAxisWidths[pos] ?
                                     Math.max(width, rightAxisWidths[pos]) : width;
                             }
@@ -117,9 +112,6 @@ var ChartContainer = React.createClass({
         var leftWidth = _.reduce(leftAxisWidths, function(a, b) { return a + b; }, 0) + leftExtra;
         var rightWidth = _.reduce(rightAxisWidths, function(a, b) { return a + b; }, 0) + rightExtra;
 
-        console.log("Left:", leftAxisWidths, leftWidth, padding, leftExtra);
-        console.log("Right:", rightAxisWidths, rightWidth, padding, rightExtra);
-
         //
         // Time scale and time axis elements
         //
@@ -129,11 +121,8 @@ var ChartContainer = React.createClass({
 
         var X_AXIS_HEIGHT = 35;
 
-
         var transform = "translate(" + leftWidth + ",0)";
-        var timeAxisWidth = this.props.width - leftWidth - rightWidth - 5;
-
-        console.log("timeAxisWidth", timeAxisWidth);
+        var timeAxisWidth = this.props.width - leftWidth - rightWidth - padding*2;
 
         var timeScale = d3.time.scale()
             .domain([this.props.beginTime,this.props.endTime])
@@ -145,7 +134,7 @@ var ChartContainer = React.createClass({
                     <div className="chartcontainer timeaxis" >
                         <svg width={this.props.width} height={X_AXIS_HEIGHT}>
                             <g transform={transform}>
-                                <TimeAxis scale={timeScale}/>
+                                <TimeAxis scale={timeScale} dayFormat={this.props.dayFormat} monthFormat={this.props.monthFormat}/>
                             </g>
                         </svg>
                     </div>
