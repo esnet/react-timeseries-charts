@@ -26,16 +26,16 @@
  */
 
 .baseline {
-    stroke: #365d9e;
+    stroke: #626262;
     stroke-width: 1;
     stroke-dasharray: 5,3;
 }
 
 .baseline-label {
     stroke: none;
-    fill: #365d9e;
-    font-weight: bold;
-    font-size: 12px;
+    fill: #626262;
+    font-weight: normal;
+    font-size: 10px;
     display: inline-block;
     background-color: white;
 }

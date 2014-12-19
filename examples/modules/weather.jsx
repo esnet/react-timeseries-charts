@@ -29,8 +29,6 @@ var rain = [];
 var rainAccum = [];
 
 _.each(weatherJSON, function(readings) {
-	console.log(readings);
-
 	var d = readings.Time;
 	var time = new Moment(d);
 
@@ -52,8 +50,6 @@ _.each(weatherJSON, function(readings) {
 
 	rain.push({"time": time.toDate(), "value": rainReading})
 })
-
-console.log(rainAccum);
 
 var endTime = temperature[temperature.length-1].time;
 var beginTime = temperature[0].time;

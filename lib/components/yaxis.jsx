@@ -75,15 +75,28 @@ var YAxis = React.createClass({
 
         var axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
-            axisGenerator = d3.svg.axis()
-                .scale(scale)
-                .tickFormat(function(d) {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    } else {
-                        return yformat(d);
-                    }
-                }).orient(align);
+            if (this.props.height <= 200) {
+                axisGenerator = d3.svg.axis()
+                    .scale(scale)
+                    .ticks(5)
+                    .tickFormat(function(d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        } else {
+                            return yformat(d);
+                        }
+                    }).orient(align);
+            } else {
+                axisGenerator = d3.svg.axis()
+                    .scale(scale)
+                    .tickFormat(function(d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        } else {
+                            return yformat(d);
+                        }
+                    }).orient(align);                
+            }
         } else if (this.props.type === "log") {
             axisGenerator = d3.svg.axis()
                 .scale(scale)

@@ -47,7 +47,25 @@ var TimeAxis = React.createClass({
     displayName: "TimeAxis",
 
     renderTimeAxis: function(scale) {
-        var axis = d3.svg.axis().scale(scale).orient("bottom");
+        var axis;
+
+        if (this.props.dayFormat === true) {
+            axis = d3.svg.axis()
+                .scale(scale)
+                .orient("bottom")
+                .ticks(d3.time.days, 1)
+                .tickFormat(d3.time.format("%d"));
+        } else if (this.props.monthFormat === true) {
+            axis = d3.svg.axis()
+                .scale(scale)
+                .orient("bottom")
+                .ticks(d3.time.months, 1)
+                .tickFormat(d3.time.format("%B"));
+        } else {
+            axis = d3.svg.axis()
+                .scale(scale)
+                .orient("bottom")     
+        }
 
         //Remove the old axis from under this DOM node
         d3.select(this.getDOMNode()).selectAll("*").remove();
