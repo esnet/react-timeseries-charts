@@ -1,6 +1,6 @@
 {
   "name": "esnet-react-charts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": "true",
   "main": "esnet-react-charts.js",
   "author": "ESnet Tools Team <tools@es.net>",
