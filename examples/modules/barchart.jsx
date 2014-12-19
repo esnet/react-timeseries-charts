@@ -22,7 +22,7 @@ var beginTime = Moment("2014-10-01");
 var endTime = Moment("2014-11-01") - 1;
 
 //
-// October daily traffic
+// October 2014 daily traffic
 //
 
 var trafficInData = [];
@@ -50,6 +50,7 @@ _.each(days, function(value, day) {
 	max = Math.max(max, value.in);
 	max = Math.max(max, value.out);
 
+	//Skip the bad value in oct for a reasonable avg example
 	if (dayOfMonth !== 10) {
 		totalIn += value.in;
 		totalOut += value.out;
@@ -70,7 +71,7 @@ var avgIn = totalIn/count;
 var avgOut = totalOut/count;
 
 //
-// ESnet wide monthy traffic summary (2014)
+// ESnet wide monthy traffic summary (part of 2014)
 //
 
 var routerKey = "bnl-mr2";
