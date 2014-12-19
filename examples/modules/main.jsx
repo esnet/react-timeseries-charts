@@ -13,12 +13,10 @@ var Weather = require('./weather.jsx');
 
 var {DefaultRoute, Route, Routes} = require('react-router');
 
-console.log("Init");
-
 // Add new pages here as new routes, with the handler being the component
 // to render the example page. Also add a link to it in app.jsx.
 React.renderComponent((
-	<Routes location="history">
+	<Routes>
     	<Route path="/" handler={App}>
       		<DefaultRoute name="intro" handler={Intro} />
       		<Route name="areacharts" handler={AreaCharts} />
