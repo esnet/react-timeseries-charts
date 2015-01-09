@@ -26,7 +26,10 @@ examples directory. If you are adding a major feature you may wish to create a
 new example page.  If you are adding a smaller feature you may just wish to
 augment one of the existing examples.
 
-5. *Tests.* **Soon all code must have tests.**
+5. *Tests.* We currently evaluating how to test this library. In the mean time
+please be sure to check that all of the examples continue to work before
+submitting your pull request. If you have suggestions on how to build tests
+we'd love to hear them.
 
 The [jQuery guidlines](http://contribute.jquery.org/commits-and-pull-requests/)
 have some good suggestions for rectifying common Git mistakes
