@@ -14,6 +14,7 @@ defaultValue: `2.0`
 ### `style`
 
 defaultValue: `{
-    color: "steelblue"
+    color: "steelblue",
+    opacity: 1
 }`
 

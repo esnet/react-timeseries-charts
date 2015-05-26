@@ -35,7 +35,7 @@ The style of the area chart, with format:
  Where each color in the array corresponds to each area stacked
  either up or down.
 
-type: `object`
+type: `shape[object Object]`
 defaultValue: `{
     up: ["#448FDD", "#75ACE6", "#A9CBEF"],
     down: ["#FD8D0D", "#FDA949", "#FEC686"]
