@@ -1,10 +1,11 @@
-/** @jsx React.DOM */
+"use strict";
 
-var React = require('react');
-var _     = require('underscore');
+var React = require("react");
+var _     = require("underscore");
 
-var Charts = require("../../esnet-react-charts");
-var Legend = Charts.Legend;
+var Charts = require("../../entry");
+
+var {Legend} = Charts;
 
 var LegendExamples = React.createClass({
 

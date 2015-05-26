@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -36,7 +34,7 @@ var _ = require("underscore");
 require("./linechart.css");
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain()}-${scale.range()}`;
 }
 
 var LineChart = React.createClass({
@@ -44,38 +42,44 @@ var LineChart = React.createClass({
     getDefaultProps: function() {
         return {
             "interpolate": "basis",
-            "showDataPoints": false,
-            "dataPointRadius": 1.0
+            //"showDataPoints": false,
+            //"dataPointRadius": 1.0,
+            "style": {
+                "color": "#9DA3FF",
+                "width": 1
+            }
         };
     },
 
-    renderLineChart: function(data, timeScale, yScale, interpolate, 
-                              showDataPoints, dataPointRadius, classed) {
+    renderLineChart: function(series, timeScale, yScale, interpolate,
+                              /*showDataPoints, dataPointRadius,*/ classed) {
+
+        let data = series.toJSON().points;
+
         if (!yScale || !data[0]) {
             return null;
         }
 
-        if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
+        let style = {
+            "fill": "none",
+            "stroke": this.props.style.color || "#9DA3FF",
+            "stroke-width": `${this.props.style.width}px` || "1px"
         }
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
         var line = d3.svg.line()
             .interpolate(interpolate)
-            .x(function(d) { return timeScale(d.time); })
-            .y(function(d) { return yScale(d.value); });
+            .x(function(d) { return timeScale(d[0]); })
+            .y(function(d) { return yScale(d[1]); });
 
-        var pathClasses = {"linechart-line": true};
-        if (classed) {
-            pathClasses[classed] = true;
-        }
-        d3.select(this.getDOMNode()).append("path")
+        this.path = d3.select(this.getDOMNode()).append("path")
             .datum(data)
-            .classed(pathClasses)
+            .style(style)
             .attr("d", line)
             .attr("clip-path",this.props.clipPathURL);
 
+        /*
         if (showDataPoints) {
             d3.select(this.getDOMNode()).selectAll("dot")
                 .data(data)
@@ -84,37 +88,56 @@ var LineChart = React.createClass({
                     .attr("cx", function (d) { return timeScale(d.time); })
                     .attr("cy", function (d) { return yScale(d.value); })
         }
+        */
+    },
+
+    updateLineChart: function(series, timeScale, yScale, interpolate,
+                              /*showDataPoints, dataPointRadius,*/ classed) {
+        let data = series.toJSON().points;
+
+        var line = d3.svg.line()
+            .interpolate(interpolate)
+            .x(function(d) { return timeScale(d[0]); })
+            .y(function(d) { return yScale(d[1]); });
+
+        this.path
+            .datum(data)
+            .transition()
+                  .duration(this.props.transition)
+                  .ease("sin-in-out")
+                  .attr("d", line)
     },
 
     componentDidMount: function() {
-        this.renderLineChart(this.props.data,
+        this.renderLineChart(this.props.series,
                              this.props.timeScale,
                              this.props.yScale,
                              this.props.interpolate,
-                             this.props.showDataPoints,
-                             this.props.dataPointRadius,
+                             //this.props.showDataPoints,
+                             //this.props.dataPointRadius,
                              this.props.classed);
 
     },
 
     componentWillReceiveProps: function(nextProps) {
-        var data = nextProps.data;
+        var series = nextProps.series;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
         var classed = nextProps.classed;
         var interpolate = nextProps.interpolate;
-        var showDataPoints = nextProps.showDataPoints;
-        var dataPointRadius = nextProps.dataPointRadius;
 
-        if (this.props.data !== nextProps.data ||
-            this.props.data.time !== data.time ||
+        //var showDataPoints = nextProps.showDataPoints;
+        //var dataPointRadius = nextProps.dataPointRadius;
+
+        if (this.props.series !== nextProps.series ||
+            this.props.time !== nextProps.time ||
             this.interpolate !== interpolate ||
-            this.showDataPoints !== showDataPoints ||
-            this.dataPointRadius !== dataPointRadius || 
+            //this.showDataPoints !== showDataPoints ||
+            //this.dataPointRadius !== dataPointRadius ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            this.renderLineChart(data, timeScale, yScale, interpolate, 
-                    showDataPoints, dataPointRadius, classed);
+            this.updateLineChart(series, timeScale, yScale, interpolate,
+                    /*showDataPoints, dataPointRadius,*/ classed);
         }
     },
 

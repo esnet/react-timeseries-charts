@@ -1,18 +1,32 @@
-/** @jsx React.DOM */
+"use strict";
 
-var React = require('react');
+var React = require("react/addons");
+var Router = require("react-router");
+var {RouteHandler,
+     Link} = Router;
 
-var {Link} = require('react-router');
-
-require('./app.css');
+require("../styles/app.css");
+var logo = document.createElement('img');
+logo.src = require('../img/logo.png');
 
 var App = React.createClass({
+
   render: function() {
+    
+    var sidebarStyle = {
+        borderRightStyle: "solid",
+        borderRightColor: "#F2F1F1",
+        borderRightWidth: 1
+    }
+
     return (
       <div>
           <div className="row">
-              <div className="col-md-12">
-                  <h2>ESnet React Charts - Examples</h2>
+              <div className="col-md-2">
+                  <img style={{float: "right"}} className="main-image" src={logo.src} width={80}/>
+              </div>
+              <div className="col-md-10">
+                  <h2>ESnet React Charts Library</h2>
               </div>
           </div>
 
@@ -20,11 +34,12 @@ var App = React.createClass({
 
           <div className="row">
 
-            <div className="col-md-2">
+            <div className="col-md-2" style={sidebarStyle}>
               <div className="docs-sidebar">
                   <ul className="docs-sidenav nav">
-                  
                     <li><Link to="intro">Introduction</Link></li>
+
+                    <hr />
 
                     <li><Link to="legends">Legends</Link></li>
                     <li><Link to="linecharts">Line charts</Link></li>
@@ -32,12 +47,14 @@ var App = React.createClass({
                     <li><Link to="barcharts">Bar charts</Link></li>
 
                     <li><Link to="weather">Weather example</Link></li>
+                    <li><Link to="ddos">DDoS example</Link></li>
+
                   </ul>
               </div>
             </div>
 
             <div className="col-md-10">
-              <this.props.activeRouteHandler />
+              <RouteHandler />
             </div>
 
           </div>

@@ -2,34 +2,41 @@
   "name": "esnet-react-charts",
   "version": "0.1.1",
   "private": "true",
-  "main": "esnet-react-charts.js",
+  "main": "entry.js",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": {
     "type": "git",
     "url": "git://github.com:esnet/esnet-react-charts.git"
   },
   "scripts": {
-    "start": "webpack-dev-server",
+    "build-global": "rm -rf build/global && NODE_ENV=production webpack ./entry.js build/global/react-charts.js && NODE_ENV=production COMPRESS=1 webpack ./entry.js build/global/react-charts.min.js && echo \"gzipped, the global build is `gzip -c build/global/react-charts.min.js | wc -c` bytes\"",
+    "build-docs": "rm -rf docs/* && react-docgen lib/components/*.jsx | ./bin/buildDocs.sh",
+    "start": "webpack-dev-server  --config webpack.examples.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "d3": "^3.5.5",
+    "moment": "^2.8.4",
+    "pond": "git+ssh://git@github.com/esnet/pond.git#HEAD"
+  },
+  "peerDependencies": {
+    "react": "0.13.x"
   },
   "devDependencies": {
+    "react": "^0.13.x",
+    "react-router": "^0.13.x",
+    "react-markdown-el": "^1.0.2",
     "bundle-loader": "^0.5.0",
-    "css-loader": "^0.9.0",
-    "d3": "^3.4.13",
-    "moment": "^2.8.4",
-    "expose-loader": "^0.6.0",
-    "file-loader": "^0.7.2",
-    "json-loader": "^0.5.1",
-    "jsx-loader": "^0.11.0",
-    "react": "^0.11.2",
-    "react-router": "0.9.5",
-    "style-loader": "^0.8.0",
-    "underscore": "^1.7.0",
     "url-loader": "^0.5.5",
-    "webpack": "^1.4.13",
-    "webpack-dev-server": "^1.6.6"
+    "file-loader": "^0.7.2",
+    "jsx-loader": "^0.13.x",
+    "json-loader": "^0.5.1",
+    "style-loader": "^0.8.0",
+    "raw-loader": "^0.5.1",
+    "css-loader": "^0.9.0",
+    "babel-loader": "^5.0.0",
+    "babel-core": "^5.1.13",
+    "webpack-dev-server": "^1.6.5"
   }
 }

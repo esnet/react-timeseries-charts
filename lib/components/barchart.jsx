@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -29,7 +27,7 @@
  
 "use strict";
 
-var React = require("react");
+var React = require("react/addons");
 var d3 = require("d3");
 var _ = require("underscore");
 var moment = require("moment");
@@ -40,35 +38,51 @@ var DAY = 1000 * 60 * 60 * 24;
 var HOUR = 1000 * 60 * 60;
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain()}-${scale.range()}`;
 }
 
+/**
+ * Renders a barchart. This BarChart implementation is a little different
+ * in that it will render onto a time axis, rather than rendering to
+ * specific values. As a result, an Aug 2014 bar will render between the
+ * Aug 2014 tick mark and the Sept 2014 tickmark.
+ */
 var BarChart = React.createClass({
+
+  propTypes: {
+        /**
+         * The width of each bar is the width determined by the time range - spacing x 2
+         */
+        spacing: React.PropTypes.number,
+
+        /**
+         * The position of the bar is then offset by this value.
+         */
+        offset: React.PropTypes.number,
+    },
 
     getDefaultProps: function() {
         return {
-            spacing: 1,   // The width of each bar is the width determined by the time range - spacing x 2
-            offset: 0     // The position of the bar is then offset by this value.
+            spacing: 1,
+            offset: 0
         };
     },
 
     renderBarChart: function(data, timeScale, yScale, classed) {
-        var self = this;
-
-        var spacing = Number(self.props.spacing);
-        var offset = Number(self.props.offset);
+        let spacing = Number(this.props.spacing);
+        let offset = Number(this.props.offset);
 
         if (!yScale || !data[0]) {
             return null;
         }
 
         if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
+            data = _.filter(data, d => { return d.value!==null; } );
         }
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
-        var barClasses = {"barchart-rect": true};
+        let barClasses = {"barchart-rect": true};
         if (classed) {
             barClasses[classed] = true;
         }
@@ -77,28 +91,28 @@ var BarChart = React.createClass({
             .data(data)
             .enter().append("rect")
                 .classed(barClasses)
-                .attr("width", function(d) {
-                    var start = d.time;
-                    var end;
+                .attr("width", d => {
+                    let start = d.time;
+                    let end;
 
-                    if (self.props.interval === "monthly") {
-                        var daysInMonth = moment(d.time).daysInMonth();
+                    if (this.props.interval === "monthly") {
+                        let daysInMonth = moment(d.time).daysInMonth();
                         end = new Date(d.time.getTime() + daysInMonth * DAY); 
-                    } else if (self.props.interval === "daily") {
+                    } else if (this.props.interval === "daily") {
                         end = new Date(d.time.getTime() + DAY);
-                    } else if (self.props.interval === "hourly") {
+                    } else if (this.props.interval === "hourly") {
                         end = new Date(d.time.getTime() + HOUR);
                     }
 
-                    var startLocation = timeScale(start) + spacing;
-                    var endLocation = timeScale(end) - spacing;
+                    let startLocation = timeScale(start) + spacing;
+                    let endLocation = timeScale(end) - spacing;
                     return endLocation - startLocation;
                 })
-                .attr("height", function(d) {
+                .attr("height", d => {
                     return yScale(0) - yScale(d.value);
                 })
-                .attr("x", function (d) { return timeScale(d.time) + spacing + offset})
-                .attr("y", function (d) { return yScale(d.value); })
+                .attr("x", d => { return timeScale(d.time) + spacing + offset; })
+                .attr("y", d => { return yScale(d.value); })
 
     },
 
@@ -111,10 +125,10 @@ var BarChart = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        var data = nextProps.data;
-        var timeScale = nextProps.timeScale;
-        var yScale = nextProps.yScale;
-        var classed = nextProps.classed;
+        let data = nextProps.data;
+        let timeScale = nextProps.timeScale;
+        let yScale = nextProps.yScale;
+        let classed = nextProps.classed;
 
         if (this.props.data !== nextProps.data ||
             this.props.data.time !== data.time ||

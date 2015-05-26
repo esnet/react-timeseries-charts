@@ -1,6 +1,6 @@
-/** @jsx React.DOM */
+"use strict";
 
-var React = require('react');
+var React = require("react");
 
 var Intro = React.createClass({
 

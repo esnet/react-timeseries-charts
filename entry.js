@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 //
 // Entry point, so that you can use it like
 // var LineChart = require('esnet-react-charts').LineChart;
@@ -10,12 +8,11 @@
 
 module.exports = {
     AreaChart: require('./lib/components/areachart.jsx'),
-    AxisGroup: require('./lib/components/axisgroup.jsx'),
     BarChart: require('./lib/components/barchart.jsx'),
     Baseline: require('./lib/components/baseline.jsx'),
     Brush: require('./lib/components/brush.jsx'),
     ChartContainer: require('./lib/components/chartcontainer.jsx'),
-    ChartGroup: require('./lib/components/chartgroup.jsx'),
+    Charts: require('./lib/components/charts.jsx'),
     ChartRow: require('./lib/components/chartrow.jsx'),
     EventChart: require('./lib/components/eventchart.jsx'),
     EventRect: require('./lib/components/eventrect.jsx'),

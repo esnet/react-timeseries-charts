@@ -1,10 +1,10 @@
-/** @jsx React.DOM */
+"use strict";
 
 var React  = require('react');
 var _      = require('underscore');
 var Moment = require('moment');
 
-var Charts = require("../../esnet-react-charts");
+var Charts = require("../../entry");
 
 var ChartContainer = Charts.ChartContainer;
 var ChartRow = Charts.ChartRow;
@@ -57,8 +57,8 @@ _.each(days, function(value, day) {
 		count++;
 	}
 
-	volIn = value.in;
-	volOut = value.out;
+	var volIn = value.in;
+	var volOut = value.out;
 
 	trafficInData.push({"time": date.toDate(), "range": "day", "value": volIn})
 	trafficOutData.push({"time": date.toDate(), "range": "day", "value": value.out})

@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -26,26 +24,36 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
 var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
+var invariant = require('react/lib/invariant');
+
+var Pond = require("pond");
 
 var ChartRow = require("./chartrow");
-var AxisGroup = require("./axisgroup");
+var Charts = require("./charts");
 var TimeAxis = require("./timeaxis");
 var YAxis    = require("./yaxis");
+var Brush    = require("./brush");
+
+var {TimeRange} = Pond;
 
 require("./chartcontainer.css");
 
 var ChartContainer = React.createClass({
 
+    getDefaultProps: function() {
+        return {
+            "transition": 0
+        };
+    },
+
     propTypes: {
         children: React.PropTypes.oneOfType([
-            React.PropTypes.arrayOf(React.PropTypes.component),
-            React.PropTypes.component]),
+            React.PropTypes.arrayOf(React.PropTypes.element),
+            React.PropTypes.element]),
     },
 
     handleTrackerChanged: function(t) {
@@ -54,81 +62,113 @@ var ChartContainer = React.createClass({
         }
     },
 
+    //Within the charts library the time range of the x axis is kept as a begin and
+    //end time (Javascript Date objects). But the interface is Pond based, so
+    //this callback returns a Pond TimeRange.
     handleTimeRangeChanged: function(beginTime, endTime) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(beginTime, endTime);
+            this.props.onTimeRangeChanged(TimeRange(beginTime, endTime));
         }
     },
 
     render: function() {
-        var self = this;
-        var chartRows = [];
-        var padding = this.props.padding || 0;
+        let chartRows = [];
+        let padding = this.props.padding || 0;
 
         //
         // How much room does the axes of all the charts take up on the right and left.
         // The result is an array for left and right axis which contain the min column width
         // needed to hold the axes widths at the pos for all rows.
         //
-        // pos   1      0                     0        1        2
+        // pos   1      0        <charts>     0        1        2
         //     | Axis | Axis |   CHARTS    |  Axis  |                       Row 1
-        //            | Axis |   CHARTS    |  Axis  |  Axis  |  Axis |      Row 2     
+        //            | Axis |   CHARTS    |  Axis  |  Axis  |  Axis |      Row 2
         //     ...............              ..........................
         //          left cols              right cols
         //
 
-        var leftAxisWidths = [];
-        var rightAxisWidths = [];
+        let leftAxisWidths = [];
+        let rightAxisWidths = [];
 
-        React.Children.forEach(this.props.children, function(childRow) {
-            if (childRow instanceof ChartRow) {
-                React.Children.forEach(childRow.props.children, function(childGroup) {
-                    if (childGroup instanceof AxisGroup) {
-                        var axisGroup = childGroup;
-                        var align = axisGroup.props.align;
-                        var pos = 0;
+        React.Children.forEach(this.props.children, childRow => {
+            
+            if (childRow.type === ChartRow) {
 
-                        React.Children.forEach(axisGroup.props.children, function(axis) {
-                            var width = Number(axis.props.width) || 40;
-                            if (align === "left") {
-                                leftAxisWidths[pos] = leftAxisWidths[pos] ?
-                                    Math.max(width, leftAxisWidths[pos]) : width;
-                            } else if (align === "right") {
-                                rightAxisWidths[pos] = rightAxisWidths[pos] ?
-                                    Math.max(width, rightAxisWidths[pos]) : width;
-                            }
+                //
+                // Within this row, count the number of columns that will be left
+                // and right of the Charts tag, as well as the total number of
+                // Charts tags for error handling
+                //
+
+                let countLeft = 0;
+                let countRight = 0;
+                let countCharts = 0;
+                let align = "left";
+
+                React.Children.forEach(childRow.props.children, child => {
+                    if (child.type === Charts) {
+                        countCharts++;
+                        align = "right";
+                    } else if (child.type !== Brush) {
+                        if (align === "left") {
+                            countLeft++;
+                        } else {
+                            countRight++;
+                        }
+                    }
+                });
+
+                if (countCharts !== 1) {
+                    invariant(false, 'ChartRow should have one and only one <Charts> tag within it',
+                    childRow.constructor.name
+                    );
+                }
+
+                align = "left";
+                let pos = countLeft-1;
+                
+                React.Children.forEach(childRow.props.children, child => {
+                    if (child.type === Charts) {
+                        align = "right";
+                        pos = 0;
+                    } else {
+                        let width = Number(child.props.width) || 40;
+                        if (align === "left") {
+                            leftAxisWidths[pos] = leftAxisWidths[pos] ? Math.max(width, leftAxisWidths[pos]) : width;
+                            pos--;
+                        } else if (align === "right") {
+                            rightAxisWidths[pos] = rightAxisWidths[pos] ? Math.max(width, rightAxisWidths[pos]) : width;
                             pos++;
-                        });
+                        }
                     }
                 });
             }
         });
 
+        
         //Extra space used by padding between columns
-        var leftExtra = (leftAxisWidths.length - 1) * padding;
-        var rightExtra = (rightAxisWidths.length - 1) * padding;
+        let leftExtra = (leftAxisWidths.length - 1) * padding;
+        let rightExtra = (rightAxisWidths.length - 1) * padding;
         
         //Space used by columns on left and right of charts
-        var leftWidth = _.reduce(leftAxisWidths, function(a, b) { return a + b; }, 0) + leftExtra;
-        var rightWidth = _.reduce(rightAxisWidths, function(a, b) { return a + b; }, 0) + rightExtra;
+        let leftWidth = _.reduce(leftAxisWidths, (a, b) => { return a + b; }, 0) + leftExtra;
+        let rightWidth = _.reduce(rightAxisWidths, (a, b) => { return a + b; }, 0) + rightExtra;
 
         //
         // Time scale and time axis elements
         //
 
-        // TODO: time axis should be defined (or not) the way the YAxis is defined, and should
-        //       be more general (i.e. support linear, categories etc)
+        let X_AXIS_HEIGHT = 35;
 
-        var X_AXIS_HEIGHT = 35;
+        let transform = `translate(${leftWidth},0)`;
+        let timeAxisWidth = this.props.width - leftWidth - rightWidth - padding*2;
+        let [beginTime, endTime] = this.props.timeRange.toJSON();
 
-        var transform = "translate(" + leftWidth + ",0)";
-        var timeAxisWidth = this.props.width - leftWidth - rightWidth - padding*2;
-
-        var timeScale = d3.time.scale()
-            .domain([this.props.beginTime,this.props.endTime])
+        let timeScale = d3.time.scale()
+            .domain([new Date(beginTime), new Date(endTime)])
             .range([0, timeAxisWidth]);
 
-        var timeAxis = (
+        let timeAxis = (
             <div className="row">
                 <div className="col-md-12" style={{"height": X_AXIS_HEIGHT}}>
                     <div className="chartcontainer timeaxis" >
@@ -145,30 +185,31 @@ var ChartContainer = React.createClass({
         //
         // For valid children (those children which are ChartRows), we actually build
         // a Bootstrap row wrapper around those and then create cloned ChartRows that
-        // are passed the sizes of the determined axis columns. 
+        // are passed the sizes of the determined axis columns.
         //
 
-        var i = 0;
-        React.Children.forEach(this.props.children, function(child) {
-            if (child instanceof ChartRow) {
-                var chartRow = child;
-                var rowKey = child.props.key ? child.props.key : "chart-row-row-" + i;
+        let i = 0;
+        React.Children.forEach(this.props.children, child => {
+            if (child.type === ChartRow) {
+                let chartRow = child;
+                let rowKey = child.props.key ? child.props.key : "chart-row-row-" + i;
                 
-                var props = {
+                let props = {
                     key: rowKey,
-                    width: self.props.width,                          // same as container width
+                    width: this.props.width,                          // same as container width
                     timeScale: timeScale,                             // x axis d3 scale
                     leftAxisWidths: leftAxisWidths,                   // array with column sizes for axes
                     rightAxisWidths: rightAxisWidths,
-                    padding: self.props.padding,                      // container padding setting
-                    minTime: self.props.minTime,                      // zoomable min/max times
-                    maxTime: self.props.maxTime,
-                    trackerPosition: self.props.trackerPosition,      // tracker position
-                    onTimeRangeChanged: self.handleTimeRangeChanged,  // zoom/pan callback
-                    onTrackerChanged: self.handleTrackerChanged       // tracker change callback
+                    padding: this.props.padding,                      // container padding setting
+                    minTime: this.props.minTime,                      // zoomable min/max times
+                    maxTime: this.props.maxTime,
+                    transition: this.props.transition,                // time to make scale transitions
+                    trackerPosition: this.props.trackerPosition,      // tracker position
+                    onTimeRangeChanged: this.handleTimeRangeChanged,  // zoom/pan callback
+                    onTrackerChanged: this.handleTrackerChanged       // tracker change callback
                 };
 
-                var row = React.addons.cloneWithProps(chartRow, props);
+                let row = React.addons.cloneWithProps(chartRow, props);
 
                 chartRows.push(
                     <div key={"chart-row-div-" + i } className="row">
@@ -185,8 +226,10 @@ var ChartContainer = React.createClass({
         });
 
         //
-        // Final render of the ChartContainer is composed of a number of chartRows
-        // and a timeAxis
+        // Final render of the ChartContainer is composed of a number of chartRows and a timeAxis
+        //
+        // TODO: We might want to consider rendering this whole thing in a single SVG rather than
+        // depending on Bootstrap for layout.
         //
 
         return (

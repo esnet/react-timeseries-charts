@@ -1,7 +1,5 @@
-/** @jsx React.DOM */
-
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * ESnet React Charts, Copyright (c) 2014-2015, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -29,11 +27,24 @@
  
 "use strict";
 
-var React = require("react");
+var React = require("react/addons");
 var util  = require("util");
 
 require("./baseline.css");
 
+/**
+ * Draws a horizontal line across the chart
+ *
+ * Props:
+ *
+ * - value          The positon of the horizontal line, which is transformed to
+ *                  a pixel position using the yscale
+ * - label          A label to display along side the line
+ * - position       The position of the label, either left or right
+ *
+ * - yscale         The scale of the y axis to transform the value
+ *                  (passed in automatically)
+ */
 var Baseline = React.createClass({
 
     getDefaultProps: function() {
@@ -45,18 +56,19 @@ var Baseline = React.createClass({
     },
 
     render: function() {
-
         if (!this.props.yScale || !this.props.value) {
             return null;
         }
 
-        var ymin = Math.min(this.props.yScale.range()[0], this.props.yScale.range()[1]);
-        var y = this.props.yScale(this.props.value);
-        var transform = "translate(0 " + y + ")";
-        var textAnchor;
-        var textPositionX;
+        let ymin = Math.min(this.props.yScale.range()[0], this.props.yScale.range()[1]);
+        let y = this.props.yScale(this.props.value);
+        let transform = `translate(0 ${y})`;
+        let textAnchor;
+        let textPositionX;
+        let pts = [];
+        let points;
 
-        var textPositionY = -3;
+        let textPositionY = -3;
         if (y < ymin + 10) {
             textPositionY = 12;
         }
@@ -70,10 +82,9 @@ var Baseline = React.createClass({
             textPositionX = this.props.width - 5;
         }
 
-        var pts = [];
-        pts.push(util.format("%d %d", 0, 0));
-        pts.push(util.format("%d %d", this.props.width, 0));
-        var points = pts.join(" ");
+        pts.push(`0 0`);
+        pts.push(`${this.props.width} 0`);
+        points = pts.join(" ");
 
         return (
             <g className="baseline" transform={transform}>

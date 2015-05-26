@@ -1,6 +1,3 @@
-body {
-    font-family: 'Arial';
-}
 
 .horizontal-legend .legend-swatch.oscars{
     background-color: #2064AC;
@@ -16,6 +13,14 @@ body {
 
 .horizontal-legend .legend-line.aust{
     background-color: #2ca02c;
+}
+
+.horizontal-legend .legend-line.aud {
+    background-color: #2ca02c;
+}
+
+.horizontal-legend .legend-line.euro {
+    background-color: #9467bd;
 }
 
 .horizontal-legend .legend-dot.site{
@@ -34,6 +39,17 @@ body {
 .chartcontainer.chartrow {
     background: none;
 }
+
+/* Area chart traffic example */
+
+.horizontal-legend .legend-swatch.intraffic{
+    background-color: #B4D9FE;
+}
+
+.horizontal-legend .legend-swatch.outtraffic{
+    background-color: #FD8D0D;
+}
+
 
 /* Currency example */
 .linechart-line.aud {
@@ -118,7 +134,39 @@ body {
     fill: #F1B46F;
 }
 
-/* Nav */
+/* DDos example */
+.linechart-line.connections {
+    stroke: #2ca02c;
+    stroke-width: 2px;
+}
+
+.linechart-line.requests {
+    stroke: #9467bd;
+    stroke-width: 2px;
+}
+
+.horizontal-legend .legend-line.connections {
+    background-color: #2ca02c;
+}
+
+.horizontal-legend .legend-line.requests {
+    background-color: #9467bd;
+}
+
+.yaxis-label.connections {
+    fill: #2ca02c;
+}
+
+.yaxis-label.requests {
+    fill: #9467bd;
+}
+
+
+/* Examples navigation */
+
+body {
+    font-family: 'Arial';
+}
 
 .docs-sidenav {
     margin-top: 20px;
@@ -126,13 +174,18 @@ body {
 }
 
 .docs-sidebar .nav > li > a {
-    color: #666;
+    color: #CCC;
+    background: #FFF;
     display: block;
     padding: 4px 20px;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
 }
 
 .docs-sidebar .nav > li > a.active {
     color: #000;
+    font-weight: 600;
+    background: #FFF;
+    border-bottom-style: solid;
+    border-bottom-color: #2DB3D1;
 }
