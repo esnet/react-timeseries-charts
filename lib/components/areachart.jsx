@@ -78,15 +78,15 @@ function getLayers(series) {
  */
 function getAreaGenerators(interpolate, timeScale, yScale) {
     let upArea = d3.svg.area()
-        .x( d => { return timeScale(d.date); })
-        .y0(d => { return yScale(d.y0); })
-        .y1(d => { return yScale(d.y0 + d.value); })
+        .x(d => timeScale(d.date))
+        .y0(d => yScale(d.y0))
+        .y1(d => yScale(d.y0 + d.value))
         .interpolate(interpolate);
 
     let downArea = d3.svg.area()
-        .x( d => { return timeScale(d.date); })
-        .y0(d => { return yScale(d.y0); })
-        .y1(d => { return yScale(d.y0 - d.value); })
+        .x(d => timeScale(d.date))
+        .y0(d => yScale(d.y0))
+        .y1(d => yScale(d.y0 - d.value))
         .interpolate(interpolate);
 
     return {"upArea": upArea, "downArea": downArea};
@@ -100,14 +100,14 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
 function getAreaStackers() {
     return {
         "stackUp": d3.layout.stack()
-            .values(d => { return d.values; })
-            .x(d => { return d.date; })
-            .y(d => { return d.value; }),
+            .values(d => d.values)
+            .x(d => d.date)
+            .y(d => d.value),
 
         "stackDown": d3.layout.stack()
-            .values(d => { return d.values; })
-            .x(d => { return d.date; })
-            .y(d => { return -d.value; })
+            .values(d => d.values)
+            .x(d => d.date)
+            .y(d => -d.value)
     }
 }
 
@@ -193,13 +193,13 @@ var AreaChart = React.createClass({
             .selectAll(".areachart-up-group")
                 .data(upLayers)
             .enter().append("g")
-                .attr("id", () => { return _.uniqueId("areachart-up-"); })
+                .attr("id", () => _.uniqueId("areachart-up-"))
 
         // Append the area chart path onto the areachart-up-group group
         this.upChart = upChart
             .append("path")
-                .style("fill", (d, i) => { return this.props.style.up[i] })
-                .attr("d", d => { return upArea(d.values); })
+                .style("fill", (d, i) => this.props.style.up[i])
+                .attr("d", d => upArea(d.values))
                 .attr("clip-path", this.props.clipPathURL);
 
         //
@@ -210,13 +210,13 @@ var AreaChart = React.createClass({
         let downChart = d3.select(this.getDOMNode()).selectAll(".areachart-down-group")
             .data(downLayers)
           .enter().append("g")
-            .attr("id", () => { return _.uniqueId("areachart-down-"); })
+            .attr("id", () => _.uniqueId("areachart-down-"))
 
         // Append the area chart path onto the areachart-down-group group
         this.downChart = downChart
             .append("path")
-                .style("fill", (d, i) => { return this.props.style.down[i] })
-                .attr("d", (d) => { return downArea(d.values); })
+                .style("fill", (d, i) => this.props.style.down[i])
+                .attr("d", d => downArea(d.values))
                 .attr("clip-path", this.props.clipPathURL);
 
     },
@@ -236,13 +236,13 @@ var AreaChart = React.createClass({
             .transition()
             .duration(this.props.transition)
             .ease("sin-in-out")
-            .attr("d", d => { return upArea(d.values); });
+            .attr("d", d => upArea(d.values));
 
         this.downChart
             .transition()
             .duration(this.props.transition)
             .ease("sin-in-out")
-            .attr("d", (d) => { return downArea(d.values); });
+            .attr("d", d => downArea(d.values));
 
     },
 

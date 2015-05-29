@@ -37,7 +37,7 @@ var {TimeSeries} = Pond;
 require("./scatterchart.css");
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain()}-${scale.range()}`;
 }
 
 var ScatterChart = React.createClass({
@@ -61,7 +61,7 @@ var ScatterChart = React.createClass({
         }
 
         if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
+            data = _.filter(data, d => (d.value !== null) );
         }
 
         let style = {
@@ -76,9 +76,9 @@ var ScatterChart = React.createClass({
                 .data(data)
             .enter().append("circle")
                 .style(style)
-                .attr("r", d => { return d[2] ? d[2] : this.props.radius; })
-                .attr("cx", d => { return timeScale(d[0]); })
-                .attr("cy", d => { return yScale(d[1]); })
+                .attr("r", d => d[2] ? d[2] : this.props.radius)
+                .attr("cx", d => timeScale(d[0]))
+                .attr("cy", d => yScale(d[1]))
                 .attr("clip-path",this.props.clipPathURL);
     },
 
@@ -89,9 +89,9 @@ var ScatterChart = React.createClass({
             .transition()
                 .duration(this.props.transiton)
                 .ease("sin-in-out")
-                .attr("r", d => { return d[2] ? d[2] : this.props.radius; })
-                .attr("cx", d => { return timeScale(d[0]); })
-                .attr("cy", d => { return yScale(d[1]); })
+                .attr("r", d =>  d[2] ? d[2] : this.props.radius)
+                .attr("cx", d => timeScale(d[0]))
+                .attr("cy", d => yScale(d[1]))
     },
 
     componentDidMount: function() {

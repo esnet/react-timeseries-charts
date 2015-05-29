@@ -53,7 +53,6 @@ var LineChart = React.createClass({
 
     renderLineChart: function(series, timeScale, yScale, interpolate,
                               /*showDataPoints, dataPointRadius,*/ classed) {
-
         let data = series.toJSON().points;
 
         if (!yScale || !data[0]) {
@@ -70,8 +69,8 @@ var LineChart = React.createClass({
 
         var line = d3.svg.line()
             .interpolate(interpolate)
-            .x(function(d) { return timeScale(d[0]); })
-            .y(function(d) { return yScale(d[1]); });
+            .x(d => timeScale(d[0]))
+            .y(d => yScale(d[1]));
 
         this.path = d3.select(this.getDOMNode()).append("path")
             .datum(data)
@@ -85,8 +84,8 @@ var LineChart = React.createClass({
                 .data(data)
                 .enter().append("circle")
                     .attr("r", dataPointRadius)
-                    .attr("cx", function (d) { return timeScale(d.time); })
-                    .attr("cy", function (d) { return yScale(d.value); })
+                    .attr("cx", d => timeScale(d.time))
+                    .attr("cy", d => yScale(d.value))
         }
         */
     },
@@ -97,8 +96,8 @@ var LineChart = React.createClass({
 
         var line = d3.svg.line()
             .interpolate(interpolate)
-            .x(function(d) { return timeScale(d[0]); })
-            .y(function(d) { return yScale(d[1]); });
+            .x(d => timeScale(d[0]))
+            .y(d => yScale(d[1]));
 
         this.path
             .datum(data)

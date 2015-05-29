@@ -49,7 +49,7 @@ function scaleAsString(scale) {
  */
 var BarChart = React.createClass({
 
-  propTypes: {
+    propTypes: {
         /**
          * The width of each bar is the width determined by the time range - spacing x 2
          */
