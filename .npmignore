@@ -1,6 +1,14 @@
+lib
 examples
-*-bundle.js
+docs
+bin
+build/global
 index.html
-webpack.config.js
+.eslintrc
+.gitignore
+CONTRIBUTING.md
+examples-bundle.js
+examples-bundle.js.map
+*.config.js
 .DS_Store
 npm-debug.log

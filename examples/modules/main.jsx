@@ -17,6 +17,7 @@ var BarCharts = require("./barchart.jsx");
 var Legends = require("./legend.jsx");
 var Weather = require("./weather.jsx");
 var DDoS = require("./ddos.jsx");
+var History = require("./history.jsx");
 var API = require("./api.jsx");
 var APIDoc = require("./doc.jsx");
 
@@ -29,6 +30,7 @@ var routes = (
     <Route name="linecharts" handler={LineCharts} />
     <Route name="barcharts" handler={BarCharts} />
     <Route name="legends" handler={Legends} />
+    <Route name="history" handler={History} />
     <Route name="weather" handler={Weather} />
     <Route name="ddos" handler={DDoS} />
   </Route>

@@ -1,0 +1,74 @@
+/*
+ * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * California, through Lawrence Berkeley National Laboratory (subject
+ * to receipt of any required approvals from the U.S. Dept. of
+ * Energy).  All rights reserved.
+ *
+ * If you have questions about your rights to use or distribute this
+ * software, please contact Berkeley Lab's Technology Transfer
+ * Department at TTD@lbl.gov.
+ *
+ * NOTICE.  This software is owned by the U.S. Department of Energy.
+ * As such, the U.S. Government has been granted for itself and others
+ * acting on its behalf a paid-up, nonexclusive, irrevocable,
+ * worldwide license in the Software to reproduce, prepare derivative
+ * works, and perform publicly and display publicly.  Beginning five
+ * (5) years after the date permission to assert copyright is obtained
+ * from the U.S. Department of Energy, and subject to any subsequent
+ * five (5) year renewals, the U.S. Government is granted for itself
+ * and others acting on its behalf a paid-up, nonexclusive,
+ * irrevocable, worldwide license in the Software to reproduce,
+ * prepare derivative works, distribute copies to the public, perform
+ * publicly and display publicly, and to permit others to do so.
+ *
+ * This code is distributed under a BSD style license, see the LICENSE
+ * file for complete information.
+ */
+
+"use strict";
+
+var React = require("react");
+var _ = require("underscore");
+
+require("./eventchart.css");
+
+/**
+ * Renders an event view that shows the supplied set of
+ * events along a time axis.
+ */
+
+var EventChart = React.createClass({
+
+    displayName: "EventChart",
+
+    render: function render() {
+        var scale = this.props.timeScale;
+        // Create and array of markers, one for each event
+        var markers = [];
+        markers = _.map(this.props.events, function (event) {
+            var posx = scale(new Date(event.time));
+            var transform = "translate(" + posx + ",0)";
+            return React.createElement(
+                "g",
+                { transform: transform },
+                React.createElement("rect", { className: "eventchart-marker",
+                    x: 0, y: 0,
+                    width: 2, height: 30 }),
+                React.createElement(
+                    "text",
+                    { className: "eventchart-marker-label",
+                        x: 4, y: 10 },
+                    event.label
+                )
+            );
+        });
+
+        return React.createElement(
+            "g",
+            null,
+            markers
+        );
+    }
+});
+
+module.exports = EventChart;

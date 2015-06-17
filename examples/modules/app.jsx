@@ -45,7 +45,8 @@ var App = React.createClass({
                     <li><Link to="linecharts">Line charts</Link></li>
                     <li><Link to="areacharts">Area charts</Link></li>
                     <li><Link to="barcharts">Bar charts</Link></li>
-
+                    </hr>
+                    <li><Link to="weather">ESnet history example</Link></li>
                     <li><Link to="weather">Weather example</Link></li>
                     <li><Link to="ddos">DDoS example</Link></li>
 
