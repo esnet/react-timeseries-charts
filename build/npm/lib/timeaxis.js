@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 require("./timeaxis.css");
 
@@ -40,7 +51,7 @@ function scaleAsString(scale) {
  * Renders a horizontal time axis
  */
 
-var TimeAxis = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "TimeAxis",
 
@@ -48,17 +59,17 @@ var TimeAxis = React.createClass({
         var axis;
 
         if (this.props.dayFormat === true) {
-            axis = d3.svg.axis().scale(scale).orient("bottom").ticks(d3.time.days, 1).tickFormat(d3.time.format("%d"));
+            axis = _d32["default"].svg.axis().scale(scale).orient("bottom").ticks(_d32["default"].time.days, 1).tickFormat(_d32["default"].time.format("%d"));
         } else if (this.props.monthFormat === true) {
-            axis = d3.svg.axis().scale(scale).orient("bottom").ticks(d3.time.months, 1).tickFormat(d3.time.format("%B"));
+            axis = _d32["default"].svg.axis().scale(scale).orient("bottom").ticks(_d32["default"].time.months, 1).tickFormat(_d32["default"].time.format("%B"));
         } else {
-            axis = d3.svg.axis().scale(scale).orient("bottom");
+            axis = _d32["default"].svg.axis().scale(scale).orient("bottom");
         }
 
         //Remove the old axis from under this DOM node
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
-        var axisGroup = d3.select(this.getDOMNode()).append("g").attr("class", "x axis").call(axis.tickSize(10));
+        var axisGroup = _d32["default"].select(this.getDOMNode()).append("g").attr("class", "x axis").call(axis.tickSize(10));
 
         axisGroup.selectAll("tick").append("line").attr("shape-rendering", "crispEdge").attr("stroke", "#FFF").attr("y1", 0).attr("y2", this.props.height);
     },
@@ -79,7 +90,8 @@ var TimeAxis = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("g", null);
-    } });
+        return _reactAddons2["default"].createElement("g", null);
+    }
 
-module.exports = TimeAxis;
+});
+module.exports = exports["default"];

@@ -25,12 +25,8 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react/addons");
-var util  = require("util");
-
-require("./baseline.css");
+import React from "react/addons";
+import "./baseline.css";
 
 /**
  * Draws a horizontal line across the chart
@@ -45,7 +41,7 @@ require("./baseline.css");
  * - yscale         The scale of the y axis to transform the value
  *                  (passed in automatically)
  */
-var Baseline = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -96,5 +92,3 @@ var Baseline = React.createClass({
         );
     }
 });
-
-module.exports = Baseline;

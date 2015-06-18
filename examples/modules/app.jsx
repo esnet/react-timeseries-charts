@@ -9,7 +9,7 @@ require("../styles/app.css");
 var logo = document.createElement('img');
 logo.src = require('../img/logo.png');
 
-var App = React.createClass({
+export default React.createClass({
 
   render: function() {
     
@@ -45,8 +45,7 @@ var App = React.createClass({
                     <li><Link to="linecharts">Line charts</Link></li>
                     <li><Link to="areacharts">Area charts</Link></li>
                     <li><Link to="barcharts">Bar charts</Link></li>
-                    </hr>
-                    <li><Link to="weather">ESnet history example</Link></li>
+                    <li><Link to="history">ESnet history example</Link></li>
                     <li><Link to="weather">Weather example</Link></li>
                     <li><Link to="ddos">DDoS example</Link></li>
 
@@ -63,5 +62,3 @@ var App = React.createClass({
     );
   }
 });
-
-module.exports = App;

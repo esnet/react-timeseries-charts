@@ -1,8 +1,6 @@
-"use strict";
+import React from "react/addons";
 
-var React = require("react");
-
-var Intro = React.createClass({
+export default React.createClass({
 
   	render: function() {
 	    return (
@@ -22,5 +20,3 @@ var Intro = React.createClass({
 	    );
   	}
 });
-
-module.exports = Intro;

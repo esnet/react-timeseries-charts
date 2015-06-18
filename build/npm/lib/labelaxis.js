@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 /**
  * Renders a 'axis' that display a label for a data channel and a max and average value
@@ -39,7 +50,7 @@ var d3 = require("d3");
  *      +----------------+-----+------- ...
  */
 
-var LabelAxis = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "LabelAxis",
 
@@ -51,29 +62,29 @@ var LabelAxis = React.createClass({
         var valXPos = rectWidth + 3; // padding
 
         var format = _.has(this.props, "format") ? this.props.format : ".2f";
-        var maxStr = d3.format(format)(this.props.max);
-        var minStr = d3.format(format)(this.props.min);
-        return React.createElement(
+        var maxStr = _d32["default"].format(format)(this.props.max);
+        var minStr = _d32["default"].format(format)(this.props.min);
+        return _reactAddons2["default"].createElement(
             "g",
             null,
-            React.createElement("rect", { x: "0", y: "0", width: rectWidth, height: this.props.height,
+            _reactAddons2["default"].createElement("rect", { x: "0", y: "0", width: rectWidth, height: this.props.height,
                 style: { fill: "#E4E4E4", fillOpacity: 0.65 } }),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "text",
                 { x: parseInt(rectWidth / 2), y: this.props.height / 2, style: labelStyle },
                 this.props.label
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "text",
                 { x: valXPos, y: 0, dy: "1.2em", style: detailStyle },
                 maxStr
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "text",
                 { x: valXPos, y: this.props.height, style: detailStyle },
                 minStr
             )
         );
-    } });
-
-module.exports = LabelAxis;
+    }
+});
+module.exports = exports["default"];

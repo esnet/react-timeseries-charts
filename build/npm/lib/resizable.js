@@ -25,17 +25,25 @@
  * file for complete information.
  */
 
-"use strict";
+'use strict';
 
-var React = require("react");
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-var Resizable = React.createClass({
-    displayName: "Resizable",
+exports['default'] = _reactAddons2['default'].createClass({
+    displayName: 'resizable',
 
     getInitialState: function getInitialState() {
         return { width: 0 };
@@ -46,24 +54,23 @@ var Resizable = React.createClass({
     },
 
     componentDidMount: function componentDidMount() {
-        window.addEventListener("resize", this.handleResize);
+        window.addEventListener('resize', this.handleResize);
         this.handleResize();
     },
 
     componentWillUnmount: function componentWillUnmount() {
-        window.removeEventListener("resize", this.handleResize);
+        window.removeEventListener('resize', this.handleResize);
     },
 
     render: function render() {
-        var props = { "width": this.state.width };
-        var child = React.Children.only(this.props.children);
-        var childElement = this.state.width ? React.addons.cloneWithProps(child, props) : null;
-        return React.createElement(
-            "div",
-            { ref: "container" },
+        var props = { 'width': this.state.width };
+        var child = _reactAddons2['default'].Children.only(this.props.children);
+        var childElement = this.state.width ? _reactAddons2['default'].addons.cloneWithProps(child, props) : null;
+        return _reactAddons2['default'].createElement(
+            'div',
+            { ref: 'container' },
             childElement
         );
     }
 });
-
-module.exports = Resizable;
+module.exports = exports['default'];

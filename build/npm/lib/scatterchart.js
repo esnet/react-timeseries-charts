@@ -27,12 +27,25 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-var Pond = require("pond");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var TimeSeries = Pond.TimeSeries;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _pond = require("pond");
 
 require("./scatterchart.css");
 
@@ -40,8 +53,8 @@ function scaleAsString(scale) {
     return "" + scale.domain() + "-" + scale.range();
 }
 
-var ScatterChart = React.createClass({
-    displayName: "ScatterChart",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "scatterchart",
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -63,7 +76,7 @@ var ScatterChart = React.createClass({
         }
 
         if (this.props.dropNulls) {
-            data = _.filter(data, function (d) {
+            data = _underscore2["default"].filter(data, function (d) {
                 return d.value !== null;
             });
         }
@@ -71,11 +84,12 @@ var ScatterChart = React.createClass({
         var style = {
             "fill": this.props.style.color || "steelblue",
             "fill-opacity": this.props.style.opacity || 1,
-            "stroke": "none" };
+            "stroke": "none"
+        };
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
-        this.scatter = d3.select(this.getDOMNode()).selectAll("dot").data(data).enter().append("circle").style(style).attr("r", function (d) {
+        this.scatter = _d32["default"].select(this.getDOMNode()).selectAll("dot").data(data).enter().append("circle").style(style).attr("r", function (d) {
             return d[2] ? d[2] : _this.props.radius;
         }).attr("cx", function (d) {
             return timeScale(d[0]);
@@ -111,7 +125,7 @@ var ScatterChart = React.createClass({
         var timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
         var yAxisScaleChanged = scaleAsString(this.props.yScale) !== scaleAsString(yScale);
         var defaultRadiusChanged = this.props.radius !== radius;
-        var seriesChanged = TimeSeries.is(this.props.series, series);
+        var seriesChanged = _pond.TimeSeries.is(this.props.series, series);
 
         //
         // Currently if the series changes we completely rerender it. If the y axis scale
@@ -130,10 +144,8 @@ var ScatterChart = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function render() {
-        return React.createElement("g", null);
+        return _reactAddons2["default"].createElement("g", null);
     }
 });
-
-module.exports = ScatterChart;
+module.exports = exports["default"];

@@ -25,18 +25,16 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-
-var YAxis = require("./yaxis");
-var Charts = require("./charts");
-var Brush = require("./brush");
-var Tracker = require("./tracker");
-var EventRect = require("./eventrect");
-var PointIndicator = require("./pointindicator");
+import YAxis from "./yaxis";
+import Charts from "./charts";
+import Brush from "./brush";
+import Tracker from "./tracker";
+import EventRect from "./eventrect";
+import PointIndicator from "./pointindicator";
 
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
@@ -81,7 +79,7 @@ var ClipDefs = React.createClass({
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
-var ChartRow = React.createClass({
+export default React.createClass({
 
     displayName: "ChartRow",
 
@@ -427,5 +425,3 @@ var ChartRow = React.createClass({
         );
     }
 });
-
-module.exports = ChartRow;

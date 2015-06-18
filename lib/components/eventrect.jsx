@@ -25,17 +25,15 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var d3    = require("d3");
+import React from "react/addons";
+import d3 from "d3";
 
 //Returns a d3 scale as a string so we can determine if we have a new scale
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-var EventRect = React.createClass({
+export default React.createClass({
 
     displayName: "EventRect",
 
@@ -198,5 +196,3 @@ var EventRect = React.createClass({
         return <g/>;
     },
 });
-
-module.exports = EventRect;

@@ -27,27 +27,58 @@
 
 "use strict";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var YAxis = require("./yaxis");
-var Charts = require("./charts");
-var Brush = require("./brush");
-var Tracker = require("./tracker");
-var EventRect = require("./eventrect");
-var PointIndicator = require("./pointindicator");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _yaxis2 = require("./yaxis");
+
+var _yaxis3 = _interopRequireDefault(_yaxis2);
+
+var _charts = require("./charts");
+
+var _charts2 = _interopRequireDefault(_charts);
+
+var _brush = require("./brush");
+
+var _brush2 = _interopRequireDefault(_brush);
+
+var _tracker = require("./tracker");
+
+var _tracker2 = _interopRequireDefault(_tracker);
+
+var _eventrect = require("./eventrect");
+
+var _eventrect2 = _interopRequireDefault(_eventrect);
+
+var _pointindicator = require("./pointindicator");
+
+var _pointindicator2 = _interopRequireDefault(_pointindicator);
 
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
  */
-var ClipDefs = React.createClass({
+var ClipDefs = _reactAddons2["default"].createClass({
     displayName: "ClipDefs",
 
     renderClipPath: function renderClipPath(props) {
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
-        d3.select(this.getDOMNode()).append("clipPath").attr("id", props.id).append("rect").attr("width", props.clipWidth).attr("height", props.clipHeight);
+        _d32["default"].select(this.getDOMNode()).append("clipPath").attr("id", props.id).append("rect").attr("width", props.clipWidth).attr("height", props.clipHeight);
     },
 
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
@@ -66,7 +97,7 @@ var ClipDefs = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("defs", null);
+        return _reactAddons2["default"].createElement("defs", null);
     }
 });
 
@@ -74,7 +105,7 @@ var ClipDefs = React.createClass({
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
-var ChartRow = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "ChartRow",
 
@@ -82,7 +113,7 @@ var ChartRow = React.createClass({
         // id of clipping rectangle we will generate and use for each child chart
         // Lives in state to ensure just one clipping rectangle and id per chart row instance; we don't
         // want a fresh id generated on each render.
-        var clipId = _.uniqueId("clip_");
+        var clipId = _underscore2["default"].uniqueId("clip_");
         var clipPathURL = "url(#" + clipId + ")";
 
         return { clipId: clipId,
@@ -115,16 +146,16 @@ var ChartRow = React.createClass({
 
     createScale: function createScale(type, min, max, y0, y1) {
         var scale = undefined;
-        if (_.isUndefined(min) || min !== min || _.isUndefined(max) || max !== max) {
+        if (_underscore2["default"].isUndefined(min) || min !== min || _underscore2["default"].isUndefined(max) || max !== max) {
             scale = null;
         } else if (type === "linear") {
-            scale = d3.scale.linear().domain([min, max]).range([y0, y1]).nice();
+            scale = _d32["default"].scale.linear().domain([min, max]).range([y0, y1]).nice();
         } else if (type === "log") {
             var base = yaxis.props.logBase || 10;
-            scale = d3.scale.log().base(base).domain([min, max]).range([y0, y1]);
+            scale = _d32["default"].scale.log().base(base).domain([min, max]).range([y0, y1]);
         } else if (type === "power") {
             var power = yaxis.props.powerExponent || 2;
-            scale = d3.scale.pow().exponent(power).domain([min, max]).range([y0, y1]);
+            scale = _d32["default"].scale.pow().exponent(power).domain([min, max]).range([y0, y1]);
         }
         return scale;
     },
@@ -162,7 +193,7 @@ var ChartRow = React.createClass({
         var rightAxisList = []; // Ordered list of right axes ids
         var align = "left";
 
-        React.Children.forEach(this.props.children, function (child) {
+        _reactAddons2["default"].Children.forEach(this.props.children, function (child) {
 
             //
             // TODO:
@@ -171,13 +202,13 @@ var ChartRow = React.createClass({
             // Perhaps it could put the element itself?
             //
 
-            if (child.type === Charts) {
+            if (child.type === _charts2["default"]) {
                 align = "right";
             } else {
                 var _id = child.props.id;
 
                 //Check to see if we think this 'axis' is actually an axis
-                if (child.type === YAxis || _.has(child.props, "min") && _.has(child.props, "max")) {
+                if (child.type === _yaxis3["default"] || _underscore2["default"].has(child.props, "min") && _underscore2["default"].has(child.props, "max")) {
                     var _yaxis = child;
                     var _yaxis$props = _yaxis.props;
                     var max = _yaxis$props.max;
@@ -221,10 +252,10 @@ var ChartRow = React.createClass({
         var rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
 
         //Space used by columns on left and right of charts
-        var leftWidth = _.reduce(this.props.leftAxisWidths, function (a, b) {
+        var leftWidth = _underscore2["default"].reduce(this.props.leftAxisWidths, function (a, b) {
             return a + b;
         }, 0) + leftExtra;
-        var rightWidth = _.reduce(this.props.rightAxisWidths, function (a, b) {
+        var rightWidth = _underscore2["default"].reduce(this.props.rightAxisWidths, function (a, b) {
             return a + b;
         }, 0) + rightExtra;
 
@@ -248,21 +279,21 @@ var ChartRow = React.createClass({
                     "height": innerHeight,
                     "align": "left",
                     "transition": this.props.transition };
-                if (_.has(yAxisScaleMap, id)) {
+                if (_underscore2["default"].has(yAxisScaleMap, id)) {
                     props.scale = yAxisScaleMap[id];
                 }
 
                 //Cloned left axis
-                axis = React.addons.cloneWithProps(yAxisMap[id], props);
+                axis = _reactAddons2["default"].addons.cloneWithProps(yAxisMap[id], props);
 
                 //Debug rect
                 if (this.props.debug) {
-                    debug = React.createElement("rect", { className: "yaxis-debug", x: "0", y: "0", width: colWidth, height: innerHeight });
+                    debug = _reactAddons2["default"].createElement("rect", { className: "yaxis-debug", x: "0", y: "0", width: colWidth, height: innerHeight });
                 } else {
                     debug = null;
                 }
 
-                yAxisList.push(React.createElement(
+                yAxisList.push(_reactAddons2["default"].createElement(
                     "g",
                     { key: "y-axis-left-" + leftColumnIndex, transform: transform },
                     debug,
@@ -284,21 +315,21 @@ var ChartRow = React.createClass({
                     "height": innerHeight,
                     "align": "right",
                     "transition": this.props.transition };
-                if (_.has(yAxisScaleMap, id)) {
+                if (_underscore2["default"].has(yAxisScaleMap, id)) {
                     props.scale = yAxisScaleMap[id];
                 }
 
                 //Cloned right axis
-                axis = React.addons.cloneWithProps(yAxisMap[id], props);
+                axis = _reactAddons2["default"].addons.cloneWithProps(yAxisMap[id], props);
 
                 //Debug rect
                 if (this.props.debug) {
-                    debug = React.createElement("rect", { className: "yaxis-debug", x: "0", y: "0", width: colWidth, height: innerHeight });
+                    debug = _reactAddons2["default"].createElement("rect", { className: "yaxis-debug", x: "0", y: "0", width: colWidth, height: innerHeight });
                 } else {
                     debug = null;
                 }
 
-                yAxisList.push(React.createElement(
+                yAxisList.push(_reactAddons2["default"].createElement(
                     "g",
                     { key: "y-axis-right-" + rightColumnIndex, transform: transform },
                     debug,
@@ -319,11 +350,11 @@ var ChartRow = React.createClass({
         var chartTransform = "translate(" + leftWidth + "," + margin + ")";
 
         var keyCount = 0;
-        React.Children.forEach(this.props.children, function (child) {
+        _reactAddons2["default"].Children.forEach(this.props.children, function (child) {
 
-            if (child.type === Charts) {
+            if (child.type === _charts2["default"]) {
                 var charts = child;
-                React.Children.forEach(charts.props.children, function (chart) {
+                _reactAddons2["default"].Children.forEach(charts.props.children, function (chart) {
                     //Additional props for charts
                     var props = {
                         key: chart.props.key ? chart.props.key : "chart-" + keyCount,
@@ -335,7 +366,7 @@ var ChartRow = React.createClass({
                         transition: _this.props.transition
                     };
 
-                    chartList.push(React.addons.cloneWithProps(chart, props));
+                    chartList.push(_reactAddons2["default"].addons.cloneWithProps(chart, props));
 
                     keyCount++;
                 });
@@ -350,8 +381,8 @@ var ChartRow = React.createClass({
 
         var brushList = [];
         keyCount = 0;
-        React.Children.forEach(this.props.children, function (child) {
-            if (child.type === Brush) {
+        _reactAddons2["default"].Children.forEach(this.props.children, function (child) {
+            if (child.type === _brush2["default"]) {
                 var _props = {
                     key: "brush-" + keyCount,
                     width: chartWidth,
@@ -359,12 +390,12 @@ var ChartRow = React.createClass({
                     timeScale: _this.props.timeScale,
                     yScale: yAxisScaleMap[child.props.axis]
                 };
-                brushList.push(React.addons.cloneWithProps(child, _props));
+                brushList.push(_reactAddons2["default"].addons.cloneWithProps(child, _props));
             }
             keyCount++;
         });
 
-        var enableZoom = _.has(this.props, "enableZoom") ? this.props.enableZoom : false;
+        var enableZoom = _underscore2["default"].has(this.props, "enableZoom") ? this.props.enableZoom : false;
 
         var zoomHandler = null;
         if (enableZoom) {
@@ -373,30 +404,30 @@ var ChartRow = React.createClass({
 
         var chartDebug = null;
         if (this.props.debug) {
-            chartDebug = React.createElement("rect", { className: "chart-debug", x: leftWidth, y: margin, width: chartWidth, height: innerHeight });
+            chartDebug = _reactAddons2["default"].createElement("rect", { className: "chart-debug", x: leftWidth, y: margin, width: chartWidth, height: innerHeight });
         }
 
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "svg",
             { width: this.props.width, height: Number(this.props.height) },
             yAxisList,
             chartDebug,
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "g",
                 { transform: chartTransform, key: "chart-group" },
-                React.createElement(ClipDefs, { id: this.state.clipId, clipWidth: chartWidth, clipHeight: innerHeight }),
+                _reactAddons2["default"].createElement(ClipDefs, { id: this.state.clipId, clipWidth: chartWidth, clipHeight: innerHeight }),
                 chartList
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "g",
                 { transform: chartTransform, key: "tracker-group" },
-                React.createElement(Tracker, { height: innerHeight,
+                _reactAddons2["default"].createElement(_tracker2["default"], { height: innerHeight,
                     scale: this.props.timeScale, position: this.props.trackerPosition })
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "g",
                 { transform: chartTransform, key: "event-rect-group" },
-                React.createElement(EventRect, { width: chartWidth, height: innerHeight,
+                _reactAddons2["default"].createElement(_eventrect2["default"], { width: chartWidth, height: innerHeight,
                     scale: this.props.timeScale,
                     onMouseOut: this.handleMouseOut,
                     onMouseMove: this.handleMouseMove,
@@ -406,7 +437,7 @@ var ChartRow = React.createClass({
                     maxTime: this.props.maxTime,
                     onResize: this.handleResize })
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "g",
                 { transform: chartTransform, key: "brush-group" },
                 brushList
@@ -414,5 +445,4 @@ var ChartRow = React.createClass({
         );
     }
 });
-
-module.exports = ChartRow;
+module.exports = exports["default"];

@@ -24,15 +24,13 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-var moment = require("moment");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import Moment from "moment";
 
-require("./barchart.css");
+import "./barchart.css";
 
 var DAY = 1000 * 60 * 60 * 24;
 var HOUR = 1000 * 60 * 60;
@@ -47,7 +45,7 @@ function scaleAsString(scale) {
  * specific values. As a result, an Aug 2014 bar will render between the
  * Aug 2014 tick mark and the Sept 2014 tickmark.
  */
-var BarChart = React.createClass({
+export default React.createClass({
 
     propTypes: {
         /**
@@ -96,7 +94,7 @@ var BarChart = React.createClass({
                     let end;
 
                     if (this.props.interval === "monthly") {
-                        let daysInMonth = moment(d.time).daysInMonth();
+                        let daysInMonth = Moment(d.time).daysInMonth();
                         end = new Date(d.time.getTime() + daysInMonth * DAY); 
                     } else if (this.props.interval === "daily") {
                         end = new Date(d.time.getTime() + DAY);
@@ -149,5 +147,3 @@ var BarChart = React.createClass({
         );
     }
 });
-
-module.exports = BarChart;

@@ -24,11 +24,9 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react");
-var invariant = require('react/lib/invariant');
+import React from "react/addons";
+import invariant from "react/lib/invariant";
 
 /**
  * A Charts component is a grouping of charts which will be composited on top of
@@ -37,7 +35,7 @@ var invariant = require('react/lib/invariant');
  * All children of a ChartRow, for which there must be at least one, are considered a
  * chart. They should return an SVG <g> containing their render.
  */
-var Charts = React.createClass({
+export default React.createClass({
     displayName: "Charts",
     render() {
       invariant(
@@ -47,5 +45,3 @@ var Charts = React.createClass({
       );
     }
 });
-
-module.exports = Charts;

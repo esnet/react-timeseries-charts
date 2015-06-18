@@ -1,20 +1,17 @@
-"use strict";
+import React from "react/addons";
+import _ from "underscore";
+import moment from "moment";
 
-var React = require("react");
-var _     = require("underscore");
-var moment = require("moment");
+import {TimeSeries} from "pond";
 
-var ReactCharts = require("../../entry");
-var Pond = require("pond");
-
-var {TimeSeries} = Pond;
-var {ChartContainer,
-     ChartRow,
-     Charts,
-     YAxis,
-     LineChart,
-     Resizable,
-     Legend} = ReactCharts;
+//Imports from the charts library
+import ChartContainer from "../../lib/components/chartcontainer";
+import ChartRow from "../../lib/components/chartrow";
+import Charts from "../../lib/components/charts";
+import YAxis from "../../lib/components/yaxis";
+import LineChart from "../../lib/components/linechart";
+import Resizable from "../../lib/components/resizable";
+import Legend from "../../lib/components/legend";
 
 //Data
 var ddosData = require("../data/ddos.json");
@@ -58,7 +55,7 @@ var requestsStyle = {
     "width": 2
 }
 
-var DDos = React.createClass({
+export default React.createClass({
 
     renderChart: function() {
         return (
@@ -104,6 +101,3 @@ var DDos = React.createClass({
         );
     }
 });
-
-module.exports = DDos;
-

@@ -27,22 +27,33 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 //Returns a d3 scale as a string so we can determine if we have a new scale
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-var EventRect = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "EventRect",
 
     handleZoom: function handleZoom() {
-        var t = d3.event.translate[0] - this.state.translate[0];
-        var s = d3.event.scale;
-        var mouse = d3.mouse(this.getDOMNode());
+        var t = _d32["default"].event.translate[0] - this.state.translate[0];
+        var s = _d32["default"].event.scale;
+        var mouse = _d32["default"].mouse(this.getDOMNode());
 
         var center = this.props.scale.invert(mouse[0]).getTime(); //mouse position in ms since 1970
         var begin = this.props.scale.domain()[0].getTime(); //begin of range in ms
@@ -114,22 +125,22 @@ var EventRect = React.createClass({
         var self = this;
 
         //Remove the old touch rect from under this DOM node
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
         //Construct a new overlay rect for catching events and attach a zoom behavior
-        var overlayRect = d3.select(this.getDOMNode()).append("rect").style("fill", "none").attr("id", "chart-touch-surface").attr("width", width).attr("height", height).attr("pointer-events", "all");
+        var overlayRect = _d32["default"].select(this.getDOMNode()).append("rect").style("fill", "none").attr("id", "chart-touch-surface").attr("width", width).attr("height", height).attr("pointer-events", "all");
 
         if (this.state.zoom) overlayRect.call(this.state.zoom);
 
         //Mouse move events
-        d3.select(this.getDOMNode()).on("mousemove", function () {
-            var xpos = d3.mouse(this)[0];
+        _d32["default"].select(this.getDOMNode()).on("mousemove", function () {
+            var xpos = _d32["default"].mouse(this)[0];
             var time = self.props.scale.invert(xpos);
             if (self.props.onMouseMove) {
                 self.props.onMouseMove(time);
             }
         });
-        d3.select(this.getDOMNode()).on("mouseout", function () {
+        _d32["default"].select(this.getDOMNode()).on("mouseout", function () {
             if (self.props.onMouseOut) {
                 self.props.onMouseOut();
             }
@@ -144,7 +155,7 @@ var EventRect = React.createClass({
 
     componentWillMount: function componentWillMount() {
         if (this.props.enableZoom) {
-            var zoom = d3.behavior.zoom().on("zoom", this.handleZoom);
+            var zoom = _d32["default"].behavior.zoom().on("zoom", this.handleZoom);
             this.setState({ "zoom": zoom });
         }
     },
@@ -184,7 +195,7 @@ var EventRect = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("g", null);
-    } });
-
-module.exports = EventRect;
+        return _reactAddons2["default"].createElement("g", null);
+    }
+});
+module.exports = exports["default"];

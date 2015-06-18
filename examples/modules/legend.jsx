@@ -1,13 +1,10 @@
-"use strict";
+import React from "react/addons";
+import _ from "underscore";
 
-var React = require("react");
-var _     = require("underscore");
+//Imports from the charts library
+import Legend from "../../lib/components/legend";
 
-var Charts = require("../../entry");
-
-var {Legend} = Charts;
-
-var LegendExamples = React.createClass({
+export default React.createClass({
 
   	render: function() {
 	    return (
@@ -48,5 +45,3 @@ var LegendExamples = React.createClass({
 	    );
   	}
 });
-
-module.exports = LegendExamples;

@@ -27,10 +27,27 @@
 
 "use strict";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-var moment = require("moment");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _moment = require("moment");
+
+var _moment2 = _interopRequireDefault(_moment);
 
 require("./barchart.css");
 
@@ -47,19 +64,20 @@ function scaleAsString(scale) {
  * specific values. As a result, an Aug 2014 bar will render between the
  * Aug 2014 tick mark and the Sept 2014 tickmark.
  */
-var BarChart = React.createClass({
-    displayName: "BarChart",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "barchart",
 
     propTypes: {
         /**
          * The width of each bar is the width determined by the time range - spacing x 2
          */
-        spacing: React.PropTypes.number,
+        spacing: _reactAddons2["default"].PropTypes.number,
 
         /**
          * The position of the bar is then offset by this value.
          */
-        offset: React.PropTypes.number },
+        offset: _reactAddons2["default"].PropTypes.number
+    },
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -79,19 +97,19 @@ var BarChart = React.createClass({
         }
 
         if (this.props.dropNulls) {
-            data = _.filter(data, function (d) {
+            data = _underscore2["default"].filter(data, function (d) {
                 return d.value !== null;
             });
         }
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
         var barClasses = { "barchart-rect": true };
         if (classed) {
             barClasses[classed] = true;
         }
 
-        d3.select(this.getDOMNode()).selectAll("rect").data(data).enter().append("rect").classed(barClasses).attr("width", function (d) {
+        _d32["default"].select(this.getDOMNode()).selectAll("rect").data(data).enter().append("rect").classed(barClasses).attr("width", function (d) {
             var start = d.time;
             var end = undefined;
 
@@ -137,8 +155,7 @@ var BarChart = React.createClass({
 
     //TODO: props.attr should be required
     render: function render() {
-        return React.createElement("g", null);
+        return _reactAddons2["default"].createElement("g", null);
     }
 });
-
-module.exports = BarChart;
+module.exports = exports["default"];

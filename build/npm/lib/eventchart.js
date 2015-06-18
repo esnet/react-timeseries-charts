@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var _ = require("underscore");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 require("./eventchart.css");
 
@@ -37,7 +48,7 @@ require("./eventchart.css");
  * events along a time axis.
  */
 
-var EventChart = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "EventChart",
 
@@ -45,16 +56,16 @@ var EventChart = React.createClass({
         var scale = this.props.timeScale;
         // Create and array of markers, one for each event
         var markers = [];
-        markers = _.map(this.props.events, function (event) {
+        markers = _underscore2["default"].map(this.props.events, function (event) {
             var posx = scale(new Date(event.time));
             var transform = "translate(" + posx + ",0)";
-            return React.createElement(
+            return _reactAddons2["default"].createElement(
                 "g",
                 { transform: transform },
-                React.createElement("rect", { className: "eventchart-marker",
+                _reactAddons2["default"].createElement("rect", { className: "eventchart-marker",
                     x: 0, y: 0,
                     width: 2, height: 30 }),
-                React.createElement(
+                _reactAddons2["default"].createElement(
                     "text",
                     { className: "eventchart-marker-label",
                         x: 4, y: 10 },
@@ -63,12 +74,11 @@ var EventChart = React.createClass({
             );
         });
 
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "g",
             null,
             markers
         );
     }
 });
-
-module.exports = EventChart;
+module.exports = exports["default"];

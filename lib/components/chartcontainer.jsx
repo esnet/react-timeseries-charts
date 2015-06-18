@@ -25,24 +25,22 @@
  * file for complete information.
  */
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-var invariant = require('react/lib/invariant');
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import invariant from "react/lib/invariant";
 
-var Pond = require("pond");
+import {TimeRange} from "pond";
 
-var ChartRow = require("./chartrow");
-var Charts = require("./charts");
-var TimeAxis = require("./timeaxis");
-var YAxis    = require("./yaxis");
-var Brush    = require("./brush");
+import ChartRow from "./chartrow";
+import Charts from "./charts";
+import TimeAxis from "./timeaxis";
+import YAxis from "./yaxis";
+import Brush from "./brush";
 
-var {TimeRange} = Pond;
+import "./chartcontainer.css";
 
-require("./chartcontainer.css");
-
-var ChartContainer = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -240,5 +238,3 @@ var ChartContainer = React.createClass({
         );
     }
 });
-
-module.exports = ChartContainer;

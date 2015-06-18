@@ -27,9 +27,23 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 require("./linechart.css");
 
@@ -37,8 +51,8 @@ function scaleAsString(scale) {
     return "" + scale.domain() + "-" + scale.range();
 }
 
-var LineChart = React.createClass({
-    displayName: "LineChart",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "linechart",
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -66,15 +80,15 @@ var LineChart = React.createClass({
             "stroke-width": "" + this.props.style.width + "px" || "1px"
         };
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
-        var line = d3.svg.line().interpolate(interpolate).x(function (d) {
+        var line = _d32["default"].svg.line().interpolate(interpolate).x(function (d) {
             return timeScale(d[0]);
         }).y(function (d) {
             return yScale(d[1]);
         });
 
-        this.path = d3.select(this.getDOMNode()).append("path").datum(data).style(style).attr("d", line).attr("clip-path", this.props.clipPathURL);
+        this.path = _d32["default"].select(this.getDOMNode()).append("path").datum(data).style(style).attr("d", line).attr("clip-path", this.props.clipPathURL);
 
         /*
         if (showDataPoints) {
@@ -92,7 +106,7 @@ var LineChart = React.createClass({
     /*showDataPoints, dataPointRadius,*/classed) {
         var data = series.toJSON().points;
 
-        var line = d3.svg.line().interpolate(interpolate).x(function (d) {
+        var line = _d32["default"].svg.line().interpolate(interpolate).x(function (d) {
             return timeScale(d[0]);
         }).y(function (d) {
             return yScale(d[1]);
@@ -131,10 +145,8 @@ var LineChart = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function render() {
-        return React.createElement("g", null);
+        return _reactAddons2["default"].createElement("g", null);
     }
 });
-
-module.exports = LineChart;
+module.exports = exports["default"];

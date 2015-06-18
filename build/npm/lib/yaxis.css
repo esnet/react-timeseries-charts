@@ -25,31 +25,32 @@
  * file for complete information.
  */
 
-"use strict";
+.yaxis > line,
+.yaxis > path {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .5;
+}
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+.yaxis > .tick > text {
+    font-size: 11px;
+    opacity: 0.5;
+}
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+.yaxis > text {
+    fill: #8B7E7E;
+    font-weight: 100;
+    font-size: 12px;
+}
 
-var _reactAddons = require("react/addons");
+.yaxis > .tick > line {
+    stroke: #888686;
+    stroke-opacity: 0.5;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
 
-var _reactAddons2 = _interopRequireDefault(_reactAddons);
-
-require("./tracker.css");
-
-exports["default"] = _reactAddons2["default"].createClass({
-
-    displayName: "Tracker",
-
-    render: function render() {
-        var posx = this.props.scale(this.props.position);
-        if (posx) {
-            return _reactAddons2["default"].createElement("line", { className: "tracker-line", x1: posx, y1: 0, x2: posx, y2: this.props.height });
-        } else {
-            return null;
-        }
-    }
-});
-module.exports = exports["default"];
+.yaxis-debug {
+	fill: rgba(255, 0, 0, 0.06);
+	stroke: red;
+}

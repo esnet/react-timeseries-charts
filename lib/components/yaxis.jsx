@@ -25,14 +25,11 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import d3 from "d3";
+import "./yaxis.css";
 
-var React = require("react");
-var d3 = require("d3");
-
-require("./yaxis.css");
-
-var MARGIN = 0;
+const MARGIN = 0;
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
@@ -46,7 +43,7 @@ function scaleAsString(scale) {
  *     * scale - a d3 scale that defines the domain and range of the axis
  */
 
-var YAxis = React.createClass({
+export default React.createClass({
 
     displayName: "YAxis",
 
@@ -201,5 +198,3 @@ var YAxis = React.createClass({
         return <g/>;
     },
 });
-
-module.exports = YAxis;

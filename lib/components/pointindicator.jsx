@@ -25,25 +25,21 @@
  * file for complete information.
  */
 
-/**
- * Indicator for a particular data point.  Typically used to indicate nearest actual data point to the
- * tracker
- *
- */
-"use strict";
-
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-
-require("./linechart.css");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import "./linechart.css";
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-
-var PointIndicator = React.createClass({
+/**
+ * Indicator for a particular data point.  Typically used to indicate nearest actual data point to the
+ * tracker
+ *
+ */
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -96,7 +92,7 @@ var PointIndicator = React.createClass({
         var point = nextProps.point;
 
         if (this.props.point !== point ||
-            this.pointRadius !== pointRadius || 
+            this.pointRadius !== pointRadius ||
             scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
             scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
             this.renderPoint(timeScale, yScale, pointRadius, point, classed );
@@ -107,12 +103,9 @@ var PointIndicator = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function() {
         return (
             <g></g>
         );
     }
 });
-
-module.exports = PointIndicator;

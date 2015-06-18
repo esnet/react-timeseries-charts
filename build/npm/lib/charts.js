@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var invariant = require("react/lib/invariant");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _reactLibInvariant = require("react/lib/invariant");
+
+var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
 
 /**
  * A Charts component is a grouping of charts which will be composited on top of
@@ -37,11 +48,10 @@ var invariant = require("react/lib/invariant");
  * All children of a ChartRow, for which there must be at least one, are considered a
  * chart. They should return an SVG <g> containing their render.
  */
-var Charts = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
   displayName: "Charts",
   render: function render() {
-    invariant(false, "%s elements are for schema configuration only and should not be rendered", this.constructor.name);
+    (0, _reactLibInvariant2["default"])(false, "%s elements are for schema configuration only and should not be rendered", this.constructor.name);
   }
 });
-
-module.exports = Charts;
+module.exports = exports["default"];

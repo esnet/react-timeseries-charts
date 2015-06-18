@@ -25,12 +25,9 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var d3 = require("d3");
-
-require("./timeaxis.css");
+import React from "react/addons";
+import d3 from "d3";
+import "./timeaxis.css";
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
@@ -40,7 +37,7 @@ function scaleAsString(scale) {
  * Renders a horizontal time axis
  */
 
-var TimeAxis = React.createClass({
+export default React.createClass({
     
     displayName: "TimeAxis",
 
@@ -100,5 +97,3 @@ var TimeAxis = React.createClass({
     },
 
 });
-
-module.exports = TimeAxis;

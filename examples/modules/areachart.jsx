@@ -1,20 +1,16 @@
-"use strict";
+import React from "react/addons";
+import _ from "underscore";
+import {TimeSeries} from "pond";
 
-var React = require("react");
-var _ = require("underscore");
-
-var Pond = require("pond");
-var ReactCharts = require("../../entry");
-
-var {TimeSeries} = Pond;
-var {Legend,
-     ChartContainer,
-     ChartRow,
-     Charts,
-     YAxis,
-     AreaChart,
-     Baseline,
-     Resizable} = ReactCharts;
+//Imports from the charts library
+import Legend from "../../lib/components/legend";
+import ChartContainer from "../../lib/components/chartcontainer";
+import ChartRow from "../../lib/components/chartrow";
+import Charts from "../../lib/components/charts";
+import YAxis from "../../lib/components/yaxis";
+import AreaChart from "../../lib/components/areachart";
+import Baseline from "../../lib/components/baseline";
+import Resizable from "../../lib/components/resizable";
 
 //Data
 var rawInterfaces = require("../data/anl.json");
@@ -38,7 +34,7 @@ var interfacesOut = _.map(rawInterfaces.objects, iface => {
     });
 });
 
-var AreaCharts = React.createClass({
+export default React.createClass({
 
     componentWillMount: function() {
         //this.toggle();
@@ -95,5 +91,3 @@ var AreaCharts = React.createClass({
         );
     }
 });
-
-module.exports = AreaCharts;

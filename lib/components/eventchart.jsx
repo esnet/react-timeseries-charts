@@ -25,12 +25,9 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var _ = require("underscore");
-
-require("./eventchart.css");
+import React from "react/addons";
+import _ from "underscore";
+import "./eventchart.css";
 
 /**
  * Renders an event view that shows the supplied set of
@@ -38,7 +35,7 @@ require("./eventchart.css");
  */
 
 
-var EventChart = React.createClass({
+export default React.createClass({
 
     displayName: "EventChart",
 
@@ -69,5 +66,3 @@ var EventChart = React.createClass({
         );
     }
 });
-
-module.exports = EventChart;

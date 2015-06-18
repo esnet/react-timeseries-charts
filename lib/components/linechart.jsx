@@ -25,19 +25,16 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-
-require("./linechart.css");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import "./linechart.css";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
-var LineChart = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -144,12 +141,9 @@ var LineChart = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function() {
         return (
             <g></g>
         );
     }
 });
-
-module.exports = LineChart;

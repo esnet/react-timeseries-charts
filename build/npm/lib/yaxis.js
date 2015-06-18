@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 require("./yaxis.css");
 
@@ -46,12 +57,13 @@ function scaleAsString(scale) {
  *     * scale - a d3 scale that defines the domain and range of the axis
  */
 
-var YAxis = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "YAxis",
 
     propTypes: {
-        "align": React.PropTypes.string },
+        "align": _reactAddons2["default"].PropTypes.string
+    },
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -73,12 +85,12 @@ var YAxis = React.createClass({
     },
 
     renderAxis: function renderAxis(align, scale, width, absolute, format) {
-        var yformat = d3.format(format);
+        var yformat = _d32["default"].format(format);
 
         var axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
             if (this.props.height <= 200) {
-                axisGenerator = d3.svg.axis().scale(scale).ticks(5).tickFormat(function (d) {
+                axisGenerator = _d32["default"].svg.axis().scale(scale).ticks(5).tickFormat(function (d) {
                     if (absolute) {
                         return yformat(Math.abs(d));
                     } else {
@@ -86,7 +98,7 @@ var YAxis = React.createClass({
                     }
                 }).orient(align);
             } else {
-                axisGenerator = d3.svg.axis().scale(scale).tickFormat(function (d) {
+                axisGenerator = _d32["default"].svg.axis().scale(scale).tickFormat(function (d) {
                     if (absolute) {
                         return yformat(Math.abs(d));
                     } else {
@@ -95,7 +107,7 @@ var YAxis = React.createClass({
                 }).orient(align);
             }
         } else if (this.props.type === "log") {
-            axisGenerator = d3.svg.axis().scale(scale).ticks(10, ".2s").orient(align);
+            axisGenerator = _d32["default"].svg.axis().scale(scale).ticks(10, ".2s").orient(align);
         }
 
         var style = {
@@ -105,7 +117,7 @@ var YAxis = React.createClass({
         };
 
         //Remove the old axis from under this DOM node
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
         //Add the new axis
         var x = align === "left" ? width - MARGIN : 0;
@@ -113,15 +125,15 @@ var YAxis = React.createClass({
         var classed = this.props.classed ? this.props.classed : "";
         var axisClass = "yaxis " + classed;
         var axisLabelClass = "yaxis-label " + classed;
-        this.axis = d3.select(this.getDOMNode()).append("g").attr("transform", "translate(" + x + ",0)").attr("class", axisClass).call(axisGenerator).append("text").style(style).attr("transform", "rotate(-90)").attr("class", axisLabelClass).attr("y", labelOffset).attr("dy", ".71em").style("text-anchor", "end").text(this.props.label);
+        this.axis = _d32["default"].select(this.getDOMNode()).append("g").attr("transform", "translate(" + x + ",0)").attr("class", axisClass).call(axisGenerator).append("text").style(style).attr("transform", "rotate(-90)").attr("class", axisLabelClass).attr("y", labelOffset).attr("dy", ".71em").style("text-anchor", "end").text(this.props.label);
     },
 
     updateAxis: function updateAxis(align, scale, width, absolute, format) {
-        var yformat = d3.format(format);
+        var yformat = _d32["default"].format(format);
         var axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
             if (this.props.height <= 200) {
-                axisGenerator = d3.svg.axis().scale(scale).ticks(5).tickFormat(function (d) {
+                axisGenerator = _d32["default"].svg.axis().scale(scale).ticks(5).tickFormat(function (d) {
                     if (absolute) {
                         return yformat(Math.abs(d));
                     } else {
@@ -129,7 +141,7 @@ var YAxis = React.createClass({
                     }
                 }).orient(align);
             } else {
-                axisGenerator = d3.svg.axis().scale(scale).tickFormat(function (d) {
+                axisGenerator = _d32["default"].svg.axis().scale(scale).tickFormat(function (d) {
                     if (absolute) {
                         return yformat(Math.abs(d));
                     } else {
@@ -138,10 +150,10 @@ var YAxis = React.createClass({
                 }).orient(align);
             }
         } else if (this.props.type === "log") {
-            axisGenerator = d3.svg.axis().scale(scale).ticks(10, ".2s").orient(align);
+            axisGenerator = _d32["default"].svg.axis().scale(scale).ticks(10, ".2s").orient(align);
         }
 
-        d3.select(this.getDOMNode()).select(".yaxis").transition().duration(this.props.transition).ease("sin-in-out").call(axisGenerator);
+        _d32["default"].select(this.getDOMNode()).select(".yaxis").transition().duration(this.props.transition).ease("sin-in-out").call(axisGenerator);
     },
 
     componentDidMount: function componentDidMount() {
@@ -165,7 +177,7 @@ var YAxis = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("g", null);
-    } });
-
-module.exports = YAxis;
+        return _reactAddons2["default"].createElement("g", null);
+    }
+});
+module.exports = exports["default"];

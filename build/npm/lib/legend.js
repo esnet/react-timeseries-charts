@@ -27,12 +27,23 @@
 
 "use strict";
 
-var React = require("react");
-var _ = require("underscore");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 require("./legend.css");
 
-var Legend = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "Legend",
 
@@ -45,7 +56,7 @@ var Legend = React.createClass({
         var self = this;
 
         var items = [];
-        _.each(this.props.categories, function (categoryClass, categoryLabel) {
+        _underscore2["default"].each(this.props.categories, function (categoryClass, categoryLabel) {
             var styleClass;
             if (self.props.style === "swatch") {
                 styleClass = "legend-swatch " + categoryClass;
@@ -56,11 +67,11 @@ var Legend = React.createClass({
             }
 
             var labelClass = "legend-label " + categoryClass;
-            items.push(React.createElement(
+            items.push(_reactAddons2["default"].createElement(
                 "li",
                 { key: "legend-item-" + categoryLabel, className: "legend-list" },
-                React.createElement("span", { className: styleClass }),
-                React.createElement(
+                _reactAddons2["default"].createElement("span", { className: styleClass }),
+                _reactAddons2["default"].createElement(
                     "span",
                     { className: labelClass },
                     " ",
@@ -70,13 +81,12 @@ var Legend = React.createClass({
             ));
         });
 
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "ul",
             { className: "horizontal-legend" },
             items
         );
     }
 });
-
-module.exports = Legend;
+module.exports = exports["default"];
 //or "line" or "dot"

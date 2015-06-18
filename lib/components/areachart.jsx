@@ -24,15 +24,11 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-var Pond = require("pond");
-
-var {TimeSeries} = Pond;
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import {TimeSeries} from "pond";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -114,7 +110,7 @@ function getAreaStackers() {
 /**
  * Draws an area chart
  */
-var AreaChart = React.createClass({
+export default React.createClass({
 
     propTypes: {
         /**
@@ -302,5 +298,3 @@ var AreaChart = React.createClass({
         );
     }
 });
-
-module.exports = AreaChart;

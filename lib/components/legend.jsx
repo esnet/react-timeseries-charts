@@ -25,14 +25,11 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import _ from "underscore";
+import "./legend.css";
 
-var React = require("react");
-var _ = require("underscore");
-
-require("./legend.css");
-
-var Legend = React.createClass({
+export default React.createClass({
 
     displayName: "Legend",
 
@@ -70,5 +67,3 @@ var Legend = React.createClass({
         );
     }
 });
-
-module.exports = Legend;

@@ -1,39 +1,41 @@
-"use strict";
+//Import the require hook for babel runtime
+import "babel/register";
 
-var React = require("react/addons");
-var Router = require("react-router");
+import React from "react/addons";
+import Router from "react-router";
+import {TimeSeries} from "pond";
+import {Legend,
+        ChartContainer,
+        ChartRow,
+        Charts,
+        YAxis,
+        AreaChart,
+        Baseline,
+        Resizable} from "../../index";
 
-var {Route,
-     DefaultRoute,
-     RouteHandler,
-     Link} = Router;
+import App from "./app.jsx";
+import Intro from "./intro.jsx";
+import AreaCharts from "./areachart.jsx";
+import LineCharts from "./linechart.jsx";
+import BarCharts from "./barchart.jsx";
+import Legends from "./legend.jsx";
+import Weather from "./weather.jsx";
+import DDoS from "./ddos.jsx";
+import History from "./history.jsx";
 
-var App = require("./app.jsx");
+const {Route, DefaultRoute, RouteHandler, Link} = Router;
 
-var Intro = require("./intro.jsx");
-var AreaCharts = require("./areachart.jsx");
-var LineCharts = require("./linechart.jsx");
-var BarCharts = require("./barchart.jsx");
-var Legends = require("./legend.jsx");
-var Weather = require("./weather.jsx");
-var DDoS = require("./ddos.jsx");
-var History = require("./history.jsx");
-var API = require("./api.jsx");
-var APIDoc = require("./doc.jsx");
-
-var {DefaultRoute, Route, Routes} = require("react-router");
-
-var routes = (
-  <Route path="/" handler={App}>
-    <DefaultRoute name="intro" handler={Intro} />
-    <Route name="areacharts" handler={AreaCharts} />
-    <Route name="linecharts" handler={LineCharts} />
-    <Route name="barcharts" handler={BarCharts} />
-    <Route name="legends" handler={Legends} />
-    <Route name="history" handler={History} />
-    <Route name="weather" handler={Weather} />
-    <Route name="ddos" handler={DDoS} />
-  </Route>
+const routes = (
+    <Route path="/" handler={App}>
+        <DefaultRoute name="intro" handler={Intro} />
+        <Route name="areacharts" handler={AreaCharts} />
+        <Route name="linecharts" handler={LineCharts} />
+        <Route name="barcharts" handler={BarCharts} />
+        <Route name="legends" handler={Legends} />
+        <Route name="history" handler={History} />
+        <Route name="weather" handler={Weather} />
+        <Route name="ddos" handler={DDoS} />
+    </Route>
 );
 
 Router.run(routes, function (Handler) {

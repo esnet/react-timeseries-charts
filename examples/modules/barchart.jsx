@@ -4,7 +4,7 @@ var React  = require('react');
 var _      = require('underscore');
 var Moment = require('moment');
 
-var Charts = require("../../entry");
+var Charts = require("../../index");
 
 var ChartContainer = Charts.ChartContainer;
 var ChartRow = Charts.ChartRow;
@@ -97,7 +97,7 @@ _.each(monthlyJSON, function(router) {
 var monthlyBeginTime = Moment("2014-01-01");
 var monthlyEndTime = Moment("2014-12-01") - 1;
 
-var BarChartExample = React.createClass({
+export default React.createClass({
 
   	render: function() {
 
@@ -145,7 +145,7 @@ var BarChartExample = React.createClass({
 		                            <AxisGroup align="right">
 		                                <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
 		                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
-		                            </AxisGroup>		                          
+		                            </AxisGroup>
 		                        </ChartRow>
 
 		                    </ChartContainer>
@@ -225,5 +225,3 @@ var BarChartExample = React.createClass({
 	    );
   	}
 });
-
-module.exports = BarChartExample;

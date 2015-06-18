@@ -27,8 +27,15 @@
 
 "use strict";
 
-var React = require("react/addons");
-var util = require("util");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 require("./baseline.css");
 
@@ -45,8 +52,8 @@ require("./baseline.css");
  * - yscale         The scale of the y axis to transform the value
  *                  (passed in automatically)
  */
-var Baseline = React.createClass({
-    displayName: "Baseline",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "baseline",
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -87,11 +94,11 @@ var Baseline = React.createClass({
         pts.push("" + this.props.width + " 0");
         points = pts.join(" ");
 
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "g",
             { className: "baseline", transform: transform },
-            React.createElement("polyline", { points: points }),
-            React.createElement(
+            _reactAddons2["default"].createElement("polyline", { points: points }),
+            _reactAddons2["default"].createElement(
                 "text",
                 { className: "baseline-label", x: textPositionX, y: textPositionY, textAnchor: textAnchor },
                 this.props.label
@@ -99,5 +106,4 @@ var Baseline = React.createClass({
         );
     }
 });
-
-module.exports = Baseline;
+module.exports = exports["default"];

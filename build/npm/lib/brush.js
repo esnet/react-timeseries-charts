@@ -27,14 +27,25 @@
 
 "use strict";
 
-var d3 = require("d3");
-var React = require("react");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-var Brush = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "Brush",
 
@@ -55,7 +66,7 @@ var Brush = React.createClass({
         var d3brush = this.state.d3brush;
         var self = this;
         if (!d3brush) {
-            d3brush = d3.svg.brush().x(timeScale).on("brush", function () {
+            d3brush = _d32["default"].svg.brush().x(timeScale).on("brush", function () {
                 self.handleBrushed(d3brush);
             });
             this.setState({ "d3brush": d3brush });
@@ -73,9 +84,9 @@ var Brush = React.createClass({
                 return;
             }
         }
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
-        d3.select(this.getDOMNode()).append("g").attr("class", "x brush").call(d3brush).selectAll("rect").attr("y", -6).attr("height", this.props.height + 7);
+        _d32["default"].select(this.getDOMNode()).append("g").attr("class", "x brush").call(d3brush).selectAll("rect").attr("y", -6).attr("height", this.props.height + 7);
     },
 
     componentDidMount: function componentDidMount() {
@@ -97,7 +108,7 @@ var Brush = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("g", null);
-    } });
-
-module.exports = Brush;
+        return _reactAddons2["default"].createElement("g", null);
+    }
+});
+module.exports = exports["default"];

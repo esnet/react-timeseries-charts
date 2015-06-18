@@ -25,22 +25,17 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-var Pond = require("pond");
-
-var {TimeSeries} = Pond;
-
-require("./scatterchart.css");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import {TimeSeries} from "pond";
+import "./scatterchart.css";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
-var ScatterChart = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -133,12 +128,9 @@ var ScatterChart = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function() {
         return (
             <g></g>
         );
     }
 });
-
-module.exports = ScatterChart;

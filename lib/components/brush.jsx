@@ -24,17 +24,15 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var d3 = require("d3");
-var React = require("react");
+import React from "react/addons";
+import d3 from "d3";
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-var Brush = React.createClass({
+export default React.createClass({
 
     displayName: "Brush",
 
@@ -110,5 +108,3 @@ var Brush = React.createClass({
         return <g/>;
     },
 });
-
-module.exports = Brush;

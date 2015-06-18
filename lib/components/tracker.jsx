@@ -25,14 +25,10 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import "./tracker.css";
 
-var React = require("react");
-var util = require("util");
-
-require("./tracker.css");
-
-var Tracker = React.createClass({
+export default React.createClass({
 
     displayName: "Tracker",
 
@@ -47,5 +43,3 @@ var Tracker = React.createClass({
         }
     },
 });
-
-module.exports = Tracker;

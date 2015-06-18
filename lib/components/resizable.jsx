@@ -24,17 +24,15 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react");
+import React from "react/addons";
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-var Resizable = React.createClass({
+export default React.createClass({
     getInitialState: function() {
         return {width: 0};
     },
@@ -63,5 +61,3 @@ var Resizable = React.createClass({
         );
     }
 });
-
-module.exports = Resizable;

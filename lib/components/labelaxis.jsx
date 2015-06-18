@@ -24,11 +24,9 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react");
-var d3 = require("d3");
+import React from "react/addons";
+import d3 from "d3";
 
 /**
  * Renders a 'axis' that display a label for a data channel and a max and average value
@@ -39,7 +37,7 @@ var d3 = require("d3");
  *      +----------------+-----+------- ...
  */
 
-var LabelAxis = React.createClass({
+export default React.createClass({
 
     displayName: "LabelAxis",
 
@@ -65,11 +63,9 @@ var LabelAxis = React.createClass({
                 </text>
                 <text x={valXPos} y={this.props.height} style={detailStyle}>
                     {minStr}
-                </text>                
+                </text>
                 
             </g>
         );
     },
 });
-
-module.exports = LabelAxis;

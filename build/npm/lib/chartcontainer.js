@@ -27,27 +27,56 @@
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-var invariant = require("react/lib/invariant");
+var _reactAddons = require("react/addons");
 
-var Pond = require("pond");
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
-var ChartRow = require("./chartrow");
-var Charts = require("./charts");
-var TimeAxis = require("./timeaxis");
-var YAxis = require("./yaxis");
-var Brush = require("./brush");
+var _d3 = require("d3");
 
-var TimeRange = Pond.TimeRange;
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _reactLibInvariant = require("react/lib/invariant");
+
+var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
+
+var _pond = require("pond");
+
+var _chartrow = require("./chartrow");
+
+var _chartrow2 = _interopRequireDefault(_chartrow);
+
+var _charts = require("./charts");
+
+var _charts2 = _interopRequireDefault(_charts);
+
+var _timeaxis = require("./timeaxis");
+
+var _timeaxis2 = _interopRequireDefault(_timeaxis);
+
+var _yaxis = require("./yaxis");
+
+var _yaxis2 = _interopRequireDefault(_yaxis);
+
+var _brush = require("./brush");
+
+var _brush2 = _interopRequireDefault(_brush);
 
 require("./chartcontainer.css");
 
-var ChartContainer = React.createClass({
-    displayName: "ChartContainer",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "chartcontainer",
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -56,7 +85,8 @@ var ChartContainer = React.createClass({
     },
 
     propTypes: {
-        children: React.PropTypes.oneOfType([React.PropTypes.arrayOf(React.PropTypes.element), React.PropTypes.element]) },
+        children: _reactAddons2["default"].PropTypes.oneOfType([_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.element), _reactAddons2["default"].PropTypes.element])
+    },
 
     handleTrackerChanged: function handleTrackerChanged(t) {
         if (this.props.onTrackerChanged) {
@@ -69,7 +99,7 @@ var ChartContainer = React.createClass({
     //this callback returns a Pond TimeRange.
     handleTimeRangeChanged: function handleTimeRangeChanged(beginTime, endTime) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(TimeRange(beginTime, endTime));
+            this.props.onTimeRangeChanged((0, _pond.TimeRange)(beginTime, endTime));
         }
     },
 
@@ -94,9 +124,9 @@ var ChartContainer = React.createClass({
         var leftAxisWidths = [];
         var rightAxisWidths = [];
 
-        React.Children.forEach(this.props.children, function (childRow) {
+        _reactAddons2["default"].Children.forEach(this.props.children, function (childRow) {
 
-            if (childRow.type === ChartRow) {
+            if (childRow.type === _chartrow2["default"]) {
                 (function () {
 
                     //
@@ -110,11 +140,11 @@ var ChartContainer = React.createClass({
                     var countCharts = 0;
                     var align = "left";
 
-                    React.Children.forEach(childRow.props.children, function (child) {
-                        if (child.type === Charts) {
+                    _reactAddons2["default"].Children.forEach(childRow.props.children, function (child) {
+                        if (child.type === _charts2["default"]) {
                             countCharts++;
                             align = "right";
-                        } else if (child.type !== Brush) {
+                        } else if (child.type !== _brush2["default"]) {
                             if (align === "left") {
                                 countLeft++;
                             } else {
@@ -124,14 +154,14 @@ var ChartContainer = React.createClass({
                     });
 
                     if (countCharts !== 1) {
-                        invariant(false, "ChartRow should have one and only one <Charts> tag within it", childRow.constructor.name);
+                        (0, _reactLibInvariant2["default"])(false, "ChartRow should have one and only one <Charts> tag within it", childRow.constructor.name);
                     }
 
                     align = "left";
                     var pos = countLeft - 1;
 
-                    React.Children.forEach(childRow.props.children, function (child) {
-                        if (child.type === Charts) {
+                    _reactAddons2["default"].Children.forEach(childRow.props.children, function (child) {
+                        if (child.type === _charts2["default"]) {
                             align = "right";
                             pos = 0;
                         } else {
@@ -154,10 +184,10 @@ var ChartContainer = React.createClass({
         var rightExtra = (rightAxisWidths.length - 1) * padding;
 
         //Space used by columns on left and right of charts
-        var leftWidth = _.reduce(leftAxisWidths, function (a, b) {
+        var leftWidth = _underscore2["default"].reduce(leftAxisWidths, function (a, b) {
             return a + b;
         }, 0) + leftExtra;
-        var rightWidth = _.reduce(rightAxisWidths, function (a, b) {
+        var rightWidth = _underscore2["default"].reduce(rightAxisWidths, function (a, b) {
             return a + b;
         }, 0) + rightExtra;
 
@@ -177,24 +207,24 @@ var ChartContainer = React.createClass({
         var beginTime = _props$timeRange$toJSON2[0];
         var endTime = _props$timeRange$toJSON2[1];
 
-        var timeScale = d3.time.scale().domain([new Date(beginTime), new Date(endTime)]).range([0, timeAxisWidth]);
+        var timeScale = _d32["default"].time.scale().domain([new Date(beginTime), new Date(endTime)]).range([0, timeAxisWidth]);
 
-        var timeAxis = React.createElement(
+        var timeAxis = _reactAddons2["default"].createElement(
             "div",
             { className: "row" },
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "div",
                 { className: "col-md-12", style: { "height": X_AXIS_HEIGHT } },
-                React.createElement(
+                _reactAddons2["default"].createElement(
                     "div",
                     { className: "chartcontainer timeaxis" },
-                    React.createElement(
+                    _reactAddons2["default"].createElement(
                         "svg",
                         { width: this.props.width, height: X_AXIS_HEIGHT },
-                        React.createElement(
+                        _reactAddons2["default"].createElement(
                             "g",
                             { transform: transform },
-                            React.createElement(TimeAxis, { scale: timeScale, dayFormat: this.props.dayFormat, monthFormat: this.props.monthFormat })
+                            _reactAddons2["default"].createElement(_timeaxis2["default"], { scale: timeScale, dayFormat: this.props.dayFormat, monthFormat: this.props.monthFormat })
                         )
                     )
                 )
@@ -208,8 +238,8 @@ var ChartContainer = React.createClass({
         //
 
         var i = 0;
-        React.Children.forEach(this.props.children, function (child) {
-            if (child.type === ChartRow) {
+        _reactAddons2["default"].Children.forEach(this.props.children, function (child) {
+            if (child.type === _chartrow2["default"]) {
                 var chartRow = child;
                 var rowKey = child.props.key ? child.props.key : "chart-row-row-" + i;
 
@@ -228,15 +258,15 @@ var ChartContainer = React.createClass({
                     onTrackerChanged: _this.handleTrackerChanged // tracker change callback
                 };
 
-                var row = React.addons.cloneWithProps(chartRow, props);
+                var row = _reactAddons2["default"].addons.cloneWithProps(chartRow, props);
 
-                chartRows.push(React.createElement(
+                chartRows.push(_reactAddons2["default"].createElement(
                     "div",
                     { key: "chart-row-div-" + i, className: "row" },
-                    React.createElement(
+                    _reactAddons2["default"].createElement(
                         "div",
                         { className: "col-md-12" },
-                        React.createElement(
+                        _reactAddons2["default"].createElement(
                             "div",
                             { className: "chartcontainer chartrow" },
                             row
@@ -254,7 +284,7 @@ var ChartContainer = React.createClass({
         // depending on Bootstrap for layout.
         //
 
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "div",
             { className: "chartcontainer" },
             chartRows,
@@ -262,5 +292,4 @@ var ChartContainer = React.createClass({
         );
     }
 });
-
-module.exports = ChartContainer;
+module.exports = exports["default"];

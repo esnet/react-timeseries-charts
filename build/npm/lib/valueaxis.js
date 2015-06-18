@@ -27,8 +27,19 @@
 
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
 
 /**
  * Renders a 'axis' that display a label for a current tracker value
@@ -40,29 +51,29 @@ var d3 = require("d3");
  *      ----+----------------+
  */
 
-var ValueAxis = React.createClass({
+exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "ValueAxis",
 
     render: function render() {
         var labelStyle = { fontSize: 14, textAnchor: "middle", fill: "#838383" };
         var detailStyle = { fontSize: 12, textAnchor: "middle", fill: "#9a9a9a" };
-        return React.createElement(
+        return _reactAddons2["default"].createElement(
             "g",
             null,
-            React.createElement("rect", { x: "0", y: "0", width: this.props.width, height: this.props.height,
+            _reactAddons2["default"].createElement("rect", { x: "0", y: "0", width: this.props.width, height: this.props.height,
                 style: { fill: "#E4E4E4", fillOpacity: 0.65 } }),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "text",
                 { x: parseInt(this.props.width / 2), y: this.props.height / 2, style: labelStyle },
                 this.props.value
             ),
-            React.createElement(
+            _reactAddons2["default"].createElement(
                 "text",
                 { x: parseInt(this.props.width / 2), y: this.props.height / 2, dy: "1.2em", style: detailStyle },
                 this.props.detail
             )
         );
-    } });
-
-module.exports = ValueAxis;
+    }
+});
+module.exports = exports["default"];

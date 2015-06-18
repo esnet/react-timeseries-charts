@@ -25,16 +25,25 @@
  * file for complete information.
  */
 
-/**
- * Indicator for a particular data point.  Typically used to indicate nearest actual data point to the
- * tracker
- *
- */
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 require("./linechart.css");
 
@@ -42,8 +51,13 @@ function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }
 
-var PointIndicator = React.createClass({
-    displayName: "PointIndicator",
+/**
+ * Indicator for a particular data point.  Typically used to indicate nearest actual data point to the
+ * tracker
+ *
+ */
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "pointindicator",
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -60,7 +74,7 @@ var PointIndicator = React.createClass({
             data = [];
         }
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
         if (!yScale) return;
 
@@ -69,7 +83,7 @@ var PointIndicator = React.createClass({
             pointClasses[classed] = true;
         }
 
-        d3.select(this.getDOMNode()).selectAll("dot").data(data).enter().append("circle").classed(pointClasses).attr("r", pointRadius).attr("cx", function (d) {
+        _d32["default"].select(this.getDOMNode()).selectAll("dot").data(data).enter().append("circle").classed(pointClasses).attr("r", pointRadius).attr("cx", function (d) {
             return timeScale(d.time);
         }).attr("cy", function (d) {
             return yScale(d.value);
@@ -96,10 +110,8 @@ var PointIndicator = React.createClass({
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function render() {
-        return React.createElement("g", null);
+        return _reactAddons2["default"].createElement("g", null);
     }
 });
-
-module.exports = PointIndicator;
+module.exports = exports["default"];

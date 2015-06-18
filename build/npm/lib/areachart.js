@@ -27,12 +27,25 @@
 
 "use strict";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-var Pond = require("pond");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var TimeSeries = Pond.TimeSeries;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _d3 = require("d3");
+
+var _d32 = _interopRequireDefault(_d3);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _pond = require("pond");
 
 function scaleAsString(scale) {
     return "" + scale.domain() + "-" + scale.range();
@@ -77,7 +90,7 @@ function getLayers(series) {
  *              x
  */
 function getAreaGenerators(interpolate, timeScale, yScale) {
-    var upArea = d3.svg.area().x(function (d) {
+    var upArea = _d32["default"].svg.area().x(function (d) {
         return timeScale(d.date);
     }).y0(function (d) {
         return yScale(d.y0);
@@ -85,7 +98,7 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
         return yScale(d.y0 + d.value);
     }).interpolate(interpolate);
 
-    var downArea = d3.svg.area().x(function (d) {
+    var downArea = _d32["default"].svg.area().x(function (d) {
         return timeScale(d.date);
     }).y0(function (d) {
         return yScale(d.y0);
@@ -103,7 +116,7 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
  */
 function getAreaStackers() {
     return {
-        "stackUp": d3.layout.stack().values(function (d) {
+        "stackUp": _d32["default"].layout.stack().values(function (d) {
             return d.values;
         }).x(function (d) {
             return d.date;
@@ -111,7 +124,7 @@ function getAreaStackers() {
             return d.value;
         }),
 
-        "stackDown": d3.layout.stack().values(function (d) {
+        "stackDown": _d32["default"].layout.stack().values(function (d) {
             return d.values;
         }).x(function (d) {
             return d.date;
@@ -124,19 +137,19 @@ function getAreaStackers() {
 /**
  * Draws an area chart
  */
-var AreaChart = React.createClass({
-    displayName: "AreaChart",
+exports["default"] = _reactAddons2["default"].createClass({
+    displayName: "areachart",
 
     propTypes: {
         /**
          * Time in ms to transition the chart when the axis changes scale
          */
-        transition: React.PropTypes.number,
+        transition: _reactAddons2["default"].PropTypes.number,
 
         /**
          * The d3 interpolation method
          */
-        interpolate: React.PropTypes.string,
+        interpolate: _reactAddons2["default"].PropTypes.string,
 
         /**
          * The style of the area chart, with format:
@@ -149,9 +162,9 @@ var AreaChart = React.createClass({
          *  Where each color in the array corresponds to each area stacked
          *  either up or down.
          */
-        style: React.PropTypes.shape({
-            "up": React.PropTypes.arrayOf(React.PropTypes.string),
-            "down": React.PropTypes.arrayOf(React.PropTypes.string)
+        style: _reactAddons2["default"].PropTypes.shape({
+            "up": _reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.string),
+            "down": _reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.string)
         }),
 
         /**
@@ -159,7 +172,7 @@ var AreaChart = React.createClass({
          * build stacked up and the second element being stacked down. Each
          * element is itself an array of TimeSeries.
          */
-        series: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(TimeSeries)))
+        series: _reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries)))
     },
 
     getDefaultProps: function getDefaultProps() {
@@ -185,7 +198,7 @@ var AreaChart = React.createClass({
             "stroke": "none"
         };
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
         var _getAreaGenerators = getAreaGenerators(interpolate, timeScale, yScale);
 
@@ -213,8 +226,8 @@ var AreaChart = React.createClass({
         //
 
         //Make a group 'areachart-up-group' for each stacked area
-        var upChart = d3.select(this.getDOMNode()).selectAll(".areachart-up-group").data(upLayers).enter().append("g").attr("id", function () {
-            return _.uniqueId("areachart-up-");
+        var upChart = _d32["default"].select(this.getDOMNode()).selectAll(".areachart-up-group").data(upLayers).enter().append("g").attr("id", function () {
+            return _underscore2["default"].uniqueId("areachart-up-");
         });
 
         // Append the area chart path onto the areachart-up-group group
@@ -229,8 +242,8 @@ var AreaChart = React.createClass({
         //
 
         //Make a group 'areachart-down-group' for each stacked area
-        var downChart = d3.select(this.getDOMNode()).selectAll(".areachart-down-group").data(downLayers).enter().append("g").attr("id", function () {
-            return _.uniqueId("areachart-down-");
+        var downChart = _d32["default"].select(this.getDOMNode()).selectAll(".areachart-down-group").data(downLayers).enter().append("g").attr("id", function () {
+            return _underscore2["default"].uniqueId("areachart-down-");
         });
 
         // Append the area chart path onto the areachart-down-group group
@@ -296,7 +309,7 @@ var AreaChart = React.createClass({
                 for (var a = 0; a < oldSeries[d].length; a++) {
                     var o = oldSeries[d][a];
                     var n = newSeries[d][a];
-                    if (!TimeSeries.is(o, n)) {
+                    if (!_pond.TimeSeries.is(o, n)) {
                         seriesChanged = true;
                     }
                 }
@@ -321,8 +334,7 @@ var AreaChart = React.createClass({
     },
 
     render: function render() {
-        return React.createElement("g", null);
+        return _reactAddons2["default"].createElement("g", null);
     }
 });
-
-module.exports = AreaChart;
+module.exports = exports["default"];
