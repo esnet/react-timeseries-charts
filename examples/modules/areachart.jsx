@@ -12,6 +12,18 @@ import AreaChart from "../../lib/components/areachart";
 import Baseline from "../../lib/components/baseline";
 import Resizable from "../../lib/components/resizable";
 
+import Markdown from "react-markdown-el";
+const exampleText = `
+    <ChartContainer timeRange={inData.range()}>
+        <ChartRow height="150">
+            <Charts>
+                <AreaChart axis="traffic" series={[[inData],[outData]]} />
+            </Charts>
+            <YAxis id="traffic" label="Traffic (bps)" min={-max} max={max} absolute={true} width="60" type="linear"/>
+        </ChartRow>
+    </ChartContainer>
+`;
+
 //Data
 var rawInterfaces = require("../data/anl.json");
 
@@ -84,6 +96,12 @@ export default React.createClass({
                             </ChartContainer>
 
                         </Resizable>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Markdown text={exampleText} />
                     </div>
                 </div>
 

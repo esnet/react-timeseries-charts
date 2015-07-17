@@ -4,6 +4,22 @@ import _ from "underscore";
 //Imports from the charts library
 import Legend from "../../lib/components/legend";
 
+import Markdown from "react-markdown-el";
+const exampleText = `
+
+Legends are simple define:
+
+    <Legend categories={{"AUD": "aust", "USD": "usa"}} style="line"/>
+    <Legend categories={{"Oscars": "oscars", "Total": "total"}} style="swatch" />
+    <Legend categories={{"Site": "site", "Router": "router"}} style="dot" />
+
+However they currently depend on CSS code for styling:
+
+	.horizontal-legend .legend-swatch.oscars{
+    	background-color: #2064AC;
+	}
+`;
+
 export default React.createClass({
 
   	render: function() {
@@ -41,6 +57,13 @@ export default React.createClass({
 	              	</div>
 	          	</div>
 
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Markdown text={exampleText} />
+                    </div>
+                </div>
 		    </div>
 	    );
   	}

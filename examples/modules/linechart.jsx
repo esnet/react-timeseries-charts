@@ -11,6 +11,21 @@ import LineChart from "../../lib/components/linechart";
 import Baseline from "../../lib/components/baseline";
 import Resizable from "../../lib/components/resizable";
 
+import Markdown from "react-markdown-el";
+const exampleText = `
+	<ChartContainer timeRange={audSeries.range()} padding="5">
+        <ChartRow height="200">
+            <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
+            <Charts>
+                <LineChart axis="axis1" series={audSeries} style={audStyle}/>
+                <LineChart axis="axis2" series={euroSeries} classed="euro"/>
+                <Baseline  axis="axis1" value={1.0} label="USD Baseline" position="right"/>
+            </Charts>
+            <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
+        </ChartRow>
+    </ChartContainer>
+`;
+
 //Data
 var aud = require("../data/usd_vs_aud.json");
 var euro = require("../data/usd_vs_euro.json");
@@ -65,6 +80,14 @@ export default React.createClass({
 		                </Resizable>
 		            </div>
 		        </div>
+
+	            <hr/>
+
+	            <div className="row">
+	                <div className="col-md-12">
+	                    <Markdown text={exampleText} />
+	                </div>
+	            </div>
 		    </div>
 	    );
   	}
