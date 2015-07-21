@@ -23,6 +23,7 @@ import Legends from "./legend.jsx";
 import Weather from "./weather.jsx";
 import DDoS from "./ddos.jsx";
 import History from "./history.jsx";
+import Table from "./table.jsx";
 
 const {Route, DefaultRoute, RouteHandler, Link} = Router;
 
@@ -37,6 +38,7 @@ const routes = (
         <Route name="history" handler={History} />
         <Route name="weather" handler={Weather} />
         <Route name="ddos" handler={DDoS} />
+        <Route name="table" handler={Table} />
     </Route>
 );
 
