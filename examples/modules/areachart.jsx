@@ -48,10 +48,6 @@ var interfacesOut = _.map(rawInterfaces.objects, iface => {
 
 export default React.createClass({
 
-    componentWillMount: function() {
-        //this.toggle();
-    },
-
     render: function() {
         let n = 3;
         let inData;
@@ -74,10 +70,11 @@ export default React.createClass({
                 </div>
 
                 <div className="row">
-                    <div className="col-md-3">
-                        <Legend categories={{"In": "intraffic", "out": "outtraffic"}} style="swatch"/>
+                    <div className="col-md-4">
+                        <Legend type="swatch" categories={[{"key": "in", "label": "Into Site", "style": {backgroundColor: "#448FDD"}},
+                                                           {"key": "out", "label": "Out of site", "style": {backgroundColor: "#FD8D0D"}}]} />
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-md-8">
                         <span style={dateRangeStyle}>{inData.range().humanize()}</span>
                     </div>
                 </div>

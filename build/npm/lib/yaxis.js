@@ -113,7 +113,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var style = {
             "fill": this.props.style.labelColor || "#8B7E7E",
             "font-weight": this.props.style.labelWeight || 100,
-            "font-size": this.props.style.labelSize ? "" + this.props.style.width + "px" : "12px"
+            "font-size": this.props.style.labelSize ? this.props.style.width + "px" : "12px"
         };
 
         //Remove the old axis from under this DOM node

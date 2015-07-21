@@ -28,6 +28,7 @@
 import React from "react/addons";
 import _ from "underscore";
 import d3 from "d3";
+import Moment from "moment";
 
 import {TimeSeries, Event, IndexedEvent} from "pond";
 
@@ -51,39 +52,54 @@ export default React.createClass({
         let cells = [];
 
         if (this.props.columns) {
-            console.log("adding columns:")
             _.each(this.props.columns, (column) => {
                 const formatter = column.format ? d3.format(column.format) : undefined;
-                console.log("   - columns", column.key)
                 if (column.key === "time") {
-                    cells.push(
-                        <td>
-                            {event.index().toNiceString(this.props.timeFormat)}
-                        </td>
-                    );
+                    if (event instanceof IndexedEvent) {
+                        cells.push(
+                            <td>
+                                {event.index().toNiceString(this.props.timeFormat)}
+                            </td>
+                        );
+                    } else {
+                        const ts = Moment(event.timestamp());
+                        cells.push(
+                            <td>
+                                {ts.format(this.props.timeFormat)}
+                            </td>
+                        );
+                    }
                 } else {
                     let value = event.data().get(column.key);
                     if (formatter) {
-                        value = formatter(parseFloat(value, 10)); 
-                        console.log(value)
-                    }                    
+                        value = formatter(parseFloat(value, 10));
+                    }
                     cells.push (
                         <td>{value}</td>
                     );
-                }               
+                }
             })
         } else {
-            cells.push(
-                <td>
-                    {event.index().toNiceString(this.props.timeFormat)}
-                </td>
-            );
+            if (event instanceof IndexedEvent) {
+                cells.push(
+                    <td>
+                        {event.index().toNiceString(this.props.timeFormat)}
+                    </td>
+                );
+            } else {
+                const ts = Moment(event.timestamp());
+                cells.push(
+                    <td>
+                        {ts.format(this.props.timeFormat)}
+                    </td>
+                );
+            }
 
             event.data().forEach((d, i) => {
                 cells.push (
                     <td>{d.toString()}</td>
                 );
-            });        
+            });
         }
 
         return cells;

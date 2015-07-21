@@ -48,7 +48,7 @@ var _underscore2 = _interopRequireDefault(_underscore);
 var _pond = require("pond");
 
 function scaleAsString(scale) {
-    return "" + scale.domain() + "-" + scale.range();
+    return scale.domain() + "-" + scale.range();
 }
 
 /**

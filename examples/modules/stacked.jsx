@@ -36,35 +36,26 @@ to any of d3's interpolate functions, in this case 'linear'.
 //Data
 var rawData = require("../data/stacked.json");
 
-console.log(rawData)
-
-/**
- * The area chart expects a Timeseries with a simple "value" column
- */
-
-var seriesList = _.map(rawData, country => {
-    console.log("   - country", country)
+var seriesList = _.map(rawData, d => {
     return new TimeSeries({
-        "name": `${country.key}`,
+        "name": `${d.key}`,
         "columns": ["time", "value"],
-        "points": country.values
+        "points": d.values
     });
 });
 
-var countriesList = _.map(rawData, country => {
-    return country.key;
+var countriesList = _.map(rawData, d => {
+    return d.key;
 });
-
-console.log("countriesList", countriesList)
 
 var colorsList = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
                   "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5",
                   "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f",
                   "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"]
 
-var legendCategories = _.map(countriesList, (country, i) => ({
-        "key": country,
-        "label": country,
+var legendCategories = _.map(countriesList, (d, i) => ({
+        "key": d,
+        "label": d,
         "style": {"backgroundColor": colorsList[i]}
     })
 );
@@ -73,20 +64,12 @@ console.log(seriesList)
 
 export default React.createClass({
 
-    componentWillMount: function() {
-        //this.toggle();
-    },
-
     render: function() {
-        let n = 3;
-
-        let dateRangeStyle = {fontSize: 12, color: "#AAA",
+        const dateRangeStyle = {fontSize: 12, color: "#AAA",
                               borderBottomStyle: "solid", borderWidth: "1", borderColor: "#F4F4F4"};
-
         const style = {up: colorsList}
-
-        let max = 130;
-        let axistype = "linear"
+        const max = 130;
+        const axistype = "linear"
 
         return (
             <div>

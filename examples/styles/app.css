@@ -42,28 +42,6 @@
     background: none;
 }
 
-/* Area chart traffic example */
-
-.horizontal-legend .legend-swatch.intraffic{
-    background-color: #B4D9FE;
-}
-
-.horizontal-legend .legend-swatch.outtraffic{
-    background-color: #FD8D0D;
-}
-
-
-/* Currency example */
-.linechart-line.aud {
-    stroke: #2ca02c;
-    stroke-width: 2px;
-}
-
-.linechart-line.euro {
-    stroke: #9467bd;
-    stroke-width: 2px;
-}
-
 /* Weather example */
 .linechart-line.temp {
     stroke: #CA4040;
@@ -145,14 +123,6 @@
 .linechart-line.requests {
     stroke: #9467bd;
     stroke-width: 2px;
-}
-
-.horizontal-legend .legend-line.connections {
-    background-color: #2ca02c;
-}
-
-.horizontal-legend .legend-line.requests {
-    background-color: #9467bd;
 }
 
 .yaxis-label.connections {

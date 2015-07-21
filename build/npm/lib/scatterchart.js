@@ -50,7 +50,7 @@ var _pond = require("pond");
 require("./scatterchart.css");
 
 function scaleAsString(scale) {
-    return "" + scale.domain() + "-" + scale.range();
+    return scale.domain() + "-" + scale.range();
 }
 
 exports["default"] = _reactAddons2["default"].createClass({
@@ -58,7 +58,7 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
-            "radius": 2,
+            "radius": 2.0,
             "style": {
                 color: "steelblue",
                 opacity: 1
@@ -83,7 +83,7 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         var style = {
             "fill": this.props.style.color || "steelblue",
-            "fill-opacity": this.props.style.opacity || 1,
+            "fill-opacity": this.props.style.opacity || 1.0,
             "stroke": "none"
         };
 

@@ -48,7 +48,7 @@ var _underscore2 = _interopRequireDefault(_underscore);
 require("./linechart.css");
 
 function scaleAsString(scale) {
-    return "" + scale.domain() + "-" + scale.range();
+    return scale.domain() + "-" + scale.range();
 }
 
 exports["default"] = _reactAddons2["default"].createClass({
@@ -77,7 +77,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var style = {
             "fill": "none",
             "stroke": this.props.style.color || "#9DA3FF",
-            "stroke-width": "" + this.props.style.width + "px" || "1px"
+            "stroke-width": this.props.style.width + "px" || "1px"
         };
 
         _d32["default"].select(this.getDOMNode()).selectAll("*").remove();

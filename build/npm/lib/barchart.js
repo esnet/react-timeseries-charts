@@ -55,7 +55,7 @@ var DAY = 1000 * 60 * 60 * 24;
 var HOUR = 1000 * 60 * 60;
 
 function scaleAsString(scale) {
-    return "" + scale.domain() + "-" + scale.range();
+    return scale.domain() + "-" + scale.range();
 }
 
 /**
@@ -114,7 +114,7 @@ exports["default"] = _reactAddons2["default"].createClass({
             var end = undefined;
 
             if (_this.props.interval === "monthly") {
-                var daysInMonth = moment(d.time).daysInMonth();
+                var daysInMonth = (0, _moment2["default"])(d.time).daysInMonth();
                 end = new Date(d.time.getTime() + daysInMonth * DAY);
             } else if (_this.props.interval === "daily") {
                 end = new Date(d.time.getTime() + DAY);

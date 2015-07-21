@@ -116,7 +116,8 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Legend categories={{"Requests": "requests", "Connections": "connections"}} style="line"/>
+                        <Legend type="line" categories={[{"key": "requests", "label": "Requests", "style": {backgroundColor: "#9467bd"}},
+                                                         {"key": "connections", "label": "Connections", "style": {backgroundColor: "#2ca02c"}}]} />
                     </div>
                 </div>
 

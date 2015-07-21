@@ -61,7 +61,7 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
-            "pointRadius": 1
+            "pointRadius": 1.0
         };
     },
 

@@ -91,7 +91,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         }
 
         pts.push("0 0");
-        pts.push("" + this.props.width + " 0");
+        pts.push(this.props.width + " 0");
         points = pts.join(" ");
 
         return _reactAddons2["default"].createElement(
