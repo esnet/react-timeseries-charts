@@ -9,9 +9,18 @@ const exampleText = `
 
 Legends are simple define:
 
-    <Legend categories={{"AUD": "aust", "USD": "usa"}} style="line"/>
-    <Legend categories={{"Oscars": "oscars", "Total": "total"}} style="swatch" />
-    <Legend categories={{"Site": "site", "Router": "router"}} style="dot" />
+	<div className="col-md-3">
+  	<Legend style="line" categories={[{"key": "aust", "label": "AUD", color: "#1f77b4"},
+  						              {"key": "usa", "label": "USD", color: "#aec7e8"}]} />
+	</div>
+	<div className="col-md-3">
+  	<Legend style="swatch" categories={[{"key": "oscars", "label": "Oscars", color: "#ff7f0e"},
+  						                {"key": "total", "label": "Total", color: "#ffbb78"}]} />
+	</div>
+	<div className="col-md-3">
+  	<Legend style="dot" categories={[{"key": "site", "label": "Site", color: "#98df8a"},
+  						             {"key": "router", "label": "Router", color: "#d62728"}]} />
+	</div>
 
 However they currently depend on CSS code for styling:
 
@@ -47,13 +56,16 @@ export default React.createClass({
 
 	          	<div className="row">
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"AUD": "aust", "USD": "usa"}} style="line"/>
+	                  	<Legend type="line" categories={[{"key": "aust", "label": "AUD", style={backgroundColor: "#1f77b4"}},
+	                  						             {"key": "usa", "label": "USD", style={backgroundColor: "#aec7e8"}}]} />
 	              	</div>
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"Oscars": "oscars", "Total": "total"}} style="swatch" />
+	                  	<Legend type="swatch" categories={[{"key": "oscars", "label": "Oscars", style={backgroundColor: "#ff7f0e"}},
+	                  						               {"key": "total", "label": "Total", style={backgroundColor: "#ffbb78"}}]} />
 	              	</div>
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"Site": "site", "Router": "router"}} style="dot" />
+	                  	<Legend type="dot" categories={[{"key": "site", "label": "Site", style={backgroundColor: "#98df8a"}},
+	                  						            {"key": "router", "label": "Router", style={backgroundColor: "#d62728"}}]} />
 	              	</div>
 	          	</div>
 
@@ -68,3 +80,7 @@ export default React.createClass({
 	    );
   	}
 });
+
+/*
+
+ */

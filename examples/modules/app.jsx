@@ -44,6 +44,7 @@ export default React.createClass({
                     <li><Link to="legends">Legends</Link></li>
                     <li><Link to="linecharts">Line charts</Link></li>
                     <li><Link to="areacharts">Area charts</Link></li>
+                    <li><Link to="stacked">Stacked area</Link></li>
                     <li><Link to="barcharts">Bar charts</Link></li>
                     <li><Link to="history">ESnet history example</Link></li>
                     <li><Link to="weather">Weather example</Link></li>

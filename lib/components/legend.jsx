@@ -27,7 +27,7 @@
  
 import React from "react/addons";
 import _ from "underscore";
-import "./legend.css";
+var merge = require('merge')
 
 export default React.createClass({
 
@@ -35,35 +35,81 @@ export default React.createClass({
 
     getDefaultProps: function() {
         return {
-            "style": "swatch", //or "line" or "dot"
+            "style": {},
+            "labelStyle": {},
+            "type": "swatch", //or "line" or "dot"
         };
     },
 
     render: function() {
-        var self = this;
 
-        var items = [];
-        _.each(this.props.categories, function(categoryClass, categoryLabel) {
-            var styleClass;
-            if (self.props.style === "swatch") {
-                styleClass = "legend-swatch " + categoryClass;
-            } else if (self.props.style === "line") {
-                styleClass = "legend-line " + categoryClass;
-            } else if (self.props.style === "dot") {
-                styleClass = "legend-dot " + categoryClass;
+        const legendStyle = {
+            listStyle: "none",
+            paddingLeft: 0
+        }
+
+        const legendListStyle = {
+            float: "left",
+            marginRight: 10
+        }
+
+        const swatchStyle = {
+            float: "left",
+            width: 15,
+            height: 15,
+            margin: 2,
+            borderRadius: 2,
+            backgroundColor: "#CCC"
+        }
+
+        const lineStyle = {
+            float: "left",
+            width: 15,
+            height: 3,
+            margin: 2,
+            marginTop: 8,
+            backgroundColor: "#CCC"
+        }
+
+        const dotStyle = {
+            float: "left",
+            width: 8,
+            height: 8,
+            margin: 2,
+            marginTop: 6,
+            borderRadius: 4,
+            backgroundColor: "#CCC"
+        }
+
+        const labelStyle = {
+        }
+
+
+        let items = [];
+        _.each(this.props.categories, (category) => {
+            let style;
+            let categoryStyle = category.style || {};
+            let categoryLabelStyle = category.labelStyle || {};
+            if (this.props.type === "swatch") {
+                style = merge(true, swatchStyle, categoryStyle);
+            } else if (this.props.type === "line") {
+                style = merge(true, lineStyle, categoryStyle);
+            } else if (this.props.type === "dot") {
+                style = merge(true, dotStyle, categoryStyle);
             }
 
-            var labelClass = "legend-label " + categoryClass;
+            const labelStyle = merge(true, labelStyle, categoryLabelStyle);
+
             items.push(
-                <li key={"legend-item-" + categoryLabel} className="legend-list">
-                    <span className={styleClass} />
-                    <span className={labelClass}> {categoryLabel} </span>
+                <li key={"legend-item-" + category.key} style={legendListStyle}>
+                    <span style={style}/>
+                    <span style={labelStyle}> {category.label} </span>
                 </li>
             );
         });
 
         return (
-            <ul className="horizontal-legend">{items}</ul>
+            <ul style={legendStyle}>{items}</ul>
         );
     }
 });

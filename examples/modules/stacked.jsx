@@ -14,37 +14,62 @@ import Resizable from "../../lib/components/resizable";
 
 import Markdown from "react-markdown-el";
 const exampleText = `
-    <ChartContainer timeRange={inData.range()}>
-        <ChartRow height="150">
+
+This example shows a stacked area chart. Area charts can be stacked both above and below the axis. This
+example also shows basic styling using an array of colors:
+
+    const style = {up: ["#1f77b4", "#aec7e8", "#ff7f0e", ... ]}
+
+Area charts default to a step style interpolation. This example also shows how to set the interpolation
+to any of d3's interpolate functions, in this case 'linear'.
+
+    <ChartContainer timeRange={range}>
+        <ChartRow height="350">
             <Charts>
-                <AreaChart axis="traffic" series={[[inData],[outData]]} />
+                <AreaChart axis="value" style={style} series={[series,[]]} interpolate="linear"/>
             </Charts>
-            <YAxis id="traffic" label="Traffic (bps)" min={-max} max={max} absolute={true} width="60" type="linear"/>
+            <YAxis id="value" label="" labelOffset={0} max={max} width="60" type="linear"/>
         </ChartRow>
     </ChartContainer>
 `;
 
 //Data
-var rawInterfaces = require("../data/anl.json");
+var rawData = require("../data/stacked.json");
+
+console.log(rawData)
 
 /**
  * The area chart expects a Timeseries with a simple "value" column
  */
-var interfacesIn = _.map(rawInterfaces.objects, iface => {
+
+var seriesList = _.map(rawData, country => {
+    console.log("   - country", country)
     return new TimeSeries({
-        "name": `${iface.device} ${iface.interface} in`,
+        "name": `${country.key}`,
         "columns": ["time", "value"],
-        "points": iface.channels["in"].samples
+        "points": country.values
     });
 });
 
-var interfacesOut = _.map(rawInterfaces.objects, iface => {
-    return new TimeSeries({
-        "name": `${iface.device} ${iface.interface} out`,
-        "columns": ["time", "value"],
-        "points": iface.channels["out"].samples
-    });
+var countriesList = _.map(rawData, country => {
+    return country.key;
 });
+
+console.log("countriesList", countriesList)
+
+var colorsList = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
+                  "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5",
+                  "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f",
+                  "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"]
+
+var legendCategories = _.map(countriesList, (country, i) => ({
+        "key": country,
+        "label": country,
+        "style": {"backgroundColor": colorsList[i]}
+    })
+);
+
+console.log(seriesList)
 
 export default React.createClass({
 
@@ -54,31 +79,26 @@ export default React.createClass({
 
     render: function() {
         let n = 3;
-        let inData;
-        let outData;
+
         let dateRangeStyle = {fontSize: 12, color: "#AAA",
                               borderBottomStyle: "solid", borderWidth: "1", borderColor: "#F4F4F4"};
 
-        inData = interfacesIn[n];
-        outData = interfacesOut[n];
+        const style = {up: colorsList}
 
-        let max = _.max([inData.max(), outData.max()]);
+        let max = 130;
         let axistype = "linear"
 
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>Traffic example</h3>
+                        <h3>Stacked area chart example</h3>
                     </div>
                 </div>
 
                 <div className="row">
-                    <div className="col-md-3">
-                        <Legend categories={{"In": "intraffic", "out": "outtraffic"}} style="swatch"/>
-                    </div>
-                    <div className="col-md-9">
-                        <span style={dateRangeStyle}>{inData.range().humanize()}</span>
+                    <div className="col-md-12">
+                        <Legend categories={legendCategories} type="swatch"/>
                     </div>
                 </div>
 
@@ -88,12 +108,12 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
 
-                            <ChartContainer timeRange={inData.range()} padding="0" transition="300">
-                                <ChartRow height="150" debug={false}>
+                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition="300">
+                                <ChartRow height="350" debug={false}>
                                     <Charts>
-                                        <AreaChart axis="traffic" series={[[inData],[outData]]} />
+                                        <AreaChart axis="value" style={style} series={[seriesList,[]]} interpolate="linear"/>
                                     </Charts>
-                                    <YAxis id="traffic" label="Traffic (bps)" labelOffset={0} min={-max} max={max} absolute={true} width="60" type={axistype}/>
+                                    <YAxis id="value" label="" labelOffset={0} max={max} width="60" type={axistype}/>
                                 </ChartRow>
                             </ChartContainer>
 

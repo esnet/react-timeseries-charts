@@ -16,6 +16,7 @@ import {Legend,
 import App from "./app.jsx";
 import Intro from "./intro.jsx";
 import AreaCharts from "./areachart.jsx";
+import StackedAreaCharts from "./stacked.jsx";
 import LineCharts from "./linechart.jsx";
 import BarCharts from "./barchart.jsx";
 import Legends from "./legend.jsx";
@@ -29,6 +30,7 @@ const routes = (
     <Route path="/" handler={App}>
         <DefaultRoute name="intro" handler={Intro} />
         <Route name="areacharts" handler={AreaCharts} />
+        <Route name="stacked" handler={StackedAreaCharts} />
         <Route name="linecharts" handler={LineCharts} />
         <Route name="barcharts" handler={BarCharts} />
         <Route name="legends" handler={Legends} />
