@@ -1,12 +1,16 @@
 {
-  "name": "esnet-react-charts",
+  "name": "react-timeseries-charts",
+  "description": "Declarative timeseries charts",
   "version": "0.1.1",
   "private": "true",
   "main": "lib",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": {
     "type": "git",
-    "url": "git://github.com:esnet/esnet-react-charts.git"
+    "url": "git://github.com:esnet/react-timeseries-charts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "dependencies": {
     "underscore": "^1.7.0",
@@ -18,5 +22,10 @@
   },
   "peerDependencies": {
     "react": "0.13.x"
-  }
+  },
+  "keywords": [
+    "d3 charts",
+    "react",
+    "timeseries"
+  ]
 }

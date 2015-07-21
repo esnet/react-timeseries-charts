@@ -1,12 +1,16 @@
 {
-  "name": "esnet-react-charts",
+  "name": "react-timeseries-charts",
+  "description": "Declarative timeseries charts",
   "version": "0.1.1",
   "private": "true",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": {
     "type": "git",
-    "url": "git://github.com:esnet/esnet-react-charts.git"
+    "url": "git://github.com:esnet/react-timeseries-charts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
     "build-global": "rm -rf build/global && NODE_ENV=production webpack ./entry.js build/global/react-charts.js && NODE_ENV=production COMPRESS=1 webpack ./entry.js build/global/react-charts.min.js && echo \"gzipped, the global build is `gzip -c build/global/react-charts.min.js | wc -c` bytes\"",
@@ -41,5 +45,10 @@
     "babel-loader": "^5.0.0",
     "babel-core": "^5.1.13",
     "webpack-dev-server": "^1.6.5"
-  }
+  },
+  "keywords": [
+    "d3 charts",
+    "react",
+    "timeseries"
+  ]
 }
