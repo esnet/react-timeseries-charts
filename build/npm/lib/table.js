@@ -74,32 +74,53 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         if (this.props.columns) {
             _underscore2["default"].each(this.props.columns, function (column) {
-                var formatter = column.format ? _d32["default"].format(column.format) : undefined;
-                if (column.key === "time") {
-                    if (event instanceof _pond.IndexedEvent) {
-                        cells.push(_reactAddons2["default"].createElement(
-                            "td",
-                            null,
-                            event.index().toNiceString(_this.props.timeFormat)
-                        ));
-                    } else {
-                        var ts = (0, _moment2["default"])(event.timestamp());
-                        cells.push(_reactAddons2["default"].createElement(
-                            "td",
-                            null,
-                            ts.format(_this.props.timeFormat)
-                        ));
-                    }
-                } else {
-                    var value = event.data().get(column.key);
-                    if (formatter) {
-                        value = formatter(parseFloat(value, 10));
-                    }
+                var cell = undefined;
+                if (_this.props.renderCell) {
+                    cell = _this.props.renderCell(event, column.key);
+                }
+
+                if (cell) {
                     cells.push(_reactAddons2["default"].createElement(
                         "td",
                         null,
-                        value
+                        cell
                     ));
+                } else {
+                    var formatter = undefined;
+                    if (column.format) {
+                        if (_underscore2["default"].isFunction(column.format)) {
+                            formatter = column.format;
+                        } else if (_underscore2["default"].isString(column.format)) {
+                            formatter = _d32["default"].format(column.format);
+                        }
+                    }
+
+                    if (column.key === "time") {
+                        if (event instanceof _pond.IndexedEvent) {
+                            cells.push(_reactAddons2["default"].createElement(
+                                "td",
+                                null,
+                                event.index().toNiceString(_this.props.timeFormat)
+                            ));
+                        } else {
+                            var ts = (0, _moment2["default"])(event.timestamp());
+                            cells.push(_reactAddons2["default"].createElement(
+                                "td",
+                                null,
+                                ts.format(_this.props.timeFormat)
+                            ));
+                        }
+                    } else {
+                        var value = event.data().get(column.key);
+                        if (formatter) {
+                            value = formatter(parseFloat(value, 10));
+                        }
+                        cells.push(_reactAddons2["default"].createElement(
+                            "td",
+                            null,
+                            value
+                        ));
+                    }
                 }
             });
         } else {
@@ -119,11 +140,24 @@ exports["default"] = _reactAddons2["default"].createClass({
             }
 
             event.data().forEach(function (d, i) {
-                cells.push(_reactAddons2["default"].createElement(
-                    "td",
-                    null,
-                    d.toString()
-                ));
+                var cell = undefined;
+                if (_this.props.renderCell) {
+                    cell = _this.props.renderCell(event, i);
+                }
+
+                if (cell) {
+                    cells.push(_reactAddons2["default"].createElement(
+                        "td",
+                        null,
+                        cell
+                    ));
+                } else {
+                    cells.push(_reactAddons2["default"].createElement(
+                        "td",
+                        null,
+                        d.toString()
+                    ));
+                }
             });
         }
 
@@ -159,6 +193,32 @@ exports["default"] = _reactAddons2["default"].createClass({
                     throw _iteratorError;
                 }
             }
+        }
+
+        var summaryStyle = {
+            backgroundColor: "#ECECEC",
+            borderTop: "#E0E0E0",
+            borderTopWidth: 2,
+            borderTopStyle: "solid"
+        };
+
+        if (this.props.summary) {
+            var cells = _underscore2["default"].map(this.props.summary, function (value, key) {
+                return _reactAddons2["default"].createElement(
+                    "td",
+                    null,
+                    _reactAddons2["default"].createElement(
+                        "b",
+                        null,
+                        value
+                    )
+                );
+            });
+            rows.push(_reactAddons2["default"].createElement(
+                "tr",
+                { style: summaryStyle },
+                cells
+            ));
         }
 
         return rows;
