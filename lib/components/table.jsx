@@ -53,30 +53,49 @@ export default React.createClass({
 
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {
-                const formatter = column.format ? d3.format(column.format) : undefined;
-                if (column.key === "time") {
-                    if (event instanceof IndexedEvent) {
-                        cells.push(
-                            <td>
-                                {event.index().toNiceString(this.props.timeFormat)}
-                            </td>
-                        );
-                    } else {
-                        const ts = Moment(event.timestamp());
-                        cells.push(
-                            <td>
-                                {ts.format(this.props.timeFormat)}
-                            </td>
-                        );
-                    }
+                let cell;
+                if (this.props.renderCell) {
+                    cell = this.props.renderCell(event, column.key);
+                }
+
+                if (cell) {
+                    cells.push(
+                        <td>{cell}</td>
+                    )
                 } else {
-                    let value = event.data().get(column.key);
-                    if (formatter) {
-                        value = formatter(parseFloat(value, 10));
+                    let formatter;
+                    if (column.format) {
+                        if (_.isFunction(column.format)) {
+                            formatter = column.format;
+                        } else if (_.isString(column.format)) {
+                            formatter = d3.format(column.format);
+                        }
                     }
-                    cells.push (
-                        <td>{value}</td>
-                    );
+
+                    if (column.key === "time") {
+                        if (event instanceof IndexedEvent) {
+                            cells.push(
+                                <td>
+                                    {event.index().toNiceString(this.props.timeFormat)}
+                                </td>
+                            );
+                        } else {
+                            const ts = Moment(event.timestamp());
+                            cells.push(
+                                <td>
+                                    {ts.format(this.props.timeFormat)}
+                                </td>
+                            );
+                        }
+                    } else {
+                        let value = event.data().get(column.key);
+                        if (formatter) {
+                            value = formatter(parseFloat(value, 10));
+                        }
+                        cells.push (
+                            <td>{value}</td>
+                        );
+                    }
                 }
             })
         } else {
@@ -96,9 +115,20 @@ export default React.createClass({
             }
 
             event.data().forEach((d, i) => {
-                cells.push (
-                    <td>{d.toString()}</td>
-                );
+                let cell;
+                if (this.props.renderCell) {
+                    cell = this.props.renderCell(event, i);
+                }
+
+                if (cell) {
+                    cells.push(
+                        <td>{cell}</td>
+                    )
+                } else {
+                    cells.push (
+                        <td>{d.toString()}</td>
+                    );
+                }
             });
         }
 
@@ -111,6 +141,22 @@ export default React.createClass({
             rows.push(
                 <tr>{this.renderCells(event)}</tr>
             );
+        }
+
+        const summaryStyle = {
+            backgroundColor: "#ECECEC",
+            borderTop: "#E0E0E0",
+            borderTopWidth: 2,
+            borderTopStyle: "solid"
+        }
+
+        if (this.props.summary) {
+            const cells = _.map(this.props.summary, (value, key) => (
+                <td><b>{value}</b></td>
+            ));
+            rows.push(
+                <tr style={summaryStyle}>{cells}</tr>
+            )
         }
 
         return rows;
