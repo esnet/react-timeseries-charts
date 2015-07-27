@@ -146,7 +146,7 @@ const columns = [
 
 const measurementColumns = [
     {key: "time", label: "Timestamp"},
-    {key: "in", label: "Measurement", format: percentFormat},
+    {key: "value", label: "Measurement", format: percentFormat},
 ];
 
 function renderPercentAsColor(event, column) {
@@ -195,14 +195,19 @@ export default React.createClass({
 	},
 
   	render: function() {
-
   		const availability = new TimeSeries(availabilityData);
         const measurements = new TimeSeries(measurementData);
-
-        var availabilityDataSummary = {
+        const availabilityDataSummary = {
             "time": "Past year",
             "uptime": `${percentFormat(availability.avg("uptime")/100)}`,
             "outages": `${paddedCounterFormat(availability.sum("outages"))}`
+        }
+        const roundedCornerStyle = {
+            borderRadius: 5,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#DDDDDD",
+            overflow: "auto"
         }
 
 	    return (
@@ -226,10 +231,12 @@ export default React.createClass({
 
 	          	<div className="row">
 	          		<div className="col-md-8">
-              	    	<TimeSeriesTable series={availability}
-                                         timeFormat="MMMM, YYYY"
-                                         columns={columns}
-                                         summary={availabilityDataSummary} />
+                        <div style={roundedCornerStyle}>
+                  	    	<TimeSeriesTable series={availability}
+                                             timeFormat="MMMM, YYYY"
+                                             columns={columns}
+                                             summary={availabilityDataSummary} />
+                        </div>
               	    </div>
 	          	</div>
 
@@ -245,11 +252,13 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-8">
-                        <TimeSeriesTable series={availability}
-                                         timeFormat="MMMM, YYYY"
-                                         columns={columns}
-                                         summary={availabilityDataSummary}
-                                         renderCell={renderPercentAsBar}/>
+                        <div style={roundedCornerStyle}>
+                            <TimeSeriesTable series={availability}
+                                             timeFormat="MMMM, YYYY"
+                                             columns={columns}
+                                             summary={availabilityDataSummary}
+                                             renderCell={renderPercentAsBar}/>
+                        </div>
                     </div>
                 </div>
 
@@ -268,11 +277,13 @@ numbers are controlled based on the values:`} />
 
                 <div className="row">
                     <div className="col-md-6">
-                        <TimeSeriesTable series={availability}
-                                         timeFormat="MMMM, YYYY"
-                                         columns={columns}
-                                         summary={availabilityDataSummary}
-                                         renderCell={renderPercentAsColor}/>
+                        <div style={roundedCornerStyle}>
+                            <TimeSeriesTable series={availability}
+                                             timeFormat="MMMM, YYYY"
+                                             columns={columns}
+                                             summary={availabilityDataSummary}
+                                             renderCell={renderPercentAsColor}/>
+                        </div>
                     </div>
                 </div>
 
@@ -286,7 +297,9 @@ numbers are controlled based on the values:`} />
 
                 <div className="row">
                     <div className="col-md-6">
-                        <TimeSeriesTable series={measurements} timeFormat="h:mm:ss a" columns={measurementColumns}/>
+                        <div style={roundedCornerStyle}>
+                            <TimeSeriesTable series={measurements} timeFormat="h:mm:ss a" columns={measurementColumns}/>
+                        </div>
                     </div>
                 </div>
                 <hr />

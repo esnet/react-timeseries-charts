@@ -63,7 +63,8 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
-            timeFormat: undefined
+            timeFormat: undefined,
+            width: 300
         };
     },
 
@@ -198,7 +199,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var summaryStyle = {
             backgroundColor: "#ECECEC",
             borderTop: "#E0E0E0",
-            borderTopWidth: 2,
+            borderTopWidth: 1,
             borderTopStyle: "solid"
         };
 
@@ -226,11 +227,12 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     renderHeader: function renderHeader() {
         var headerCells = [];
+        var headerStyle = { borderTop: "none" };
         if (this.props.columns) {
             _underscore2["default"].each(this.props.columns, function (column) {
                 headerCells.push(_reactAddons2["default"].createElement(
                     "th",
-                    null,
+                    { style: headerStyle },
                     column.label
                 ));
             });
@@ -243,19 +245,25 @@ exports["default"] = _reactAddons2["default"].createClass({
             this.props.series._columns.forEach(function (column) {
                 headerCells.push(_reactAddons2["default"].createElement(
                     "th",
-                    null,
+                    { style: headerStyle },
                     column
                 ));
             });
         }
 
-        return headerCells;
+        return _reactAddons2["default"].createElement(
+            "tr",
+            null,
+            headerCells
+        );
     },
 
     render: function render() {
+        var style = { marginBottom: 0 };
+
         return _reactAddons2["default"].createElement(
             "table",
-            { className: "table table-condensed table-striped", width: "300" },
+            { className: "table table-condensed table-striped", width: this.props.width, style: style },
             _reactAddons2["default"].createElement(
                 "tbody",
                 null,

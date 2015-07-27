@@ -44,7 +44,8 @@ export default React.createClass({
 
     getDefaultProps: function() {
         return {
-            timeFormat: undefined
+            timeFormat: undefined,
+            width: 300
         }
     },
 
@@ -146,7 +147,7 @@ export default React.createClass({
         const summaryStyle = {
             backgroundColor: "#ECECEC",
             borderTop: "#E0E0E0",
-            borderTopWidth: 2,
+            borderTopWidth: 1,
             borderTopStyle: "solid"
         }
 
@@ -164,30 +165,36 @@ export default React.createClass({
 
     renderHeader: function() {
         let headerCells = [];
+        const headerStyle = {borderTop: "none"};
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {
                 headerCells.push(
-                    <th>{column.label}</th>
+                    <th style={headerStyle}>{column.label}</th>
                 );
             });
         } else {
             headerCells.push(
-                <th>time</th>
+                <th >time</th>
             );
             this.props.series._columns.forEach((column) => {
                 headerCells.push(
-                    <th>{column}</th>
+                    <th style={headerStyle}>{column}</th>
                 );
             });
         }
 
-        return headerCells;
+        return (
+            <tr>
+                {headerCells}
+            </tr>
+        );
     },
 
     render: function() {
+        const style = {marginBottom: 0};
+
         return (
-            <table className="table table-condensed table-striped" width="300">
-                    
+            <table className="table table-condensed table-striped" width={this.props.width} style={style}> 
                 <tbody>
                     {this.renderHeader()}
                     {this.renderRows()}
