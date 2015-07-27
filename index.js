@@ -22,6 +22,7 @@ module.exports = {
     PointIndicator: require("./build/npm/lib/pointindicator"),
     Resizable: require("./build/npm/lib/resizable"),
     ScatterChart: require("./build/npm/lib/scatterchart"),
+    Table: require("./build/npm/lib/table"),
     TimeAxis: require("./build/npm/lib/timeaxis"),
     Tracker: require("./build/npm/lib/tracker"),
     ValueAxis: require("./build/npm/lib/valueaxis"),
