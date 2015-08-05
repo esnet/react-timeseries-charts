@@ -28,6 +28,8 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
+import moment from "moment";
+
 import invariant from "react/lib/invariant";
 
 import {TimeRange} from "pond";
@@ -159,11 +161,12 @@ export default React.createClass({
         let X_AXIS_HEIGHT = 35;
 
         let transform = `translate(${leftWidth},0)`;
-        let timeAxisWidth = this.props.width - leftWidth - rightWidth - padding*2;
+        let timeAxisWidth = this.props.width - leftWidth - rightWidth - padding * 2;
+
         let [beginTime, endTime] = this.props.timeRange.toJSON();
 
         let timeScale = d3.time.scale()
-            .domain([new Date(beginTime), new Date(endTime)])
+            .domain([beginTime, endTime])
             .range([0, timeAxisWidth]);
 
         let timeAxis = (
@@ -172,7 +175,7 @@ export default React.createClass({
                     <div className="chartcontainer timeaxis" >
                         <svg width={this.props.width} height={X_AXIS_HEIGHT}>
                             <g transform={transform}>
-                                <TimeAxis scale={timeScale} dayFormat={this.props.dayFormat} monthFormat={this.props.monthFormat}/>
+                                <TimeAxis scale={timeScale} format={this.props.format}/>
                             </g>
                         </svg>
                     </div>

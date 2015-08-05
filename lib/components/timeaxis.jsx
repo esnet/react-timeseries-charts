@@ -44,18 +44,24 @@ export default React.createClass({
     renderTimeAxis: function(scale) {
         var axis;
 
-        if (this.props.dayFormat === true) {
+        if (this.props.format === "day") {
             axis = d3.svg.axis()
                 .scale(scale)
                 .orient("bottom")
                 .ticks(d3.time.days, 1)
                 .tickFormat(d3.time.format("%d"));
-        } else if (this.props.monthFormat === true) {
+        } else if (this.props.format === "month") {
             axis = d3.svg.axis()
                 .scale(scale)
                 .orient("bottom")
                 .ticks(d3.time.months, 1)
                 .tickFormat(d3.time.format("%B"));
+        } else if (this.props.format === "year") {
+            axis = d3.svg.axis()
+                .scale(scale)
+                .orient("bottom")
+                .ticks(d3.time.years, 1)
+                .tickFormat(d3.time.format("%Y"));
         } else {
             axis = d3.svg.axis()
                 .scale(scale)

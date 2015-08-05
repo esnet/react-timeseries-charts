@@ -29,11 +29,11 @@ import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
 import Moment from "moment";
-
+import {TimeSeries} from "pond";
 import "./barchart.css";
 
-var DAY = 1000 * 60 * 60 * 24;
-var HOUR = 1000 * 60 * 60;
+const DAY = 1000 * 60 * 60 * 24;
+const HOUR = 1000 * 60 * 60;
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -48,6 +48,7 @@ function scaleAsString(scale) {
 export default React.createClass({
 
     propTypes: {
+        series: React.PropTypes.instanceOf(TimeSeries),
         /**
          * The width of each bar is the width determined by the time range - spacing x 2
          */
@@ -57,93 +58,69 @@ export default React.createClass({
          * The position of the bar is then offset by this value.
          */
         offset: React.PropTypes.number,
+
+        /**
+         * Which columns to display stacked on top of each other. If you don't supply
+         * a columns prop then all columns will be stacked.
+         */
+        columns: React.PropTypes.array,
+
+        /**
+         * The style of each column e.g. {"traffic": {fill: "#FF0"}}
+         */
+        style: React.PropTypes.object
     },
 
     getDefaultProps: function() {
         return {
             spacing: 1,
-            offset: 0
+            offset: 0,
+            style: {"value": {fill: "#619F3A"}}
         };
     },
 
-    renderBarChart: function(data, timeScale, yScale, classed) {
-        let spacing = Number(this.props.spacing);
-        let offset = Number(this.props.offset);
+    renderBars: function() {
+        const spacing = Number(this.props.spacing);
+        const offset = Number(this.props.offset);
+        const series = this.props.series;
+        const timeScale = this.props.timeScale;
+        const yScale = this.props.yScale;
+        const columns = this.props.columns || series._columns;
 
-        if (!yScale || !data[0]) {
-            return null;
+        let rects = [];
+        for (event of series.events()) {
+            const begin = event.begin();
+            const end = event.end();
+
+            const beginPos = timeScale(begin) + spacing;
+            const endPos = timeScale(end) - spacing;
+
+            const x = timeScale(begin) + spacing + offset;
+            const width = endPos - beginPos;
+
+            let ypos = yScale(0);
+            for (let column of columns) {
+                const value = event.get(column);
+                const height = yScale(0) - yScale(value);
+                const y = ypos - height;
+                const barStyle = this.props.style[column] ? this.props.style[column] : {fill: "steelblue"};
+                
+                rects.push(
+                    <rect x={x} y={y} width={width} height={height} style={barStyle}/>
+                )
+
+                ypos -= height;
+            }
         }
-
-        if (this.props.dropNulls) {
-            data = _.filter(data, d => { return d.value!==null; } );
-        }
-
-        d3.select(this.getDOMNode()).selectAll("*").remove();
-
-        let barClasses = {"barchart-rect": true};
-        if (classed) {
-            barClasses[classed] = true;
-        }
-
-        d3.select(this.getDOMNode()).selectAll("rect")
-            .data(data)
-            .enter().append("rect")
-                .classed(barClasses)
-                .attr("width", d => {
-                    let start = d.time;
-                    let end;
-
-                    if (this.props.interval === "monthly") {
-                        let daysInMonth = Moment(d.time).daysInMonth();
-                        end = new Date(d.time.getTime() + daysInMonth * DAY); 
-                    } else if (this.props.interval === "daily") {
-                        end = new Date(d.time.getTime() + DAY);
-                    } else if (this.props.interval === "hourly") {
-                        end = new Date(d.time.getTime() + HOUR);
-                    }
-
-                    let startLocation = timeScale(start) + spacing;
-                    let endLocation = timeScale(end) - spacing;
-                    return endLocation - startLocation;
-                })
-                .attr("height", d => {
-                    return yScale(0) - yScale(d.value);
-                })
-                .attr("x", d => { return timeScale(d.time) + spacing + offset; })
-                .attr("y", d => { return yScale(d.value); })
-
-    },
-
-    componentDidMount: function() {
-        this.renderBarChart(this.props.data,
-                             this.props.timeScale,
-                             this.props.yScale,
-                             this.props.classed);
-
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        let data = nextProps.data;
-        let timeScale = nextProps.timeScale;
-        let yScale = nextProps.yScale;
-        let classed = nextProps.classed;
-
-        if (this.props.data !== nextProps.data ||
-            this.props.data.time !== data.time ||
-            scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            this.renderBarChart(data, timeScale, yScale, classed);
-        }
-    },
-
-    shouldComponentUpdate: function() {
-        return false;
+        return rects;
     },
 
     //TODO: props.attr should be required
     render: function() {
         return (
-            <g></g>
+            <g>
+                {this.renderBars()}
+            </g>
         );
     }
 });
