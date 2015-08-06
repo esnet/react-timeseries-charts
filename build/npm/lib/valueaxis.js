@@ -39,8 +39,6 @@ var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 var _d3 = require("d3");
 
-var _d32 = _interopRequireDefault(_d3);
-
 /**
  * Renders a 'axis' that display a label for a current tracker value
  *
@@ -50,6 +48,8 @@ var _d32 = _interopRequireDefault(_d3);
  *          |                |
  *      ----+----------------+
  */
+
+var _d32 = _interopRequireDefault(_d3);
 
 exports["default"] = _reactAddons2["default"].createClass({
 

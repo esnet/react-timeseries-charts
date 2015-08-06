@@ -212,10 +212,9 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         var _getAreaStackers = getAreaStackers();
 
+        //Stack our layers
         var stackUp = _getAreaStackers.stackUp;
         var stackDown = _getAreaStackers.stackDown;
-
-        //Stack our layers
         stackUp(upLayers);
         if (downLayers.length) {
             stackDown(downLayers);
@@ -267,10 +266,9 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         var _getAreaStackers2 = getAreaStackers();
 
+        //Stack our layers
         var stackUp = _getAreaStackers2.stackUp;
         var stackDown = _getAreaStackers2.stackDown;
-
-        //Stack our layers
         stackUp(upLayers);
         if (downLayers.length) {
             stackDown(downLayers);

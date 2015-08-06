@@ -203,8 +203,8 @@ export default React.createClass({
 		                            <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
 		                                   min={0} max={max} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic-volume" style={leftStyle} spacing="10" offset="4" columns={["in"]} series={octoberTrafficSeries} />
-		                                <BarChart axis="traffic-volume" style={rightStyle}  spacing="10" offset="-4" columns={["out"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={leftStyle} size="10" offset="5.5" columns={["in"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={rightStyle} size="10" offset="-5.5" columns={["out"]} series={octoberTrafficSeries} />
 		                            </Charts>
 	                                <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
 	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
@@ -300,7 +300,7 @@ export default React.createClass({
 		        </div>
 
 		        {/*}
-		        
+
 		        <div className="row">
 		            <div className="col-md-12">
 		                <h3>Tour de France</h3>

@@ -47,6 +47,10 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _moment = require("moment");
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _reactLibInvariant = require("react/lib/invariant");
 
 var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
@@ -154,7 +158,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                     });
 
                     if (countCharts !== 1) {
-                        (0, _reactLibInvariant2["default"])(false, "ChartRow should have one and only one <Charts> tag within it", childRow.constructor.name);
+                        (0, _reactLibInvariant2["default"])(false, 'ChartRow should have one and only one <Charts> tag within it', childRow.constructor.name);
                     }
 
                     align = "left";
@@ -207,7 +211,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var beginTime = _props$timeRange$toJSON2[0];
         var endTime = _props$timeRange$toJSON2[1];
 
-        var timeScale = _d32["default"].time.scale().domain([new Date(beginTime), new Date(endTime)]).range([0, timeAxisWidth]);
+        var timeScale = _d32["default"].time.scale().domain([beginTime, endTime]).range([0, timeAxisWidth]);
 
         var timeAxis = _reactAddons2["default"].createElement(
             "div",
@@ -224,7 +228,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                         _reactAddons2["default"].createElement(
                             "g",
                             { transform: transform },
-                            _reactAddons2["default"].createElement(_timeaxis2["default"], { scale: timeScale, dayFormat: this.props.dayFormat, monthFormat: this.props.monthFormat })
+                            _reactAddons2["default"].createElement(_timeaxis2["default"], { scale: timeScale, format: this.props.format })
                         )
                     )
                 )

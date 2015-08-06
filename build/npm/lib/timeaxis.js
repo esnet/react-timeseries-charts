@@ -58,10 +58,12 @@ exports["default"] = _reactAddons2["default"].createClass({
     renderTimeAxis: function renderTimeAxis(scale) {
         var axis;
 
-        if (this.props.dayFormat === true) {
+        if (this.props.format === "day") {
             axis = _d32["default"].svg.axis().scale(scale).orient("bottom").ticks(_d32["default"].time.days, 1).tickFormat(_d32["default"].time.format("%d"));
-        } else if (this.props.monthFormat === true) {
+        } else if (this.props.format === "month") {
             axis = _d32["default"].svg.axis().scale(scale).orient("bottom").ticks(_d32["default"].time.months, 1).tickFormat(_d32["default"].time.format("%B"));
+        } else if (this.props.format === "year") {
+            axis = _d32["default"].svg.axis().scale(scale).orient("bottom").ticks(_d32["default"].time.years, 1).tickFormat(_d32["default"].time.format("%Y"));
         } else {
             axis = _d32["default"].svg.axis().scale(scale).orient("bottom");
         }

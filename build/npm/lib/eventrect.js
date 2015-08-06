@@ -39,9 +39,10 @@ var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 var _d3 = require("d3");
 
+//Returns a d3 scale as a string so we can determine if we have a new scale
+
 var _d32 = _interopRequireDefault(_d3);
 
-//Returns a d3 scale as a string so we can determine if we have a new scale
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
 }

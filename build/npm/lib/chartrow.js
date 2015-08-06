@@ -67,11 +67,12 @@ var _eventrect2 = _interopRequireDefault(_eventrect);
 
 var _pointindicator = require("./pointindicator");
 
-var _pointindicator2 = _interopRequireDefault(_pointindicator);
-
 /**
  * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
  */
+
+var _pointindicator2 = _interopRequireDefault(_pointindicator);
+
 var ClipDefs = _reactAddons2["default"].createClass({
     displayName: "ClipDefs",
 
@@ -395,7 +396,7 @@ exports["default"] = _reactAddons2["default"].createClass({
             keyCount++;
         });
 
-        var enableZoom = _underscore2["default"].has(this.props, "enableZoom") ? this.props.enableZoom : false;
+        var enableZoom = _underscore2["default"].has(this.props, 'enableZoom') ? this.props.enableZoom : false;
 
         var zoomHandler = null;
         if (enableZoom) {

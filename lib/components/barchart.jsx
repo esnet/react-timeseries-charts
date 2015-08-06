@@ -95,9 +95,21 @@ export default React.createClass({
             const beginPos = timeScale(begin) + spacing;
             const endPos = timeScale(end) - spacing;
 
-            const x = timeScale(begin) + spacing + offset;
-            const width = endPos - beginPos;
+            let width;
+            if (this.props.size) {
+                width = this.props.size;
+            } else {
+                width = endPos - beginPos;
+            }
 
+            let x;
+            if (this.props.size) {
+                const center = timeScale(begin) + (timeScale(end) - timeScale(begin))/2;
+                x = center - this.props.size/2 + offset;
+            } else {
+                x = timeScale(begin) + spacing + offset;
+            }
+            
             let ypos = yScale(0);
             for (let column of columns) {
                 const value = event.get(column);
