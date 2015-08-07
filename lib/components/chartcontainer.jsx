@@ -46,11 +46,13 @@ export default React.createClass({
 
     getDefaultProps: function() {
         return {
-            "transition": 0
+            "transition": 0,
+            "enableZoom": false,
         };
     },
 
     propTypes: {
+        panZoom: React.PropTypes.bool,
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
             React.PropTypes.element]),
@@ -65,9 +67,9 @@ export default React.createClass({
     //Within the charts library the time range of the x axis is kept as a begin and
     //end time (Javascript Date objects). But the interface is Pond based, so
     //this callback returns a Pond TimeRange.
-    handleTimeRangeChanged: function(beginTime, endTime) {
+    handleTimeRangeChanged: function(timerange) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(TimeRange(beginTime, endTime));
+            this.props.onTimeRangeChanged(timerange);
         }
     },
 
@@ -205,6 +207,8 @@ export default React.createClass({
                     minTime: this.props.minTime,                      // zoomable min/max times
                     maxTime: this.props.maxTime,
                     transition: this.props.transition,                // time to make scale transitions
+                    enableZoom: this.props.enableZoom,
+                    minDuration: this.props.minDuration,
                     trackerPosition: this.props.trackerPosition,      // tracker position
                     onTimeRangeChanged: this.handleTimeRangeChanged,  // zoom/pan callback
                     onTrackerChanged: this.handleTrackerChanged       // tracker change callback

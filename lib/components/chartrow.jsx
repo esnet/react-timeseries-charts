@@ -37,45 +37,6 @@ import EventRect from "./eventrect";
 import PointIndicator from "./pointindicator";
 
 /**
- * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
- */
-var ClipDefs = React.createClass({
-
-    renderClipPath: function(props) {
-        d3.select(this.getDOMNode()).selectAll("*").remove();
-
-        d3.select(this.getDOMNode())
-            .append("clipPath")
-            .attr("id", props.id)
-            .append("rect")
-            .attr("width", props.clipWidth)
-            .attr("height", props.clipHeight);
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        this.renderClipPath(nextProps);
-    },
-
-    componentDidMount: function() {
-        this.renderClipPath(this.props);
-    },
-
-    // For now we'll always update to ensure clipping id and rectangle track props
-    // Could probably optimize this to detect changes to width/height to avoid d3 touching
-    // the real DOM on every re-render.
-    shouldComponentUpdate: function() {
-        return true;
-    },
-
-    render: function() {
-        return (
-            <defs></defs>
-        );
-    }
-});
-
-
-/**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
@@ -106,9 +67,9 @@ export default React.createClass({
         }
     },
 
-    handleZoom: function(beginTime, endTime) {
+    handleZoom: function(timerange) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(beginTime, endTime);
+            this.props.onTimeRangeChanged(timerange);
         }
     },
 
@@ -377,9 +338,22 @@ export default React.createClass({
 
         let enableZoom = _.has(this.props,'enableZoom') ? this.props.enableZoom : false;
 
-        let zoomHandler=null;
+        let panZoomEventRect=null;
         if (enableZoom) {
-            zoomHandler=this.handleZoom;
+            panZoomEventRect = (
+                <g transform={chartTransform} key="event-rect-group">
+                    <EventRect width={chartWidth} height={innerHeight}
+                               scale={this.props.timeScale}
+                               onMouseOut={this.handleMouseOut}
+                               onMouseMove={this.handleMouseMove}
+                               enableZoom={enableZoom}
+                               minDuration={this.props.minDuration}
+                               minTime={this.props.minTime}
+                               maxTime={this.props.maxTime}
+                               onZoom={this.handleZoom}
+                               onResize={this.handleResize}/>
+                </g>
+            );
         }
 
         let chartDebug = null;
@@ -391,31 +365,28 @@ export default React.createClass({
 
         return (
             <svg width={this.props.width} height={Number(this.props.height)}>
+
+                <defs>
+                    <clipPath id={this.state.clipId}>
+                        <rect x="0" y="0" width={chartWidth} height={innerHeight} />
+                    </clipPath>
+                </defs>
+
                 {yAxisList}
 
                 {chartDebug}
 
                 <g transform={chartTransform} key="chart-group">
-                    <ClipDefs id={this.state.clipId} clipWidth={chartWidth} clipHeight={innerHeight} />
                     {chartList}
                 </g>
 
                 <g transform={chartTransform} key="tracker-group">
                     <Tracker height={innerHeight}
-                             scale={this.props.timeScale} position={this.props.trackerPosition} />
+                             scale={this.props.timeScale}
+                             position={this.props.trackerPosition} />
                 </g>
 
-                <g transform={chartTransform} key="event-rect-group">
-                    <EventRect width={chartWidth} height={innerHeight}
-                               scale={this.props.timeScale}
-                               onMouseOut={this.handleMouseOut}
-                               onMouseMove={this.handleMouseMove}
-                               enableZoom={enableZoom}
-                               onZoom={zoomHandler}
-                               minTime={this.props.minTime}
-                               maxTime={this.props.maxTime}
-                               onResize={this.handleResize}/>
-                </g>
+                {panZoomEventRect}
 
                 <g transform={chartTransform} key="brush-group">
                     {brushList}

@@ -26,18 +26,62 @@
  */
 
 import React from "react/addons";
-import d3 from "d3";
 import _ from "underscore";
-import Moment from "moment";
 import {TimeSeries} from "pond";
-import "./barchart.css";
 
-const DAY = 1000 * 60 * 60 * 24;
-const HOUR = 1000 * 60 * 60;
+const TooltipArrowStyle = {
+  position: 'absolute',
+  width: 0, height: 0,
+  borderRightColor: 'transparent',
+  borderLeftColor: 'transparent',
+  borderTopColor: 'transparent',
+  borderBottomColor: 'transparent',
+  borderStyle: 'solid',
+  opacity: .75
+};
 
-function scaleAsString(scale) {
-    return `${scale.domain()}-${scale.range()}`;
+const PlacementStyles = {
+  left: {
+    tooltip: { marginLeft: -3, padding: '0 5px' },
+    arrow: {
+      right: 0, marginTop: -5, borderWidth: '5px 0 5px 5px', borderLeftColor: '#000'
+    }
+  },
+  right: {
+    tooltip: { marginRight: 3, padding: '0 5px' },
+    arrow: { left: 0, marginTop: -5, borderWidth: '5px 5px 5px 0', borderRightColor: '#000' }
+  },
+  top: {
+    tooltip: { marginTop: -3, padding: '5px 0' },
+    arrow: { bottom: 0, marginLeft: -5, borderWidth: '5px 5px 0', borderTopColor: '#000' }
+  },
+  bottom: {
+    tooltip: { marginBottom: 3, padding: '5px 0' },
+    arrow: { top: 0, marginLeft: -5, borderWidth: '0 5px 5px', borderBottomColor: '#000' }
+  }
+};
+
+class ToolTip {
+  render(){
+    let placementStyle = PlacementStyles[this.props.placement];
+
+    let {
+      style,
+      arrowOffsetLeft: left = placementStyle.arrow.left,
+      arrowOffsetTop: top = placementStyle.arrow.top,
+      ...props } = this.props;
+
+    return (
+      <div style={{...TooltipStyle, ...placementStyle.tooltip, ...style}}>
+        <div style={{...TooltipArrowStyle, ...placementStyle.arrow, left, top }}/>
+        <div style={TooltipInnerStyle}>
+          { props.children }
+        </div>
+      </div>
+    );
+  }
 }
+
 
 /**
  * Renders a barchart. This BarChart implementation is a little different
@@ -79,6 +123,10 @@ export default React.createClass({
         };
     },
 
+    handleEvent: function(e) {
+        console.log("hover rect", e);
+    },
+
     renderBars: function() {
         const spacing = Number(this.props.spacing);
         const offset = Number(this.props.offset);
@@ -102,6 +150,10 @@ export default React.createClass({
                 width = endPos - beginPos;
             }
 
+            if (width < 1) {
+                width = 1;
+            }
+
             let x;
             if (this.props.size) {
                 const center = timeScale(begin) + (timeScale(end) - timeScale(begin))/2;
@@ -113,13 +165,21 @@ export default React.createClass({
             let ypos = yScale(0);
             for (let column of columns) {
                 const value = event.get(column);
-                const height = yScale(0) - yScale(value);
+                
+                let height = yScale(0) - yScale(value);
+                if (height < 1) {
+                    height = 1;
+                }
+
                 const y = ypos - height;
                 const barStyle = this.props.style[column] ? this.props.style[column] : {fill: "steelblue"};
                 
                 rects.push(
-                    <rect x={x} y={y} width={width} height={height} style={barStyle}/>
-                )
+                    <rect x={x} y={y} width={width} height={height}
+                          style={barStyle}
+                          clipPath={this.props.clipPathURL}
+                          onClick={this.handleEvent}/>
+                );
 
                 ypos -= height;
             }
@@ -127,7 +187,6 @@ export default React.createClass({
         return rects;
     },
 
-    //TODO: props.attr should be required
     render: function() {
         return (
             <g>

@@ -122,6 +122,17 @@ var tourSeries = new TimeSeries({
 
 export default React.createClass({
 
+	getInitialState: function() {
+		return {
+			timerange: octoberTrafficSeries.range()
+		}
+	},
+
+	handleTimeRangeChange: function(timerange) {
+		console.log("Timerange:", `${timerange.begin()}, ${timerange.end()}`)
+		this.setState({timerange: timerange})
+	},
+
   	render: function() {
 		const beginTime = Moment("2014-10-01");
 		const endTime = Moment("2014-11-01") - 1;
@@ -148,7 +159,11 @@ export default React.createClass({
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
-		                    <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+		                    <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+		                    				enableZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
+		                    				maxTime={new Date(1414827330868)}
+		                    				minTime={new Date(1412143472795)}
+		                    				minDuration={1000*60*60*24*5}>
 		                        
 		                        <ChartRow height="150">
 		                            <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
@@ -203,8 +218,8 @@ export default React.createClass({
 		                            <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
 		                                   min={0} max={max} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic-volume" style={leftStyle} size="10" offset="5.5" columns={["in"]} series={octoberTrafficSeries} />
-		                                <BarChart axis="traffic-volume" style={rightStyle} size="10" offset="-5.5" columns={["out"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={leftStyle} size={10} offset={5.5} columns={["in"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={rightStyle} size={10} offset={-5.5} columns={["out"]} series={octoberTrafficSeries} />
 		                            </Charts>
 	                                <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
 	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
@@ -241,7 +256,7 @@ export default React.createClass({
 		                            <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
 		                                   min={0} max={max} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic-volume" style={style} spacing="3" series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={style} spacing={3} series={octoberTrafficSeries} />
 		                            </Charts>
 	                                <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
 	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
