@@ -28,12 +28,13 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
+import ReactTooltip from "react-tooltip";
 
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
 import Tracker from "./tracker";
-import EventRect from "./eventrect";
+import EventHandler from "./eventhandler";
 import PointIndicator from "./pointindicator";
 
 /**
@@ -43,6 +44,16 @@ import PointIndicator from "./pointindicator";
 export default React.createClass({
 
     displayName: "ChartRow",
+
+    getDefaultProps: function() {
+        return {
+            "enablePanZoom": false
+        };
+    },
+
+    propTypes: {
+        enablePanZoom: React.PropTypes.bool
+    },
 
     getInitialState: function() {
         // id of clipping rectangle we will generate and use for each child chart
@@ -105,7 +116,7 @@ export default React.createClass({
     },
 
     render: function() {
-        let yAxisList = [];   // Contains all the yAxis elements used in the render
+        let axes = [];   // Contains all the yAxis elements used in the render
         let chartList = [];   // Contains all the chart elements used in the render
 
         let margin = (this.props.margin !== undefined) ? Number(this.props.margin) : 5;
@@ -177,7 +188,7 @@ export default React.createClass({
         leftAxisList.reverse();
 
         //
-        // Push each axis onto the yAxisList, transforming each into its column location
+        // Push each axis onto the axes, transforming each into its column location
         //
 
         let transform;
@@ -231,7 +242,7 @@ export default React.createClass({
                     debug = null;
                 }
 
-                yAxisList.push(
+                axes.push(
                     <g key={"y-axis-left-" + leftColumnIndex} transform={transform}>
                         {debug}
                         {axis}
@@ -269,7 +280,7 @@ export default React.createClass({
                     debug = null;
                 }
 
-                yAxisList.push(
+                axes.push(
                     <g key={"y-axis-right-" + rightColumnIndex} transform={transform}>
                         {debug}
                         {axis}
@@ -336,26 +347,34 @@ export default React.createClass({
 
         });
 
-        let enableZoom = _.has(this.props,'enableZoom') ? this.props.enableZoom : false;
-
-        let panZoomEventRect=null;
-        if (enableZoom) {
-            panZoomEventRect = (
+        //Charts with or without pan and zoom event handling
+        let charts;
+        if (this.props.enablePanZoom) {
+            charts = (
                 <g transform={chartTransform} key="event-rect-group">
-                    <EventRect width={chartWidth} height={innerHeight}
-                               scale={this.props.timeScale}
-                               onMouseOut={this.handleMouseOut}
-                               onMouseMove={this.handleMouseMove}
-                               enableZoom={enableZoom}
-                               minDuration={this.props.minDuration}
-                               minTime={this.props.minTime}
-                               maxTime={this.props.maxTime}
-                               onZoom={this.handleZoom}
-                               onResize={this.handleResize}/>
+                    <EventHandler width={chartWidth} height={innerHeight}
+                                  scale={this.props.timeScale}
+                                  enablePanZoom={this.props.enablePanZoom}
+                                  minDuration={this.props.minDuration}
+                                  minTime={this.props.minTime}
+                                  maxTime={this.props.maxTime}
+                                  onMouseOut={this.handleMouseOut}
+                                  onMouseMove={this.handleMouseMove}
+                                  onZoom={this.handleZoom}
+                                  onResize={this.handleResize}>
+                        {chartList}
+                    </EventHandler>
+                </g>
+            );
+        } else {
+            charts = (
+                <g transform={chartTransform} key="event-rect-group">
+                    {chartList}
                 </g>
             );
         }
 
+        //Debug outlining
         let chartDebug = null;
         if (this.props.debug) {
             chartDebug = (
@@ -363,36 +382,43 @@ export default React.createClass({
             );
         }
 
+        //Clipping
+        const clipDefs = (
+            <defs>
+                <clipPath id={this.state.clipId}>
+                    <rect x="0" y="0" width={chartWidth} height={innerHeight} />
+                </clipPath>
+            </defs>
+        );
+
+        //Hover tracker line
+        const tracker = (
+            <g transform={chartTransform} key="tracker-group">
+                <Tracker height={innerHeight}
+                         scale={this.props.timeScale}
+                         position={this.props.trackerPosition} />
+            </g>
+        );
+
+        //Pan and zoom brushes
+        const brushes = (
+            <g transform={chartTransform} key="brush-group">
+                {brushList}
+            </g>
+        );
+
         return (
-            <svg width={this.props.width} height={Number(this.props.height)}>
-
-                <defs>
-                    <clipPath id={this.state.clipId}>
-                        <rect x="0" y="0" width={chartWidth} height={innerHeight} />
-                    </clipPath>
-                </defs>
-
-                {yAxisList}
-
-                {chartDebug}
-
-                <g transform={chartTransform} key="chart-group">
-                    {chartList}
-                </g>
-
-                <g transform={chartTransform} key="tracker-group">
-                    <Tracker height={innerHeight}
-                             scale={this.props.timeScale}
-                             position={this.props.trackerPosition} />
-                </g>
-
-                {panZoomEventRect}
-
-                <g transform={chartTransform} key="brush-group">
-                    {brushList}
-                </g>
-
-            </svg>
+            <div>
+                <ReactTooltip place='top' type='warning' effect='solid'/>
+                <svg width={this.props.width} height={Number(this.props.height)}>
+                    {clipDefs}
+                    {axes}
+                    {charts}
+                    {chartDebug}
+                    {tracker}
+                    {brushes}
+                </svg>
+            </div>
         );
     }
 });

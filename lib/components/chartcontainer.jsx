@@ -47,12 +47,12 @@ export default React.createClass({
     getDefaultProps: function() {
         return {
             "transition": 0,
-            "enableZoom": false,
+            "enablePanZoom": false,
         };
     },
 
     propTypes: {
-        panZoom: React.PropTypes.bool,
+        enablePanZoom: React.PropTypes.bool,
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
             React.PropTypes.element]),
@@ -207,7 +207,7 @@ export default React.createClass({
                     minTime: this.props.minTime,                      // zoomable min/max times
                     maxTime: this.props.maxTime,
                     transition: this.props.transition,                // time to make scale transitions
-                    enableZoom: this.props.enableZoom,
+                    enablePanZoom: this.props.enablePanZoom,          // hook up pan/zoom events
                     minDuration: this.props.minDuration,
                     trackerPosition: this.props.trackerPosition,      // tracker position
                     onTimeRangeChanged: this.handleTimeRangeChanged,  // zoom/pan callback

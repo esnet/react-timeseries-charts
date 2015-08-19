@@ -60,8 +60,6 @@ var legendCategories = _.map(countriesList, (d, i) => ({
     })
 );
 
-console.log(seriesList)
-
 export default React.createClass({
 
     render: function() {
@@ -91,12 +89,12 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
 
-                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition="300">
+                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition="300" enablePanZoom={true} >
                                 <ChartRow height="350" debug={false}>
+                                    <YAxis id="value" label="" labelOffset={0} max={max} width="60" type={axistype}/>
                                     <Charts>
                                         <AreaChart axis="value" style={style} series={[seriesList,[]]} interpolate="linear"/>
                                     </Charts>
-                                    <YAxis id="value" label="" labelOffset={0} max={max} width="60" type={axistype}/>
                                 </ChartRow>
                             </ChartContainer>
 

@@ -1,5 +1,5 @@
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * ESnet React Charts, Copyright (c) 2015, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -30,7 +30,7 @@ import {TimeRange} from "pond";
 
 export default React.createClass({
 
-    displayName: "EventRect",
+    displayName: "EventHandler",
 
     getInitialState: function() {
         return {
@@ -44,13 +44,15 @@ export default React.createClass({
     getMousePositionFromEvent: function(e) {
         const target = e.currentTarget;
         const rect = target.getBoundingClientRect();
-        const x = e.clientX - rect.left - target.clientLeft;
-        const y = e.clientY - rect.top - target.clientTop;
+        const x = e.clientX;
+        const y = e.clientY;
         return [ Math.round(x), Math.round(y) ];
     },
 
     handleScrollWheel: function(e) {
         e.preventDefault();
+
+        console.log(this.state)
 
         const SCALE_FACTOR = 0.001;
         let scale = 1 + e.deltaY * SCALE_FACTOR;
@@ -116,10 +118,12 @@ export default React.createClass({
     },
 
     handleMouseMove: function(e) {
+        e.preventDefault();
         const xy = this.getMousePositionFromEvent(e)
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
-            const timeOffset = this.props.scale.invert(xy[0]).getTime() - this.props.scale.invert(xy0[0]).getTime();
+            const timeOffset = this.props.scale.invert(xy[0]).getTime() -
+                this.props.scale.invert(xy0[0]).getTime();
             let newBegin = this.state.initialPanBegin - timeOffset;
             let newEnd = this.state.initialPanEnd - timeOffset;
 
@@ -153,14 +157,15 @@ export default React.createClass({
     render: function() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "-webkit-grab";
         return (
-            <g>
+            <g pointerEvents="all"
+               onWheel={this.handleScrollWheel}
+               onMouseDown={this.handleMouseDown}
+               onMouseMove={this.handleMouseMove}
+               onMouseUp={this.handleMouseUp}>
                 <rect style={{"opacity": 0.0, "cursor": cursor}}
                       x={0} y={0}
-                      width={this.props.width} height={this.props.height}
-                      onWheel={this.handleScrollWheel}
-                      onMouseDown={this.handleMouseDown}
-                      onMouseMove={this.handleMouseMove}
-                      onMouseUp={this.handleMouseUp} />
+                      width={this.props.width} height={this.props.height} />
+                {this.props.children}
             </g>
         );
     },

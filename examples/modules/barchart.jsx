@@ -3,6 +3,72 @@ import _ from "underscore";
 import Moment from "moment"
 import {TimeSeries, TimeRange, Index} from "pond";
 
+import Markdown from "react-markdown-el";
+
+const exampleText = `
+
+This simple example of a bar chart displays a pan and zoom chart that shows traffic levels
+for each day of October 2014. The original data used here was captured to debug a messurement
+error (seen clearly in Oct 10th).
+
+To begin with we converted the original data into Pond's TimeSeries data structure as \`octoberTraffic\`:
+
+	import {TimeSeries} from "pond";
+
+	const octoberTraffic = new TimeSeries({
+		name: "Traffic",
+		utc: false,
+		columns: ["time", "in", "out"],
+		points: trafficPoints
+	});
+
+Points are simply an array of tuples, each of which is \`[index, value1, value2, ...]\`. In this case this
+looks like \`['2014-10-DD', volIn, volOut]\`. An index can be of several forms, but is a string that
+represents a time range (e.g. 2014-10-08 represents the time range spanning October 8th 2014).
+
+We also set utc to false here so that the index time ranges are defined in local time. Currently all
+visualizations of time series data are in local time, while the default is for indexes to be in UTC.
+
+Now we can render a the chart. The \`<BarChart>\` element does the rendering of the chart itself. As with
+other chart types, the vertical scale is provided by referencing the \`<YAxis>\` (\`axis='traffic'\`). 
+
+    <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+    				enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
+    				maxTime={new Date(1414827330868)}
+    				minTime={new Date(1412143472795)}
+    				minDuration={1000*60*60*24*5}>
+        <ChartRow height="150">
+            <YAxis id="traffic" label="Traffic In (B)" min={0} max={max} width="70" type="linear"/>
+            <Charts>
+                <BarChart axis="traffic" style={chartStyle} columns={["in"]}
+                		  series={octoberTrafficSeries}
+                		  selection={this.state.selection}
+                		  onSelectionChange={this.handleSelectionChanged}/>
+                <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
+            </Charts>
+            <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
+            	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
+        </ChartRow>
+    </ChartContainer>
+
+The style provides the coloring, relating each channel to styles for normal, highlight (hover) and
+selected:
+
+	const style = {
+		"in": {
+			normal: {fill: "#619F3A"},
+			highlight: {fill: "rgb(113, 187, 67)"},
+			selected: {fill: "#436D28"}
+		}
+	};
+
+As a side note, this chart can also be zoomed in and then panned with constraints. This is controlled
+using the \`<ChartContainer>\` props.
+
+The final result is below, along with other examples:
+
+`;
+
 //Imports from the charts library
 import ChartContainer from "../../lib/components/chartcontainer";
 import ChartRow from "../../lib/components/chartrow";
@@ -54,7 +120,7 @@ _.each(days, function(value, day) {
 });
 
 var octoberTrafficSeries = new TimeSeries({
-	name: "October In",
+	name: "October Traffic",
 	utc: false,
 	columns: ["time", "in", "out"],
 	points: trafficPoints
@@ -102,35 +168,28 @@ var monthlyDeliveredSeries = new TimeSeries({
 	points: routerData[routerKey].delivered
 });
 
-/*
-var tourSeries = new TimeSeries({
-    "name": "availability",
-    "utc": false,
-    "columns": ["time", "start", "finish"],
-    "points": [
-        ["2015", 198, 160],
-        ["2014", 198, 164],
-        ["2013", 198, 169],
-        ["2012", 198, 153],
-        ["2011", 198, 167],
-        ["2010", 197, 170],
-        ["2009", 180, 156],
-        ["2008", 180, 145]
-    ]
-});
-*/
-
 export default React.createClass({
 
 	getInitialState: function() {
 		return {
-			timerange: octoberTrafficSeries.range()
+			timerange: octoberTrafficSeries.range(),
+			selection: "October Traffic-2014-10-10-in"
 		}
 	},
 
 	handleTimeRangeChange: function(timerange) {
-		console.log("Timerange:", `${timerange.begin()}, ${timerange.end()}`)
 		this.setState({timerange: timerange})
+	},
+
+	handleSelectionChanged: function(key, value, context) {
+		console.log(key)
+		this.setState({
+			selection: key,
+			value: value,
+			series: context.series,
+			index: context.index,
+			column: context.column,
+		});
 	},
 
   	render: function() {
@@ -138,29 +197,74 @@ export default React.createClass({
 		const endTime = Moment("2014-11-01") - 1;
 		const timerange = new TimeRange([beginTime, endTime]);
 
-		const style = {"in": {fill: "#619F3A"}, "out": {fill: "#E37E23"}};
+		const style = {
+			"in": {
+				normal: {fill: "#619F3A"},
+				highlight: {fill: "rgb(113, 187, 67)"},
+				selected: {fill: "#436D28"}
+			},
+			"out": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "rgb(255, 141, 39)"},
+				selected: {fill: "#A55D1C"}
+			}
+		}
 
-		const leftStyle = {"in": {fill: "#619F3A"}};
-		const rightStyle = {"out": {fill: "#E37E23"}};
+		const leftStyle = {
+			"in": {
+				normal: {fill: "#619F3A"},
+				highlight: {fill: "rgb(113, 187, 67)"},
+				selected: {fill: "#436D28"}
+			}
+		};
+		const rightStyle = {
+			"out": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "rgb(255, 141, 39)"},
+				selected: {fill: "#B3621A"}
+			}
+		};
 
-		const tourStyleRight = {"start": {fill: "#DDD"}};
-		const tourStyleLeft = {"finish": {fill: "#E37E23"}};
+		const tourStyleRight = {
+			"start": {
+				normal: {fill: "#DDDDDD"},
+				highlight: {fill: "DEDEDE"}
+			}
+		};
+
+		const tourStyleLeft = {
+			"start": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "#C37E23"}
+			}
+		};
+
+		const formatter = d3.format(".2s");
 
 	    return (
 	    	<div>
+
+	            <div className="row">
+	                <div className="col-md-12">
+	                    <Markdown text={exampleText} />
+	                </div>
+	            </div>
+
 		        <div className="row">
 		            <div className="col-md-12">
 		                <h3>Daily traffic - October 2014</h3>
 		                <b>Interface: ornl-cr5::to_ornl_ip-a</b>
+		                <p style={{color: "#808080"}}>
+		                	Selected: {this.state.index ? this.state.index.toNiceString() : "--"} ({this.state.column ? this.state.column : "--"}) | {this.state.value ? `${formatter(this.state.value)}B` : "--"}
+		                </p>
 		            </div>
 		        </div>
-
 
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
 		                    <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
-		                    				enableZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
+		                    				enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
 		                    				maxTime={new Date(1414827330868)}
 		                    				minTime={new Date(1412143472795)}
 		                    				minDuration={1000*60*60*24*5}>
@@ -169,22 +273,14 @@ export default React.createClass({
 		                            <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
 		                                   min={0} max={max} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic" style={leftStyle} columns={["in"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic" style={leftStyle} columns={["in"]}
+		                                		  series={octoberTrafficSeries}
+		                                		  selection={this.state.selection}
+		                                		  onSelectionChange={this.handleSelectionChanged}/>
 		                                <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
 		                            </Charts>
 	                                <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
 	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
-		                        </ChartRow>
-
-		                        <ChartRow height="150">
-	                                <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
-	                                	   min={0} max={max} width="70" type="linear"/>
-		                            <Charts>
-		                                <BarChart axis="traffic" style={rightStyle} columns={["out"]} series={octoberTrafficSeries} />
-		                                <Baseline axis="traffic" value={avgOut} label="Avg" position="right"/>
-		                            </Charts>
-		                            <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
-		                                   min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
 		                        </ChartRow>
 
 		                    </ChartContainer>
@@ -291,7 +387,7 @@ export default React.createClass({
 		                            <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
 		                                   min={0} max={1500000000000000} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic" style={leftStyle} series={monthlyAcceptedSeries} />
+		                                <BarChart axis="traffic" series={monthlyAcceptedSeries} />
 		                                <Baseline axis="traffic" value={monthlyAcceptedSeries.avg()} label="Avg "position="right"/>
 		                            </Charts>
 	                                <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -302,7 +398,7 @@ export default React.createClass({
 	                                <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
 	                                	   min={0} max={1500000000000000} width="70" type="linear"/>
 		                            <Charts>
-		                                <BarChart axis="traffic" style={rightStyle} series={monthlyDeliveredSeries} />
+		                                <BarChart axis="traffic" series={monthlyDeliveredSeries} />
 		                                <Baseline axis="traffic" value={monthlyDeliveredSeries.avg()} label="Avg" position="right"/>
 		                            </Charts>
 		                            <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
@@ -313,35 +409,6 @@ export default React.createClass({
 		                </Resizable>
 		            </div>
 		        </div>
-
-		        {/*}
-
-		        <div className="row">
-		            <div className="col-md-12">
-		                <h3>Tour de France</h3>
-		                <b>Number of finishers</b>
-		            </div>
-		        </div>
-
-		        <div className="row">
-		            <div className="col-md-12">
-		                <Resizable>
-		                    <ChartContainer timeRange={tourSeries.range()} padding="0" format="year">
-		                        
-		                        <ChartRow height="150">
-		                            <YAxis id="avail" label="Finishers"
-		                                   min={0} max={200} width="70" type="linear"/>
-		                            <Charts>
-		                                <BarChart axis="avail" style={tourStyleRight}  spacing="20" offset="0"  columns={["start"]} series={tourSeries} />
-		                                <BarChart axis="avail" style={tourStyleLeft}  spacing="20" offset="0"  columns={["finish"]} series={tourSeries} />
-		                            </Charts>
-		                        </ChartRow>
-
-		                    </ChartContainer>
-		                </Resizable>
-		            </div>
-		        </div>
-		    */}
 		    </div>
 	    );
   	}

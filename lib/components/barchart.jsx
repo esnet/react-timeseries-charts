@@ -1,5 +1,5 @@
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * ESnet React Charts, Copyright (c) 2015, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -26,93 +26,30 @@
  */
 
 import React from "react/addons";
+import d3 from "d3";
 import _ from "underscore";
 import {TimeSeries} from "pond";
 
-const TooltipArrowStyle = {
-  position: 'absolute',
-  width: 0, height: 0,
-  borderRightColor: 'transparent',
-  borderLeftColor: 'transparent',
-  borderTopColor: 'transparent',
-  borderBottomColor: 'transparent',
-  borderStyle: 'solid',
-  opacity: .75
-};
-
-const PlacementStyles = {
-  left: {
-    tooltip: { marginLeft: -3, padding: '0 5px' },
-    arrow: {
-      right: 0, marginTop: -5, borderWidth: '5px 0 5px 5px', borderLeftColor: '#000'
-    }
-  },
-  right: {
-    tooltip: { marginRight: 3, padding: '0 5px' },
-    arrow: { left: 0, marginTop: -5, borderWidth: '5px 5px 5px 0', borderRightColor: '#000' }
-  },
-  top: {
-    tooltip: { marginTop: -3, padding: '5px 0' },
-    arrow: { bottom: 0, marginLeft: -5, borderWidth: '5px 5px 0', borderTopColor: '#000' }
-  },
-  bottom: {
-    tooltip: { marginBottom: 3, padding: '5px 0' },
-    arrow: { top: 0, marginLeft: -5, borderWidth: '0 5px 5px', borderBottomColor: '#000' }
-  }
-};
-
-class ToolTip {
-  render(){
-    let placementStyle = PlacementStyles[this.props.placement];
-
-    let {
-      style,
-      arrowOffsetLeft: left = placementStyle.arrow.left,
-      arrowOffsetTop: top = placementStyle.arrow.top,
-      ...props } = this.props;
-
-    return (
-      <div style={{...TooltipStyle, ...placementStyle.tooltip, ...style}}>
-        <div style={{...TooltipArrowStyle, ...placementStyle.arrow, left, top }}/>
-        <div style={TooltipInnerStyle}>
-          { props.children }
-        </div>
-      </div>
-    );
-  }
-}
-
-
 /**
- * Renders a barchart. This BarChart implementation is a little different
- * in that it will render onto a time axis, rather than rendering to
- * specific values. As a result, an Aug 2014 bar will render between the
+ * Renders a barchart based on IndexedEvents within a TimeSeries.
+ *
+ * This BarChart implementation is a little different in that it will render onto a time axis,
+ * rather than rendering to specific values. As a result, an Aug 2014 bar will render between the
  * Aug 2014 tick mark and the Sept 2014 tickmark.
  */
 export default React.createClass({
 
     propTypes: {
-        series: React.PropTypes.instanceOf(TimeSeries),
-        /**
-         * The width of each bar is the width determined by the time range - spacing x 2
-         */
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+        clipPathURL: React.PropTypes.string.isRequired,
+        timeScale: React.PropTypes.object.isRequired,
+        yScale: React.PropTypes.object.isRequired,
         spacing: React.PropTypes.number,
-
-        /**
-         * The position of the bar is then offset by this value.
-         */
         offset: React.PropTypes.number,
-
-        /**
-         * Which columns to display stacked on top of each other. If you don't supply
-         * a columns prop then all columns will be stacked.
-         */
         columns: React.PropTypes.array,
-
-        /**
-         * The style of each column e.g. {"traffic": {fill: "#FF0"}}
-         */
-        style: React.PropTypes.object
+        style: React.PropTypes.object,
+        size: React.PropTypes.number,
+        onSelectionChange: React.PropTypes.func,
     },
 
     getDefaultProps: function() {
@@ -123,8 +60,32 @@ export default React.createClass({
         };
     },
 
-    handleEvent: function(e) {
-        console.log("hover rect", e);
+    /**
+     * hover state is tracked internally and a highlight shown as a result
+     */
+    getInitialState: function() {
+        return {
+            hover: null
+        };
+    },
+
+    /**
+     * Continues a hover event on a specific bar of the bar chart.
+     */
+    handleMouseMove: function(e, key) {
+        this.setState({hover: key});
+    },
+
+    /**
+     * Handle click will call the onSelectionChange callback if one is provided as a prop.
+     * It will be called with the key, which is $series.name-$index-$column, the value of
+     * that event, along with the context. The context provides the series (a TimeSeries), the
+     * column (a string) and the index (an Index).
+     */
+    handleClick: function(e, key, value, series, column, index) {
+        e.stopPropagation();
+        const context = {series: series, column: column, index: index};
+        this.props.onSelectionChange && this.props.onSelectionChange(key, value, context);
     },
 
     renderBars: function() {
@@ -139,7 +100,6 @@ export default React.createClass({
         for (event of series.events()) {
             const begin = event.begin();
             const end = event.end();
-
             const beginPos = timeScale(begin) + spacing;
             const endPos = timeScale(end) - spacing;
 
@@ -164,21 +124,49 @@ export default React.createClass({
             
             let ypos = yScale(0);
             for (let column of columns) {
+
+                const index = event.index();
+                const key = `${series.name()}-${index}-${column}`;
                 const value = event.get(column);
-                
+
                 let height = yScale(0) - yScale(value);
                 if (height < 1) {
                     height = 1;
                 }
 
                 const y = ypos - height;
-                const barStyle = this.props.style[column] ? this.props.style[column] : {fill: "steelblue"};
+                let barStyle;
+
+                if (key === this.props.selection) {
+                    if (this.props.style && this.props.style[column].selected) {
+                        barStyle = this.props.style[column].selected;
+                    } else {
+                        barStyle = {fill: "rgb(0, 144, 199)"};
+                    }
+                } else if (key === this.state.hover) {
+                    if (this.props.style && this.props.style[column].highlight) {
+                        barStyle = this.props.style[column].highlight;
+                    } else {
+                        barStyle = {fill: "rgb(78, 144, 199)"};
+                    }
+                }  else {
+                    if (this.props.style && this.props.style[column].normal) {
+                        barStyle = this.props.style[column].normal;
+                    } else {
+                        barStyle = {fill: "steelblue"};
+                    }
+                }
                 
                 rects.push(
-                    <rect x={x} y={y} width={width} height={height}
+                    <rect key={key}
+                          data-tip={key === this.state.hover ? "React-tooltip" : ""}
+                          x={x} y={y} width={width} height={height}
+                          pointerEvents="none"
                           style={barStyle}
                           clipPath={this.props.clipPathURL}
-                          onClick={this.handleEvent}/>
+                          onClick={e => {this.handleClick(e, key, value, series, column, index)}}
+                          onMouseLeave={e => {this.setState({hover: null})}}
+                          onMouseMove={e => this.handleMouseMove(e, key)}/>
                 );
 
                 ypos -= height;
