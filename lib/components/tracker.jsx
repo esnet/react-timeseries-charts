@@ -26,20 +26,32 @@
  */
  
 import React from "react/addons";
-import "./tracker.css";
 
 export default React.createClass({
 
     displayName: "Tracker",
 
+    propTypes: {
+        style: React.PropTypes.object,
+        position: React.PropTypes.number,
+        height: React.PropTypes.number,
+        timeScale: React.PropTypes.object.isRequired,
+    },
+
+    getDefaultProps: function() {
+        return {
+            offset: 0,
+            style: {stroke: "#AAA", cursor: "crosshair"}
+        };
+    },
+
     render: function() {
-        var posx = this.props.scale(this.props.position);
+        const posx = this.props.timeScale(this.props.position);
         if (posx) {
             return (
-                <line className={"tracker-line"} x1={posx} y1={0} x2={posx} y2={this.props.height} />
+                <line style={this.props.style} x1={posx} y1={0} x2={posx} y2={this.props.height} />
             );
-        } else {
-            return null;
         }
+        return null;
     },
 });

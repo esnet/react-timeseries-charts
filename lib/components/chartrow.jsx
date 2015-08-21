@@ -35,7 +35,6 @@ import Charts from "./charts";
 import Brush from "./brush";
 import Tracker from "./tracker";
 import EventHandler from "./eventhandler";
-import PointIndicator from "./pointindicator";
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
@@ -349,7 +348,7 @@ export default React.createClass({
 
         //Charts with or without pan and zoom event handling
         let charts;
-        if (this.props.enablePanZoom) {
+        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
             charts = (
                 <g transform={chartTransform} key="event-rect-group">
                     <EventHandler width={chartWidth} height={innerHeight}
@@ -395,7 +394,7 @@ export default React.createClass({
         const tracker = (
             <g transform={chartTransform} key="tracker-group">
                 <Tracker height={innerHeight}
-                         scale={this.props.timeScale}
+                         timeScale={this.props.timeScale}
                          position={this.props.trackerPosition} />
             </g>
         );

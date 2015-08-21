@@ -28,7 +28,6 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
-import "./linechart.css";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -141,9 +140,14 @@ export default React.createClass({
         return false;
     },
 
+    handleMouseMove: function(e) {
+        console.log(e);
+    },
+
     render: function() {
         return (
-            <g></g>
+            <g>
+            </g>
         );
     }
 });

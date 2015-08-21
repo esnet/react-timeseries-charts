@@ -19,7 +19,6 @@ module.exports = {
     LabelAxis: require("./build/npm/lib/labelaxis"),
     Legend: require("./build/npm/lib/legend"),
     LineChart: require("./build/npm/lib/linechart"),
-    PointIndicator: require("./build/npm/lib/pointindicator"),
     Resizable: require("./build/npm/lib/resizable"),
     ScatterChart: require("./build/npm/lib/scatterchart"),
     Table: require("./build/npm/lib/table"),

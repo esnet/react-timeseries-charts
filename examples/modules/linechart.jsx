@@ -56,6 +56,16 @@ var euroStyle = {
 
 export default React.createClass({
 
+    getInitialState: function() {
+        return {
+            tracker: null
+        }
+    },
+
+    handleTrackerChanged: function(t) {
+        this.setState({tracker: t});
+    },
+
   	render: function() {
 	    return (
 	    	<div>
@@ -73,7 +83,9 @@ export default React.createClass({
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
-            				<ChartContainer timeRange={audSeries.range()} padding="5">
+            				<ChartContainer timeRange={audSeries.range()} padding="5"
+                                            trackerPosition={this.state.tracker}
+                                            onTrackerChanged={this.handleTrackerChanged} >
 				                <ChartRow height="200" debug={false}>
 				                    <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
 				                    <Charts>

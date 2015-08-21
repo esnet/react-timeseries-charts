@@ -52,8 +52,6 @@ export default React.createClass({
     handleScrollWheel: function(e) {
         e.preventDefault();
 
-        console.log(this.state)
-
         const SCALE_FACTOR = 0.001;
         let scale = 1 + e.deltaY * SCALE_FACTOR;
         if (scale > 3) scale = 3;
@@ -145,6 +143,14 @@ export default React.createClass({
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
+        } else {
+            if (this.props.onMouseMove) {
+                const target = e.currentTarget;
+                const rect = target.getBoundingClientRect();
+                const x = e.clientX;
+                const time = this.props.scale.invert(x - rect.left);
+                this.props.onMouseMove(time);
+            }
         }
     },
 
@@ -154,13 +160,20 @@ export default React.createClass({
                        "initialPanPosition": null});
     },
 
+    handleMouseOut: function() {
+        if (this.props.onMouseOut) {
+            this.props.onMouseOut();
+        }
+    },
+
     render: function() {
-        const cursor = this.state.isPanning ? "-webkit-grabbing" : "-webkit-grab";
+        const cursor = this.state.isPanning ? "-webkit-grabbing" : "crosshair";
         return (
             <g pointerEvents="all"
                onWheel={this.handleScrollWheel}
                onMouseDown={this.handleMouseDown}
                onMouseMove={this.handleMouseMove}
+               onMouseOut={this.handleMouseOut}
                onMouseUp={this.handleMouseUp}>
                 <rect style={{"opacity": 0.0, "cursor": cursor}}
                       x={0} y={0}

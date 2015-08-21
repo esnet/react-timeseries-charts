@@ -185,9 +185,9 @@ export default React.createClass({
         var absolute = nextProps.absolute;
         var format = nextProps.format;
 
-        //if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
             this.updateAxis(align, scale, width, absolute, format);
-        //}
+        }
     },
 
     shouldComponentUpdate: function() {
