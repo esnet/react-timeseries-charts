@@ -45,8 +45,6 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-require("./linechart.css");
-
 function scaleAsString(scale) {
     return scale.domain() + "-" + scale.range();
 }
@@ -143,6 +141,10 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     shouldComponentUpdate: function shouldComponentUpdate() {
         return false;
+    },
+
+    handleMouseMove: function handleMouseMove(e) {
+        console.log(e);
     },
 
     render: function render() {

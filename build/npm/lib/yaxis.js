@@ -167,9 +167,9 @@ exports["default"] = _reactAddons2["default"].createClass({
         var absolute = nextProps.absolute;
         var format = nextProps.format;
 
-        //if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-        this.updateAxis(align, scale, width, absolute, format);
-        //}
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+            this.updateAxis(align, scale, width, absolute, format);
+        }
     },
 
     shouldComponentUpdate: function shouldComponentUpdate() {

@@ -45,13 +45,17 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _reactTooltip = require("react-tooltip");
+
+var _reactTooltip2 = _interopRequireDefault(_reactTooltip);
+
 var _yaxis2 = require("./yaxis");
 
 var _yaxis3 = _interopRequireDefault(_yaxis2);
 
-var _charts = require("./charts");
+var _charts2 = require("./charts");
 
-var _charts2 = _interopRequireDefault(_charts);
+var _charts3 = _interopRequireDefault(_charts2);
 
 var _brush = require("./brush");
 
@@ -61,54 +65,28 @@ var _tracker = require("./tracker");
 
 var _tracker2 = _interopRequireDefault(_tracker);
 
-var _eventrect = require("./eventrect");
-
-var _eventrect2 = _interopRequireDefault(_eventrect);
-
-var _pointindicator = require("./pointindicator");
-
-/**
- * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
- */
-
-var _pointindicator2 = _interopRequireDefault(_pointindicator);
-
-var ClipDefs = _reactAddons2["default"].createClass({
-    displayName: "ClipDefs",
-
-    renderClipPath: function renderClipPath(props) {
-        _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
-
-        _d32["default"].select(this.getDOMNode()).append("clipPath").attr("id", props.id).append("rect").attr("width", props.clipWidth).attr("height", props.clipHeight);
-    },
-
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        this.renderClipPath(nextProps);
-    },
-
-    componentDidMount: function componentDidMount() {
-        this.renderClipPath(this.props);
-    },
-
-    // For now we'll always update to ensure clipping id and rectangle track props
-    // Could probably optimize this to detect changes to width/height to avoid d3 touching
-    // the real DOM on every re-render.
-    shouldComponentUpdate: function shouldComponentUpdate() {
-        return true;
-    },
-
-    render: function render() {
-        return _reactAddons2["default"].createElement("defs", null);
-    }
-});
+var _eventhandler = require("./eventhandler");
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
+
+var _eventhandler2 = _interopRequireDefault(_eventhandler);
+
 exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "ChartRow",
+
+    getDefaultProps: function getDefaultProps() {
+        return {
+            "enablePanZoom": false
+        };
+    },
+
+    propTypes: {
+        enablePanZoom: _reactAddons2["default"].PropTypes.bool
+    },
 
     getInitialState: function getInitialState() {
         // id of clipping rectangle we will generate and use for each child chart
@@ -133,9 +111,9 @@ exports["default"] = _reactAddons2["default"].createClass({
         }
     },
 
-    handleZoom: function handleZoom(beginTime, endTime) {
+    handleZoom: function handleZoom(timerange) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(beginTime, endTime);
+            this.props.onTimeRangeChanged(timerange);
         }
     },
 
@@ -164,7 +142,7 @@ exports["default"] = _reactAddons2["default"].createClass({
     render: function render() {
         var _this = this;
 
-        var yAxisList = []; // Contains all the yAxis elements used in the render
+        var axes = []; // Contains all the yAxis elements used in the render
         var chartList = []; // Contains all the chart elements used in the render
 
         var margin = this.props.margin !== undefined ? Number(this.props.margin) : 5;
@@ -203,7 +181,7 @@ exports["default"] = _reactAddons2["default"].createClass({
             // Perhaps it could put the element itself?
             //
 
-            if (child.type === _charts2["default"]) {
+            if (child.type === _charts3["default"]) {
                 align = "right";
             } else {
                 var _id = child.props.id;
@@ -238,7 +216,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         leftAxisList.reverse();
 
         //
-        // Push each axis onto the yAxisList, transforming each into its column location
+        // Push each axis onto the axes, transforming each into its column location
         //
 
         var transform = undefined;
@@ -294,7 +272,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                     debug = null;
                 }
 
-                yAxisList.push(_reactAddons2["default"].createElement(
+                axes.push(_reactAddons2["default"].createElement(
                     "g",
                     { key: "y-axis-left-" + leftColumnIndex, transform: transform },
                     debug,
@@ -330,7 +308,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                     debug = null;
                 }
 
-                yAxisList.push(_reactAddons2["default"].createElement(
+                axes.push(_reactAddons2["default"].createElement(
                     "g",
                     { key: "y-axis-right-" + rightColumnIndex, transform: transform },
                     debug,
@@ -353,9 +331,9 @@ exports["default"] = _reactAddons2["default"].createClass({
         var keyCount = 0;
         _reactAddons2["default"].Children.forEach(this.props.children, function (child) {
 
-            if (child.type === _charts2["default"]) {
-                var charts = child;
-                _reactAddons2["default"].Children.forEach(charts.props.children, function (chart) {
+            if (child.type === _charts3["default"]) {
+                var _charts = child;
+                _reactAddons2["default"].Children.forEach(_charts.props.children, function (chart) {
                     //Additional props for charts
                     var props = {
                         key: chart.props.key ? chart.props.key : "chart-" + keyCount,
@@ -396,52 +374,81 @@ exports["default"] = _reactAddons2["default"].createClass({
             keyCount++;
         });
 
-        var enableZoom = _underscore2["default"].has(this.props, 'enableZoom') ? this.props.enableZoom : false;
-
-        var zoomHandler = null;
-        if (enableZoom) {
-            zoomHandler = this.handleZoom;
+        //Charts with or without pan and zoom event handling
+        var charts = undefined;
+        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
+            charts = _reactAddons2["default"].createElement(
+                "g",
+                { transform: chartTransform, key: "event-rect-group" },
+                _reactAddons2["default"].createElement(
+                    _eventhandler2["default"],
+                    { width: chartWidth, height: innerHeight,
+                        scale: this.props.timeScale,
+                        enablePanZoom: this.props.enablePanZoom,
+                        minDuration: this.props.minDuration,
+                        minTime: this.props.minTime,
+                        maxTime: this.props.maxTime,
+                        onMouseOut: this.handleMouseOut,
+                        onMouseMove: this.handleMouseMove,
+                        onZoom: this.handleZoom,
+                        onResize: this.handleResize },
+                    chartList
+                )
+            );
+        } else {
+            charts = _reactAddons2["default"].createElement(
+                "g",
+                { transform: chartTransform, key: "event-rect-group" },
+                chartList
+            );
         }
 
+        //Debug outlining
         var chartDebug = null;
         if (this.props.debug) {
             chartDebug = _reactAddons2["default"].createElement("rect", { className: "chart-debug", x: leftWidth, y: margin, width: chartWidth, height: innerHeight });
         }
 
+        //Clipping
+        var clipDefs = _reactAddons2["default"].createElement(
+            "defs",
+            null,
+            _reactAddons2["default"].createElement(
+                "clipPath",
+                { id: this.state.clipId },
+                _reactAddons2["default"].createElement("rect", { x: "0", y: "0", width: chartWidth, height: innerHeight })
+            )
+        );
+
+        //Hover tracker line
+        var tracker = _reactAddons2["default"].createElement(
+            "g",
+            { transform: chartTransform, key: "tracker-group" },
+            _reactAddons2["default"].createElement(_tracker2["default"], { height: innerHeight,
+                timeScale: this.props.timeScale,
+                position: this.props.trackerPosition })
+        );
+
+        //Pan and zoom brushes
+        var brushes = _reactAddons2["default"].createElement(
+            "g",
+            { transform: chartTransform, key: "brush-group" },
+            brushList
+        );
+
         return _reactAddons2["default"].createElement(
-            "svg",
-            { width: this.props.width, height: Number(this.props.height) },
-            yAxisList,
-            chartDebug,
+            "div",
+            null,
+            _reactAddons2["default"].createElement(_reactTooltip2["default"], { place: "top", type: "warning", effect: "solid" }),
             _reactAddons2["default"].createElement(
-                "g",
-                { transform: chartTransform, key: "chart-group" },
-                _reactAddons2["default"].createElement(ClipDefs, { id: this.state.clipId, clipWidth: chartWidth, clipHeight: innerHeight }),
-                chartList
-            ),
-            _reactAddons2["default"].createElement(
-                "g",
-                { transform: chartTransform, key: "tracker-group" },
-                _reactAddons2["default"].createElement(_tracker2["default"], { height: innerHeight,
-                    scale: this.props.timeScale, position: this.props.trackerPosition })
-            ),
-            _reactAddons2["default"].createElement(
-                "g",
-                { transform: chartTransform, key: "event-rect-group" },
-                _reactAddons2["default"].createElement(_eventrect2["default"], { width: chartWidth, height: innerHeight,
-                    scale: this.props.timeScale,
-                    onMouseOut: this.handleMouseOut,
-                    onMouseMove: this.handleMouseMove,
-                    enableZoom: enableZoom,
-                    onZoom: zoomHandler,
-                    minTime: this.props.minTime,
-                    maxTime: this.props.maxTime,
-                    onResize: this.handleResize })
-            ),
-            _reactAddons2["default"].createElement(
-                "g",
-                { transform: chartTransform, key: "brush-group" },
-                brushList
+                "svg",
+                { width: this.props.width, height: Number(this.props.height) },
+                clipDefs,
+                axes,
+                charts,
+                chartDebug,
+                tracker,
+                brushes
             )
         );
     }

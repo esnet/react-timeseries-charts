@@ -1,5 +1,5 @@
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * ESnet React Charts, Copyright (c) 2015, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -45,52 +45,29 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _moment = require("moment");
-
-var _moment2 = _interopRequireDefault(_moment);
-
 var _pond = require("pond");
 
-require("./barchart.css");
-
-var DAY = 1000 * 60 * 60 * 24;
-var HOUR = 1000 * 60 * 60;
-
-function scaleAsString(scale) {
-    return scale.domain() + "-" + scale.range();
-}
-
 /**
- * Renders a barchart. This BarChart implementation is a little different
- * in that it will render onto a time axis, rather than rendering to
- * specific values. As a result, an Aug 2014 bar will render between the
+ * Renders a barchart based on IndexedEvents within a TimeSeries.
+ *
+ * This BarChart implementation is a little different in that it will render onto a time axis,
+ * rather than rendering to specific values. As a result, an Aug 2014 bar will render between the
  * Aug 2014 tick mark and the Sept 2014 tickmark.
  */
 exports["default"] = _reactAddons2["default"].createClass({
     displayName: "barchart",
 
     propTypes: {
-        series: _reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries),
-        /**
-         * The width of each bar is the width determined by the time range - spacing x 2
-         */
+        series: _reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries).isRequired,
+        clipPathURL: _reactAddons2["default"].PropTypes.string.isRequired,
+        timeScale: _reactAddons2["default"].PropTypes.object.isRequired,
+        yScale: _reactAddons2["default"].PropTypes.object.isRequired,
         spacing: _reactAddons2["default"].PropTypes.number,
-
-        /**
-         * The position of the bar is then offset by this value.
-         */
         offset: _reactAddons2["default"].PropTypes.number,
-
-        /**
-         * Which columns to display stacked on top of each other. If you don't supply
-         * a columns prop then all columns will be stacked.
-         */
         columns: _reactAddons2["default"].PropTypes.array,
-
-        /**
-         * The style of each column e.g. {"traffic": {fill: "#FF0"}}
-         */
-        style: _reactAddons2["default"].PropTypes.object
+        style: _reactAddons2["default"].PropTypes.object,
+        size: _reactAddons2["default"].PropTypes.number,
+        onSelectionChange: _reactAddons2["default"].PropTypes.func
     },
 
     getDefaultProps: function getDefaultProps() {
@@ -101,7 +78,37 @@ exports["default"] = _reactAddons2["default"].createClass({
         };
     },
 
+    /**
+     * hover state is tracked internally and a highlight shown as a result
+     */
+    getInitialState: function getInitialState() {
+        return {
+            hover: null
+        };
+    },
+
+    /**
+     * Continues a hover event on a specific bar of the bar chart.
+     */
+    handleMouseMove: function handleMouseMove(e, key) {
+        this.setState({ hover: key });
+    },
+
+    /**
+     * Handle click will call the onSelectionChange callback if one is provided as a prop.
+     * It will be called with the key, which is $series.name-$index-$column, the value of
+     * that event, along with the context. The context provides the series (a TimeSeries), the
+     * column (a string) and the index (an Index).
+     */
+    handleClick: function handleClick(e, key, value, series, column, index) {
+        e.stopPropagation();
+        var context = { series: series, column: column, index: index };
+        this.props.onSelectionChange && this.props.onSelectionChange(key, value, context);
+    },
+
     renderBars: function renderBars() {
+        var _this = this;
+
         var spacing = Number(this.props.spacing);
         var offset = Number(this.props.offset);
         var series = this.props.series;
@@ -120,7 +127,6 @@ exports["default"] = _reactAddons2["default"].createClass({
 
                 var begin = event.begin();
                 var end = event.end();
-
                 var beginPos = timeScale(begin) + spacing;
                 var endPos = timeScale(end) - spacing;
 
@@ -129,6 +135,10 @@ exports["default"] = _reactAddons2["default"].createClass({
                     width = this.props.size;
                 } else {
                     width = endPos - beginPos;
+                }
+
+                if (width < 1) {
+                    width = 1;
                 }
 
                 var x = undefined;
@@ -145,17 +155,62 @@ exports["default"] = _reactAddons2["default"].createClass({
                 var _iteratorError2 = undefined;
 
                 try {
-                    for (var _iterator2 = columns[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var _loop = function () {
                         var column = _step2.value;
 
+                        var index = event.index();
+                        var key = series.name() + "-" + index + "-" + column;
                         var value = event.get(column);
-                        var height = yScale(0) - yScale(value);
-                        var y = ypos - height;
-                        var barStyle = this.props.style[column] ? this.props.style[column] : { fill: "steelblue" };
 
-                        rects.push(_reactAddons2["default"].createElement("rect", { x: x, y: y, width: width, height: height, style: barStyle }));
+                        var height = yScale(0) - yScale(value);
+                        if (height < 1) {
+                            height = 1;
+                        }
+
+                        var y = ypos - height;
+                        var barStyle = undefined;
+
+                        if (key === _this.props.selection) {
+                            if (_this.props.style && _this.props.style[column].selected) {
+                                barStyle = _this.props.style[column].selected;
+                            } else {
+                                barStyle = { fill: "rgb(0, 144, 199)" };
+                            }
+                        } else if (key === _this.state.hover) {
+                            if (_this.props.style && _this.props.style[column].highlight) {
+                                barStyle = _this.props.style[column].highlight;
+                            } else {
+                                barStyle = { fill: "rgb(78, 144, 199)" };
+                            }
+                        } else {
+                            if (_this.props.style && _this.props.style[column].normal) {
+                                barStyle = _this.props.style[column].normal;
+                            } else {
+                                barStyle = { fill: "steelblue" };
+                            }
+                        }
+
+                        rects.push(_reactAddons2["default"].createElement("rect", { key: key,
+                            "data-tip": key === _this.state.hover ? "React-tooltip" : "",
+                            x: x, y: y, width: width, height: height,
+                            pointerEvents: "none",
+                            style: barStyle,
+                            clipPath: _this.props.clipPathURL,
+                            onClick: function (e) {
+                                _this.handleClick(e, key, value, series, column, index);
+                            },
+                            onMouseLeave: function (e) {
+                                _this.setState({ hover: null });
+                            },
+                            onMouseMove: function (e) {
+                                return _this.handleMouseMove(e, key);
+                            } }));
 
                         ypos -= height;
+                    };
+
+                    for (var _iterator2 = columns[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        _loop();
                     }
                 } catch (err) {
                     _didIteratorError2 = true;
@@ -190,7 +245,6 @@ exports["default"] = _reactAddons2["default"].createClass({
         return rects;
     },
 
-    //TODO: props.attr should be required
     render: function render() {
         return _reactAddons2["default"].createElement(
             "g",

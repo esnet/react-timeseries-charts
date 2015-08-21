@@ -84,11 +84,13 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
-            "transition": 0
+            "transition": 0,
+            "enablePanZoom": false
         };
     },
 
     propTypes: {
+        enablePanZoom: _reactAddons2["default"].PropTypes.bool,
         children: _reactAddons2["default"].PropTypes.oneOfType([_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.element), _reactAddons2["default"].PropTypes.element])
     },
 
@@ -101,9 +103,9 @@ exports["default"] = _reactAddons2["default"].createClass({
     //Within the charts library the time range of the x axis is kept as a begin and
     //end time (Javascript Date objects). But the interface is Pond based, so
     //this callback returns a Pond TimeRange.
-    handleTimeRangeChanged: function handleTimeRangeChanged(beginTime, endTime) {
+    handleTimeRangeChanged: function handleTimeRangeChanged(timerange) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged((0, _pond.TimeRange)(beginTime, endTime));
+            this.props.onTimeRangeChanged(timerange);
         }
     },
 
@@ -257,6 +259,8 @@ exports["default"] = _reactAddons2["default"].createClass({
                     minTime: _this.props.minTime, // zoomable min/max times
                     maxTime: _this.props.maxTime,
                     transition: _this.props.transition, // time to make scale transitions
+                    enablePanZoom: _this.props.enablePanZoom, // hook up pan/zoom events
+                    minDuration: _this.props.minDuration,
                     trackerPosition: _this.props.trackerPosition, // tracker position
                     onTimeRangeChanged: _this.handleTimeRangeChanged, // zoom/pan callback
                     onTrackerChanged: _this.handleTrackerChanged // tracker change callback
