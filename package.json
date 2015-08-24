@@ -27,7 +27,8 @@
     "babel": "^5.6.23",
     "merge": "^1.2.0",
     "react-overlays": "^0.4.1",
-    "react-tooltip": "^0.3.6"
+    "react-tooltip": "^0.3.6",
+    "paths-js": "^0.3.4"
   },
   "peerDependencies": {
     "react": "0.13.x"

@@ -346,12 +346,23 @@ export default React.createClass({
 
         });
 
+
+        //Hover tracker line
+        const tracker = (
+            <g key="tracker-group" style={{pointerEvents: "none"}}>
+                <Tracker height={innerHeight}
+                         timeScale={this.props.timeScale}
+                         position={this.props.trackerPosition} />
+            </g>
+        );
+
         //Charts with or without pan and zoom event handling
         let charts;
         if (this.props.enablePanZoom || this.props.onTrackerChanged) {
             charts = (
                 <g transform={chartTransform} key="event-rect-group">
-                    <EventHandler width={chartWidth} height={innerHeight}
+                    <EventHandler key="event-handler"
+                                  width={chartWidth} height={innerHeight}
                                   scale={this.props.timeScale}
                                   enablePanZoom={this.props.enablePanZoom}
                                   minDuration={this.props.minDuration}
@@ -361,14 +372,22 @@ export default React.createClass({
                                   onMouseMove={this.handleMouseMove}
                                   onZoom={this.handleZoom}
                                   onResize={this.handleResize}>
+
                         {chartList}
+                        {tracker}
+
                     </EventHandler>
                 </g>
             );
         } else {
             charts = (
                 <g transform={chartTransform} key="event-rect-group">
-                    {chartList}
+                    <g key="charts">
+                        {chartList}
+                    </g>
+                    <g key="tracker">
+                        {tracker}
+                    </g>
                 </g>
             );
         }
@@ -390,15 +409,6 @@ export default React.createClass({
             </defs>
         );
 
-        //Hover tracker line
-        const tracker = (
-            <g transform={chartTransform} key="tracker-group">
-                <Tracker height={innerHeight}
-                         timeScale={this.props.timeScale}
-                         position={this.props.trackerPosition} />
-            </g>
-        );
-
         //Pan and zoom brushes
         const brushes = (
             <g transform={chartTransform} key="brush-group">
@@ -414,7 +424,6 @@ export default React.createClass({
                     {axes}
                     {charts}
                     {chartDebug}
-                    {tracker}
                     {brushes}
                 </svg>
             </div>

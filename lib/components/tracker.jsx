@@ -33,9 +33,9 @@ export default React.createClass({
 
     propTypes: {
         style: React.PropTypes.object,
-        position: React.PropTypes.number,
+        position: React.PropTypes.instanceOf(Date),
         height: React.PropTypes.number,
-        timeScale: React.PropTypes.object.isRequired,
+        timeScale: React.PropTypes.func.isRequired,
     },
 
     getDefaultProps: function() {
@@ -49,7 +49,8 @@ export default React.createClass({
         const posx = this.props.timeScale(this.props.position);
         if (posx) {
             return (
-                <line style={this.props.style} x1={posx} y1={0} x2={posx} y2={this.props.height} />
+                <line style={this.props.style} x1={posx} y1={0}
+                      x2={posx} y2={this.props.height} />
             );
         }
         return null;

@@ -128,13 +128,15 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     handleMouseMove: function handleMouseMove(e) {
         e.preventDefault();
+
         var xy = this.getMousePositionFromEvent(e);
+
         if (this.state.isPanning) {
             var xy0 = this.state.initialPanPosition;
             var timeOffset = this.props.scale.invert(xy[0]).getTime() - this.props.scale.invert(xy0[0]).getTime();
+
             var newBegin = this.state.initialPanBegin - timeOffset;
             var newEnd = this.state.initialPanEnd - timeOffset;
-
             var duration = this.state.initialPanEnd - this.state.initialPanBegin;
 
             //Range constraint
@@ -150,22 +152,24 @@ exports["default"] = _reactAddons2["default"].createClass({
 
             var newTimeRange = new _pond.TimeRange(newBegin, newEnd);
 
+            // onZoom callback
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
         } else {
             if (this.props.onMouseMove) {
-                var target = e.currentTarget;
-                var rect = target.getBoundingClientRect();
-                var x = e.clientX;
-                var time = this.props.scale.invert(x - rect.left);
-                this.props.onMouseMove(time);
+                var rect = e.currentTarget.getBoundingClientRect();
+                var time = this.props.scale.invert(Math.round(e.clientX - rect.left));
+
+                //onMouseMove callback
+                if (this.props.onMouseMove) {
+                    this.props.onMouseMove(time);
+                }
             }
         }
     },
 
     handleMouseUp: function handleMouseUp(e) {
-        var xy1 = this.getMousePositionFromEvent(e);
         this.setState({ "isPanning": false,
             "initialPanPosition": null });
     },
@@ -186,7 +190,8 @@ exports["default"] = _reactAddons2["default"].createClass({
                 onMouseMove: this.handleMouseMove,
                 onMouseOut: this.handleMouseOut,
                 onMouseUp: this.handleMouseUp },
-            _reactAddons2["default"].createElement("rect", { style: { "opacity": 0.0, "cursor": cursor },
+            _reactAddons2["default"].createElement("rect", { key: "handler-hit-rect",
+                style: { "opacity": 0.0, "cursor": cursor },
                 x: 0, y: 0,
                 width: this.props.width, height: this.props.height }),
             this.props.children

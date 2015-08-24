@@ -117,14 +117,16 @@ export default React.createClass({
 
     handleMouseMove: function(e) {
         e.preventDefault();
+
         const xy = this.getMousePositionFromEvent(e)
+
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
             const timeOffset = this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
+
             let newBegin = this.state.initialPanBegin - timeOffset;
             let newEnd = this.state.initialPanEnd - timeOffset;
-
             let duration = this.state.initialPanEnd - this.state.initialPanBegin;
 
             //Range constraint
@@ -140,22 +142,24 @@ export default React.createClass({
 
             const newTimeRange = new TimeRange(newBegin, newEnd);
 
+            // onZoom callback
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
         } else {
             if (this.props.onMouseMove) {
-                const target = e.currentTarget;
-                const rect = target.getBoundingClientRect();
-                const x = e.clientX;
-                const time = this.props.scale.invert(x - rect.left);
-                this.props.onMouseMove(time);
+                const rect = e.currentTarget.getBoundingClientRect();
+                const time = this.props.scale.invert(Math.round(e.clientX - rect.left))
+
+                //onMouseMove callback
+                if (this.props.onMouseMove) {
+                    this.props.onMouseMove(time);
+                }
             }
         }
     },
 
     handleMouseUp: function(e) {
-        const xy1 = this.getMousePositionFromEvent(e)
         this.setState({"isPanning": false,
                        "initialPanPosition": null});
     },
@@ -175,7 +179,8 @@ export default React.createClass({
                onMouseMove={this.handleMouseMove}
                onMouseOut={this.handleMouseOut}
                onMouseUp={this.handleMouseUp}>
-                <rect style={{"opacity": 0.0, "cursor": cursor}}
+                <rect key="handler-hit-rect"
+                      style={{"opacity": 0.0, "cursor": cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />
                 {this.props.children}

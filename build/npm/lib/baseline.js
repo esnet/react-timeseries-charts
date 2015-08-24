@@ -97,7 +97,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         return _reactAddons2["default"].createElement(
             "g",
             { className: "baseline", transform: transform },
-            _reactAddons2["default"].createElement("polyline", { points: points }),
+            _reactAddons2["default"].createElement("polyline", { points: points, style: { "pointerEvents": "none" } }),
             _reactAddons2["default"].createElement(
                 "text",
                 { className: "baseline-label", x: textPositionX, y: textPositionY, textAnchor: textAnchor },

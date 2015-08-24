@@ -374,6 +374,15 @@ exports["default"] = _reactAddons2["default"].createClass({
             keyCount++;
         });
 
+        //Hover tracker line
+        var tracker = _reactAddons2["default"].createElement(
+            "g",
+            { key: "tracker-group", style: { pointerEvents: "none" } },
+            _reactAddons2["default"].createElement(_tracker2["default"], { height: innerHeight,
+                timeScale: this.props.timeScale,
+                position: this.props.trackerPosition })
+        );
+
         //Charts with or without pan and zoom event handling
         var charts = undefined;
         if (this.props.enablePanZoom || this.props.onTrackerChanged) {
@@ -382,7 +391,8 @@ exports["default"] = _reactAddons2["default"].createClass({
                 { transform: chartTransform, key: "event-rect-group" },
                 _reactAddons2["default"].createElement(
                     _eventhandler2["default"],
-                    { width: chartWidth, height: innerHeight,
+                    { key: "event-handler",
+                        width: chartWidth, height: innerHeight,
                         scale: this.props.timeScale,
                         enablePanZoom: this.props.enablePanZoom,
                         minDuration: this.props.minDuration,
@@ -392,14 +402,24 @@ exports["default"] = _reactAddons2["default"].createClass({
                         onMouseMove: this.handleMouseMove,
                         onZoom: this.handleZoom,
                         onResize: this.handleResize },
-                    chartList
+                    chartList,
+                    tracker
                 )
             );
         } else {
             charts = _reactAddons2["default"].createElement(
                 "g",
                 { transform: chartTransform, key: "event-rect-group" },
-                chartList
+                _reactAddons2["default"].createElement(
+                    "g",
+                    { key: "charts" },
+                    chartList
+                ),
+                _reactAddons2["default"].createElement(
+                    "g",
+                    { key: "tracker" },
+                    tracker
+                )
             );
         }
 
@@ -420,15 +440,6 @@ exports["default"] = _reactAddons2["default"].createClass({
             )
         );
 
-        //Hover tracker line
-        var tracker = _reactAddons2["default"].createElement(
-            "g",
-            { transform: chartTransform, key: "tracker-group" },
-            _reactAddons2["default"].createElement(_tracker2["default"], { height: innerHeight,
-                timeScale: this.props.timeScale,
-                position: this.props.trackerPosition })
-        );
-
         //Pan and zoom brushes
         var brushes = _reactAddons2["default"].createElement(
             "g",
@@ -447,7 +458,6 @@ exports["default"] = _reactAddons2["default"].createClass({
                 axes,
                 charts,
                 chartDebug,
-                tracker,
                 brushes
             )
         );

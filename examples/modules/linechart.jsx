@@ -58,12 +58,17 @@ export default React.createClass({
 
     getInitialState: function() {
         return {
-            tracker: null
+            tracker: null,
+            timerange: audSeries.range()
         }
     },
 
     handleTrackerChanged: function(t) {
         this.setState({tracker: t});
+    },
+
+    handleTimeRangeChange: function(timerange) {
+        this.setState({timerange: timerange})
     },
 
   	render: function() {
@@ -83,9 +88,12 @@ export default React.createClass({
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
-            				<ChartContainer timeRange={audSeries.range()} padding="5"
+            				<ChartContainer timeRange={this.state.timerange} padding="5"
                                             trackerPosition={this.state.tracker}
-                                            onTrackerChanged={this.handleTrackerChanged} >
+                                            onTrackerChanged={this.handleTrackerChanged}
+                                            enablePanZoom={true}
+                                            onTimeRangeChanged={this.handleTimeRangeChange}
+                                            minDuration={1000*60*60*24*30} >
 				                <ChartRow height="200" debug={false}>
 				                    <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
 				                    <Charts>

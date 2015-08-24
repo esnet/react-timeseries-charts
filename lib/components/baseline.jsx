@@ -84,7 +84,7 @@ export default React.createClass({
 
         return (
             <g className="baseline" transform={transform}>
-                <polyline points={points} />
+                <polyline points={points} style={{"pointerEvents": "none"}}/>
                 <text className="baseline-label" x={textPositionX} y={textPositionY} textAnchor={textAnchor}>
                     {this.props.label}
                 </text>

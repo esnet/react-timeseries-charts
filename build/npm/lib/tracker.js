@@ -43,9 +43,9 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     propTypes: {
         style: _reactAddons2["default"].PropTypes.object,
-        position: _reactAddons2["default"].PropTypes.number,
+        position: _reactAddons2["default"].PropTypes.instanceOf(Date),
         height: _reactAddons2["default"].PropTypes.number,
-        timeScale: _reactAddons2["default"].PropTypes.object.isRequired
+        timeScale: _reactAddons2["default"].PropTypes.func.isRequired
     },
 
     getDefaultProps: function getDefaultProps() {
@@ -58,7 +58,8 @@ exports["default"] = _reactAddons2["default"].createClass({
     render: function render() {
         var posx = this.props.timeScale(this.props.position);
         if (posx) {
-            return _reactAddons2["default"].createElement("line", { style: this.props.style, x1: posx, y1: 0, x2: posx, y2: this.props.height });
+            return _reactAddons2["default"].createElement("line", { style: this.props.style, x1: posx, y1: 0,
+                x2: posx, y2: this.props.height });
         }
         return null;
     }
