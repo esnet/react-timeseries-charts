@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -27,27 +25,34 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
 
-var React = require("react");
-var util = require("util");
-
-require("./tracker.css");
-
-var Tracker = React.createClass({
+export default React.createClass({
 
     displayName: "Tracker",
 
+    propTypes: {
+        style: React.PropTypes.object,
+        position: React.PropTypes.instanceOf(Date),
+        height: React.PropTypes.number,
+        timeScale: React.PropTypes.func.isRequired,
+    },
+
+    getDefaultProps: function() {
+        return {
+            offset: 0,
+            style: {stroke: "#AAA", cursor: "crosshair"}
+        };
+    },
+
     render: function() {
-        var posx = this.props.scale(this.props.position);
+        const posx = this.props.timeScale(this.props.position);
         if (posx) {
             return (
-                <line className={"tracker-line"} x1={posx} y1={0} x2={posx} y2={this.props.height} />
+                <line style={this.props.style} x1={posx} y1={0}
+                      x2={posx} y2={this.props.height} />
             );
-        } else {
-            return null;
         }
+        return null;
     },
 });
-
-module.exports = Tracker;

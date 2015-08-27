@@ -1,26 +1,25 @@
-/** @jsx React.DOM */
+import React from "react/addons";
+import Markdown from "react-markdown-el";
 
-var React = require('react');
+var text = require("raw!../../README.md");
 
-var Intro = React.createClass({
+export default React.createClass({
 
   	render: function() {
 	    return (
 	    	<div>
 	          	<div className="row">
 	              	<div className="col-md-12">
-	                  	<h3>Introduction</h3>
+	                  	<h2>Introduction</h2>
 	              	</div>
 	          	</div>
 
 	          	<div className="row">
 	              	<div className="col-md-12">
-	              	A general introduction to the ESnet React Charts library.
+	              		<Markdown text={text}/>
 	              	</div>
 	          	</div>
 		    </div>
 	    );
   	}
 });
-
-module.exports = Intro;

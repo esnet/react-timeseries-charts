@@ -1,7 +1,5 @@
-/** @jsx React.DOM */
-
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
+ * ESnet React Charts, Copyright (c) 2015, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -26,114 +24,162 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-var moment = require("moment");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import {TimeSeries} from "pond";
 
-require("./barchart.css");
+/**
+ * Renders a barchart based on IndexedEvents within a TimeSeries.
+ *
+ * This BarChart implementation is a little different in that it will render onto a time axis,
+ * rather than rendering to specific values. As a result, an Aug 2014 bar will render between the
+ * Aug 2014 tick mark and the Sept 2014 tickmark.
+ */
+export default React.createClass({
 
-var DAY = 1000 * 60 * 60 * 24;
-var HOUR = 1000 * 60 * 60;
-
-function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
-}
-
-var BarChart = React.createClass({
+    propTypes: {
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+        clipPathURL: React.PropTypes.string.isRequired,
+        timeScale: React.PropTypes.object.isRequired,
+        yScale: React.PropTypes.object.isRequired,
+        spacing: React.PropTypes.number,
+        offset: React.PropTypes.number,
+        columns: React.PropTypes.array,
+        style: React.PropTypes.object,
+        size: React.PropTypes.number,
+        onSelectionChange: React.PropTypes.func,
+    },
 
     getDefaultProps: function() {
         return {
-            spacing: 1,   // The width of each bar is the width determined by the time range - spacing x 2
-            offset: 0     // The position of the bar is then offset by this value.
+            spacing: 1,
+            offset: 0,
+            style: {"value": {fill: "#619F3A"}}
         };
     },
 
-    renderBarChart: function(data, timeScale, yScale, classed) {
-        var self = this;
+    /**
+     * hover state is tracked internally and a highlight shown as a result
+     */
+    getInitialState: function() {
+        return {
+            hover: null
+        };
+    },
 
-        var spacing = Number(self.props.spacing);
-        var offset = Number(self.props.offset);
+    /**
+     * Continues a hover event on a specific bar of the bar chart.
+     */
+    handleMouseMove: function(e, key) {
+        this.setState({hover: key});
+    },
 
-        if (!yScale || !data[0]) {
-            return null;
-        }
+    /**
+     * Handle click will call the onSelectionChange callback if one is provided as a prop.
+     * It will be called with the key, which is $series.name-$index-$column, the value of
+     * that event, along with the context. The context provides the series (a TimeSeries), the
+     * column (a string) and the index (an Index).
+     */
+    handleClick: function(e, key, value, series, column, index) {
+        e.stopPropagation();
+        const context = {series: series, column: column, index: index};
+        this.props.onSelectionChange && this.props.onSelectionChange(key, value, context);
+    },
 
-        if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
-        }
+    renderBars: function() {
+        const spacing = Number(this.props.spacing);
+        const offset = Number(this.props.offset);
+        const series = this.props.series;
+        const timeScale = this.props.timeScale;
+        const yScale = this.props.yScale;
+        const columns = this.props.columns || series._columns;
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        let rects = [];
+        for (event of series.events()) {
+            const begin = event.begin();
+            const end = event.end();
+            const beginPos = timeScale(begin) + spacing;
+            const endPos = timeScale(end) - spacing;
 
-        var barClasses = {"barchart-rect": true};
-        if (classed) {
-            barClasses[classed] = true;
-        }
+            let width;
+            if (this.props.size) {
+                width = this.props.size;
+            } else {
+                width = endPos - beginPos;
+            }
 
-        d3.select(this.getDOMNode()).selectAll("rect")
-            .data(data)
-            .enter().append("rect")
-                .classed(barClasses)
-                .attr("width", function(d) {
-                    var start = d.time;
-                    var end;
+            if (width < 1) {
+                width = 1;
+            }
 
-                    if (self.props.interval === "monthly") {
-                        var daysInMonth = moment(d.time).daysInMonth();
-                        end = new Date(d.time.getTime() + daysInMonth * DAY); 
-                    } else if (self.props.interval === "daily") {
-                        end = new Date(d.time.getTime() + DAY);
-                    } else if (self.props.interval === "hourly") {
-                        end = new Date(d.time.getTime() + HOUR);
+            let x;
+            if (this.props.size) {
+                const center = timeScale(begin) + (timeScale(end) - timeScale(begin))/2;
+                x = center - this.props.size/2 + offset;
+            } else {
+                x = timeScale(begin) + spacing + offset;
+            }
+            
+            let ypos = yScale(0);
+            for (let column of columns) {
+
+                const index = event.index();
+                const key = `${series.name()}-${index}-${column}`;
+                const value = event.get(column);
+
+                let height = yScale(0) - yScale(value);
+                if (height < 1) {
+                    height = 1;
+                }
+
+                const y = ypos - height;
+                let barStyle;
+
+                if (key === this.props.selection) {
+                    if (this.props.style && this.props.style[column].selected) {
+                        barStyle = this.props.style[column].selected;
+                    } else {
+                        barStyle = {fill: "rgb(0, 144, 199)"};
                     }
+                } else if (key === this.state.hover) {
+                    if (this.props.style && this.props.style[column].highlight) {
+                        barStyle = this.props.style[column].highlight;
+                    } else {
+                        barStyle = {fill: "rgb(78, 144, 199)"};
+                    }
+                }  else {
+                    if (this.props.style && this.props.style[column].normal) {
+                        barStyle = this.props.style[column].normal;
+                    } else {
+                        barStyle = {fill: "steelblue"};
+                    }
+                }
+                
+                rects.push(
+                    <rect key={key}
+                          data-tip={key === this.state.hover ? "React-tooltip" : ""}
+                          x={x} y={y} width={width} height={height}
+                          pointerEvents="none"
+                          style={barStyle}
+                          clipPath={this.props.clipPathURL}
+                          onClick={e => {this.handleClick(e, key, value, series, column, index)}}
+                          onMouseLeave={e => {this.setState({hover: null})}}
+                          onMouseMove={e => this.handleMouseMove(e, key)}/>
+                );
 
-                    var startLocation = timeScale(start) + spacing;
-                    var endLocation = timeScale(end) - spacing;
-                    return endLocation - startLocation;
-                })
-                .attr("height", function(d) {
-                    return yScale(0) - yScale(d.value);
-                })
-                .attr("x", function (d) { return timeScale(d.time) + spacing + offset})
-                .attr("y", function (d) { return yScale(d.value); })
-
-    },
-
-    componentDidMount: function() {
-        this.renderBarChart(this.props.data,
-                             this.props.timeScale,
-                             this.props.yScale,
-                             this.props.classed);
-
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        var data = nextProps.data;
-        var timeScale = nextProps.timeScale;
-        var yScale = nextProps.yScale;
-        var classed = nextProps.classed;
-
-        if (this.props.data !== nextProps.data ||
-            this.props.data.time !== data.time ||
-            scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            this.renderBarChart(data, timeScale, yScale, classed);
+                ypos -= height;
+            }
         }
+        return rects;
     },
 
-    shouldComponentUpdate: function() {
-        return false;
-    },
-
-    //TODO: props.attr should be required
     render: function() {
         return (
-            <g></g>
+            <g>
+                {this.renderBars()}
+            </g>
         );
     }
 });
-
-module.exports = BarChart;

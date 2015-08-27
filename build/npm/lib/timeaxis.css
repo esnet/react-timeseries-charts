@@ -1,3 +1,4 @@
+
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -25,6 +26,30 @@
  * file for complete information.
  */
  
-.tracker-line {
-    stroke: #AAA;
+/**
+ * CSS for the time axis used in charts etc.
+ */
+
+.x.axis {
+    shape-rendering: crispEdges;
+}
+
+.x.axis .minor {
+    stroke-opacity: .5;
+}
+
+.x.axis > path.domain {
+    fill: none;
+}
+
+.x.axis > .tick > text {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+.x.axis > .tick > line {
+    stroke: #DBDBDB;
+    stroke-opacity: 0.5;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
 }

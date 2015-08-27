@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -27,74 +25,41 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import ReactTooltip from "react-tooltip";
 
-var React = require("react/addons");
-var d3 = require("d3");
-var _ = require("underscore");
-
-var YAxis      = require("./yaxis");
-var AxisGroup  = require("./axisgroup");
-var ChartGroup = require("./chartgroup");
-var Brush      = require("./brush");
-var Tracker    = require("./tracker");
-var EventRect  = require("./eventrect");
-var PointIndicator = require("./pointindicator");
-
-/**
- * Hacky workaround for the fact that clipPath is not currently a supported tag in React.
- */
-var ClipDefs = React.createClass({
-
-    renderClipPath: function(props) {
-        d3.select(this.getDOMNode()).selectAll("*").remove();
-
-        d3.select(this.getDOMNode())
-            .append("clipPath")
-            .attr("id", props.id)
-            .append("rect")
-            .attr("width", props.clipWidth)
-            .attr("height", props.clipHeight);
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        this.renderClipPath(nextProps);
-    },
-
-    componentDidMount: function() {
-        this.renderClipPath(this.props);
-    },
-
-    // For now we'll always update to ensure clipping id and rectangle track props
-    // Could probably optimize this to detect changes to width/height to avoid d3 touching
-    // the real DOM on every re-render.  
-    shouldComponentUpdate: function() {
-        return true;
-    },
-
-    render: function() {
-        return (
-            <defs></defs>
-        );
-    }
-});
-
-
+import YAxis from "./yaxis";
+import Charts from "./charts";
+import Brush from "./brush";
+import Tracker from "./tracker";
+import EventHandler from "./eventhandler";
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
-var ChartRow = React.createClass({
+export default React.createClass({
 
     displayName: "ChartRow",
+
+    getDefaultProps: function() {
+        return {
+            "enablePanZoom": false
+        };
+    },
+
+    propTypes: {
+        enablePanZoom: React.PropTypes.bool
+    },
 
     getInitialState: function() {
         // id of clipping rectangle we will generate and use for each child chart
         // Lives in state to ensure just one clipping rectangle and id per chart row instance; we don't
         // want a fresh id generated on each render.
-        var clipId = _.uniqueId("clip_");
-        var clipPathURL = "url(#" + clipId + ")";
+        let clipId = _.uniqueId("clip_");
+        let clipPathURL = "url(#" + clipId + ")";
 
         return {clipId: clipId,
                 clipPathURL: clipPathURL};
@@ -112,9 +77,9 @@ var ChartRow = React.createClass({
         }
     },
 
-    handleZoom: function(beginTime, endTime) {
+    handleZoom: function(timerange) {
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(beginTime, endTime);
+            this.props.onTimeRangeChanged(timerange);
         }
     },
 
@@ -124,20 +89,43 @@ var ChartRow = React.createClass({
         }
     },
 
+    createScale: function(type, min, max, y0, y1) {
+        let scale;
+        if (_.isUndefined(min) || min !== min || _.isUndefined(max) || max !== max) {
+            scale = null;
+        } else if (type === "linear") {
+            scale = d3.scale.linear()
+                .domain([min, max])
+                .range([y0, y1])
+                .nice();
+        } else if (type === "log") {
+            let base = yaxis.props.logBase || 10;
+            scale = d3.scale.log()
+                .base(base)
+                .domain([min, max])
+                .range([y0, y1]);
+        } else if (type === "power") {
+            let power = yaxis.props.powerExponent || 2;
+            scale = d3.scale.pow()
+                .exponent(power)
+                .domain([min, max])
+                .range([y0, y1]);
+        }
+        return scale;
+    },
+
     render: function() {
-        var self = this;
+        let axes = [];   // Contains all the yAxis elements used in the render
+        let chartList = [];   // Contains all the chart elements used in the render
 
-        var yAxisList = [];   // Contains all the yAxis elements used in the render
-        var chartList = [];   // Contains all the chart elements used in the render
-
-        var margin = (this.props.margin !== undefined) ? Number(this.props.margin) : 5;
-        var padding = (this.props.padding !== undefined) ? Number(this.props.padding) : 2;
+        let margin = (this.props.margin !== undefined) ? Number(this.props.margin) : 5;
+        let padding = (this.props.padding !== undefined) ? Number(this.props.padding) : 2;
 
         // Extra padding above and below the axis since numbers need to be displayed there
-        var AXIS_MARGIN = 5;
-        var innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
-        var rangeTop = AXIS_MARGIN;
-        var rangeBottom = innerHeight - AXIS_MARGIN;
+        let AXIS_MARGIN = 5;
+        let innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
+        let rangeTop = AXIS_MARGIN;
+        let rangeBottom = innerHeight - AXIS_MARGIN;
         
         //
         // Build a map of elements that occupy left or right slots next to the chart.
@@ -151,86 +139,77 @@ var ChartRow = React.createClass({
         // the d3 scale.
         //
 
-        var yAxisMap = {};          // Maps axis id -> axis element
-        var yAxisScaleMap = {};     // Maps axis id -> axis scale
-        var leftAxisList = [];      // Ordered list of left axes ids
-        var rightAxisList = [];     // Ordered list of right axes ids
+        let yAxisMap = {};          // Maps axis id -> axis element
+        let yAxisScaleMap = {};     // Maps axis id -> axis scale
+        let leftAxisList = [];      // Ordered list of left axes ids
+        let rightAxisList = [];     // Ordered list of right axes ids
+        let align = "left";
 
-        React.Children.forEach(this.props.children, function(childGroup) {
-            //Each axis group
-            if (childGroup instanceof AxisGroup) {
-                var axisGroup = childGroup;
-                var align = axisGroup.props.align;
-                var props = axisGroup.props;
-                React.Children.forEach(axisGroup.props.children, function(yaxis) {
-                    yAxisMap[yaxis.props.id] = yaxis; //Relate id to the axis itself
+        React.Children.forEach(this.props.children, child => {
 
-                    // If it's in an axis group, we assume it's a yaxis, however if it doesn't have
-                    // a min/max or id we throw up a warning. Otherwise, we go ahead and calculate the scale
-                    if (yaxis instanceof YAxis ||
-                        _.has(props, "id") && _.has(props, "min") && _.has(props, "max")) {
+            //
+            // TODO:
+            // This code currently assumes each child (except in Charts) has an id, but
+            // this is just because leftAxisList and rightAxisList below pushes an id.
+            // Perhaps it could put the element itself?
+            //
+            
+            if (child.type === Charts) {
+                align = "right";
+            } else {
+                let id = child.props.id;
 
-                        //Relate id to a d3 scale generated from the max, min and scaleType props
-                        var type = props.type || "linear";
-                        if (yaxis.props.min === undefined || yaxis.props.min !== yaxis.props.min ||
-                            yaxis.props.max === undefined || yaxis.props.max !== yaxis.props.max) {
-                            yAxisScaleMap[yaxis.props.id] = null;
-                        } else if (type === "linear") {
-                            yAxisScaleMap[yaxis.props.id] = d3.scale.linear()
-                                .domain([yaxis.props.min, yaxis.props.max])
-                                .range([rangeBottom,rangeTop])
-                                .nice();
-                        } else if (type === "log") {
-                            var base = yaxis.props.logBase || 10;
-                            yAxisScaleMap[yaxis.props.id] = d3.scale.log()
-                                .base(base)
-                                .domain([yaxis.props.min, yaxis.props.max])
-                                .range([rangeBottom,rangeTop]);
-                        } else if (type === "power") {
-                            var power = yaxis.props.powerExponent || 2;
-                            yAxisScaleMap[yaxis.props.id] = d3.scale.pow()
-                                .exponent(power)
-                                .domain([yaxis.props.min, yaxis.props.max])
-                                .range([rangeBottom,rangeTop]);
-                        }
-                    } else {
-                        console.warn("Axis needs an id, a min, and a max prop");
+                //Check to see if we think this 'axis' is actually an axis
+                if (child.type === YAxis || (_.has(child.props, "min") &&
+                                             _.has(child.props, "max"))) {
+                    let yaxis = child;
+                    let {max, min} = yaxis.props;
+                    let type = yaxis.props.type || "linear";
+
+                    if (yaxis.props.id) {
+                        yAxisMap[yaxis.props.id] = yaxis; //Relate id to the axis
                     }
 
-                    //Columns counts
-                    if (align === "left") {
-                        leftAxisList.push(yaxis.props.id);
-                    } else if (align === "right") {
-                        rightAxisList.push(yaxis.props.id);
-                    }
-                });
+                    //Relate id to a d3 scale generated from the max, min and scaleType props
+                    yAxisScaleMap[id] = this.createScale(type, min, max, rangeBottom, rangeTop);
+                }
+
+                //Columns counts
+                if (align === "left") {
+                    leftAxisList.push(id);
+                } else if (align === "right") {
+                    rightAxisList.push(id);
+                }
             }
         });
 
+        //Since we'll be building the left axis items from the inside to the outside
+        leftAxisList.reverse();
+
         //
-        // Push each axis onto the yAxisList, transforming each into its column location
+        // Push each axis onto the axes, transforming each into its column location
         //
 
-        var transform;
-        var id;
-        var props;
-        var axis;
-        var i = 0;
-        var posx = 0;
+        let transform;
+        let id;
+        let props;
+        let axis;
+        let i = 0;
+        let posx = 0;
 
         //Extra space used by padding between columns
-        var leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
-        var rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
+        let leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
+        let rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
         
         //Space used by columns on left and right of charts
-        var leftWidth = _.reduce(this.props.leftAxisWidths, function(a, b) { return a + b; }, 0) + leftExtra;
-        var rightWidth = _.reduce(this.props.rightAxisWidths, function(a, b) { return a + b; }, 0) + rightExtra;
+        let leftWidth = _.reduce(this.props.leftAxisWidths, (a, b) => { return a + b; }, 0) + leftExtra;
+        let rightWidth = _.reduce(this.props.rightAxisWidths, (a, b) => { return a + b; }, 0) + rightExtra;
 
-        var debug;
+        let debug;
 
         posx = leftWidth;
-        for (var leftColumnIndex = 0; leftColumnIndex < this.props.leftAxisWidths.length; leftColumnIndex++) {
-            var colWidth = this.props.leftAxisWidths[leftColumnIndex];
+        for (let leftColumnIndex = 0; leftColumnIndex < this.props.leftAxisWidths.length; leftColumnIndex++) {
+            let colWidth = this.props.leftAxisWidths[leftColumnIndex];
 
             posx = posx - colWidth;
             if (leftColumnIndex > 0) {
@@ -240,14 +219,17 @@ var ChartRow = React.createClass({
             if (leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
                 transform = "translate(" + posx + "," + margin + ")";
+
+                //Additional props for left aligned axes
                 props = {"width": colWidth,
                          "height": innerHeight,
-                         "align": "left"};
+                         "align": "left",
+                         "transition": this.props.transition};
                 if (_.has(yAxisScaleMap, id)) {
                     props.scale = yAxisScaleMap[id];
                 }
 
-                //Cloned axis, with new width, height and scale
+                //Cloned left axis
                 axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
                 //Debug rect
@@ -259,7 +241,7 @@ var ChartRow = React.createClass({
                     debug = null;
                 }
 
-                yAxisList.push(
+                axes.push(
                     <g key={"y-axis-left-" + leftColumnIndex} transform={transform}>
                         {debug}
                         {axis}
@@ -269,20 +251,23 @@ var ChartRow = React.createClass({
         }
 
         posx = this.props.width - rightWidth;
-        for (var rightColumnIndex = 0; rightColumnIndex < this.props.rightAxisWidths.length; rightColumnIndex++) {
-            var colWidth = this.props.rightAxisWidths[rightColumnIndex];
+        for (let rightColumnIndex = 0; rightColumnIndex < this.props.rightAxisWidths.length; rightColumnIndex++) {
+            let colWidth = this.props.rightAxisWidths[rightColumnIndex];
 
             if (rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
                 transform = "translate(" + posx + "," + margin + ")";
+
+                //Additional props for right aligned axes
                 props = {"width": colWidth,
                          "height": innerHeight,
-                         "align": "right"};
+                         "align": "right",
+                         "transition": this.props.transition};
                 if (_.has(yAxisScaleMap, id)) {
                     props.scale = yAxisScaleMap[id];
                 }
 
-                //Cloned axis, with new width, height and scale
+                //Cloned right axis
                 axis = React.addons.cloneWithProps(yAxisMap[id], props);
 
                 //Debug rect
@@ -294,7 +279,7 @@ var ChartRow = React.createClass({
                     debug = null;
                 }
 
-                yAxisList.push(
+                axes.push(
                     <g key={"y-axis-right-" + rightColumnIndex} transform={transform}>
                         {debug}
                         {axis}
@@ -302,31 +287,35 @@ var ChartRow = React.createClass({
                 );
             }
 
-            posx = posx + colWidth + padding;          
+            posx = posx + colWidth + padding;
         }
 
         //
         // Push each chart onto the chartList, transforming each to the right of the left axis slots
-        // and specifying its width.
+        // and specifying its width. Each chart is passed its time and y scale. The yscale is looked
+        // up in yAxisScaleMap.
         //
 
-        var chartWidth = this.props.width - leftWidth - rightWidth;
-        var chartTransform = "translate(" + leftWidth + "," + margin + ")";
+        let chartWidth = this.props.width - leftWidth - rightWidth;
+        let chartTransform = "translate(" + leftWidth + "," + margin + ")";
 
-        var keyCount = 0;
-        React.Children.forEach(this.props.children, function(childGroup) {
-            //Each axis group
-            if (childGroup instanceof ChartGroup) {
-                var chartGroup = childGroup;
-                React.Children.forEach(childGroup.props.children, function(chart) {
-                    var props = {
+        let keyCount = 0;
+        React.Children.forEach(this.props.children, child => {
+
+            if (child.type === Charts) {
+                let charts = child;
+                React.Children.forEach(charts.props.children, chart => {
+                    //Additional props for charts
+                    let props = {
                         key: chart.props.key ? chart.props.key : "chart-" + keyCount,
                         width: chartWidth,
                         height: innerHeight,
-                        clipPathURL: self.state.clipPathURL,
-                        timeScale: self.props.timeScale,
-                        yScale: yAxisScaleMap[chart.props.axis]
+                        clipPathURL: this.state.clipPathURL,
+                        timeScale: this.props.timeScale,
+                        yScale: yAxisScaleMap[chart.props.axis],
+                        transition: this.props.transition
                     };
+
                     chartList.push(React.addons.cloneWithProps(chart, props));
 
                     keyCount++;
@@ -334,18 +323,21 @@ var ChartRow = React.createClass({
             }
         });
        
+        //
         // Push each child Brush on to the brush list.  We need brushed to be rendered last (on top) of
         // everything else in the Z order, both for visual correctness and to ensure that the brush gets
         // mouse events before anything underneath
-        var brushList=[];
+        //
+
+        let brushList=[];
         keyCount=0;
-        React.Children.forEach(this.props.children, function(child) {
-            if (child instanceof Brush) {
-                var props = {
+        React.Children.forEach(this.props.children, child => {
+            if (child.type === Brush) {
+                let props = {
                     key: "brush-" + keyCount,
                     width: chartWidth,
                     height: innerHeight,
-                    timeScale: self.props.timeScale,
+                    timeScale: this.props.timeScale,
                     yScale: yAxisScaleMap[child.props.axis]
                 };
                 brushList.push(React.addons.cloneWithProps(child, props));
@@ -354,55 +346,87 @@ var ChartRow = React.createClass({
 
         });
 
-        var enableZoom = _.has(this.props,'enableZoom') ? this.props.enableZoom : false;
 
-        var zoomHandler=null;
-        if (enableZoom) {
-            zoomHandler=self.handleZoom;
+        //Hover tracker line
+        const tracker = (
+            <g key="tracker-group" style={{pointerEvents: "none"}}>
+                <Tracker height={innerHeight}
+                         timeScale={this.props.timeScale}
+                         position={this.props.trackerPosition} />
+            </g>
+        );
+
+        //Charts with or without pan and zoom event handling
+        let charts;
+        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
+            charts = (
+                <g transform={chartTransform} key="event-rect-group">
+                    <EventHandler key="event-handler"
+                                  width={chartWidth} height={innerHeight}
+                                  scale={this.props.timeScale}
+                                  enablePanZoom={this.props.enablePanZoom}
+                                  minDuration={this.props.minDuration}
+                                  minTime={this.props.minTime}
+                                  maxTime={this.props.maxTime}
+                                  onMouseOut={this.handleMouseOut}
+                                  onMouseMove={this.handleMouseMove}
+                                  onZoom={this.handleZoom}
+                                  onResize={this.handleResize}>
+
+                        {chartList}
+                        {tracker}
+
+                    </EventHandler>
+                </g>
+            );
+        } else {
+            charts = (
+                <g transform={chartTransform} key="event-rect-group">
+                    <g key="charts">
+                        {chartList}
+                    </g>
+                    <g key="tracker">
+                        {tracker}
+                    </g>
+                </g>
+            );
         }
 
-        var chartDebug = null;
+        //Debug outlining
+        let chartDebug = null;
         if (this.props.debug) {
             chartDebug = (
                 <rect className="chart-debug" x={leftWidth} y={margin} width={chartWidth} height={innerHeight} />
             );
         }
 
+        //Clipping
+        const clipDefs = (
+            <defs>
+                <clipPath id={this.state.clipId}>
+                    <rect x="0" y="0" width={chartWidth} height={innerHeight} />
+                </clipPath>
+            </defs>
+        );
+
+        //Pan and zoom brushes
+        const brushes = (
+            <g transform={chartTransform} key="brush-group">
+                {brushList}
+            </g>
+        );
+
         return (
-            <svg width={this.props.width} height={Number(this.props.height)}>
-                {yAxisList}
-
-                {chartDebug}
-
-                <g transform={chartTransform} key="chart-group">
-                    <ClipDefs id={this.state.clipId} clipWidth={chartWidth} clipHeight={innerHeight} />
-                    {chartList}
-                </g>
-
-                <g transform={chartTransform} key="tracker-group">
-                    <Tracker height={innerHeight}
-                             scale={self.props.timeScale} position={self.props.trackerPosition} />
-                </g>
-
-                <g transform={chartTransform} key="event-rect-group">
-                    <EventRect width={chartWidth} height={innerHeight}
-                               scale={self.props.timeScale}
-                               onMouseOut={self.handleMouseOut}
-                               onMouseMove={self.handleMouseMove}
-                               enableZoom={enableZoom}
-                               onZoom={zoomHandler}
-                               minTime={self.props.minTime}
-                               maxTime={self.props.maxTime}
-                               onResize={self.handleResize}/>
-                </g>
-
-                <g transform={chartTransform} key="brush-group">
-                    {brushList}
-                </g>
-
-            </svg>
+            <div>
+                <ReactTooltip place='top' type='warning' effect='solid'/>
+                <svg width={this.props.width} height={Number(this.props.height)}>
+                    {clipDefs}
+                    {axes}
+                    {charts}
+                    {chartDebug}
+                    {brushes}
+                </svg>
+            </div>
         );
     }
 });
-
-module.exports = ChartRow;

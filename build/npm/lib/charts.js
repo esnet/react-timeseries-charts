@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -26,22 +24,35 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
+
 "use strict";
 
-var React = require("react/addons");
-
-/**
- * A AxisGroup has a set of Y axes that may be collected together left or right
- * of the main chart area on each row. It does no rendering itself, but instead
- * is used to organize children for rendering within ChartContainer and 
- * ChartRow.
- */
-var AxisGroup = React.createClass({
-    displayName: "AxisGroup",
-    render: function() {
-        return null;
-    }
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
 
-module.exports = AxisGroup;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _reactAddons = require("react/addons");
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _reactLibInvariant = require("react/lib/invariant");
+
+/**
+ * A Charts component is a grouping of charts which will be composited on top of
+ * each other. It does no actual rendering itself, but instead is used for organizing
+ * ChartRow children. There must be one, and only one, Charts grouping within a ChartRow.
+ * All children of a ChartRow, for which there must be at least one, are considered a
+ * chart. They should return an SVG <g> containing their render.
+ */
+
+var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
+
+exports["default"] = _reactAddons2["default"].createClass({
+  displayName: "Charts",
+  render: function render() {
+    (0, _reactLibInvariant2["default"])(false, '%s elements are for schema configuration only and should not be rendered', this.constructor.name);
+  }
+});
+module.exports = exports["default"];

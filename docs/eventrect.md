@@ -1,0 +1,8 @@
+`eventrect` (component)
+=======================
+
+
+
+Props
+-----
+

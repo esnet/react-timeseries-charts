@@ -24,8 +24,11 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
+ 
+.eventchart-marker {
+    fill: #E2E2E2;
+}
 
-.barchart-rect {
-    fill: steelblue;
-    stroke: none;
+.eventchart-marker-label {
+    fill: #494949;
 }
