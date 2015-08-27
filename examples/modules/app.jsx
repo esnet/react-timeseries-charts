@@ -26,7 +26,7 @@ export default React.createClass({
                   <img style={{float: "right"}} className="main-image" src={logo.src} width={80}/>
               </div>
               <div className="col-md-10">
-                  <h2>ESnet React Charts Library</h2>
+                  <h2>React Timeseries Charts</h2>
               </div>
           </div>
 
@@ -50,7 +50,6 @@ export default React.createClass({
                     <hr />
 
                     Examples:
-                    <li><Link to="history">ESnet history example</Link></li>
                     <li><Link to="weather">Weather example</Link></li>
                     <li><Link to="ddos">DDoS example</Link></li>
 
