@@ -15,7 +15,7 @@
   "scripts": {
     "build-global": "rm -rf build/global && NODE_ENV=production webpack ./entry.js build/global/react-charts.js && NODE_ENV=production COMPRESS=1 webpack ./entry.js build/global/react-charts.min.js && echo \"gzipped, the global build is `gzip -c build/global/react-charts.min.js | wc -c` bytes\"",
     "build-npm": "rm -rf build/npm && babel --optional es7.objectRestSpread -d build/npm/lib ./lib/components && cp README.md build/npm && cp ./lib/components/*.css build/npm/lib && find -X build/npm/lib -type d -name __tests__ | xargs rm -rf && node -p 'p=require(\"./package\");p.main=\"lib\";p.scripts=p.devDependencies=undefined;JSON.stringify(p,null,2)' > build/npm/package.json",
-    "build-docs": "rm -rf docs/* && react-docgen lib/components/*.jsx | ./bin/buildDocs.sh",
+    "build-website": "webpack --config webpack.examples.config.js",
     "start": "webpack-dev-server  --config webpack.examples.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
