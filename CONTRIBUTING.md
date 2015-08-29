@@ -1,4 +1,4 @@
-# How to contribute to esnet-react-charts
+# How to contribute to react-timeseries-charts
 
 In general we follow the "fork & pull" model as outlined in the
 [GitHub docs](https://help.github.com/articles/using-pull-requests/).
