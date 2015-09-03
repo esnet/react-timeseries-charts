@@ -1,10 +1,10 @@
 import React from "react/addons";
 import _ from "underscore";
+import Markdown from "react-markdown-el";
 
 //Imports from the charts library
-import Legend from "../../lib/components/legend";
+import Legend from "../../src/legend";
 
-import Markdown from "react-markdown-el";
 const exampleText = `
 
 Legends are simple to define:

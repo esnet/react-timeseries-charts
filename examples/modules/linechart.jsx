@@ -1,18 +1,20 @@
 import React from "react/addons";
 import _ from "underscore";
+import Markdown from "react-markdown-el";
+
+// Pond
 import {TimeSeries} from "@esnet/pond";
 
-//Imports from the charts library
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import LineChart from "../../lib/components/linechart";
-import Baseline from "../../lib/components/baseline";
-import Legend from "../../lib/components/legend";
-import Resizable from "../../lib/components/resizable";
+// Imports from the charts library
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import LineChart from "../../src/linechart";
+import Baseline from "../../src/baseline";
+import Legend from "../../src/legend";
+import Resizable from "../../src/resizable";
 
-import Markdown from "react-markdown-el";
 const exampleText = `
 	<ChartContainer timeRange={audSeries.range()} padding="5">
         <ChartRow height="200">

@@ -1,9 +1,22 @@
-This library contains a set of modular React components used for building flexible interactive charts. Low level elements are constructed using d3, while high level composability is provided by React. What's so special about this? Charts can be stacked as rows, overlayed on top of each other, or any combination, all in a highly declarative manner. Any number of axes can be provided. What's more, the whole thing can be panned and zoomed.
+![Line chart](./screenshots/areachart.png)
+
+This library contains a set of modular charting components used for building flexible interactive charts. It was built for React from the ground up, specifically to visualize timeseries data and network traffic data in particular. Low level elements are constructed using d3, while higher level composability is provided by React. Charts can be stacked as rows, overlayed on top of each other, or any combination, all in a highly declarative manner.
+
+Current features of the library include:
+
+ * Declarative layout of charts using JSX
+ * Interactivity, including pan and zoom
+ * Add new chart types or overlays
+ * Multiple axis, multiple rows
+ * Line, area and scatter charts
+ * Brushing
+ * Timeseries tables
+ * Legends
+
+Please see the examples for a feel for the library, or read on to get started.
 
 Getting started
 ---------------
-
-![Line chart](./examples/linecharts.png)
 
 The charts library is intended to be used with npm and the built into your project with something like webpack.
 
@@ -58,35 +71,10 @@ To specify a chart you also need to tell the chart code what time range to plot 
 
 where begin and end are times.
 
-Supported Chart types
----------------------
+Developing
+----------
 
-The main charts we use are:
-
-- **Area chart** - which may be stacked in both directions, making it possible to generate up/down charts which we use to show network traffic.
-
-- **Line charts**
-
-- **Scatter charts**
-
-- **Bar charts** (experimental)
-
-- **Events** (very experimental)
-
-In addition the library has the following features:
-
-- **Baselines**
-
-- **Brushes** for pan and zoom of the chart
-
-- **Trackers** for hover indication
-
-- **Legends**
-
-Examples
---------
-
-The repo contains an examples website. Within a cloned repo, you first need to run:
+The repo contains the examples website. This is very helpful in developing new functionality. Within a cloned repo, you first need to run:
 
     npm install
 
@@ -94,19 +82,11 @@ This will install the development dependencies into your node_modules directory.
 
 You can then start up the test server, as well as automatic source building, by doing:
 
-    npm start
+    npm start-website
 
 Then, point your browser to:
 
 [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
-
-From now on, if you change the source code in the examples or lib/, webpack will rebuild the examples bundle and the browser will refresh itself. Errors will also be reported in the browser window.
-
-NOTE: Both webpack and webpack-dev-server probably need to be installed globally for the cli to these tools to work. Also, if your system can't find these (i.e. if you install globally and then type `webpack` in the shell and get `command not found`) then this is because the global install location is not in your path. To find the location use this to find the prefix:
-
-    npm config list | grep prefix
-
-You path should include: prefix + "/bin" for installed cli.
 
 Licence
 -------

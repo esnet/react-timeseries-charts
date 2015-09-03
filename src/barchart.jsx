@@ -41,9 +41,6 @@ export default React.createClass({
 
     propTypes: {
         series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-        clipPathURL: React.PropTypes.string.isRequired,
-        timeScale: React.PropTypes.object.isRequired,
-        yScale: React.PropTypes.object.isRequired,
         spacing: React.PropTypes.number,
         offset: React.PropTypes.number,
         columns: React.PropTypes.array,

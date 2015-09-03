@@ -1,6 +1,7 @@
 lib/
 !build/npm/lib
 examples/
+screenshots/
 docs/
 bin/
 build/global

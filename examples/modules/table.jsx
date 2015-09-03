@@ -1,13 +1,13 @@
 import React from "react/addons";
 import _ from "underscore";
 import d3 from "d3";
+import Markdown from "react-markdown-el";
 
+// Pond
 import {TimeSeries} from "@esnet/pond";
 
-//Imports from the charts library
-import TimeSeriesTable from "../../lib/components/table";
-
-import Markdown from "react-markdown-el";
+// Imports from the charts library
+import TimeSeriesTable from "../../src/table";
 
 const example1Text = `
 

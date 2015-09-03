@@ -61,7 +61,7 @@ export default React.createClass({
 
                 if (cell) {
                     cells.push(
-                        <td>{cell}</td>
+                        <td key={column.key}>{cell}</td>
                     )
                 } else {
                     let formatter;
@@ -76,14 +76,14 @@ export default React.createClass({
                     if (column.key === "time") {
                         if (event instanceof IndexedEvent) {
                             cells.push(
-                                <td>
+                                <td key={event.index().asString()}>
                                     {event.index().toNiceString(this.props.timeFormat)}
                                 </td>
                             );
                         } else {
                             const ts = Moment(event.timestamp());
                             cells.push(
-                                <td>
+                                <td key={ts.valueOf()}>
                                     {ts.format(this.props.timeFormat)}
                                 </td>
                             );
@@ -94,7 +94,7 @@ export default React.createClass({
                             value = formatter(parseFloat(value, 10));
                         }
                         cells.push (
-                            <td>{value}</td>
+                            <td key={column.key}>{value}</td>
                         );
                     }
                 }
@@ -102,14 +102,14 @@ export default React.createClass({
         } else {
             if (event instanceof IndexedEvent) {
                 cells.push(
-                    <td>
+                    <td key={event.index().asString()}>
                         {event.index().toNiceString(this.props.timeFormat)}
                     </td>
                 );
             } else {
                 const ts = Moment(event.timestamp());
                 cells.push(
-                    <td>
+                    <td key={ts.valueOf()}>
                         {ts.format(this.props.timeFormat)}
                     </td>
                 );
@@ -123,11 +123,11 @@ export default React.createClass({
 
                 if (cell) {
                     cells.push(
-                        <td>{cell}</td>
+                        <td key={i}>{cell}</td>
                     )
                 } else {
                     cells.push (
-                        <td>{d.toString()}</td>
+                        <td key={i}>{d.toString()}</td>
                     );
                 }
             });
@@ -138,10 +138,12 @@ export default React.createClass({
 
     renderRows: function() {
         let rows = [];
+        let i = 0;
         for (let event of this.props.series.events()) {
             rows.push(
-                <tr>{this.renderCells(event)}</tr>
+                <tr key={i}>{this.renderCells(event)}</tr>
             );
+            i++;
         }
 
         const summaryStyle = {
@@ -153,10 +155,10 @@ export default React.createClass({
 
         if (this.props.summary) {
             const cells = _.map(this.props.summary, (value, key) => (
-                <td><b>{value}</b></td>
+                <td key={key}><b>{value}</b></td>
             ));
             rows.push(
-                <tr style={summaryStyle}>{cells}</tr>
+                <tr key="summary" style={summaryStyle}>{cells}</tr>
             )
         }
 
@@ -169,22 +171,22 @@ export default React.createClass({
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {
                 headerCells.push(
-                    <th style={headerStyle}>{column.label}</th>
+                    <th key={column.label} style={headerStyle}>{column.label}</th>
                 );
             });
         } else {
             headerCells.push(
-                <th >time</th>
+                <th key="time">time</th>
             );
             this.props.series._columns.forEach((column) => {
                 headerCells.push(
-                    <th style={headerStyle}>{column}</th>
+                    <th key={column.label} style={headerStyle}>{column}</th>
                 );
             });
         }
 
         return (
-            <tr>
+            <tr key="header">
                 {headerCells}
             </tr>
         );

@@ -1,19 +1,22 @@
 import React from "react/addons";
 import _ from "underscore";
+import Markdown from "react-markdown-el";
+
+//Pond
 import {TimeSeries, TimeRange} from "@esnet/pond";
 
 //Imports from the charts library
-import Legend from "../../lib/components/legend";
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import AreaChart from "../../lib/components/areachart";
-import TimeRangeMarker from "../../lib/components/timerangemarker";
-import Baseline from "../../lib/components/baseline";
-import Resizable from "../../lib/components/resizable";
-import Markdown from "react-markdown-el";
+import Legend from "../../src/legend";
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import AreaChart from "../../src/areachart";
+import TimeRangeMarker from "../../src/timerangemarker";
+import Baseline from "../../src/baseline";
+import Resizable from "../../src/resizable";
 
+//Docs text
 const exampleText = `
     <ChartContainer timeRange={timerange}>
         <ChartRow height="150">
