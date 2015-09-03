@@ -1,12 +1,27 @@
-/** @jsx React.DOM */
+import React from "react/addons";
+import _ from "underscore";
 
-var React = require('react');
-var _     = require('underscore');
+//Imports from the charts library
+import Legend from "../../lib/components/legend";
 
-var Charts = require("../../esnet-react-charts");
-var Legend = Charts.Legend;
+import Markdown from "react-markdown-el";
+const exampleText = `
 
-var LegendExamples = React.createClass({
+Legends are simple to define:
+
+	const categories={[{"key": "aust", "label": "AUD", "style": {backgroundColor: "#1f77b4"}},
+                       {"key": "usa", "label": "USD", "style": {backgroundColor: "#aec7e8"}}]}
+
+    <Legend type="line" categories={categories} />
+
+The 'type' maybe: line, switch or dot.
+
+For each category to display you must provide a key and a label. You may also provide a style
+which will be merged in with the base style for that type.
+
+`;
+
+export default React.createClass({
 
   	render: function() {
 	    return (
@@ -33,19 +48,31 @@ var LegendExamples = React.createClass({
 
 	          	<div className="row">
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"AUD": "aust", "USD": "usa"}} style="line"/>
+	                  	<Legend type="line" categories={[{"key": "aust", "label": "AUD", "style": {backgroundColor: "#1f77b4"}},
+	                  						             {"key": "usa", "label": "USD", "style": {backgroundColor: "#aec7e8"}}]} />
 	              	</div>
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"Oscars": "oscars", "Total": "total"}} style="swatch" />
+	                  	<Legend type="swatch" categories={[{"key": "oscars", "label": "Oscars", style: {backgroundColor: "#ff7f0e"}},
+	                  						               {"key": "total", "label": "Total", style: {backgroundColor: "#ffbb78"}}]} />
 	              	</div>
 	              	<div className="col-md-3">
-	                  	<Legend categories={{"Site": "site", "Router": "router"}} style="dot" />
+	                  	<Legend type="dot" categories={[{"key": "site", "label": "Site", style: {backgroundColor: "#98df8a"}},
+	                  						            {"key": "router", "label": "Router", style: {backgroundColor: "#d62728"}}]} />
 	              	</div>
 	          	</div>
 
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Markdown text={exampleText} />
+                    </div>
+                </div>
 		    </div>
 	    );
   	}
 });
 
-module.exports = LegendExamples;
+/*
+
+ */

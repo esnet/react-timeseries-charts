@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -27,14 +25,11 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react/addons";
+import d3 from "d3";
+import "./yaxis.css";
 
-var React = require("react");
-var d3 = require("d3");
-
-require("./yaxis.css");
-
-var MARGIN = 0;
+const MARGIN = 0;
 
 function scaleAsString(scale) {
     return scale.domain().toString() + "-" + scale.range().toString();
@@ -48,7 +43,7 @@ function scaleAsString(scale) {
  *     * scale - a d3 scale that defines the domain and range of the axis
  */
 
-var YAxis = React.createClass({
+export default React.createClass({
 
     displayName: "YAxis",
 
@@ -58,7 +53,6 @@ var YAxis = React.createClass({
 
     getDefaultProps: function() {
         return {
-            "test": "bob",
             "id": "yaxis",             // id referred to by the chart
             "align": "left",           // left or right of the chart
             "min": 0,                  // range
@@ -66,7 +60,13 @@ var YAxis = React.createClass({
             "type": "linear",          // linear, log, or power
             "absolute": false,         // Display scale always positive
             "format": ".2s",           // Format string for d3.format
-            "labelOffset": 0           // Allows the user to tweak the position of the label
+            "labelOffset": 0,          // Allows the user to tweak the position of the label
+            "transition": 0,           // Axis transition time
+            "style": {
+                labelColor: "#8B7E7E", // Default label color
+                labelWeight: 100,
+                labelSize: 12
+            }
         };
     },
 
@@ -95,13 +95,19 @@ var YAxis = React.createClass({
                         } else {
                             return yformat(d);
                         }
-                    }).orient(align);                
+                    }).orient(align);
             }
         } else if (this.props.type === "log") {
             axisGenerator = d3.svg.axis()
                 .scale(scale)
                 .ticks(10, ".2s")
                 .orient(align);
+        }
+
+        let style = {
+            "fill": this.props.style.labelColor || "#8B7E7E",
+            "font-weight": this.props.style.labelWeight || 100,
+            "font-size": this.props.style.labelSize ? `${this.props.style.width}px` : "12px"
         }
 
         //Remove the old axis from under this DOM node
@@ -113,17 +119,58 @@ var YAxis = React.createClass({
         var classed = this.props.classed ? this.props.classed : "";
         var axisClass = "yaxis " + classed
         var axisLabelClass = "yaxis-label " + classed;
-        d3.select(this.getDOMNode()).append("g")
+        this.axis = d3.select(this.getDOMNode()).append("g")
             .attr("transform", "translate(" + x + ",0)")
             .attr("class", axisClass)
             .call(axisGenerator)
         .append("text")
+            .style(style)
             .attr("transform", "rotate(-90)")
             .attr("class", axisLabelClass)
             .attr("y", labelOffset)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text(this.props.label);
+    },
+
+    updateAxis: function(align, scale, width, absolute, format) {
+        var yformat = d3.format(format);
+        var axisGenerator;
+        if (this.props.type === "linear" || this.props.type === "power") {
+            if (this.props.height <= 200) {
+                axisGenerator = d3.svg.axis()
+                    .scale(scale)
+                    .ticks(5)
+                    .tickFormat(function(d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        } else {
+                            return yformat(d);
+                        }
+                    }).orient(align);
+            } else {
+                axisGenerator = d3.svg.axis()
+                    .scale(scale)
+                    .tickFormat(function(d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        } else {
+                            return yformat(d);
+                        }
+                    }).orient(align);
+            }
+        } else if (this.props.type === "log") {
+            axisGenerator = d3.svg.axis()
+                .scale(scale)
+                .ticks(10, ".2s")
+                .orient(align);
+        }
+
+        d3.select(this.getDOMNode()).select(".yaxis")
+            .transition()
+            .duration(this.props.transition)
+            .ease("sin-in-out")
+                .call(axisGenerator);
     },
 
     componentDidMount: function() {
@@ -139,7 +186,7 @@ var YAxis = React.createClass({
         var format = nextProps.format;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.renderAxis(align, scale, width, absolute, format);
+            this.updateAxis(align, scale, width, absolute, format);
         }
     },
 
@@ -151,5 +198,3 @@ var YAxis = React.createClass({
         return <g/>;
     },
 });
-
-module.exports = YAxis;

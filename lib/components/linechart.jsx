@@ -1,10 +1,8 @@
-/** @jsx React.DOM */
-
 /*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
- * California, through Lawrence Berkeley National Laboratory (subject
- * to receipt of any required approvals from the U.S. Dept. of
- * Energy).  All rights reserved.
+ * ESnet react-timeseries-charts, Copyright (c) 2015, The Regents of
+ * the University of California, through Lawrence Berkeley National
+ * Laboratory (subject to receipt of any required approvals from the
+ * U.S. Dept. of Energy).  All rights reserved.
  *
  * If you have questions about your rights to use or distribute this
  * software, please contact Berkeley Lab's Technology Transfer
@@ -27,107 +25,73 @@
  * file for complete information.
  */
  
-"use strict";
+import React from "react";
+import _ from "underscore";
+import Polygon from "paths-js/polygon";
+import Bezier from "paths-js/bezier";
 
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-
-require("./linechart.css");
-
-function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
-}
-
-var LineChart = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
-            "interpolate": "basis",
-            "showDataPoints": false,
-            "dataPointRadius": 1.0
+            "smooth": true,
+            "showPoints": false,
+            "pointRadius": 1.0,
+            "style": {
+                "color": "#9DA3FF",
+                "width": 1
+            }
+        };
+    },
+   
+    /**
+     * Uses paths.js to generate an SVG element for a path passing
+     * through the points passed in. May be smoothed or not, depending
+     * on this.props.smooth.
+     */
+    generatePath: function(points) {
+        const fn = this.props.smooth ? Bezier : Polygon;
+        return fn({points: points, closed: false}).path.print();
+    },
+
+    /**
+     * Checks if the passed in point is within the bounds of the drawing area
+     */
+    inBounds: function(p) {
+        return p[0] > 0 && p[0] < this.props.width;
+    },
+
+    /**
+     * Returns the style used for drawing the path
+     */
+    pathStyle: function() {
+        return {
+            "fill": "none",
+            "pointerEvents": "none",
+            "stroke": this.props.style.color || "#9DA3FF",
+            "strokeWidth": `${this.props.style.width}px` || "1px"
         };
     },
 
-    renderLineChart: function(data, timeScale, yScale, interpolate, 
-                              showDataPoints, dataPointRadius, classed) {
-        if (!yScale || !data[0]) {
-            return null;
-        }
+    renderLine: function() {
+        // Map series data to scaled points and filter to bounds of drawing area
+        const points = _.filter(
+            _.map(this.props.series.toJSON().points, d => {
+                return [this.props.timeScale(d[0]), this.props.yScale(d[1])]
+            }), p => this.inBounds(p));
 
-        if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
-        }
-
-        d3.select(this.getDOMNode()).selectAll("*").remove();
-
-        var line = d3.svg.line()
-            .interpolate(interpolate)
-            .x(function(d) { return timeScale(d.time); })
-            .y(function(d) { return yScale(d.value); });
-
-        var pathClasses = {"linechart-line": true};
-        if (classed) {
-            pathClasses[classed] = true;
-        }
-        d3.select(this.getDOMNode()).append("path")
-            .datum(data)
-            .classed(pathClasses)
-            .attr("d", line)
-            .attr("clip-path",this.props.clipPathURL);
-
-        if (showDataPoints) {
-            d3.select(this.getDOMNode()).selectAll("dot")
-                .data(data)
-                .enter().append("circle")
-                    .attr("r", dataPointRadius)
-                    .attr("cx", function (d) { return timeScale(d.time); })
-                    .attr("cy", function (d) { return yScale(d.value); })
-        }
+        return (
+            <path style={this.pathStyle()}  onMouseMove={this.handleMouseMove}
+                  d={this.generatePath(points)}
+                  clipPath={this.props.clipPathURL}/>
+        )
     },
 
-    componentDidMount: function() {
-        this.renderLineChart(this.props.data,
-                             this.props.timeScale,
-                             this.props.yScale,
-                             this.props.interpolate,
-                             this.props.showDataPoints,
-                             this.props.dataPointRadius,
-                             this.props.classed);
-
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        var data = nextProps.data;
-        var timeScale = nextProps.timeScale;
-        var yScale = nextProps.yScale;
-        var classed = nextProps.classed;
-        var interpolate = nextProps.interpolate;
-        var showDataPoints = nextProps.showDataPoints;
-        var dataPointRadius = nextProps.dataPointRadius;
-
-        if (this.props.data !== nextProps.data ||
-            this.props.data.time !== data.time ||
-            this.interpolate !== interpolate ||
-            this.showDataPoints !== showDataPoints ||
-            this.dataPointRadius !== dataPointRadius || 
-            scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            this.renderLineChart(data, timeScale, yScale, interpolate, 
-                    showDataPoints, dataPointRadius, classed);
-        }
-    },
-
-    shouldComponentUpdate: function() {
-        return false;
-    },
-
-    //TODO: props.attr should be required
     render: function() {
         return (
-            <g></g>
+            <g>
+                {this.renderLine()}
+            </g>
         );
     }
 });
-
-module.exports = LineChart;

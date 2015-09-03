@@ -25,43 +25,33 @@
  * file for complete information.
  */
 
-.horizontal-legend {
-    list-style: none;
-    padding-left: 0px;
-}
+"use strict";
 
-.horizontal-legend .legend-list {
-    float: left;
-    margin-right: 10px;
-}
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-.horizontal-legend .legend-swatch {
-    float: left; width: 15px;
-    height: 15px;
-    margin: 2px;
-    border-radius: 2px;
-    background: #CCC;
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-.horizontal-legend .legend-line {
-	float: left;
-	width: 15px;
-	height: 3px;
-	margin: 2px;
-	margin-top: 8px;
-	background: #CCC;
-}
+var _reactAddons = require("react/addons");
 
-.horizontal-legend .legend-dot {
-	float: left;
-	width: 8px;
-	height: 8px;
-	margin: 2px;
-	margin-top: 6px;
-	border-radius: 4px;
-	background: #CCC;
-}
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
-.horizontal-legend .legend-label {
-}
+var _reactLibInvariant = require("react/lib/invariant");
 
+var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
+
+/**
+ * A Charts component is a grouping of charts which will be composited on top of
+ * each other. It does no actual rendering itself, but instead is used for organizing
+ * ChartRow children. There must be one, and only one, Charts grouping within a ChartRow.
+ * All children of a ChartRow, for which there must be at least one, are considered a
+ * chart. They should return an SVG <g> containing their render.
+ */
+exports["default"] = _reactAddons2["default"].createClass({
+  displayName: "Charts",
+  render: function render() {
+    (0, _reactLibInvariant2["default"])(false, "%s elements are for schema configuration only and should not be rendered", this.constructor.name);
+  }
+});
+module.exports = exports["default"];

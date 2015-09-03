@@ -1,32 +1,91 @@
-/** @jsx React.DOM */
+import React from "react/addons";
+import _ from "underscore";
+import Moment from "moment"
+import {TimeSeries, TimeRange, Index} from "@esnet/pond";
 
-var React  = require('react');
-var _      = require('underscore');
-var Moment = require('moment');
+import Markdown from "react-markdown-el";
 
-var Charts = require("../../esnet-react-charts");
+const exampleText = `
 
-var ChartContainer = Charts.ChartContainer;
-var ChartRow = Charts.ChartRow;
-var ChartGroup = Charts.ChartGroup;
-var AxisGroup = Charts.AxisGroup;
-var YAxis = Charts.YAxis;
-var Baseline = Charts.Baseline;
+This simple example of a bar chart displays a pan and zoom chart that shows traffic levels
+for each day of October 2014. The original data used here was captured to debug a messurement
+error (seen clearly in Oct 10th).
 
-var BarChart = Charts.BarChart;
-var LineChart = Charts.LineChart;
+To begin with we converted the original data into Pond's TimeSeries data structure as \`octoberTraffic\`:
 
-var Resizable = Charts.Resizable;
+	import {TimeSeries} from "@esnet/pond";
 
-var beginTime = Moment("2014-10-01");
-var endTime = Moment("2014-11-01") - 1;
+	const octoberTraffic = new TimeSeries({
+		name: "Traffic",
+		utc: false,
+		columns: ["time", "in", "out"],
+		points: trafficPoints
+	});
+
+Points are simply an array of tuples, each of which is \`[index, value1, value2, ...]\`. In this case this
+looks like \`['2014-10-DD', volIn, volOut]\`. An index can be of several forms, but is a string that
+represents a time range (e.g. 2014-10-08 represents the time range spanning October 8th 2014).
+
+We also set utc to false here so that the index time ranges are defined in local time. Currently all
+visualizations of time series data are in local time, while the default is for indexes to be in UTC.
+
+Now we can render a the chart. The \`<BarChart>\` element does the rendering of the chart itself. As with
+other chart types, the vertical scale is provided by referencing the \`<YAxis>\` (\`axis='traffic'\`). 
+
+    <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+    				enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
+    				maxTime={new Date(1414827330868)}
+    				minTime={new Date(1412143472795)}
+    				minDuration={1000*60*60*24*5}>
+        <ChartRow height="150">
+            <YAxis id="traffic" label="Traffic In (B)" min={0} max={max} width="70" type="linear"/>
+            <Charts>
+                <BarChart axis="traffic" style={chartStyle} columns={["in"]}
+                		  series={octoberTrafficSeries}
+                		  selection={this.state.selection}
+                		  onSelectionChange={this.handleSelectionChanged}/>
+                <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
+            </Charts>
+            <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
+            	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
+        </ChartRow>
+    </ChartContainer>
+
+The style provides the coloring, relating each channel to styles for normal, highlight (hover) and
+selected:
+
+	const style = {
+		"in": {
+			normal: {fill: "#619F3A"},
+			highlight: {fill: "rgb(113, 187, 67)"},
+			selected: {fill: "#436D28"}
+		}
+	};
+
+As a side note, this chart can also be zoomed in and then panned with constraints. This is controlled
+using the \`<ChartContainer>\` props.
+
+The final result is below, along with other examples:
+
+`;
+
+//Imports from the charts library
+import ChartContainer from "../../lib/components/chartcontainer";
+import ChartRow from "../../lib/components/chartrow";
+import Charts from "../../lib/components/charts";
+import YAxis from "../../lib/components/yaxis";
+import BarChart from "../../lib/components/barchart";
+import LineChart from "../../lib/components/linechart";
+import Baseline from "../../lib/components/baseline";
+import Legend from "../../lib/components/legend";
+import Resizable from "../../lib/components/resizable";
 
 //
 // October 2014 daily traffic
 //
 
-var trafficInData = [];
-var trafficOutData = [];
+var trafficPoints = [];
+
 var trafficRateInData = [];
 var trafficRateOutData = [];
 
@@ -42,11 +101,11 @@ var totalRateIn = 0;
 var totalRateOut = 0;
 
 _.each(days, function(value, day) {
-	var dayOfMonth = Number(day);
-	var range = "day";
-	var oct = 9; //months 0-11
-	var date = Moment({year: 2014, month: oct, "day": dayOfMonth});
+	const dayOfMonth = Number(day);
+	const volIn = value.in;
+	const volOut = value.out;
 
+	//Max
 	max = Math.max(max, value.in);
 	max = Math.max(max, value.out);
 
@@ -57,13 +116,15 @@ _.each(days, function(value, day) {
 		count++;
 	}
 
-	volIn = value.in;
-	volOut = value.out;
-
-	trafficInData.push({"time": date.toDate(), "range": "day", "value": volIn})
-	trafficOutData.push({"time": date.toDate(), "range": "day", "value": value.out})
+	trafficPoints.push([`2014-10-${dayOfMonth}`, volIn, volOut]);
 });
 
+var octoberTrafficSeries = new TimeSeries({
+	name: "October Traffic",
+	utc: false,
+	columns: ["time", "in", "out"],
+	points: trafficPoints
+});
 
 max = max/100;
 
@@ -83,69 +144,143 @@ _.each(monthlyJSON, function(router) {
 		routerData[routerName] = {"accepted": [], "delivered": []};
 		_.each(router, function(traffic, key) {
 			if (key !== "Router") {
-				var d = Moment(key.split(' ')[0], "YYYY-MM").toDate();
-				if (key.split(' ')[1] === "Accepted") {
-					routerData[routerName].accepted.push({"time": d, "value": traffic});
-				} else if (key.split(' ')[1] === "Delivered") {
-					routerData[routerName].delivered.push({"time": d, "value": traffic});
+				const month = key.split(' ')[0];
+				const type = key.split(' ')[1];
+				if (type === "Accepted") {
+					routerData[routerName].accepted.push([month, traffic]);
+				} else if (type === "Delivered") {
+					routerData[routerName].delivered.push([month, traffic]);
 				}
 			}
 		});
 	}
 });
 
-var monthlyBeginTime = Moment("2014-01-01");
-var monthlyEndTime = Moment("2014-12-01") - 1;
+var monthlyAcceptedSeries = new TimeSeries({
+	name: "Monthly Accepted",
+	columns: ["time", "value"],
+	points: routerData[routerKey].accepted
+});
 
-var BarChartExample = React.createClass({
+var monthlyDeliveredSeries = new TimeSeries({
+	name: "Monthly Delivered",
+	columns: ["time", "value"],
+	points: routerData[routerKey].delivered
+});
+
+export default React.createClass({
+
+	getInitialState: function() {
+		return {
+			timerange: octoberTrafficSeries.range(),
+			selection: "October Traffic-2014-10-10-in"
+		}
+	},
+
+	handleTimeRangeChange: function(timerange) {
+		this.setState({timerange: timerange})
+	},
+
+	handleSelectionChanged: function(key, value, context) {
+		console.log(key)
+		this.setState({
+			selection: key,
+			value: value,
+			series: context.series,
+			index: context.index,
+			column: context.column,
+		});
+	},
 
   	render: function() {
+		const beginTime = Moment("2014-10-01");
+		const endTime = Moment("2014-11-01") - 1;
+		const timerange = new TimeRange([beginTime, endTime]);
+
+		const style = {
+			"in": {
+				normal: {fill: "#619F3A"},
+				highlight: {fill: "rgb(113, 187, 67)"},
+				selected: {fill: "#436D28"}
+			},
+			"out": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "rgb(255, 141, 39)"},
+				selected: {fill: "#A55D1C"}
+			}
+		}
+
+		const leftStyle = {
+			"in": {
+				normal: {fill: "#619F3A"},
+				highlight: {fill: "rgb(113, 187, 67)"},
+				selected: {fill: "#436D28"}
+			}
+		};
+		const rightStyle = {
+			"out": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "rgb(255, 141, 39)"},
+				selected: {fill: "#B3621A"}
+			}
+		};
+
+		const tourStyleRight = {
+			"start": {
+				normal: {fill: "#DDDDDD"},
+				highlight: {fill: "DEDEDE"}
+			}
+		};
+
+		const tourStyleLeft = {
+			"start": {
+				normal: {fill: "#E37E23"},
+				highlight: {fill: "#C37E23"}
+			}
+		};
+
+		const formatter = d3.format(".2s");
 
 	    return (
-
 	    	<div>
+
+	            <div className="row">
+	                <div className="col-md-12">
+	                    <Markdown text={exampleText} />
+	                </div>
+	            </div>
 
 		        <div className="row">
 		            <div className="col-md-12">
 		                <h3>Daily traffic - October 2014</h3>
 		                <b>Interface: ornl-cr5::to_ornl_ip-a</b>
+		                <p style={{color: "#808080"}}>
+		                	Selected: {this.state.index ? this.state.index.toNiceString() : "--"} ({this.state.column ? this.state.column : "--"}) | {this.state.value ? `${formatter(this.state.value)}B` : "--"}
+		                </p>
 		            </div>
 		        </div>
-
 
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
-		                    <ChartContainer beginTime={beginTime} endTime={endTime} padding="0" dayFormat={true}>
+		                    <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+		                    				enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
+		                    				maxTime={new Date(1414827330868)}
+		                    				minTime={new Date(1412143472795)}
+		                    				minDuration={1000*60*60*24*5}>
 		                        
 		                        <ChartRow height="150">
-		                            <AxisGroup align="left">
-		                                <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
-		                                	   min={0} max={max} width="70" type="linear"/>
-		                            </AxisGroup>
-		                            <ChartGroup>
-		                                <BarChart axis="traffic" interval="daily" data={trafficInData} classed="traffic-in"/>
-		                                <Baseline axis="traffic" classed="traffic-volume" value={avgIn} label="Avg "position="right"/>
-		                            </ChartGroup>
-		                            <AxisGroup align="right">
-		                                <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
-		                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
-		                            </AxisGroup>
-		                        </ChartRow>
-
-		                        <ChartRow height="150">
-		                            <AxisGroup align="left">
-		                                <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
-		                                	   min={0} max={max} width="70" type="linear"/>
-		                            </AxisGroup>
-		                            <ChartGroup>
-		                                <BarChart axis="traffic" interval="daily" data={trafficOutData} classed="traffic-out"/>
-		                                <Baseline axis="traffic" value={avgOut} label="Avg" position="right"/>
-		                            </ChartGroup>
-		                            <AxisGroup align="right">
-		                                <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
-		                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
-		                            </AxisGroup>		                          
+		                            <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
+		                                   min={0} max={max} width="70" type="linear"/>
+		                            <Charts>
+		                                <BarChart axis="traffic" style={leftStyle} columns={["in"]}
+		                                		  series={octoberTrafficSeries}
+		                                		  selection={this.state.selection}
+		                                		  onSelectionChange={this.handleSelectionChanged}/>
+		                                <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
+		                            </Charts>
+	                                <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
+	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
 		                        </ChartRow>
 
 		                    </ChartContainer>
@@ -153,77 +288,128 @@ var BarChartExample = React.createClass({
 		            </div>
 		        </div>
 
+                <div className="row">
+                    <div className="col-md-12">
+                    	<hr />
+                    	Alternatively we can display bars side by side using the 'spacing' and 'offset' props:
+                    	<hr />
+                    </div>
+                </div>
+
+
+                <div className="row">
+                	<div className="col-md-1">
+                	</div>
+                    <div className="col-md-11">
+                        <Legend type="swatch" categories={[{"key": "in", "label": "Traffic In", "style": {backgroundColor: "#619F3A"}},
+                                                           {"key": "out", "label": "Traffic Out", "style": {backgroundColor: "#E37E23"}}]} />
+                    </div>
+                </div>
+		        <div className="row">
+		            <div className="col-md-12">
+		                <Resizable>
+		                    <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+		                        
+		                        <ChartRow height="150">
+		                            <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
+		                                   min={0} max={max} width="70" type="linear"/>
+		                            <Charts>
+		                                <BarChart axis="traffic-volume" style={leftStyle} size={10} offset={5.5} columns={["in"]} series={octoberTrafficSeries} />
+		                                <BarChart axis="traffic-volume" style={rightStyle} size={10} offset={-5.5} columns={["out"]} series={octoberTrafficSeries} />
+		                            </Charts>
+	                                <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
+	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
+		                        </ChartRow>
+
+		                    </ChartContainer>
+		                </Resizable>
+		            </div>
+		        </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                    	<hr />
+                    	Or of course you can stack them:
+                    	<hr />
+                    </div>
+                </div>
+
+
+                <div className="row">
+                	<div className="col-md-1">
+                	</div>
+                    <div className="col-md-11">
+                        <Legend type="swatch" categories={[{"key": "in", "label": "Traffic In", "style": {backgroundColor: "#619F3A"}},
+                                                           {"key": "out", "label": "Traffic Out", "style": {backgroundColor: "#E37E23"}}]} />
+                    </div>
+                </div>
+		        <div className="row">
+		            <div className="col-md-12">
+		                <Resizable>
+		                    <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+		                        
+		                        <ChartRow height="150">
+		                            <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
+		                                   min={0} max={max} width="70" type="linear"/>
+		                            <Charts>
+		                                <BarChart axis="traffic-volume" style={style} spacing={3} series={octoberTrafficSeries} />
+		                            </Charts>
+	                                <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
+	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
+		                        </ChartRow>
+
+		                    </ChartContainer>
+		                </Resizable>
+		            </div>
+		        </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                    	<hr />
+                    	Another example, this time with monthly data:
+                    	<hr />
+                    </div>
+                </div>
 
 		        <div className="row">
 		            <div className="col-md-12">
-		                <h3>Monthly traffic - 2014</h3>
+		                <h3>Monthly traffic - 6 months</h3>
 		                <b>Router: bnl-mr2</b>
 		            </div>
 		        </div>
 
-
 		        <div className="row">
 		            <div className="col-md-12">
 		                <Resizable>
-		                    <ChartContainer beginTime={monthlyBeginTime} endTime={monthlyEndTime} padding="0" monthFormat={true}>
+		                    <ChartContainer timeRange={monthlyAcceptedSeries.range()} padding="0" format="month">
 		                        
 		                        <ChartRow height="150">
-		                            <AxisGroup align="left">
-		                                <YAxis id="traffic" label="Accepted" classed="traffic-accepted" labelOffset={5}
-		                                	   min={0} max={1500000000000000} width="60" type="linear"/>
-		                            </AxisGroup>
-		                            <ChartGroup>
-		                                <BarChart axis="traffic" interval="monthly" data={routerData[routerKey].accepted} classed="traffic-in"/>
-		                            </ChartGroup>
+		                            <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
+		                                   min={0} max={1500000000000000} width="70" type="linear"/>
+		                            <Charts>
+		                                <BarChart axis="traffic" series={monthlyAcceptedSeries} />
+		                                <Baseline axis="traffic" value={monthlyAcceptedSeries.avg()} label="Avg "position="right"/>
+		                            </Charts>
+	                                <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
+	                                	    min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
 		                        </ChartRow>
 
 		                        <ChartRow height="150">
-		                            <AxisGroup align="left">
-		                                <YAxis id="traffic" label="Delivered" classed="traffic-delivered" labelOffset={5}
-		                                	   min={0} max={1500000000000000} width="60" type="linear"/>
-		                            </AxisGroup>
-		                            <ChartGroup>
-		                                <BarChart axis="traffic" interval="monthly" data={routerData[routerKey].delivered} classed="traffic-out"/>
-		                            </ChartGroup>
+	                                <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
+	                                	   min={0} max={1500000000000000} width="70" type="linear"/>
+		                            <Charts>
+		                                <BarChart axis="traffic" series={monthlyDeliveredSeries} />
+		                                <Baseline axis="traffic" value={monthlyDeliveredSeries.avg()} label="Avg" position="right"/>
+		                            </Charts>
+		                            <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
+		                                   min={0} max={ max / (24 * 60 * 60) * 8}  width="70" type="linear"/>
 		                        </ChartRow>
 
 		                    </ChartContainer>
 		                </Resizable>
 		            </div>
 		        </div>
-
-
-		        <div className="row">
-		            <div className="col-md-12">
-		                <h3>Monthly traffic - 2014</h3>
-		                <b>Multiple bars</b>
-		            </div>
-		        </div>
-
-		        <div className="row">
-		            <div className="col-md-12">
-		                <Resizable>
-		                    <ChartContainer beginTime={beginTime} endTime={endTime} padding="0" dayFormat={true}>
-		                        
-		                        <ChartRow height="150">
-		                            <AxisGroup align="left">
-		                                <YAxis id="traffic-volume" label="Traffic In (bytes)" classed="traffic-in" labelOffset={5}
-		                                	   min={0} max={max} width="60" type="linear"/>
-		                            </AxisGroup>
-		                            <ChartGroup>
-		                                <BarChart axis="traffic-volume" spacing="10" offset="4" interval="daily" data={trafficInData} classed="traffic-in"/>
-		                                <BarChart axis="traffic-volume" spacing="10" offset="-4" interval="daily" data={trafficOutData} classed="traffic-out"/>
-		                            </ChartGroup>
-		                        </ChartRow>
-
-		                    </ChartContainer>
-		                </Resizable>
-		            </div>
-		        </div>
-
 		    </div>
 	    );
   	}
 });
-
-module.exports = BarChartExample;

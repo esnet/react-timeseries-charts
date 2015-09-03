@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -26,22 +24,33 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react/addons");
-var _ = require("underscore");
+.yaxis > line,
+.yaxis > path {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .5;
+}
 
-/**
- * A ChartGroup has a set of Y axes that may be collected together left or right
- * of the main chart area on each row. It does no actual rendering itself, but
- * instead is used for organizing ChartRow children.
- */
-var ChartGroup = React.createClass({
-    displayName: "ChartGroup",
-    render: function() {
-        return null;
-    }
-});
+.yaxis > .tick > text {
+    font-size: 11px;
+    opacity: 0.5;
+}
 
-module.exports = ChartGroup;
+.yaxis > text {
+    fill: #8B7E7E;
+    font-weight: 100;
+    font-size: 12px;
+}
+
+.yaxis > .tick > line {
+    stroke: #888686;
+    stroke-opacity: 0.5;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+
+.yaxis-debug {
+	fill: rgba(255, 0, 0, 0.06);
+	stroke: red;
+}

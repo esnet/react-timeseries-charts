@@ -1,29 +1,44 @@
-/** @jsx React.DOM */
+import React from "react/addons";
+import Router from "react-router";
+import {TimeSeries} from "@esnet/pond";
+import {Legend,
+        ChartContainer,
+        ChartRow,
+        Charts,
+        YAxis,
+        AreaChart,
+        Baseline,
+        Resizable} from "../../index";
 
-var React = require('react');
+import App from "./app.jsx";
+import Intro from "./intro.jsx";
+import AreaCharts from "./areachart.jsx";
+import StackedAreaCharts from "./stacked.jsx";
+import LineCharts from "./linechart.jsx";
+import BarCharts from "./barchart.jsx";
+import Legends from "./legend.jsx";
+import Weather from "./weather.jsx";
+import DDoS from "./ddos.jsx";
+import History from "./history.jsx";
+import Table from "./table.jsx";
 
-var App = require('./app.jsx');
+const {Route, DefaultRoute, RouteHandler, Link} = Router;
 
-var Intro = require('./intro.jsx');
-var AreaCharts = require('./areachart.jsx');
-var LineCharts = require('./linechart.jsx');
-var BarCharts = require('./barchart.jsx');
-var Legends = require('./legend.jsx');
-var Weather = require('./weather.jsx');
+const routes = (
+    <Route path="/" handler={App}>
+        <DefaultRoute name="intro" handler={Intro} />
+        <Route name="areacharts" handler={AreaCharts} />
+        <Route name="stacked" handler={StackedAreaCharts} />
+        <Route name="linecharts" handler={LineCharts} />
+        <Route name="barcharts" handler={BarCharts} />
+        <Route name="legends" handler={Legends} />
+        <Route name="history" handler={History} />
+        <Route name="weather" handler={Weather} />
+        <Route name="ddos" handler={DDoS} />
+        <Route name="table" handler={Table} />
+    </Route>
+);
 
-var {DefaultRoute, Route, Routes} = require('react-router');
-
-// Add new pages here as new routes, with the handler being the component
-// to render the example page. Also add a link to it in app.jsx.
-React.renderComponent((
-	<Routes>
-    	<Route path="/" handler={App}>
-      		<DefaultRoute name="intro" handler={Intro} />
-      		<Route name="areacharts" handler={AreaCharts} />
-      		<Route name="linecharts" handler={LineCharts} />
-      		<Route name="barcharts" handler={BarCharts} />
-      		<Route name="legends" handler={Legends} />
-      		<Route name="weather" handler={Weather} />
-    	</Route>
-  	</Routes>
-), document.getElementById("content"));
+Router.run(routes, function (Handler) {
+    React.render(<Handler/>, document.getElementById("content"));
+});

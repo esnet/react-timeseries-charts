@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -26,22 +24,18 @@
  * This code is distributed under a BSD style license, see the LICENSE
  * file for complete information.
  */
- 
-"use strict";
 
-var React = require("react/addons");
+.baseline {
+    stroke: #626262;
+    stroke-width: 1;
+    stroke-dasharray: 5,3;
+}
 
-/**
- * A AxisGroup has a set of Y axes that may be collected together left or right
- * of the main chart area on each row. It does no rendering itself, but instead
- * is used to organize children for rendering within ChartContainer and 
- * ChartRow.
- */
-var AxisGroup = React.createClass({
-    displayName: "AxisGroup",
-    render: function() {
-        return null;
-    }
-});
-
-module.exports = AxisGroup;
+.baseline-label {
+    stroke: none;
+    fill: #626262;
+    font-weight: normal;
+    font-size: 10px;
+    display: inline-block;
+    background-color: white;
+}

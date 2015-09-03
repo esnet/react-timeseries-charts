@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /*
  * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
@@ -27,55 +25,72 @@
  * file for complete information.
  */
  
-"use strict";
-
-var React = require("react");
-var d3 = require("d3");
-var _ = require("underscore");
-
-require("./scatterchart.css");
+import React from "react/addons";
+import d3 from "d3";
+import _ from "underscore";
+import {TimeSeries} from "@esnet/pond";
+import "./scatterchart.css";
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain()}-${scale.range()}`;
 }
 
-var ScatterChart = React.createClass({
+export default React.createClass({
 
     getDefaultProps: function() {
         return {
-            "radius": 3.0
+            "radius": 2.0,
+            "style": {
+                color: "steelblue",
+                opacity: 1
+            }
         };
     },
 
-    renderScatterChart: function(data, timeScale, yScale, radius, classed) {
+    renderScatterChart: function(series, timeScale, yScale, radius) {
+
+        let data = series.toJSON().points;
 
         if (!yScale || !data[0]) {
             return null;
         }
 
         if (this.props.dropNulls) {
-            data = _.filter(data, function(d) { return d.value!==null; } );
+            data = _.filter(data, d => (d.value !== null) );
+        }
+
+        let style = {
+            "fill": this.props.style.color || "steelblue",
+            "fill-opacity": this.props.style.opacity || 1.0,
+            "stroke": "none",
         }
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
-        var pointClasses = {"scatterchart-point": true};
-        if (classed) {
-            pointClasses[classed] = true;
-        }
-
-        d3.select(this.getDOMNode()).selectAll("dot")
+        this.scatter = d3.select(this.getDOMNode()).selectAll("dot")
                 .data(data)
             .enter().append("circle")
-                .classed(pointClasses)
-                .attr("r", this.props.radius)
-                .attr("cx", function (d) { return timeScale(d.time); })
-                .attr("cy", function (d) { return yScale(d.value); })
+                .style(style)
+                .attr("r", d => d[2] ? d[2] : this.props.radius)
+                .attr("cx", d => timeScale(d[0]))
+                .attr("cy", d => yScale(d[1]))
                 .attr("clip-path",this.props.clipPathURL);
     },
 
+    updateScatterChart: function(series, timeScale, yScale, radius) {
+        let data = series.toJSON().points;
+        this.scatter
+            .data(data)
+            .transition()
+                .duration(this.props.transiton)
+                .ease("sin-in-out")
+                .attr("r", d =>  d[2] ? d[2] : this.props.radius)
+                .attr("cx", d => timeScale(d[0]))
+                .attr("cy", d => yScale(d[1]))
+    },
+
     componentDidMount: function() {
-        this.renderScatterChart(this.props.data,
+        this.renderScatterChart(this.props.series,
                                 this.props.timeScale,
                                 this.props.yScale,
                                 this.props.radius,
@@ -84,31 +99,38 @@ var ScatterChart = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        var data = nextProps.data;
+        var series = nextProps.series;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
-        var classed = nextProps.classed;
         var radius = nextProps.radius;
 
-        if (this.props.data !== nextProps.data ||
-            this.props.data.time !== data.time ||
-            this.props.radius !== radius || 
-            scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            scaleAsString(this.props.yScale) !== scaleAsString(yScale)) {
-            this.renderScatterChart(data, timeScale, yScale, radius, classed);
+        //What changed
+        let timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
+        let yAxisScaleChanged = (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
+        let defaultRadiusChanged = (this.props.radius !== radius);
+        let seriesChanged = TimeSeries.is(this.props.series, series);
+
+        //
+        // Currently if the series changes we completely rerender it. If the y axis scale
+        // changes then we just update the existing paths using a transition so that we
+        // can get smooth axis transitions.
+        //
+
+        if (seriesChanged || timeScaleChanged || defaultRadiusChanged) {
+            this.renderScatterChart(series, timeScale, yScale, radius);
+        } else if (yAxisScaleChanged) {
+            this.updateScatterChart(series, timeScale, yScale, radius);
         }
+
     },
 
     shouldComponentUpdate: function() {
         return false;
     },
 
-    //TODO: props.attr should be required
     render: function() {
         return (
             <g></g>
         );
     }
 });
-
-module.exports = ScatterChart;

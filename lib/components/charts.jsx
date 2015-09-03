@@ -25,39 +25,23 @@
  * file for complete information.
  */
 
-path.areachart-area-up.stack-1 {
-    fill: #448FDD;
-    stroke: #448FDD;
-}
+import React from "react/addons";
+import invariant from "react/lib/invariant";
 
-path.areachart-area-up.stack-2 {
-    fill: #75ACE6;
-    stroke: #75ACE6;
-}
-
-path.areachart-area-up.stack-3 {
-    fill: #A9CBEF;
-    stroke: #A9CBEF;
-}
-
-
-path.areachart-area-down.stack-1 {
-    fill: #FD8D0D;
-    stroke: #FD8D0D;
-}
-
-path.areachart-area-down.stack-2 {
-    fill: #FDA949;
-    stroke: #FDA949;
-}
-
-path.areachart-area-down.stack-3 {
-    fill: #FEC686;
-    stroke: #FEC686;
-}
-
-
-.chart-debug {
-    fill: rgba(0, 0, 255, 0.06);
-    stroke: blue;
-}
+/**
+ * A Charts component is a grouping of charts which will be composited on top of
+ * each other. It does no actual rendering itself, but instead is used for organizing
+ * ChartRow children. There must be one, and only one, Charts grouping within a ChartRow.
+ * All children of a ChartRow, for which there must be at least one, are considered a
+ * chart. They should return an SVG <g> containing their render.
+ */
+export default React.createClass({
+    displayName: "Charts",
+    render() {
+      invariant(
+        false,
+        '%s elements are for schema configuration only and should not be rendered',
+            this.constructor.name
+      );
+    }
+});
