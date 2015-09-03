@@ -117,6 +117,8 @@ exports["default"] = _reactAddons2["default"].createClass({
     },
 
     handleMouseDown: function handleMouseDown(e) {
+        e.preventDefault();
+
         var x = e.pageX;
         var y = e.pageY;
         var xy0 = [Math.round(x), Math.round(y)];
@@ -127,6 +129,27 @@ exports["default"] = _reactAddons2["default"].createClass({
             "initialPanBegin": begin,
             "initialPanEnd": end,
             "initialPanPosition": xy0 });
+    },
+
+    handleMouseUp: function handleMouseUp(e) {
+        e.preventDefault();
+
+        this.setState({ "isPanning": false,
+            "initialPanBegin": null,
+            "initialPanEnd": null,
+            "initialPanPosition": null });
+    },
+
+    handleMouseOut: function handleMouseOut(e) {
+
+        if (this.props.onMouseOut) {
+            this.props.onMouseOut();
+        }
+
+        // this.setState({"isPanning": false,
+        //                "initialPanBegin": null,
+        //                "initialPanEnd": null,
+        //                "initialPanPosition": null});
     },
 
     handleMouseMove: function handleMouseMove(e) {
@@ -164,25 +187,14 @@ exports["default"] = _reactAddons2["default"].createClass({
         } else {
             if (this.props.onMouseMove) {
                 var target = e.currentTarget;
-                var x = e.pageX - $(target).offset().left;
-                var time = this.props.scale.invert(x);
+                var _x = e.pageX - $(target).offset().left;
+                var time = this.props.scale.invert(_x);
 
                 //onMouseMove callback
                 if (this.props.onMouseMove) {
                     this.props.onMouseMove(time);
                 }
             }
-        }
-    },
-
-    handleMouseUp: function handleMouseUp(e) {
-        this.setState({ "isPanning": false,
-            "initialPanPosition": null });
-    },
-
-    handleMouseOut: function handleMouseOut() {
-        if (this.props.onMouseOut) {
-            this.props.onMouseOut();
         }
     },
 

@@ -43,8 +43,8 @@ export default React.createClass({
 
     getOffsetMousePosition: function(e) {
         const target = e.currentTarget;
-        var x = e.pageX - $(target).offset().left;
-        var y = e.pageY - $(target).offset().top;
+        const x = e.pageX - $(target).offset().left;
+        const y = e.pageY - $(target).offset().top;
         return [Math.round(x), Math.round(y)];
     },
 
@@ -106,8 +106,10 @@ export default React.createClass({
     },
 
     handleMouseDown: function(e) {
-        var x = e.pageX;
-        var y = e.pageY;
+        e.preventDefault();
+
+        const x = e.pageX;
+        const y = e.pageY;
         let xy0 = [ Math.round(x), Math.round(y) ];
 
         const begin = this.props.scale.domain()[0].getTime();
@@ -118,11 +120,32 @@ export default React.createClass({
                        "initialPanPosition": xy0});
     },
 
+    handleMouseUp: function(e) {
+        e.preventDefault();
+
+        this.setState({"isPanning": false,
+                       "initialPanBegin": null,
+                       "initialPanEnd": null,
+                       "initialPanPosition": null});
+    },
+
+    handleMouseOut: function(e) {
+
+        if (this.props.onMouseOut) {
+            this.props.onMouseOut();
+        }
+
+        // this.setState({"isPanning": false,
+        //                "initialPanBegin": null,
+        //                "initialPanEnd": null,
+        //                "initialPanPosition": null});
+    },
+
     handleMouseMove: function(e) {
         e.preventDefault();
 
-        var x = e.pageX;
-        var y = e.pageY;
+        const x = e.pageX;
+        const y = e.pageY;
         let xy = [Math.round(x), Math.round(y)];
 
         if (this.state.isPanning) {
@@ -154,7 +177,7 @@ export default React.createClass({
         } else {
             if (this.props.onMouseMove) {
                 const target = e.currentTarget;
-                var x = e.pageX - $(target).offset().left;
+                const x = e.pageX - $(target).offset().left;
                 const time = this.props.scale.invert(x)
 
                 //onMouseMove callback
@@ -162,17 +185,6 @@ export default React.createClass({
                     this.props.onMouseMove(time);
                 }
             }
-        }
-    },
-
-    handleMouseUp: function(e) {
-        this.setState({"isPanning": false,
-                       "initialPanPosition": null});
-    },
-
-    handleMouseOut: function() {
-        if (this.props.onMouseOut) {
-            this.props.onMouseOut();
         }
     },
 
