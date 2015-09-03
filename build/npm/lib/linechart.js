@@ -56,7 +56,7 @@ exports["default"] = _react2["default"].createClass({
         return {
             "smooth": true,
             "showPoints": false,
-            "pointRadius": 1.0,
+            "pointRadius": 1,
             "style": {
                 "color": "#9DA3FF",
                 "width": 1
@@ -89,7 +89,7 @@ exports["default"] = _react2["default"].createClass({
             "fill": "none",
             "pointerEvents": "none",
             "stroke": this.props.style.color || "#9DA3FF",
-            "strokeWidth": this.props.style.width + "px" || "1px"
+            "strokeWidth": "" + this.props.style.width + "px" || "1px"
         };
     },
 

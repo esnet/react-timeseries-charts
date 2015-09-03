@@ -30,7 +30,7 @@ import _ from "underscore";
 import d3 from "d3";
 import Moment from "moment";
 
-import {TimeSeries, Event, IndexedEvent} from "pond";
+import {TimeSeries, Event, IndexedEvent} from "@esnet/pond";
 
 export default React.createClass({
 

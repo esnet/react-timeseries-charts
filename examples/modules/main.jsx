@@ -1,9 +1,6 @@
-//Import the require hook for babel runtime
-import "babel/register";
-
 import React from "react/addons";
 import Router from "react-router";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 import {Legend,
         ChartContainer,
         ChartRow,

@@ -1,11 +1,3 @@
-//
-// Entry point, so that you can use it like
-// var {LineChart} = require('esnet-react-charts');
-// ...
-// return (
-//  <LineChart ... />
-// );
-
 module.exports = {
     AreaChart: require("./build/npm/lib/areachart"),
     BarChart: require("./build/npm/lib/barchart"),

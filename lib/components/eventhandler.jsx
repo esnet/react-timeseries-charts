@@ -26,7 +26,7 @@
  */
  
 import React from "react/addons";
-import {TimeRange} from "pond";
+import {TimeRange} from "@esnet/pond";
 
 export default React.createClass({
 
@@ -41,12 +41,11 @@ export default React.createClass({
         }
     },
 
-    getMousePositionFromEvent: function(e) {
+    getOffsetMousePosition: function(e) {
         const target = e.currentTarget;
-        const rect = target.getBoundingClientRect();
-        const x = e.clientX;
-        const y = e.clientY;
-        return [ Math.round(x), Math.round(y) ];
+        var x = e.pageX - $(target).offset().left;
+        var y = e.pageY - $(target).offset().top;
+        return [Math.round(x), Math.round(y)];
     },
 
     handleScrollWheel: function(e) {
@@ -57,10 +56,11 @@ export default React.createClass({
         if (scale > 3) scale = 3;
         if (scale < 0.1) scale = 0.1;
 
-        const xy = this.getMousePositionFromEvent(e);
+        const xy = this.getOffsetMousePosition(e);
 
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
+
         const center = this.props.scale.invert(xy[0]).getTime()
 
         let beginScaled = center - parseInt((center - begin) * scale);
@@ -106,7 +106,10 @@ export default React.createClass({
     },
 
     handleMouseDown: function(e) {
-        const xy0 = this.getMousePositionFromEvent(e)
+        var x = e.pageX;
+        var y = e.pageY;
+        let xy0 = [ Math.round(x), Math.round(y) ];
+
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
         this.setState({"isPanning": true,
@@ -118,16 +121,18 @@ export default React.createClass({
     handleMouseMove: function(e) {
         e.preventDefault();
 
-        const xy = this.getMousePositionFromEvent(e)
+        var x = e.pageX;
+        var y = e.pageY;
+        let xy = [Math.round(x), Math.round(y)];
 
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
             const timeOffset = this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
 
-            let newBegin = this.state.initialPanBegin - timeOffset;
-            let newEnd = this.state.initialPanEnd - timeOffset;
-            let duration = this.state.initialPanEnd - this.state.initialPanBegin;
+            let newBegin = parseInt(this.state.initialPanBegin - timeOffset);
+            let newEnd = parseInt(this.state.initialPanEnd - timeOffset);
+            let duration = parseInt(this.state.initialPanEnd - this.state.initialPanBegin);
 
             //Range constraint
             if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
@@ -148,8 +153,9 @@ export default React.createClass({
             }
         } else {
             if (this.props.onMouseMove) {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const time = this.props.scale.invert(Math.round(e.clientX - rect.left))
+                const target = e.currentTarget;
+                var x = e.pageX - $(target).offset().left;
+                const time = this.props.scale.invert(x)
 
                 //onMouseMove callback
                 if (this.props.onMouseMove) {
@@ -171,7 +177,10 @@ export default React.createClass({
     },
 
     render: function() {
-        const cursor = this.state.isPanning ? "-webkit-grabbing" : "crosshair";
+        const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
+        const children = React.Children.map(this.props.children, (element) => {
+            return React.addons.cloneWithProps(element, {isPanning: this.state.isPanning});
+        });
         return (
             <g pointerEvents="all"
                onWheel={this.handleScrollWheel}
@@ -183,7 +192,7 @@ export default React.createClass({
                       style={{"opacity": 0.0, "cursor": cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />
-                {this.props.children}
+                {children}
             </g>
         );
     },

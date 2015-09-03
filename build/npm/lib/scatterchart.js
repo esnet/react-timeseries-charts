@@ -45,12 +45,12 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 require("./scatterchart.css");
 
 function scaleAsString(scale) {
-    return scale.domain() + "-" + scale.range();
+    return "" + scale.domain() + "-" + scale.range();
 }
 
 exports["default"] = _reactAddons2["default"].createClass({
@@ -58,7 +58,7 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
-            "radius": 2.0,
+            "radius": 2,
             "style": {
                 color: "steelblue",
                 opacity: 1
@@ -83,9 +83,8 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         var style = {
             "fill": this.props.style.color || "steelblue",
-            "fill-opacity": this.props.style.opacity || 1.0,
-            "stroke": "none"
-        };
+            "fill-opacity": this.props.style.opacity || 1,
+            "stroke": "none" };
 
         _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
@@ -125,7 +124,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
         var yAxisScaleChanged = scaleAsString(this.props.yScale) !== scaleAsString(yScale);
         var defaultRadiusChanged = this.props.radius !== radius;
-        var seriesChanged = _pond.TimeSeries.is(this.props.series, series);
+        var seriesChanged = _esnetPond.TimeSeries.is(this.props.series, series);
 
         //
         // Currently if the series changes we completely rerender it. If the y axis scale

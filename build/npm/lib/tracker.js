@@ -45,8 +45,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         style: _reactAddons2["default"].PropTypes.object,
         position: _reactAddons2["default"].PropTypes.instanceOf(Date),
         height: _reactAddons2["default"].PropTypes.number,
-        timeScale: _reactAddons2["default"].PropTypes.func.isRequired
-    },
+        timeScale: _reactAddons2["default"].PropTypes.func.isRequired },
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -62,6 +61,5 @@ exports["default"] = _reactAddons2["default"].createClass({
                 x2: posx, y2: this.props.height });
         }
         return null;
-    }
-});
+    } });
 module.exports = exports["default"];

@@ -2,7 +2,7 @@ import React from "react/addons";
 import _ from "underscore";
 import moment from "moment";
 
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 //Imports from the charts library
 import ChartContainer from "../../lib/components/chartcontainer";
@@ -51,7 +51,7 @@ var requests = [];
 var connections = [];
 
 _.each(ddosData, function(val) {
-    var timestamp = new moment("2015-04-03 " + val["time PST"]);
+    var timestamp = new moment(new Date("2015-04-03 " + val["time PST"]));
     var numConnection = val["connections"];
     var httpRequests = val["http requests"];
     requests.push([timestamp.toDate().getTime(), httpRequests]);

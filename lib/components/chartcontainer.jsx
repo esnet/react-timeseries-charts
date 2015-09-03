@@ -32,7 +32,7 @@ import moment from "moment";
 
 import invariant from "react/lib/invariant";
 
-import {TimeRange} from "pond";
+import {TimeRange} from "@esnet/pond";
 
 import ChartRow from "./chartrow";
 import Charts from "./charts";

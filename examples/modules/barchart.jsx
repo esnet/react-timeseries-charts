@@ -1,7 +1,7 @@
 import React from "react/addons";
 import _ from "underscore";
 import Moment from "moment"
-import {TimeSeries, TimeRange, Index} from "pond";
+import {TimeSeries, TimeRange, Index} from "@esnet/pond";
 
 import Markdown from "react-markdown-el";
 
@@ -13,7 +13,7 @@ error (seen clearly in Oct 10th).
 
 To begin with we converted the original data into Pond's TimeSeries data structure as \`octoberTraffic\`:
 
-	import {TimeSeries} from "pond";
+	import {TimeSeries} from "@esnet/pond";
 
 	const octoberTraffic = new TimeSeries({
 		name: "Traffic",

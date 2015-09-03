@@ -2,7 +2,7 @@ import React from "react/addons";
 import _ from "underscore";
 import d3 from "d3";
 
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 //Imports from the charts library
 import TimeSeriesTable from "../../lib/components/table";

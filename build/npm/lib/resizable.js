@@ -33,16 +33,15 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _reactAddons = require("react/addons");
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-
-var _reactAddons2 = _interopRequireDefault(_reactAddons);
-
 exports['default'] = _reactAddons2['default'].createClass({
     displayName: 'resizable',
 
@@ -64,7 +63,7 @@ exports['default'] = _reactAddons2['default'].createClass({
     },
 
     render: function render() {
-        var props = { "width": this.state.width };
+        var props = { 'width': this.state.width };
         var child = _reactAddons2['default'].Children.only(this.props.children);
         var childElement = this.state.width ? _reactAddons2['default'].addons.cloneWithProps(child, props) : null;
         return _reactAddons2['default'].createElement(

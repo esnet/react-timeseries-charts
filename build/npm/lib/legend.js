@@ -41,7 +41,7 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var merge = require('merge');
+var merge = require("merge");
 
 exports["default"] = _reactAddons2["default"].createClass({
 
@@ -54,7 +54,6 @@ exports["default"] = _reactAddons2["default"].createClass({
             "type": "swatch" };
     },
 
-    //or "line" or "dot"
     render: function render() {
         var _this = this;
 
@@ -135,3 +134,4 @@ exports["default"] = _reactAddons2["default"].createClass({
     }
 });
 module.exports = exports["default"];
+//or "line" or "dot"

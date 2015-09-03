@@ -45,10 +45,10 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 function scaleAsString(scale) {
-    return scale.domain() + "-" + scale.range();
+    return "" + scale.domain() + "-" + scale.range();
 }
 
 /**
@@ -134,11 +134,25 @@ function getAreaStackers() {
     };
 }
 
+function getCroppedSeries(scale, width, seriesList) {
+    var beginTime = scale.invert(0);
+    var endTime = scale.invert(width);
+    return _underscore2["default"].map(seriesList, function (direction) {
+        return _underscore2["default"].map(direction, function (series) {
+            var beginIndex = series.bisect(beginTime);
+            var endIndex = series.bisect(endTime);
+            var cropped = series.slice(beginIndex, endIndex === series.size() - 1 ? endIndex : endIndex + 1);
+            return cropped;
+        });
+    });
+}
+
 /**
  * Draws an area chart
  */
 exports["default"] = _reactAddons2["default"].createClass({
-    displayName: "areachart",
+
+    displayName: "AreaChart",
 
     propTypes: {
         /**
@@ -172,7 +186,7 @@ exports["default"] = _reactAddons2["default"].createClass({
          * build stacked up and the second element being stacked down. Each
          * element is itself an array of TimeSeries.
          */
-        series: _reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries)))
+        series: _reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.instanceOf(_esnetPond.TimeSeries)))
     },
 
     getDefaultProps: function getDefaultProps() {
@@ -186,7 +200,14 @@ exports["default"] = _reactAddons2["default"].createClass({
         };
     },
 
-    renderAreaChart: function renderAreaChart(series, timeScale, yScale, interpolate) {
+    /**
+     * Checks if the passed in point is within the bounds of the drawing area
+     */
+    inBounds: function inBounds(p) {
+        return p[0] > 0 && p[0] < this.props.width;
+    },
+
+    renderAreaChart: function renderAreaChart(series, timeScale, yScale, interpolate, isPanning) {
         var _this = this;
 
         if (!yScale || !series[0]) {
@@ -200,25 +221,31 @@ exports["default"] = _reactAddons2["default"].createClass({
 
         _d32["default"].select(this.getDOMNode()).selectAll("*").remove();
 
+        var croppedSeries = getCroppedSeries(timeScale, this.props.width, series);
+
         var _getAreaGenerators = getAreaGenerators(interpolate, timeScale, yScale);
 
         var upArea = _getAreaGenerators.upArea;
         var downArea = _getAreaGenerators.downArea;
 
-        var _getLayers = getLayers(series);
+        var _getLayers = getLayers(croppedSeries);
 
         var upLayers = _getLayers.upLayers;
         var downLayers = _getLayers.downLayers;
 
         var _getAreaStackers = getAreaStackers();
 
-        //Stack our layers
         var stackUp = _getAreaStackers.stackUp;
         var stackDown = _getAreaStackers.stackDown;
+
+        //Stack our layers
         stackUp(upLayers);
         if (downLayers.length) {
             stackDown(downLayers);
         }
+
+        //Cursor
+        var cursor = isPanning ? "-webkit-grabbing" : "default";
 
         //
         // Stacked area drawing up
@@ -232,7 +259,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         // Append the area chart path onto the areachart-up-group group
         this.upChart = upChart.append("path").style("fill", function (d, i) {
             return _this.props.style.up[i];
-        }).attr("d", function (d) {
+        }).style("pointerEvents", "none").style("cursor", cursor).attr("d", function (d) {
             return upArea(d.values);
         }).attr("clip-path", this.props.clipPathURL);
 
@@ -248,27 +275,30 @@ exports["default"] = _reactAddons2["default"].createClass({
         // Append the area chart path onto the areachart-down-group group
         this.downChart = downChart.append("path").style("fill", function (d, i) {
             return _this.props.style.down[i];
-        }).attr("d", function (d) {
+        }).style("pointerEvents", "none").style("cursor", cursor).attr("d", function (d) {
             return downArea(d.values);
         }).attr("clip-path", this.props.clipPathURL);
     },
 
     updateAreaChart: function updateAreaChart(series, timeScale, yScale, interpolate) {
+        var croppedSeries = getCroppedSeries(timeScale, width, series);
+
         var _getAreaGenerators2 = getAreaGenerators(interpolate, timeScale, yScale);
 
         var upArea = _getAreaGenerators2.upArea;
         var downArea = _getAreaGenerators2.downArea;
 
-        var _getLayers2 = getLayers(series);
+        var _getLayers2 = getLayers(croppedSeries);
 
         var upLayers = _getLayers2.upLayers;
         var downLayers = _getLayers2.downLayers;
 
         var _getAreaStackers2 = getAreaStackers();
 
-        //Stack our layers
         var stackUp = _getAreaStackers2.stackUp;
         var stackDown = _getAreaStackers2.stackDown;
+
+        //Stack our layers
         stackUp(upLayers);
         if (downLayers.length) {
             stackDown(downLayers);
@@ -295,10 +325,14 @@ exports["default"] = _reactAddons2["default"].createClass({
         var yScale = nextProps.yScale;
         var interpolate = nextProps.interpolate;
 
+        var isPanning = nextProps.isPanning;
+
         //What changed
         var timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
         var yAxisScaleChanged = scaleAsString(this.props.yScale) !== scaleAsString(yScale);
         var interpolateChanged = this.props.interpolate !== interpolate;
+        var isPanningChanged = this.props.isPanning !== isPanning;
+
         var seriesChanged = false;
         if (oldSeries[0].length !== newSeries[0].length || oldSeries[0].length !== newSeries[0].length) {
             seriesChanged = true;
@@ -307,7 +341,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                 for (var a = 0; a < oldSeries[d].length; a++) {
                     var o = oldSeries[d][a];
                     var n = newSeries[d][a];
-                    if (!_pond.TimeSeries.is(o, n)) {
+                    if (!_esnetPond.TimeSeries.is(o, n)) {
                         seriesChanged = true;
                     }
                 }
@@ -320,8 +354,8 @@ exports["default"] = _reactAddons2["default"].createClass({
         // can get smooth axis transitions.
         //
 
-        if (seriesChanged || timeScaleChanged || interpolateChanged) {
-            this.renderAreaChart(newSeries, timeScale, yScale, interpolate);
+        if (seriesChanged || timeScaleChanged || interpolateChanged || isPanningChanged) {
+            this.renderAreaChart(newSeries, timeScale, yScale, interpolate, isPanning);
         } else if (yAxisScaleChanged) {
             this.updateAreaChart(newSeries, timeScale, yScale, interpolate);
         }

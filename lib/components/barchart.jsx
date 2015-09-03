@@ -28,7 +28,7 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.

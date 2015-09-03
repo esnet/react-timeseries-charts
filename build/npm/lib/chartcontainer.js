@@ -31,9 +31,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }
 
 var _reactAddons = require("react/addons");
 
@@ -55,7 +55,7 @@ var _reactLibInvariant = require("react/lib/invariant");
 
 var _reactLibInvariant2 = _interopRequireDefault(_reactLibInvariant);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 var _chartrow = require("./chartrow");
 
@@ -85,14 +85,12 @@ exports["default"] = _reactAddons2["default"].createClass({
     getDefaultProps: function getDefaultProps() {
         return {
             "transition": 0,
-            "enablePanZoom": false
-        };
+            "enablePanZoom": false };
     },
 
     propTypes: {
         enablePanZoom: _reactAddons2["default"].PropTypes.bool,
-        children: _reactAddons2["default"].PropTypes.oneOfType([_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.element), _reactAddons2["default"].PropTypes.element])
-    },
+        children: _reactAddons2["default"].PropTypes.oneOfType([_reactAddons2["default"].PropTypes.arrayOf(_reactAddons2["default"].PropTypes.element), _reactAddons2["default"].PropTypes.element]) },
 
     handleTrackerChanged: function handleTrackerChanged(t) {
         if (this.props.onTrackerChanged) {
@@ -160,7 +158,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                     });
 
                     if (countCharts !== 1) {
-                        (0, _reactLibInvariant2["default"])(false, 'ChartRow should have one and only one <Charts> tag within it', childRow.constructor.name);
+                        (0, _reactLibInvariant2["default"])(false, "ChartRow should have one and only one <Charts> tag within it", childRow.constructor.name);
                     }
 
                     align = "left";

@@ -28,7 +28,6 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
-import ReactTooltip from "react-tooltip";
 
 import YAxis from "./yaxis";
 import Charts from "./charts";
@@ -418,7 +417,6 @@ export default React.createClass({
 
         return (
             <div>
-                <ReactTooltip place='top' type='warning' effect='solid'/>
                 <svg width={this.props.width} height={Number(this.props.height)}>
                     {clipDefs}
                     {axes}

@@ -45,7 +45,7 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.
@@ -58,7 +58,7 @@ exports["default"] = _reactAddons2["default"].createClass({
     displayName: "barchart",
 
     propTypes: {
-        series: _reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries).isRequired,
+        series: _reactAddons2["default"].PropTypes.instanceOf(_esnetPond.TimeSeries).isRequired,
         clipPathURL: _reactAddons2["default"].PropTypes.string.isRequired,
         timeScale: _reactAddons2["default"].PropTypes.object.isRequired,
         yScale: _reactAddons2["default"].PropTypes.object.isRequired,
@@ -67,8 +67,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         columns: _reactAddons2["default"].PropTypes.array,
         style: _reactAddons2["default"].PropTypes.object,
         size: _reactAddons2["default"].PropTypes.number,
-        onSelectionChange: _reactAddons2["default"].PropTypes.func
-    },
+        onSelectionChange: _reactAddons2["default"].PropTypes.func },
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -159,7 +158,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                         var column = _step2.value;
 
                         var index = event.index();
-                        var key = series.name() + "-" + index + "-" + column;
+                        var key = "" + series.name() + "-" + index + "-" + column;
                         var value = event.get(column);
 
                         var height = yScale(0) - yScale(value);

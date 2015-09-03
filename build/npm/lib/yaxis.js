@@ -62,8 +62,7 @@ exports["default"] = _reactAddons2["default"].createClass({
     displayName: "YAxis",
 
     propTypes: {
-        "align": _reactAddons2["default"].PropTypes.string
-    },
+        "align": _reactAddons2["default"].PropTypes.string },
 
     getDefaultProps: function getDefaultProps() {
         return {
@@ -113,7 +112,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var style = {
             "fill": this.props.style.labelColor || "#8B7E7E",
             "font-weight": this.props.style.labelWeight || 100,
-            "font-size": this.props.style.labelSize ? this.props.style.width + "px" : "12px"
+            "font-size": this.props.style.labelSize ? "" + this.props.style.width + "px" : "12px"
         };
 
         //Remove the old axis from under this DOM node
@@ -178,6 +177,5 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     render: function render() {
         return _reactAddons2["default"].createElement("g", null);
-    }
-});
+    } });
 module.exports = exports["default"];

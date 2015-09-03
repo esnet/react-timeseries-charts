@@ -1,6 +1,6 @@
 import React from "react/addons";
 import _ from "underscore";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 //Imports from the charts library
 import Legend from "../../lib/components/legend";

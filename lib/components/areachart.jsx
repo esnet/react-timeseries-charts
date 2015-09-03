@@ -28,7 +28,7 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -107,10 +107,26 @@ function getAreaStackers() {
     }
 }
 
+function getCroppedSeries(scale, width, seriesList) {
+    const beginTime = scale.invert(0);
+    const endTime = scale.invert(width);
+    return _.map(seriesList, direction => {
+        return _.map(direction, series => {
+            const beginIndex = series.bisect(beginTime);
+            const endIndex = series.bisect(endTime);
+            const cropped = series.slice(beginIndex, endIndex === series.size() - 1 ?
+                                         endIndex : endIndex + 1);
+            return cropped;
+        });
+    });
+}
+
 /**
  * Draws an area chart
  */
 export default React.createClass({
+
+    displayName: "AreaChart",
 
     propTypes: {
         /**
@@ -147,7 +163,7 @@ export default React.createClass({
         series: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(TimeSeries)))
     },
 
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {
             "transition": 0,
             "interpolate": "step-after",
@@ -158,7 +174,14 @@ export default React.createClass({
         };
     },
 
-    renderAreaChart: function(series, timeScale, yScale, interpolate) {
+    /**
+     * Checks if the passed in point is within the bounds of the drawing area
+     */
+    inBounds(p) {
+        return p[0] > 0 && p[0] < this.props.width;
+    },
+
+    renderAreaChart(series, timeScale, yScale, interpolate, isPanning) {
         if (!yScale || !series[0]) {
             return null;
         }
@@ -170,8 +193,10 @@ export default React.createClass({
 
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
+        const croppedSeries = getCroppedSeries(timeScale, this.props.width, series);
+
         let {upArea, downArea} = getAreaGenerators(interpolate, timeScale, yScale);
-        let {upLayers, downLayers} = getLayers(series);
+        let {upLayers, downLayers} = getLayers(croppedSeries);
         let {stackUp, stackDown} = getAreaStackers();
 
         //Stack our layers
@@ -179,6 +204,9 @@ export default React.createClass({
         if (downLayers.length) {
             stackDown(downLayers);
         }
+
+        //Cursor
+        const cursor = isPanning ? "-webkit-grabbing" : "default";
 
         //
         // Stacked area drawing up
@@ -195,6 +223,8 @@ export default React.createClass({
         this.upChart = upChart
             .append("path")
                 .style("fill", (d, i) => this.props.style.up[i])
+                .style("pointerEvents", "none")
+                .style("cursor", cursor)
                 .attr("d", d => upArea(d.values))
                 .attr("clip-path", this.props.clipPathURL);
 
@@ -212,14 +242,16 @@ export default React.createClass({
         this.downChart = downChart
             .append("path")
                 .style("fill", (d, i) => this.props.style.down[i])
+                .style("pointerEvents", "none")
+                .style("cursor", cursor)
                 .attr("d", d => downArea(d.values))
                 .attr("clip-path", this.props.clipPathURL);
-
     },
 
-    updateAreaChart: function(series, timeScale, yScale, interpolate) {
+    updateAreaChart(series, timeScale, yScale, interpolate) {
+        const croppedSeries = getCroppedSeries(timeScale, width, series);
         let {upArea, downArea} = getAreaGenerators(interpolate, timeScale, yScale);
-        let {upLayers, downLayers} = getLayers(series);
+        let {upLayers, downLayers} = getLayers(croppedSeries);
         let {stackUp, stackDown} = getAreaStackers();
 
         //Stack our layers
@@ -242,12 +274,12 @@ export default React.createClass({
 
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.renderAreaChart(this.props.series, this.props.timeScale,
                              this.props.yScale, this.props.interpolate);
     },
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         let newSeries = nextProps.series;
         let oldSeries = this.props.series;
 
@@ -255,10 +287,14 @@ export default React.createClass({
         let yScale = nextProps.yScale;
         let interpolate = nextProps.interpolate;
 
+        let isPanning = nextProps.isPanning;
+
         //What changed
         let timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         let yAxisScaleChanged = (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
         let interpolateChanged = (this.props.interpolate !== interpolate);
+        let isPanningChanged = (this.props.isPanning !== isPanning);
+
         let seriesChanged = false;
         if (oldSeries[0].length !== newSeries[0].length ||
             oldSeries[0].length !== newSeries[0].length) {
@@ -281,18 +317,18 @@ export default React.createClass({
         // can get smooth axis transitions.
         //
 
-        if (seriesChanged || timeScaleChanged || interpolateChanged) {
-            this.renderAreaChart(newSeries, timeScale, yScale, interpolate);
+        if (seriesChanged || timeScaleChanged || interpolateChanged || isPanningChanged) {
+            this.renderAreaChart(newSeries, timeScale, yScale, interpolate, isPanning);
         } else if (yAxisScaleChanged) {
             this.updateAreaChart(newSeries, timeScale, yScale, interpolate);
         }
     },
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return false;
     },
 
-    render: function() {
+    render() {
         return (
             <g></g>
         );

@@ -37,7 +37,7 @@ var _reactAddons = require("react/addons");
 
 var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 exports["default"] = _reactAddons2["default"].createClass({
 
@@ -52,11 +52,10 @@ exports["default"] = _reactAddons2["default"].createClass({
         };
     },
 
-    getMousePositionFromEvent: function getMousePositionFromEvent(e) {
+    getOffsetMousePosition: function getOffsetMousePosition(e) {
         var target = e.currentTarget;
-        var rect = target.getBoundingClientRect();
-        var x = e.clientX;
-        var y = e.clientY;
+        var x = e.pageX - $(target).offset().left;
+        var y = e.pageY - $(target).offset().top;
         return [Math.round(x), Math.round(y)];
     },
 
@@ -68,10 +67,11 @@ exports["default"] = _reactAddons2["default"].createClass({
         if (scale > 3) scale = 3;
         if (scale < 0.1) scale = 0.1;
 
-        var xy = this.getMousePositionFromEvent(e);
+        var xy = this.getOffsetMousePosition(e);
 
         var begin = this.props.scale.domain()[0].getTime();
         var end = this.props.scale.domain()[1].getTime();
+
         var center = this.props.scale.invert(xy[0]).getTime();
 
         var beginScaled = center - parseInt((center - begin) * scale);
@@ -109,7 +109,7 @@ exports["default"] = _reactAddons2["default"].createClass({
         var newBegin = new Date(beginScaled);
         var newEnd = new Date(endScaled);
 
-        var newTimeRange = new _pond.TimeRange(newBegin, newEnd);
+        var newTimeRange = new _esnetPond.TimeRange(newBegin, newEnd);
 
         if (this.props.onZoom) {
             this.props.onZoom(newTimeRange);
@@ -117,7 +117,10 @@ exports["default"] = _reactAddons2["default"].createClass({
     },
 
     handleMouseDown: function handleMouseDown(e) {
-        var xy0 = this.getMousePositionFromEvent(e);
+        var x = e.pageX;
+        var y = e.pageY;
+        var xy0 = [Math.round(x), Math.round(y)];
+
         var begin = this.props.scale.domain()[0].getTime();
         var end = this.props.scale.domain()[1].getTime();
         this.setState({ "isPanning": true,
@@ -129,15 +132,17 @@ exports["default"] = _reactAddons2["default"].createClass({
     handleMouseMove: function handleMouseMove(e) {
         e.preventDefault();
 
-        var xy = this.getMousePositionFromEvent(e);
+        var x = e.pageX;
+        var y = e.pageY;
+        var xy = [Math.round(x), Math.round(y)];
 
         if (this.state.isPanning) {
             var xy0 = this.state.initialPanPosition;
             var timeOffset = this.props.scale.invert(xy[0]).getTime() - this.props.scale.invert(xy0[0]).getTime();
 
-            var newBegin = this.state.initialPanBegin - timeOffset;
-            var newEnd = this.state.initialPanEnd - timeOffset;
-            var duration = this.state.initialPanEnd - this.state.initialPanBegin;
+            var newBegin = parseInt(this.state.initialPanBegin - timeOffset);
+            var newEnd = parseInt(this.state.initialPanEnd - timeOffset);
+            var duration = parseInt(this.state.initialPanEnd - this.state.initialPanBegin);
 
             //Range constraint
             if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
@@ -150,7 +155,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                 newBegin = newEnd - duration;
             }
 
-            var newTimeRange = new _pond.TimeRange(newBegin, newEnd);
+            var newTimeRange = new _esnetPond.TimeRange(newBegin, newEnd);
 
             // onZoom callback
             if (this.props.onZoom) {
@@ -158,8 +163,9 @@ exports["default"] = _reactAddons2["default"].createClass({
             }
         } else {
             if (this.props.onMouseMove) {
-                var rect = e.currentTarget.getBoundingClientRect();
-                var time = this.props.scale.invert(Math.round(e.clientX - rect.left));
+                var target = e.currentTarget;
+                var x = e.pageX - $(target).offset().left;
+                var time = this.props.scale.invert(x);
 
                 //onMouseMove callback
                 if (this.props.onMouseMove) {
@@ -181,7 +187,12 @@ exports["default"] = _reactAddons2["default"].createClass({
     },
 
     render: function render() {
-        var cursor = this.state.isPanning ? "-webkit-grabbing" : "crosshair";
+        var _this = this;
+
+        var cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
+        var children = _reactAddons2["default"].Children.map(this.props.children, function (element) {
+            return _reactAddons2["default"].addons.cloneWithProps(element, { isPanning: _this.state.isPanning });
+        });
         return _reactAddons2["default"].createElement(
             "g",
             { pointerEvents: "all",
@@ -191,11 +202,10 @@ exports["default"] = _reactAddons2["default"].createClass({
                 onMouseOut: this.handleMouseOut,
                 onMouseUp: this.handleMouseUp },
             _reactAddons2["default"].createElement("rect", { key: "handler-hit-rect",
-                style: { "opacity": 0.0, "cursor": cursor },
+                style: { "opacity": 0, "cursor": cursor },
                 x: 0, y: 0,
                 width: this.props.width, height: this.props.height }),
-            this.props.children
+            children
         );
-    }
-});
+    } });
 module.exports = exports["default"];

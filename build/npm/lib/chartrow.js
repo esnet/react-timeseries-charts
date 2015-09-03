@@ -45,10 +45,6 @@ var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _reactTooltip = require("react-tooltip");
-
-var _reactTooltip2 = _interopRequireDefault(_reactTooltip);
-
 var _yaxis2 = require("./yaxis");
 
 var _yaxis3 = _interopRequireDefault(_yaxis2);
@@ -67,13 +63,12 @@ var _tracker2 = _interopRequireDefault(_tracker);
 
 var _eventhandler = require("./eventhandler");
 
+var _eventhandler2 = _interopRequireDefault(_eventhandler);
+
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed on each other
  * in a central canvas.
  */
-
-var _eventhandler2 = _interopRequireDefault(_eventhandler);
-
 exports["default"] = _reactAddons2["default"].createClass({
 
     displayName: "ChartRow",
@@ -450,7 +445,6 @@ exports["default"] = _reactAddons2["default"].createClass({
         return _reactAddons2["default"].createElement(
             "div",
             null,
-            _reactAddons2["default"].createElement(_reactTooltip2["default"], { place: "top", type: "warning", effect: "solid" }),
             _reactAddons2["default"].createElement(
                 "svg",
                 { width: this.props.width, height: Number(this.props.height) },

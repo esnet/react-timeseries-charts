@@ -39,6 +39,8 @@ var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 var _d3 = require("d3");
 
+var _d32 = _interopRequireDefault(_d3);
+
 /**
  * Renders a 'axis' that display a label for a data channel and a max and average value
  *      +----------------+-----+------- ...
@@ -47,8 +49,6 @@ var _d3 = require("d3");
  *      | Avg 26 Gbps    | 0   |
  *      +----------------+-----+------- ...
  */
-
-var _d32 = _interopRequireDefault(_d3);
 
 exports["default"] = _reactAddons2["default"].createClass({
 
@@ -85,6 +85,5 @@ exports["default"] = _reactAddons2["default"].createClass({
                 minStr
             )
         );
-    }
-});
+    } });
 module.exports = exports["default"];

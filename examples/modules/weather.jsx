@@ -1,7 +1,7 @@
 import React from "react/addons";
 import _ from "underscore";
 import Moment from "moment";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 
 //Imports from the charts library
 import ChartContainer from "../../lib/components/chartcontainer";

@@ -49,7 +49,7 @@ var _moment = require("moment");
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _pond = require("pond");
+var _esnetPond = require("@esnet/pond");
 
 exports["default"] = _reactAddons2["default"].createClass({
 
@@ -57,7 +57,7 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     propTypes: function propTypes() {
         return {
-            series: _reactAddons2["default"].PropTypes.instanceOf(_pond.TimeSeries).isRequired
+            series: _reactAddons2["default"].PropTypes.instanceOf(_esnetPond.TimeSeries).isRequired
         };
     },
 
@@ -97,7 +97,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                     }
 
                     if (column.key === "time") {
-                        if (event instanceof _pond.IndexedEvent) {
+                        if (event instanceof _esnetPond.IndexedEvent) {
                             cells.push(_reactAddons2["default"].createElement(
                                 "td",
                                 null,
@@ -125,7 +125,7 @@ exports["default"] = _reactAddons2["default"].createClass({
                 }
             });
         } else {
-            if (event instanceof _pond.IndexedEvent) {
+            if (event instanceof _esnetPond.IndexedEvent) {
                 cells.push(_reactAddons2["default"].createElement(
                     "td",
                     null,

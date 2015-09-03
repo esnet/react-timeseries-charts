@@ -109,6 +109,5 @@ exports["default"] = _reactAddons2["default"].createClass({
 
     render: function render() {
         return _reactAddons2["default"].createElement("g", null);
-    }
-});
+    } });
 module.exports = exports["default"];
