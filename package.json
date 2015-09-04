@@ -1,5 +1,5 @@
 {
-  "name": "react-timeseries-charts",
+  "name": "@esnet/react-timeseries-charts",
   "description": "Declarative timeseries charts",
   "version": "0.2.0",
   "private": "true",
