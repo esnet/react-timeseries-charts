@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts)
+React Timeseries Charts [![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts)
+======
 
 ![Area chart](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/screenshots/areachart.png)
 
