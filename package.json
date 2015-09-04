@@ -1,7 +1,7 @@
 {
   "name": "@esnet/react-timeseries-charts",
   "description": "Declarative timeseries charts",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": "true",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
