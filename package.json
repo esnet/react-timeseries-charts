@@ -13,22 +13,22 @@
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
-    "build-global": "rm -rf build/global && NODE_ENV=production webpack ./entry.js build/global/react-charts.js && NODE_ENV=production COMPRESS=1 webpack ./entry.js build/global/react-charts.min.js && echo \"gzipped, the global build is `gzip -c build/global/react-charts.min.js | wc -c` bytes\"",
-    "build-npm": "rm -rf build/npm && babel --optional es7.objectRestSpread -d build/npm/lib ./lib/components && cp README.md build/npm && cp ./lib/components/*.css build/npm/lib && find -X build/npm/lib -type d -name __tests__ | xargs rm -rf && node -p 'p=require(\"./package\");p.main=\"lib\";p.scripts=p.devDependencies=undefined;JSON.stringify(p,null,2)' > build/npm/package.json",
-    "build-website": "webpack --config webpack.examples.config.js",
-    "start": "webpack-dev-server  --config webpack.examples.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src/*.jsx",
+    "test": "npm run lint",
+    "test-only": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
+    "start-website": "webpack-dev-server  --config webpack.examples.config.js"
   },
+  "license": "BSD-3-Clause-LBNL",
   "dependencies": {
-    "underscore": "^1.7.0",
+    "@esnet/pond": "^0.1.3",
+    "babel-runtime": "~5.8.3",
     "d3": "^3.5.5",
-    "moment": "^2.8.4",
-    "pond": "git+ssh://git@github.com/esnet/pond.git#HEAD",
-    "babel": "^5.6.23",
+    "jquery": "^2.1.4",
     "merge": "^1.2.0",
-    "react-overlays": "^0.4.1",
-    "react-tooltip": "^0.3.6",
-    "paths-js": "^0.3.4"
+    "moment": "^2.8.4",
+    "paths-js": "^0.3.4",
+    "underscore": "^1.7.0"
   },
   "peerDependencies": {
     "react": "0.13.x"
@@ -47,7 +47,9 @@
     "css-loader": "^0.9.0",
     "babel-loader": "^5.0.0",
     "babel-core": "^5.1.13",
-    "webpack-dev-server": "^1.6.5"
+    "webpack-dev-server": "^1.6.5",
+    "babel-eslint": "4.0.5",
+    "eslint": "^0.24.0"
   },
   "keywords": [
     "d3 charts",

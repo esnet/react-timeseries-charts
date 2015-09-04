@@ -1,18 +1,30 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
-import {TimeSeries} from "pond";
-
-//Imports from the charts library
-import Legend from "../../lib/components/legend";
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import AreaChart from "../../lib/components/areachart";
-import Baseline from "../../lib/components/baseline";
-import Resizable from "../../lib/components/resizable";
-
 import Markdown from "react-markdown-el";
+
+// Pond
+import {TimeSeries} from "@esnet/pond";
+
+// Imports from the charts library
+import Legend from "../../src/legend";
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import AreaChart from "../../src/areachart";
+import Baseline from "../../src/baseline";
+import Resizable from "../../src/resizable";
+
 const exampleText = `
 
 This example shows a stacked area chart. Area charts can be stacked both above and below the axis. This

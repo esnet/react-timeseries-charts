@@ -1,23 +1,36 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
 import Moment from "moment";
-import {TimeSeries} from "pond";
 
-//Imports from the charts library
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import AreaChart from "../../lib/components/areachart";
-import LineChart from "../../lib/components/linechart";
-import ScatterChart from "../../lib/components/scatterchart";
-import Baseline from "../../lib/components/baseline";
-import Resizable from "../../lib/components/resizable";
-import Legend from "../../lib/components/legend";
+// Pond
+import {TimeSeries} from "@esnet/pond";
 
-//Weather data from Bay Area storm Dec 11th, 2014
+// Imports from the charts library
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import AreaChart from "../../src/areachart";
+import LineChart from "../../src/linechart";
+import ScatterChart from "../../src/scatterchart";
+import Baseline from "../../src/baseline";
+import Resizable from "../../src/resizable";
+import Legend from "../../src/legend";
+
+// Weather data from Bay Area storm Dec 11th, 2014
 import weatherJSON from "../data/weather.json";
 
+// Docs
 import Markdown from "react-markdown-el";
 const exampleText = `
 

@@ -1,13 +1,23 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
 import d3 from "d3";
-
-import {TimeSeries} from "pond";
-
-//Imports from the charts library
-import TimeSeriesTable from "../../lib/components/table";
-
 import Markdown from "react-markdown-el";
+
+// Pond
+import {TimeSeries} from "@esnet/pond";
+
+// Imports from the charts library
+import TimeSeriesTable from "../../src/table";
 
 const example1Text = `
 

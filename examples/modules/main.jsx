@@ -1,9 +1,16 @@
-//Import the require hook for babel runtime
-import "babel/register";
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 import React from "react/addons";
 import Router from "react-router";
-import {TimeSeries} from "pond";
+import {TimeSeries} from "@esnet/pond";
 import {Legend,
         ChartContainer,
         ChartRow,
