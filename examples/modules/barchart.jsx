@@ -1,10 +1,33 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
 import Moment from "moment"
-import {TimeSeries, TimeRange, Index} from "@esnet/pond";
-
 import Markdown from "react-markdown-el";
 
+// Pond
+import {TimeSeries, TimeRange, Index} from "@esnet/pond";
+
+//Imports from the charts library
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import BarChart from "../../src/barchart";
+import LineChart from "../../src/linechart";
+import Baseline from "../../src/baseline";
+import Legend from "../../src/legend";
+import Resizable from "../../src/resizable";
+
+// Docs
 const exampleText = `
 
 This simple example of a bar chart displays a pan and zoom chart that shows traffic levels
@@ -68,17 +91,6 @@ using the \`<ChartContainer>\` props.
 The final result is below, along with other examples:
 
 `;
-
-//Imports from the charts library
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import BarChart from "../../lib/components/barchart";
-import LineChart from "../../lib/components/linechart";
-import Baseline from "../../lib/components/baseline";
-import Legend from "../../lib/components/legend";
-import Resizable from "../../lib/components/resizable";
 
 //
 // October 2014 daily traffic

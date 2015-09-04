@@ -1,10 +1,20 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
+import Markdown from "react-markdown-el";
 
 //Imports from the charts library
-import Legend from "../../lib/components/legend";
+import Legend from "../../src/legend";
 
-import Markdown from "react-markdown-el";
 const exampleText = `
 
 Legends are simple to define:

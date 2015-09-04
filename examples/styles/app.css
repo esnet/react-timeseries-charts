@@ -1,42 +1,12 @@
-
-/*
-.horizontal-legend .legend-swatch.oscars{
-    background-color: #2064AC;
-}
-
-.horizontal-legend .legend-swatch.total{
-    background-color: #448FDD;
-}
-
-.horizontal-legend .legend-line.usa{
-    background-color: #ff7f0e;
-}
-
-.horizontal-legend .legend-line.aust{
-    background-color: #2ca02c;
-}
-
-.horizontal-legend .legend-line.aud {
-    background-color: #2ca02c;
-}
-
-.horizontal-legend .legend-line.euro {
-    background-color: #9467bd;
-}
-
-
-.horizontal-legend .legend-dot.site{
-    background-color: #FAA;
-	width: 12px;
-	height: 12px;
-	margin-top: 4px;
-	border-radius: 6px;
-}
-
-.horizontal-legend .legend-dot.router{
-    background-color: #CCF;
-}
-*/
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 .chartcontainer.chartrow {
     background: none;

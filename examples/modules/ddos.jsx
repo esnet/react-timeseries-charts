@@ -1,21 +1,32 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from "react/addons";
 import _ from "underscore";
 import moment from "moment";
+import Markdown from "react-markdown-el";
 
+// Pond
 import {TimeSeries} from "@esnet/pond";
 
-//Imports from the charts library
-import ChartContainer from "../../lib/components/chartcontainer";
-import ChartRow from "../../lib/components/chartrow";
-import Charts from "../../lib/components/charts";
-import YAxis from "../../lib/components/yaxis";
-import LineChart from "../../lib/components/linechart";
-import Resizable from "../../lib/components/resizable";
-import Legend from "../../lib/components/legend";
+// Imports from the charts library
+import ChartContainer from "../../src/chartcontainer";
+import ChartRow from "../../src/chartrow";
+import Charts from "../../src/charts";
+import YAxis from "../../src/yaxis";
+import LineChart from "../../src/linechart";
+import Resizable from "../../src/resizable";
+import Legend from "../../src/legend";
 
-import Markdown from "react-markdown-el";
+// Docs
 const exampleText = `
-
 This example uses inline styles:
 
     var connectionsStyle = {
@@ -31,7 +42,7 @@ This example uses inline styles:
 Which are then specified for each LineChart:
 
     <ChartContainer timeRange={requestsSeries.range()} padding="5">
-        <ChartRow height="300">
+        <ChartRow height="300" debug={false}>
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
             <Charts>
