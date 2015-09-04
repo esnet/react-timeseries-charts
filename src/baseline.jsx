@@ -1,30 +1,13 @@
-/*
- * ESnet React Charts, Copyright (c) 2014-2015, The Regents of the University of
- * California, through Lawrence Berkeley National Laboratory (subject
- * to receipt of any required approvals from the U.S. Dept. of
- * Energy).  All rights reserved.
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
  *
- * If you have questions about your rights to use or distribute this
- * software, please contact Berkeley Lab's Technology Transfer
- * Department at TTD@lbl.gov.
- *
- * NOTICE.  This software is owned by the U.S. Department of Energy.
- * As such, the U.S. Government has been granted for itself and others
- * acting on its behalf a paid-up, nonexclusive, irrevocable,
- * worldwide license in the Software to reproduce, prepare derivative
- * works, and perform publicly and display publicly.  Beginning five
- * (5) years after the date permission to assert copyright is obtained
- * from the U.S. Department of Energy, and subject to any subsequent
- * five (5) year renewals, the U.S. Government is granted for itself
- * and others acting on its behalf a paid-up, nonexclusive,
- * irrevocable, worldwide license in the Software to reproduce,
- * prepare derivative works, distribute copies to the public, perform
- * publicly and display publicly, and to permit others to do so.
- *
- * This code is distributed under a BSD style license, see the LICENSE
- * file for complete information.
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
  */
- 
+
 import React from "react/addons";
 import "./baseline.css";
 
@@ -43,20 +26,21 @@ import "./baseline.css";
  */
 export default React.createClass({
 
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {
-            "value": 0,
-            "label": "",
-            "position": "left" //or right
+            value: 0,
+            label: "",
+            position: "left"
         };
     },
 
-    render: function() {
+    render() {
         if (!this.props.yScale || !this.props.value) {
             return null;
         }
 
-        let ymin = Math.min(this.props.yScale.range()[0], this.props.yScale.range()[1]);
+        let ymin = Math.min(this.props.yScale.range()[0],
+                            this.props.yScale.range()[1]);
         let y = this.props.yScale(this.props.value);
         let transform = `translate(0 ${y})`;
         let textAnchor;
@@ -84,8 +68,10 @@ export default React.createClass({
 
         return (
             <g className="baseline" transform={transform}>
-                <polyline points={points} style={{"pointerEvents": "none"}}/>
-                <text className="baseline-label" x={textPositionX} y={textPositionY} textAnchor={textAnchor}>
+                <polyline points={points} style={{pointerEvents: "none"}}/>
+                <text className="baseline-label"
+                      x={textPositionX}
+                      y={textPositionY} textAnchor={textAnchor}>
                     {this.props.label}
                 </text>
             </g>

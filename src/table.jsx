@@ -1,55 +1,38 @@
-/*
- * ESnet React Charts, Copyright (c) 2014, The Regents of the University of
- * California, through Lawrence Berkeley National Laboratory (subject
- * to receipt of any required approvals from the U.S. Dept. of
- * Energy).  All rights reserved.
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
  *
- * If you have questions about your rights to use or distribute this
- * software, please contact Berkeley Lab's Technology Transfer
- * Department at TTD@lbl.gov.
- *
- * NOTICE.  This software is owned by the U.S. Department of Energy.
- * As such, the U.S. Government has been granted for itself and others
- * acting on its behalf a paid-up, nonexclusive, irrevocable,
- * worldwide license in the Software to reproduce, prepare derivative
- * works, and perform publicly and display publicly.  Beginning five
- * (5) years after the date permission to assert copyright is obtained
- * from the U.S. Department of Energy, and subject to any subsequent
- * five (5) year renewals, the U.S. Government is granted for itself
- * and others acting on its behalf a paid-up, nonexclusive,
- * irrevocable, worldwide license in the Software to reproduce,
- * prepare derivative works, distribute copies to the public, perform
- * publicly and display publicly, and to permit others to do so.
- *
- * This code is distributed under a BSD style license, see the LICENSE
- * file for complete information.
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
  */
- 
+
 import React from "react/addons";
 import _ from "underscore";
 import d3 from "d3";
 import Moment from "moment";
 
-import {TimeSeries, Event, IndexedEvent} from "@esnet/pond";
+import {TimeSeries, IndexedEvent} from "@esnet/pond";
 
 export default React.createClass({
 
     displayName: "Table",
 
-    propTypes: function() {
+    propTypes() {
         return {
             series: React.PropTypes.instanceOf(TimeSeries).isRequired
-        }
+        };
     },
 
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {
             timeFormat: undefined,
             width: 300
-        }
+        };
     },
 
-    renderCells: function(event) {
+    renderCells(event) {
         let cells = [];
 
         if (this.props.columns) {
@@ -62,7 +45,7 @@ export default React.createClass({
                 if (cell) {
                     cells.push(
                         <td key={column.key}>{cell}</td>
-                    )
+                    );
                 } else {
                     let formatter;
                     if (column.format) {
@@ -75,9 +58,12 @@ export default React.createClass({
 
                     if (column.key === "time") {
                         if (event instanceof IndexedEvent) {
+                            const format = this.props.timeFormat;
+                            const eventIndex =
+                                event.index().toNiceString(format);
                             cells.push(
                                 <td key={event.index().asString()}>
-                                    {event.index().toNiceString(this.props.timeFormat)}
+                                    {eventIndex}
                                 </td>
                             );
                         } else {
@@ -93,12 +79,12 @@ export default React.createClass({
                         if (formatter) {
                             value = formatter(parseFloat(value, 10));
                         }
-                        cells.push (
+                        cells.push(
                             <td key={column.key}>{value}</td>
                         );
                     }
                 }
-            })
+            });
         } else {
             if (event instanceof IndexedEvent) {
                 cells.push(
@@ -124,9 +110,9 @@ export default React.createClass({
                 if (cell) {
                     cells.push(
                         <td key={i}>{cell}</td>
-                    )
+                    );
                 } else {
-                    cells.push (
+                    cells.push(
                         <td key={i}>{d.toString()}</td>
                     );
                 }
@@ -136,7 +122,7 @@ export default React.createClass({
         return cells;
     },
 
-    renderRows: function() {
+    renderRows() {
         let rows = [];
         let i = 0;
         for (let event of this.props.series.events()) {
@@ -151,7 +137,7 @@ export default React.createClass({
             borderTop: "#E0E0E0",
             borderTopWidth: 1,
             borderTopStyle: "solid"
-        }
+        };
 
         if (this.props.summary) {
             const cells = _.map(this.props.summary, (value, key) => (
@@ -159,19 +145,20 @@ export default React.createClass({
             ));
             rows.push(
                 <tr key="summary" style={summaryStyle}>{cells}</tr>
-            )
+            );
         }
 
         return rows;
     },
 
-    renderHeader: function() {
+    renderHeader() {
         let headerCells = [];
         const headerStyle = {borderTop: "none"};
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {
                 headerCells.push(
-                    <th key={column.label} style={headerStyle}>{column.label}</th>
+                    <th key={column.label}
+                        style={headerStyle}>{column.label}</th>
                 );
             });
         } else {
@@ -192,11 +179,13 @@ export default React.createClass({
         );
     },
 
-    render: function() {
+    render() {
         const style = {marginBottom: 0};
 
         return (
-            <table className="table table-condensed table-striped" width={this.props.width} style={style}> 
+            <table className="table table-condensed table-striped"
+                   width={this.props.width}
+                   style={style}>
                 <tbody>
                     {this.renderHeader()}
                     {this.renderRows()}

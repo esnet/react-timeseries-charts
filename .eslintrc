@@ -28,10 +28,9 @@
     "no-dupe-keys": 2,
     "no-duplicate-case": 2,
     "no-empty": 2,
-    "no-empty-class": 2,
+    "no-empty-character-class": 2,
     "no-ex-assign": 2,
     "no-extra-boolean-cast": 2,
-    "no-extra-parens": 0,
     "no-extra-semi": 2,
     "no-func-assign": 2,
     "no-inner-declarations": [
@@ -181,7 +180,7 @@
     "no-ternary": 0,
     "no-trailing-spaces": 2,
     "no-underscore-dangle": 0,
-    "no-wrap-func": 2,
+    "no-extra-parens": 0,
     "one-var": [
       2,
       "never"
@@ -242,7 +241,7 @@
         "nonwords": false
       }
     ],
-    "spaced-line-comment": [
+    "spaced-comment": [
       2,
       "always"
     ],

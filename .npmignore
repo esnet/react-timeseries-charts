@@ -1,5 +1,4 @@
 lib/
-!build/npm/lib
 examples/
 screenshots/
 docs/
