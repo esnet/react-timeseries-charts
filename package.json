@@ -13,6 +13,7 @@
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
+    "prepublish": "npm test && npm run build",
     "lint": "eslint src/*.jsx",
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
