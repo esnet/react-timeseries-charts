@@ -1,8 +1,8 @@
 {
-  "name": "react-timeseries-charts",
+  "name": "@esnet/react-timeseries-charts",
   "description": "Declarative timeseries charts",
   "version": "0.2.0",
-  "private": "true",
+  "private": "false",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": {
@@ -17,6 +17,7 @@
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
+    "build-website": "webpack --config webpack.examples.config.js",
     "start-website": "webpack-dev-server  --config webpack.examples.config.js"
   },
   "license": "BSD-3-Clause-LBNL",
