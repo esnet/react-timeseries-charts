@@ -69,11 +69,11 @@ var YAxis = React.createClass({
         };
     },
 
-    renderAxis: function(align, scale, width, absolute, format) {
+    renderAxis: function(align, scale, width, absolute, format, axisType) {
         var yformat = d3.format(format);
 
         var axisGenerator;
-        if (this.props.type === "linear" || this.props.type === "power") {
+        if (axisType === "linear" || axisType === "power") {
             axisGenerator = d3.svg.axis()
                 .scale(scale)
                 .tickFormat(function(d) {
@@ -83,7 +83,7 @@ var YAxis = React.createClass({
                         return yformat(d);
                     }
                 }).orient(align);
-        } else if (this.props.type === "log") {
+        } else if (axisType === "log") {
             axisGenerator = d3.svg.axis()
                 .scale(scale)
                 .ticks(10, ".2s")
@@ -103,7 +103,7 @@ var YAxis = React.createClass({
 
     componentDidMount: function() {
         this.renderAxis(this.props.align, this.props.scale, this.props.width,
-                        this.props.absolute, this.props.format);
+                        this.props.absolute, this.props.format, this.props.type);
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -112,9 +112,10 @@ var YAxis = React.createClass({
         var width = nextProps.width;
         var absolute = nextProps.absolute;
         var format = nextProps.format;
+        var axisType = nextProps.type;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.renderAxis(align, scale, width, absolute, format);
+            this.renderAxis(align, scale, width, absolute, format, axisType);
         }
     },
 
