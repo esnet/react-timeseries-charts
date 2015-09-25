@@ -1,8 +1,7 @@
 {
   "name": "@esnet/react-timeseries-charts",
+  "version": "0.3.2",
   "description": "Declarative timeseries charts",
-  "version": "0.2.0",
-  "private": "false",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": {
@@ -13,6 +12,7 @@
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
+    "prepublish": "npm test && npm run build",
     "lint": "eslint src/*.jsx",
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
@@ -38,6 +38,7 @@
     "react": "^0.13.x",
     "react-router": "^0.13.x",
     "react-markdown-el": "^1.0.2",
+    "eslint": "^0.24.0",
     "bundle-loader": "^0.5.0",
     "url-loader": "^0.5.5",
     "file-loader": "^0.7.2",
@@ -46,11 +47,11 @@
     "style-loader": "^0.8.0",
     "raw-loader": "^0.5.1",
     "css-loader": "^0.9.0",
+    "babel": "^5.8.3",
     "babel-loader": "^5.0.0",
     "babel-core": "^5.1.13",
-    "webpack-dev-server": "^1.6.5",
     "babel-eslint": "4.0.5",
-    "eslint": "^0.24.0"
+    "webpack-dev-server": "^1.6.5"
   },
   "keywords": [
     "d3 charts",
