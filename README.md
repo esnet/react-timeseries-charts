@@ -93,7 +93,7 @@ Then, point your browser to:
 
 [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
 
-Licence
+License
 -------
 
 This code is distributed under a BSD style license, see the LICENSE file for complete information.
