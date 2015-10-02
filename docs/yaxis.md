@@ -1,7 +1,7 @@
 
 The YAxis widget displays a vertical axis to the left or right of the charts. A YAxis always appears within a `ChartRow`, from which it gets its height and positioning. You can have more than one axis per row.
 
-![YAxis](../../docs/yaxis.png "YAxis")
+![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png "YAxis")
 
 Here's a simple YAxis example:
 
