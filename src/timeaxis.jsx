@@ -14,7 +14,7 @@ import d3 from "d3";
 import "./timeaxis.css";
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain().toString()}-${scale.range().toString()}`;
 }
 
 /**
@@ -25,7 +25,7 @@ export default React.createClass({
     displayName: "TimeAxis",
 
     renderTimeAxis(scale) {
-        var axis;
+        let axis;
 
         if (this.props.format === "day") {
             axis = d3.svg.axis()
@@ -54,7 +54,7 @@ export default React.createClass({
         // Remove the old axis from under this DOM node
         d3.select(this.getDOMNode()).selectAll("*").remove();
 
-        var axisGroup = d3.select(this.getDOMNode()).append("g")
+        const axisGroup = d3.select(this.getDOMNode()).append("g")
             .attr("class", "x axis")
             .call(axis.tickSize(10));
 
@@ -70,7 +70,7 @@ export default React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        var scale = nextProps.scale;
+        const scale = nextProps.scale;
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
             this.renderTimeAxis(scale);
         }

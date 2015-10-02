@@ -18,14 +18,24 @@ import React from "react/addons";
  *          |      bps       |
  *          |                |
  *      ----+----------------+
+ *
+ *  EXPERIMENTAL
  */
 export default React.createClass({
 
     displayName: "ValueAxis",
 
     render() {
-        var labelStyle = {fontSize: 14, textAnchor: "middle", fill: "#838383"};
-        var detailStyle = {fontSize: 12, textAnchor: "middle", fill: "#9a9a9a"};
+        const labelStyle = {
+            fontSize: 14,
+            textAnchor: "middle",
+            fill: "#838383"
+        };
+        const detailStyle = {
+            fontSize: 12,
+            textAnchor: "middle",
+            fill: "#9a9a9a"
+        };
         return (
             <g>
                 <rect x="0" y="0"

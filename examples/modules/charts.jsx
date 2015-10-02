@@ -10,11 +10,12 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
-import text from "raw!../../README.md";
+// Docs text
+import text from "raw!../../docs/charts.md";
 
 export default React.createClass({
 
@@ -22,7 +23,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text
+            markdown: text,
         };
     },
 
@@ -31,10 +32,9 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h2>Introduction</h2>
+                        <h3>Charts</h3>
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-md-12">
                         <Markdown source={this.state.markdown}/>

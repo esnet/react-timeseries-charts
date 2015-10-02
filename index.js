@@ -16,4 +16,4 @@ module.exports = {
     Tracker: require("./lib/tracker"),
     ValueAxis: require("./lib/valueaxis"),
     YAxis: require("./lib/yaxis")
-}
+};

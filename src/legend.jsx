@@ -64,11 +64,11 @@ export default React.createClass({
             backgroundColor: "#CCC"
         };
 
-        let items = [];
+        const items = [];
         _.each(this.props.categories, (category) => {
             let style;
-            let categoryStyle = category.style || {};
-            let categoryLabelStyle = category.labelStyle || {};
+            const categoryStyle = category.style || {};
+            const categoryLabelStyle = category.labelStyle || {};
             if (this.props.type === "swatch") {
                 style = merge(true, swatchStyle, categoryStyle);
             } else if (this.props.type === "line") {
@@ -80,7 +80,7 @@ export default React.createClass({
             const labelStyle = merge(true, labelStyle, categoryLabelStyle);
 
             items.push(
-                <li key={"legend-item-" + category.key} style={legendListStyle}>
+                <li key={`legend-item-${category.key}`} style={legendListStyle}>
                     <span style={style}/>
                     <span style={labelStyle}> {category.label} </span>
                 </li>

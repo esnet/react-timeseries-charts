@@ -20,6 +20,9 @@ import _ from "underscore";
  *      | Max 100 Gbps   |     | Chart  ...
  *      | Avg 26 Gbps    | 0   |
  *      +----------------+-----+------- ...
+ *
+ * EXPERIMENTAL
+ *
  */
 
 export default React.createClass({
@@ -27,15 +30,23 @@ export default React.createClass({
     displayName: "LabelAxis",
 
     render() {
-        var labelStyle = {fontSize: 14, textAnchor: "middle", fill: "#838383"};
-        var detailStyle = {fontSize: 12, textAnchor: "left", fill: "#bdbdbd"};
-        var VALWIDTH = (this.props.valWidth) ? this.props.valWidth : 40;
-        var rectWidth = this.props.width - VALWIDTH;
-        var valXPos = rectWidth + 3; // padding
+        const labelStyle = {
+            fontSize: 14,
+            textAnchor: "middle",
+            fill: "#838383"
+        };
+        const detailStyle = {
+            fontSize: 12,
+            textAnchor: "left",
+            fill: "#bdbdbd"
+        };
+        const VALWIDTH = (this.props.valWidth) ? this.props.valWidth : 40;
+        const rectWidth = this.props.width - VALWIDTH;
+        const valXPos = rectWidth + 3; // padding
 
-        var format = _.has(this.props,"format") ? this.props.format : ".2f";
-        var maxStr = d3.format(format)(this.props.max);
-        var minStr = d3.format(format)(this.props.min);
+        const format = _.has(this.props,"format") ? this.props.format : ".2f";
+        const maxStr = d3.format(format)(this.props.max);
+        const minStr = d3.format(format)(this.props.min);
         return (
             <g>
                 <rect x="0" y="0" width={rectWidth} height={this.props.height}

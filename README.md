@@ -25,11 +25,11 @@ Getting started
 
 The charts library is intended to be used with npm and the built into your project with something like webpack.
 
-    npm install react-timeseries-charts --save
+    npm install @esnet/react-timeseries-charts --save
 
 Once installed, you can import the necessary components from the library:
 
-    import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
+    import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "@esnet/react-timeseries-charts";
 
 Then we construct our chart in the `render()` function of our component. For a simple example we create a chart with two line charts on it, specified in JSX:
 
@@ -93,7 +93,7 @@ Then, point your browser to:
 
 [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
 
-Licence
+License
 -------
 
 This code is distributed under a BSD style license, see the LICENSE file for complete information.

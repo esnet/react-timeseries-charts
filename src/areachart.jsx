@@ -25,9 +25,9 @@ function scaleAsString(scale) {
 function getLayers(seriesList) {
     return {
         upLayers: seriesList[0].map(series => {
-            let points = [];
+            const points = [];
             for (let i = 0; i < series.size(); i++) {
-                let point = series.at(i);
+                const point = series.at(i);
                 points.push({
                     date: point.timestamp(),
                     value: point.get()
@@ -37,9 +37,9 @@ function getLayers(seriesList) {
         }),
 
         downLayers: seriesList[1].map(series => {
-            let points = [];
+            const points = [];
             for (let i = 0; i < series.size(); i++) {
-                let point = series.at(i);
+                const point = series.at(i);
                 points.push({
                     date: point.timestamp(),
                     value: point.get()
@@ -62,13 +62,13 @@ function getLayers(seriesList) {
  *              x
  */
 function getAreaGenerators(interpolate, timeScale, yScale) {
-    let upArea = d3.svg.area()
+    const upArea = d3.svg.area()
         .x(d => timeScale(d.date))
         .y0(d => yScale(d.y0))
         .y1(d => yScale(d.y0 + d.value))
         .interpolate(interpolate);
 
-    let downArea = d3.svg.area()
+    const downArea = d3.svg.area()
         .x(d => timeScale(d.date))
         .y0(d => yScale(d.y0))
         .y1(d => yScale(d.y0 - d.value))
@@ -183,11 +183,11 @@ export default React.createClass({
                                                this.props.width,
                                                series);
 
-        let {upArea, downArea} = getAreaGenerators(interpolate,
+        const {upArea, downArea} = getAreaGenerators(interpolate,
                                                    timeScale,
                                                    yScale);
-        let {upLayers, downLayers} = getLayers(croppedSeries);
-        let {stackUp, stackDown} = getAreaStackers();
+        const {upLayers, downLayers} = getLayers(croppedSeries);
+        const {stackUp, stackDown} = getAreaStackers();
 
         // Stack our layers
         stackUp(upLayers);
@@ -203,7 +203,7 @@ export default React.createClass({
         //
 
         // Make a group 'areachart-up-group' for each stacked area
-        let upChart = d3.select(this.getDOMNode())
+        const upChart = d3.select(this.getDOMNode())
             .selectAll(".areachart-up-group")
                 .data(upLayers)
             .enter().append("g")
@@ -223,7 +223,7 @@ export default React.createClass({
         //
 
         // Make a group 'areachart-down-group' for each stacked area
-        let downChart = d3.select(this.getDOMNode())
+        const downChart = d3.select(this.getDOMNode())
           .selectAll(".areachart-down-group")
             .data(downLayers)
           .enter().append("g")
@@ -243,11 +243,11 @@ export default React.createClass({
         const croppedSeries = getCroppedSeries(timeScale,
                                                this.props.width,
                                                series);
-        let {upArea, downArea} = getAreaGenerators(interpolate,
+        const {upArea, downArea} = getAreaGenerators(interpolate,
                                                    timeScale,
                                                    yScale);
-        let {upLayers, downLayers} = getLayers(croppedSeries);
-        let {stackUp, stackDown} = getAreaStackers();
+        const {upLayers, downLayers} = getLayers(croppedSeries);
+        const {stackUp, stackDown} = getAreaStackers();
 
         // Stack our layers
         stackUp(upLayers);
@@ -275,22 +275,22 @@ export default React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        let newSeries = nextProps.series;
-        let oldSeries = this.props.series;
+        const newSeries = nextProps.series;
+        const oldSeries = this.props.series;
 
-        let timeScale = nextProps.timeScale;
-        let yScale = nextProps.yScale;
-        let interpolate = nextProps.interpolate;
+        const timeScale = nextProps.timeScale;
+        const yScale = nextProps.yScale;
+        const interpolate = nextProps.interpolate;
 
-        let isPanning = nextProps.isPanning;
+        const isPanning = nextProps.isPanning;
 
         // What changed
-        let timeScaleChanged =
+        const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
-        let yAxisScaleChanged =
+        const yAxisScaleChanged =
             (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
-        let interpolateChanged = (this.props.interpolate !== interpolate);
-        let isPanningChanged = (this.props.isPanning !== isPanning);
+        const interpolateChanged = (this.props.interpolate !== interpolate);
+        const isPanningChanged = (this.props.isPanning !== isPanning);
 
         let seriesChanged = false;
         if (oldSeries[0].length !== newSeries[0].length ||
@@ -299,8 +299,8 @@ export default React.createClass({
         } else {
             for (let d = 0; d < 2; d++) {
                 for (let a = 0; a < oldSeries[d].length; a++) {
-                    let o = oldSeries[d][a];
-                    let n = newSeries[d][a];
+                    const o = oldSeries[d][a];
+                    const n = newSeries[d][a];
                     if (!TimeSeries.is(o, n)) {
                         seriesChanged = true;
                     }
