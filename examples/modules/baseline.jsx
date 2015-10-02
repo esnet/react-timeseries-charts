@@ -28,29 +28,18 @@ import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
 
 // Docs text
-import text from "raw!../../docs/linechart.md";
+import text from "raw!../../docs/baseline.md";
 
 // Data
-const aud = require("../data/usd_vs_aud.json");
-const euro = require("../data/usd_vs_euro.json");
+const data = require("../data/usd_vs_euro.json");
 
-const audSeries = new TimeSeries({
+const series = new TimeSeries({
     name: "AUD",
     columns: ["time", "value"],
-    points: aud.widget[0].data
+    points: data.widget[0].data
 });
 
-const euroSeries = new TimeSeries({
-    name: "EURO",
-    columns: ["time", "value"],
-    points: euro.widget[0].data
-});
-
-const audStyle = {
-    color: "#2ca02c"
-};
-
-const euroStyle = {
+const style = {
     color: "#a02c2c"
 };
 
@@ -62,7 +51,7 @@ export default React.createClass({
         return {
             markdown: text,
             tracker: null,
-            timerange: audSeries.range()
+            timerange: series.range()
         };
     },
 
@@ -75,38 +64,26 @@ export default React.createClass({
     },
 
     render() {
+        console.log(series.stdev());
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>LineChart</h3>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <Legend type="line" categories={[
-                            {key: "aust", label: "AUD", style: {backgroundColor: "#2ca02c"}},
-                            {key: "euro", label: "Euro", style: {backgroundColor: "#a02c2c"}}
-                        ]} />
+                        <h3>Baseline</h3>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} padding="5"
-                                            trackerPosition={this.state.tracker}
-                                            onTrackerChanged={this.handleTrackerChanged}
-                                            enablePanZoom={true}
-                                            onTimeRangeChanged={this.handleTimeRangeChange}
-                                            minDuration={1000 * 60 * 60 * 24 * 30} >
-                                <ChartRow height="200" debug={false}>
-                                    <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
+                            <ChartContainer timeRange={series.range()} >
+                                <ChartRow height="150">
+                                    <YAxis id="price" label="Price ($)" min={series.min()} max={series.max()} width="60" format="$,.2f"/>
                                     <Charts>
-                                        <LineChart axis="axis1" series={audSeries} style={audStyle}/>
-                                        <LineChart axis="axis2" series={euroSeries} style={euroStyle}/>
-                                        <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right"/>
+                                        <LineChart axis="price" series={series} style={style}/>
+                                        <Baseline axis="price" value={series.avg()} label="Avg" position="right"/>
+                                        <Baseline axis="price" value={series.avg()-series.stdev()}/>
+                                        <Baseline axis="price" value={series.avg()+series.stdev()}/>
                                     </Charts>
-                                    <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>

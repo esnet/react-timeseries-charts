@@ -78,8 +78,8 @@ export default React.createClass({
         const yScale = this.props.yScale;
         const columns = this.props.columns || series._columns;
 
-        let rects = [];
-        for (let event of series.events()) {
+        const rects = [];
+        for (const event of series.events()) {
             const begin = event.begin();
             const end = event.end();
             const beginPos = timeScale(begin) + spacing;
@@ -106,7 +106,7 @@ export default React.createClass({
             }
 
             let ypos = yScale(0);
-            for (let column of columns) {
+            for (const column of columns) {
 
                 const index = event.index();
                 const key = `${series.name()}-${index}-${column}`;
@@ -118,8 +118,8 @@ export default React.createClass({
                 }
 
                 const y = ypos - height;
-                let barStyle;
 
+                let barStyle;
                 if (key === this.props.selection) {
                     if (this.props.style && this.props.style[column].selected) {
                         barStyle = this.props.style[column].selected;

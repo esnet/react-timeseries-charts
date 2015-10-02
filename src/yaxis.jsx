@@ -15,7 +15,7 @@ import "./yaxis.css";
 const MARGIN = 0;
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain().toString()}-${scale.range().toString()}`;
 }
 
 /**
@@ -54,9 +54,9 @@ export default React.createClass({
     },
 
     renderAxis(align, scale, width, absolute, format) {
-        var yformat = d3.format(format);
+        const yformat = d3.format(format);
 
-        var axisGenerator;
+        let axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
             if (this.props.height <= 200) {
                 axisGenerator = d3.svg.axis()
@@ -106,7 +106,7 @@ export default React.createClass({
         const axisClass = `yaxis ${classed}`;
         const axisLabelClass = `yaxis-label ${classed}`;
         this.axis = d3.select(this.getDOMNode()).append("g")
-            .attr("transform", "translate(" + x + ",0)")
+            .attr("transform", `translate(${x},0)`)
             .attr("class", axisClass)
             .call(axisGenerator)
         .append("text")
@@ -120,8 +120,8 @@ export default React.createClass({
     },
 
     updateAxis(align, scale, width, absolute, format) {
-        var yformat = d3.format(format);
-        var axisGenerator;
+        const yformat = d3.format(format);
+        let axisGenerator;
         if (this.props.type === "linear" || this.props.type === "power") {
             if (this.props.height <= 200) {
                 axisGenerator = d3.svg.axis()
@@ -165,11 +165,11 @@ export default React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        var scale = nextProps.scale;
-        var align = nextProps.align;
-        var width = nextProps.width;
-        var absolute = nextProps.absolute;
-        var format = nextProps.format;
+        const scale = nextProps.scale;
+        const align = nextProps.align;
+        const width = nextProps.width;
+        const absolute = nextProps.absolute;
+        const format = nextProps.format;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
             this.updateAxis(align, scale, width, absolute, format);

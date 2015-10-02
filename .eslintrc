@@ -17,6 +17,13 @@
     "node": true,
     "es6": true
   },
+  "plugins": [
+    "react"
+  ],
+  "globals": {
+      "window": true,
+      "document": false
+  },
   "rules": {
     "comma-dangle": 0,
     "no-cond-assign": 2,
@@ -246,7 +253,11 @@
       "always"
     ],
     "wrap-regex": 0,
-    "no-var": 0,
-    "max-len": [2, 80, 4]
+    "max-len": [2, 80, 4],
+    "no-var": 2,
+    "no-const-assign": 2,
+    "prefer-const": 2,
+    "prefer-arrow-callback": 2,
+    "prefer-template": 1
   }
 }

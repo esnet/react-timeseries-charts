@@ -8,47 +8,50 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+/* eslint max-len:0 */
+
 import React from "react/addons";
 import Router from "react-router";
-import {TimeSeries} from "@esnet/pond";
-import {Legend,
-        ChartContainer,
-        ChartRow,
-        Charts,
-        YAxis,
-        AreaChart,
-        Baseline,
-        Resizable} from "../../index";
 
 import App from "./app.jsx";
 import Intro from "./intro.jsx";
+import ChartContainer from "./chartcontainer.jsx";
+import ChartRow from "./chartrow.jsx";
+import Charts from "./charts.jsx";
+import YAxis from "./yaxis.jsx";
 import AreaCharts from "./areachart.jsx";
 import StackedAreaCharts from "./stacked.jsx";
 import LineCharts from "./linechart.jsx";
 import BarCharts from "./barchart.jsx";
+import ScatterCharts from "./scatterchart.jsx";
+import Baseline from "./baseline.jsx";
 import Legends from "./legend.jsx";
 import Weather from "./weather.jsx";
 import DDoS from "./ddos.jsx";
-import History from "./history.jsx";
 import Table from "./table.jsx";
 
-const {Route, DefaultRoute, RouteHandler, Link} = Router;
+const {Route, DefaultRoute} = Router;
 
 const routes = (
     <Route path="/" handler={App}>
         <DefaultRoute name="intro" handler={Intro} />
+        <Route name="chartcontainer" handler={ChartContainer} />
+        <Route name="chartrow" handler={ChartRow} />
+        <Route name="charts" handler={Charts} />
+        <Route name="yaxis" handler={YAxis} />
         <Route name="areacharts" handler={AreaCharts} />
         <Route name="stacked" handler={StackedAreaCharts} />
         <Route name="linecharts" handler={LineCharts} />
         <Route name="barcharts" handler={BarCharts} />
+        <Route name="scattercharts" handler={ScatterCharts} />
+        <Route name="baseline" handler={Baseline} />
         <Route name="legends" handler={Legends} />
-        <Route name="history" handler={History} />
         <Route name="weather" handler={Weather} />
         <Route name="ddos" handler={DDoS} />
         <Route name="table" handler={Table} />
     </Route>
 );
 
-Router.run(routes, function (Handler) {
+Router.run(routes, (Handler) => {
     React.render(<Handler/>, document.getElementById("content"));
 });

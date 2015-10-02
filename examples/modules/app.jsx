@@ -8,18 +8,20 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-var React = require("react/addons");
-var Router = require("react-router");
-var {RouteHandler, Link} = Router;
+/* eslint max-len:0 */
+
+import React from "react";
+import Router from "react-router";
+const {RouteHandler, Link} = Router;
 
 require("../styles/app.css");
-var logo = document.createElement("img");
+
+const logo = document.createElement("img");
 logo.src = require("../img/logo.png");
 
 export default React.createClass({
-    render: function() {
-
-        var sidebarStyle = {
+    render() {
+        const sidebarStyle = {
             borderRightStyle: "solid",
             borderRightColor: "#F2F1F1",
             borderRightWidth: 1
@@ -30,7 +32,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-2">
                         <img style={{float: "right"}}
-                             className="main-image" 
+                             className="main-image"
                              src={logo.src} width={80}/>
                     </div>
                     <div className="col-md-10">
@@ -49,23 +51,25 @@ export default React.createClass({
 
                             <hr />
 
-                            Basics:
-                            <li><Link to="linecharts">Line charts</Link></li>
-                            <li><Link to="areacharts">Area charts</Link></li>
-                            <li><Link to="stacked">Stacked area</Link></li>
-                            <li><Link to="barcharts">Bar charts</Link></li>
-
-                            <hr />
-
                             Examples:
                             <li><Link to="weather">Weather example</Link></li>
                             <li><Link to="ddos">DDoS example</Link></li>
+                            <li><Link to="stacked">Continents</Link></li>
 
                             <hr />
 
-                            Extras:
-                            <li><Link to="legends">Legends</Link></li>
-                            <li><Link to="table">Tables</Link></li>
+                            API:
+                            <li><Link to="chartcontainer">ChartContainer</Link></li>
+                            <li><Link to="chartrow">ChartRow</Link></li>
+                            <li><Link to="charts">Charts</Link></li>
+                            <li><Link to="yaxis">YAxis</Link></li>
+                            <li><Link to="linecharts">LineChart</Link></li>
+                            <li><Link to="areacharts">AreaChart</Link></li>
+                            <li><Link to="barcharts">BarChart</Link></li>
+                            <li><Link to="scattercharts">ScatterChart</Link></li>
+                            <li><Link to="baseline">Baseline</Link></li>
+                            <li><Link to="legends">Legend</Link></li>
+                            <li><Link to="table">Table</Link></li>
 
                             <hr />
 
@@ -75,7 +79,7 @@ export default React.createClass({
                             <li><a href="http://software.es.net/">Open Source</a></li>
 
                             <hr />
-                            
+
                             Related Projects:
                             <li><a href="http://software.es.net/pond/">Pond</a></li>
                             <li><a href="http://software.es.net/react-network-diagrams/">Network Diagrams</a></li>

@@ -8,10 +8,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+/* eslint max-len:0 */
+
 import React from "react/addons";
 import _ from "underscore";
 import moment from "moment";
-import Markdown from "react-markdown-el";
+import Markdown from "react-markdown";
+import Highlighter from "./highlighter";
 
 // Pond
 import {TimeSeries} from "@esnet/pond";
@@ -26,15 +29,15 @@ import Resizable from "../../src/resizable";
 import Legend from "../../src/legend";
 
 // Docs
-const exampleText = `
+const text = `
 This example uses inline styles:
 
-    var connectionsStyle = {
+    const connectionsStyle = {
         "color": "#2ca02c",
         "width": 1
     }
 
-    var requestsStyle = {
+    const requestsStyle = {
         "color": #9467bd,
         "width": 2
     }
@@ -55,56 +58,64 @@ Which are then specified for each LineChart:
     </ChartContainer>
 `;
 
-//Data
-var ddosData = require("../data/ddos.json");
+// Data
+const ddosData = require("../data/ddos.json");
 
-var requests = [];
-var connections = [];
+const requests = [];
+const connections = [];
 
-_.each(ddosData, function(val) {
-    var timestamp = new moment(new Date("2015-04-03 " + val["time PST"]));
-    var numConnection = val["connections"];
-    var httpRequests = val["http requests"];
+_.each(ddosData, val => {
+    const timestamp = new moment(new Date(`2015-04-03 ${val["time PST"]}`));
+    const numConnection = val["connections"];
+    const httpRequests = val["http requests"];
     requests.push([timestamp.toDate().getTime(), httpRequests]);
     connections.push([timestamp.toDate().getTime(), numConnection]);
-})
+});
 
-var connectionsSeries = new TimeSeries({
+const connectionsSeries = new TimeSeries({
     name: "connections",
     columns: ["time", "value"],
     points: connections
 });
 
-var requestsSeries = new TimeSeries({
+const requestsSeries = new TimeSeries({
     name: "requests",
     columns: ["time", "value"],
     points: requests
 });
 
 
-var scheme = {
+const scheme = {
     connections: "#2ca02c",
     requests: "#9467bd",
-}
+};
 
-var connectionsStyle = {
-    "color": scheme.connections,
-    "width": 1
-}
+const connectionsStyle = {
+    color: scheme.connections,
+    width: 1
+};
 
-var requestsStyle = {
-    "color": scheme.requests,
-    "width": 2
-}
+const requestsStyle = {
+    color: scheme.requests,
+    width: 2
+};
 
 export default React.createClass({
 
-    renderChart: function() {
+    mixins: [Highlighter],
+
+    getInitialState() {
+        return {
+            markdown: text
+        };
+    },
+
+    renderChart() {
         return (
             <ChartContainer timeRange={requestsSeries.range()} padding="5">
                 <ChartRow height="300" debug={false}>
                     <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
-                           labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
+                           labelOffset={-10} min={0} max={1000} format=",.0f" width="60" type="linear" />
                     <Charts>
                         <LineChart axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
                         <LineChart axis="axis1" series={requestsSeries} style={requestsStyle}/>
@@ -116,7 +127,7 @@ export default React.createClass({
         );
     },
 
-    render: function() {
+    render() {
         return (
             <div>
                 <div className="row">
@@ -127,8 +138,10 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Legend type="line" categories={[{"key": "requests", "label": "Requests", "style": {backgroundColor: "#9467bd"}},
-                                                         {"key": "connections", "label": "Connections", "style": {backgroundColor: "#2ca02c"}}]} />
+                        <Legend type="line" categories={[
+                            {key: "requests", label: "Requests", style: {backgroundColor: "#9467bd"}},
+                            {key: "connections", label: "Connections", style: {backgroundColor: "#2ca02c"}}
+                        ]} />
                     </div>
                 </div>
 
@@ -146,7 +159,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown text={exampleText} />
+                        <Markdown source={this.state.markdown}/>
                     </div>
                 </div>
             </div>

@@ -41,8 +41,8 @@ export default React.createClass({
         // chart. Lives in state to ensure just one clipping rectangle and
         // id per chart row instance; we don't want a fresh id generated on
         // each render.
-        let clipId = _.uniqueId("clip_");
-        let clipPathURL = "url(#" + clipId + ")";
+        const clipId = _.uniqueId("clip_");
+        const clipPathURL = `url(#${clipId})`;
 
         return {clipId: clipId,
                 clipPathURL: clipPathURL};
@@ -83,13 +83,13 @@ export default React.createClass({
                 .range([y0, y1])
                 .nice();
         } else if (type === "log") {
-            let base = yaxis.props.logBase || 10;
+            const base = yaxis.props.logBase || 10;
             scale = d3.scale.log()
                 .base(base)
                 .domain([min, max])
                 .range([y0, y1]);
         } else if (type === "power") {
-            let power = yaxis.props.powerExponent || 2;
+            const power = yaxis.props.powerExponent || 2;
             scale = d3.scale.pow()
                 .exponent(power)
                 .domain([min, max])
@@ -99,22 +99,22 @@ export default React.createClass({
     },
 
     render() {
-        let axes = []; // Contains all the yAxis elements used in the render
-        let chartList = []; // Contains all the chart elements used
+        const axes = []; // Contains all the yAxis elements used in the render
+        const chartList = []; // Contains all the chart elements used
                             // in the render
 
-        let margin = this.props.margin !== undefined ?
+        const margin = this.props.margin !== undefined ?
             Number(this.props.margin) : 5;
-        let padding = this.props.padding !== undefined ?
+        const padding = this.props.padding !== undefined ?
             Number(this.props.padding) : 2;
 
         // Extra padding above and below the axis since numbers need to be
         // displayed there
         const AXIS_MARGIN = 5;
 
-        let innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
-        let rangeTop = AXIS_MARGIN;
-        let rangeBottom = innerHeight - AXIS_MARGIN;
+        const innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
+        const rangeTop = AXIS_MARGIN;
+        const rangeBottom = innerHeight - AXIS_MARGIN;
 
         //
         // Build a map of elements that occupy left or right slots next to the
@@ -130,10 +130,10 @@ export default React.createClass({
         // from attr name to the d3 scale.
         //
 
-        let yAxisMap = {};          // Maps axis id -> axis element
-        let yAxisScaleMap = {};     // Maps axis id -> axis scale
-        let leftAxisList = [];      // Ordered list of left axes ids
-        let rightAxisList = [];     // Ordered list of right axes ids
+        const yAxisMap = {};          // Maps axis id -> axis element
+        const yAxisScaleMap = {};     // Maps axis id -> axis scale
+        const leftAxisList = [];      // Ordered list of left axes ids
+        const rightAxisList = [];     // Ordered list of right axes ids
         let align = "left";
 
         React.Children.forEach(this.props.children, child => {
@@ -148,14 +148,14 @@ export default React.createClass({
             if (child.type === Charts) {
                 align = "right";
             } else {
-                let id = child.props.id;
+                const id = child.props.id;
 
                 // Check to see if we think this 'axis' is actually an axis
                 if (child.type === YAxis || (_.has(child.props, "min") &&
                                              _.has(child.props, "max"))) {
-                    let yaxis = child;
-                    let {max, min} = yaxis.props;
-                    let type = yaxis.props.type || "linear";
+                    const yaxis = child;
+                    const {max, min} = yaxis.props;
+                    const type = yaxis.props.type || "linear";
 
                     if (yaxis.props.id) {
                         // Relate id to the axis
@@ -193,14 +193,14 @@ export default React.createClass({
         let posx = 0;
 
         // Extra space used by padding between columns
-        let leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
-        let rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
+        const leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
+        const rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
 
         // Space used by columns on left and right of charts
-        let leftWidth = _.reduce(this.props.leftAxisWidths, (a, b) => {
+        const leftWidth = _.reduce(this.props.leftAxisWidths, (a, b) => {
             return a + b;
         }, 0) + leftExtra;
-        let rightWidth = _.reduce(this.props.rightAxisWidths, (a, b) => {
+        const rightWidth = _.reduce(this.props.rightAxisWidths, (a, b) => {
             return a + b;
         }, 0) + rightExtra;
 
@@ -211,7 +211,7 @@ export default React.createClass({
                  leftColumnIndex < this.props.leftAxisWidths.length;
                  leftColumnIndex++) {
 
-            let colWidth = this.props.leftAxisWidths[leftColumnIndex];
+            const colWidth = this.props.leftAxisWidths[leftColumnIndex];
 
             posx -= colWidth;
             if (leftColumnIndex > 0) {
@@ -220,7 +220,7 @@ export default React.createClass({
 
             if (leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
-                transform = "translate(" + posx + "," + margin + ")";
+                transform = `translate(${posx},${margin})`;
 
                 // Additional props for left aligned axes
                 props = {width: colWidth,
@@ -261,11 +261,11 @@ export default React.createClass({
                  rightColumnIndex < this.props.rightAxisWidths.length;
                  rightColumnIndex++) {
 
-            let colWidth = this.props.rightAxisWidths[rightColumnIndex];
+            const colWidth = this.props.rightAxisWidths[rightColumnIndex];
 
             if (rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
-                transform = "translate(" + posx + "," + margin + ")";
+                transform = `translate(${posx},${margin})`;
 
                 // Additional props for right aligned axes
                 props = {width: colWidth,
@@ -309,17 +309,17 @@ export default React.createClass({
         // its time and y scale. The yscale is looked up in yAxisScaleMap.
         //
 
-        let chartWidth = this.props.width - leftWidth - rightWidth;
-        let chartTransform = "translate(" + leftWidth + "," + margin + ")";
+        const chartWidth = this.props.width - leftWidth - rightWidth;
+        const chartTransform = `translate(${leftWidth},${margin})`;
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
 
             if (child.type === Charts) {
-                let charts = child;
+                const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
                     // Additional props for charts
-                    let chartProps = {
+                    const chartProps = {
                         key: chart.props.key ?
                                 chart.props.key : `chart-${keyCount}`,
                         width: chartWidth,
@@ -346,12 +346,12 @@ export default React.createClass({
         // before anything underneath
         //
 
-        let brushList = [];
+        const brushList = [];
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
             if (child.type === Brush) {
-                let brushProps = {
-                    key: "brush-" + keyCount,
+                const brushProps = {
+                    key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: this.props.timeScale,

@@ -12,7 +12,7 @@ import React from "react/addons";
 import d3 from "d3";
 
 function scaleAsString(scale) {
-    return scale.domain().toString() + "-" + scale.range().toString();
+    return `${scale.domain().toString()}-${scale.range().toString()}`;
 }
 
 export default React.createClass({
@@ -26,7 +26,7 @@ export default React.createClass({
     },
 
     handleBrushed(brush) {
-        var extent = brush.extent();
+        const extent = brush.extent();
         if (this.props.onBrushed) {
             this.props.onBrushed(brush,extent[0],extent[1]);
         }
