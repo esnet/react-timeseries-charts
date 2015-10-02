@@ -1,7 +1,7 @@
 
 The `<Charts>` element is a grouping for charts within a row. It takes no props. Each chart within the group will be overlaid on top of each other.
 
-![Charts](../../docs/charts.png "Charts")
+![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png "Charts")
 
 Here is an example of two line charts within a `<Charts>` group:
 

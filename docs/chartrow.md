@@ -1,7 +1,7 @@
 
 A ChartRow is a container for a set of Y axes and multiple charts which are overlaid on each other in a central canvas.
 
-![ChartRow](../../docs/chartrows.png "ChartRow")
+![ChartRow](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartrows.png "ChartRow")
 
 Here is an example where a single `<ChartRow>` is defined within the `<ChartContainer>`. Of course you can have any number of rows.
 
