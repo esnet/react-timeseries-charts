@@ -33,7 +33,7 @@ export default React.createClass({
     },
 
     renderCells(event) {
-        let cells = [];
+        const cells = [];
 
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {
@@ -123,9 +123,9 @@ export default React.createClass({
     },
 
     renderRows() {
-        let rows = [];
+        const rows = [];
         let i = 0;
-        for (let event of this.props.series.events()) {
+        for (const event of this.props.series.events()) {
             rows.push(
                 <tr key={i}>{this.renderCells(event)}</tr>
             );
@@ -152,7 +152,7 @@ export default React.createClass({
     },
 
     renderHeader() {
-        let headerCells = [];
+        const headerCells = [];
         const headerStyle = {borderTop: "none"};
         if (this.props.columns) {
             _.each(this.props.columns, (column) => {

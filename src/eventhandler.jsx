@@ -101,7 +101,7 @@ export default React.createClass({
 
         const x = e.pageX;
         const y = e.pageY;
-        let xy0 = [ Math.round(x), Math.round(y) ];
+        const xy0 = [Math.round(x), Math.round(y)];
 
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
@@ -132,7 +132,7 @@ export default React.createClass({
 
         const x = e.pageX;
         const y = e.pageY;
-        let xy = [Math.round(x), Math.round(y)];
+        const xy = [Math.round(x), Math.round(y)];
 
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
@@ -142,7 +142,7 @@ export default React.createClass({
             let newBegin = parseInt(this.state.initialPanBegin -
                 timeOffset, 10);
             let newEnd = parseInt(this.state.initialPanEnd - timeOffset, 10);
-            let duration = parseInt(this.state.initialPanEnd -
+            const duration = parseInt(this.state.initialPanEnd -
                 this.state.initialPanBegin, 10);
 
             // Range constraint

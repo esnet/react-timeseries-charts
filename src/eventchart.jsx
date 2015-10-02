@@ -15,18 +15,21 @@ import "./eventchart.css";
 /**
  * Renders an event view that shows the supplied set of
  * events along a time axis.
+ *
+ * EXPERIMENTAL
+ *
+ * TODO: Convert to use Pond Events
  */
 export default React.createClass({
 
     displayName: "EventChart",
 
     render() {
-        var scale = this.props.timeScale;
+        const scale = this.props.timeScale;
         // Create and array of markers, one for each event
-        var markers = [];
-        markers = _.map(this.props.events, event => {
-            var posx = scale(new Date(event.time));
-            var transform = "translate(" + posx + ",0)";
+        const markers = _.map(this.props.events, event => {
+            const posx = scale(new Date(event.time));
+            const transform = `translate(${posx},0)`;
             return (
                 <g transform={transform} >
                     <rect className="eventchart-marker"

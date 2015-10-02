@@ -39,14 +39,14 @@ export default React.createClass({
             return null;
         }
 
-        let ymin = Math.min(this.props.yScale.range()[0],
+        const ymin = Math.min(this.props.yScale.range()[0],
                             this.props.yScale.range()[1]);
-        let y = this.props.yScale(this.props.value);
-        let transform = `translate(0 ${y})`;
+        const y = this.props.yScale(this.props.value);
+        const transform = `translate(0 ${y})`;
+        let points;
         let textAnchor;
         let textPositionX;
-        let pts = [];
-        let points;
+        const pts = [];
 
         let textPositionY = -3;
         if (y < ymin + 10) {

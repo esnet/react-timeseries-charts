@@ -12,7 +12,6 @@ import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
 import invariant from "react/lib/invariant";
-
 import TimeAxis from "./timeaxis"; //eslint-disable-line
 import ChartRow from "./chartrow";
 import Charts from "./charts";
@@ -54,8 +53,8 @@ export default React.createClass({
     },
 
     render() {
-        let chartRows = [];
-        let padding = this.props.padding || 0;
+        const chartRows = [];
+        const padding = this.props.padding || 0;
 
         //
         // How much room does the axes of all the charts take up on the right
@@ -70,8 +69,8 @@ export default React.createClass({
         //          left cols              right cols
         //
 
-        let leftAxisWidths = [];
-        let rightAxisWidths = [];
+        const leftAxisWidths = [];
+        const rightAxisWidths = [];
 
         React.Children.forEach(this.props.children, childRow => {
             if (childRow.type === ChartRow) {
@@ -85,6 +84,7 @@ export default React.createClass({
                 let countLeft = 0;
                 let countRight = 0;
                 let countCharts = 0;
+
                 let align = "left";
 
                 React.Children.forEach(childRow.props.children, child => {
@@ -116,7 +116,7 @@ export default React.createClass({
                         align = "right";
                         pos = 0;
                     } else {
-                        let width = Number(child.props.width) || 40;
+                        const width = Number(child.props.width) || 40;
                         if (align === "left") {
                             leftAxisWidths[pos] = leftAxisWidths[pos] ?
                                 Math.max(width, leftAxisWidths[pos]) : width;
@@ -132,14 +132,14 @@ export default React.createClass({
         });
 
         // Extra space used by padding between columns
-        let leftExtra = (leftAxisWidths.length - 1) * padding;
-        let rightExtra = (rightAxisWidths.length - 1) * padding;
+        const leftExtra = (leftAxisWidths.length - 1) * padding;
+        const rightExtra = (rightAxisWidths.length - 1) * padding;
 
         // Space used by columns on left and right of charts
-        let leftWidth = _.reduce(leftAxisWidths, (a, b) => {
+        const leftWidth = _.reduce(leftAxisWidths, (a, b) => {
             return a + b;
         }, 0) + leftExtra;
-        let rightWidth = _.reduce(rightAxisWidths, (a, b) => {
+        const rightWidth = _.reduce(rightAxisWidths, (a, b) => {
             return a + b;
         }, 0) + rightExtra;
 
@@ -149,21 +149,21 @@ export default React.createClass({
 
         const X_AXIS_HEIGHT = 35;
 
-        let transform = `translate(${leftWidth},0)`;
-        let timeAxisWidth = this.props.width - leftWidth -
+        const transform = `translate(${leftWidth},0)`;
+        const timeAxisWidth = this.props.width - leftWidth -
                             rightWidth - padding * 2;
 
-        let [beginTime, endTime] = this.props.timeRange.toJSON();
+        const [beginTime, endTime] = this.props.timeRange.toJSON();
 
-        let timeScale = d3.time.scale()
+        const timeScale = d3.time.scale()
             .domain([beginTime, endTime])
             .range([0, timeAxisWidth]);
 
-        let timeaxis = (
+        const timeaxis = (
             <TimeAxis scale={timeScale} format={this.props.format}/>
         );
 
-        let timeAxis = (
+        const timeAxis = (
             <div className="row">
                 <div className="col-md-12" style={{height: X_AXIS_HEIGHT}}>
                     <div className="chartcontainer timeaxis" >
@@ -186,10 +186,10 @@ export default React.createClass({
         let i = 0;
         React.Children.forEach(this.props.children, child => {
             if (child.type === ChartRow) {
-                let chartRow = child;
-                let rowKey = child.props.key ?
+                const chartRow = child;
+                const rowKey = child.props.key ?
                     child.props.key : `chart-row-row-${i}`;
-                let props = {
+                const props = {
                     key: rowKey,
                     width: this.props.width,
                     timeScale: timeScale,
@@ -206,10 +206,10 @@ export default React.createClass({
                     onTrackerChanged: this.handleTrackerChanged
                 };
 
-                let row = React.addons.cloneWithProps(chartRow, props);
+                const row = React.addons.cloneWithProps(chartRow, props);
 
                 chartRows.push(
-                    <div key={"chart-row-div-" + i } className="row">
+                    <div key={`chart-row-div-${i}`} className="row">
                         <div className="col-md-12">
                             <div className="chartcontainer chartrow">
                                 {row}
