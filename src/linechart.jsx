@@ -18,8 +18,6 @@ export default React.createClass({
     getDefaultProps() {
         return {
             smooth: true,
-            showPoints: false,
-            pointRadius: 1.0,
             style: {
                 color: "#9DA3FF",
                 width: 1

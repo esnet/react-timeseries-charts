@@ -8,19 +8,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
-import _ from "underscore";
-import Markdown from "react-markdown-el";
+/* eslint max-len:0 */
 
-//Imports from the charts library
+import React from "react/addons";
+import Markdown from "react-markdown";
+import Highlighter from "./highlighter";
+
+// Imports from the charts library
 import Legend from "../../src/legend";
 
-const exampleText = `
+const text = `
 
 Legends are simple to define:
 
-	const categories={[{"key": "aust", "label": "AUD", "style": {backgroundColor: "#1f77b4"}},
-                       {"key": "usa", "label": "USD", "style": {backgroundColor: "#aec7e8"}}]}
+    const categories={[{key: "aust", label: "AUD", style: {backgroundColor: "#1f77b4"}},
+                       {key: "usa", label: "USD", style: {backgroundColor: "#aec7e8"}}]}
 
     <Legend type="line" categories={categories} />
 
@@ -33,56 +35,61 @@ which will be merged in with the base style for that type.
 
 export default React.createClass({
 
-  	render: function() {
-	    return (
-	        
-	    	<div>
+    mixins: [Highlighter],
 
-	          	<div className="row">
-	              	<div className="col-md-12">
-	                  	<h3>Horizontal Legend</h3>
-	              	</div>
-	          	</div>
+    getInitialState() {
+        return {
+            markdown: text
+        };
+    },
 
-	          	<div className="row">
-	              	<div className="col-md-3">
-	                  	Legend with lines
-	              	</div>
-	              	<div className="col-md-3">
-	                  	Legend with swatches
-	              	</div>
-	              	<div className="col-md-3">
-	                  	Legend with dots
-	              	</div>
-	         	 </div>
+    render() {
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <h3>Horizontal Legend</h3>
+                    </div>
+                </div>
 
-	          	<div className="row">
-	              	<div className="col-md-3">
-	                  	<Legend type="line" categories={[{"key": "aust", "label": "AUD", "style": {backgroundColor: "#1f77b4"}},
-	                  						             {"key": "usa", "label": "USD", "style": {backgroundColor: "#aec7e8"}}]} />
-	              	</div>
-	              	<div className="col-md-3">
-	                  	<Legend type="swatch" categories={[{"key": "oscars", "label": "Oscars", style: {backgroundColor: "#ff7f0e"}},
-	                  						               {"key": "total", "label": "Total", style: {backgroundColor: "#ffbb78"}}]} />
-	              	</div>
-	              	<div className="col-md-3">
-	                  	<Legend type="dot" categories={[{"key": "site", "label": "Site", style: {backgroundColor: "#98df8a"}},
-	                  						            {"key": "router", "label": "Router", style: {backgroundColor: "#d62728"}}]} />
-	              	</div>
-	          	</div>
+                <div className="row">
+                    <div className="col-md-3">
+                        Legend with lines
+                    </div>
+                    <div className="col-md-3">
+                        Legend with swatches
+                    </div>
+                    <div className="col-md-3">
+                        Legend with dots
+                    </div>
+                 </div>
+
+                <div className="row">
+                    <div className="col-md-3">
+                        <Legend type="line" categories={[
+                            {key: "aust", label: "AUD", style: {backgroundColor: "#1f77b4"}},
+                            {key: "usa", label: "USD", style: {backgroundColor: "#aec7e8"}}]} />
+                    </div>
+                    <div className="col-md-3">
+                        <Legend type="swatch" categories={[
+                            {key: "oscars", label: "Oscars", style: {backgroundColor: "#ff7f0e"}},
+                            {key: "total", label: "Total", style: {backgroundColor: "#ffbb78"}}]} />
+                    </div>
+                    <div className="col-md-3">
+                        <Legend type="dot" categories={[
+                            {key: "site", label: "Site", style: {backgroundColor: "#98df8a"}},
+                            {key: "router", label: "Router", style: {backgroundColor: "#d62728"}}]} />
+                    </div>
+                </div>
 
                 <hr />
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown text={exampleText} />
+                        <Markdown source={this.state.markdown}/>
                     </div>
                 </div>
-		    </div>
-	    );
-  	}
+            </div>
+        );
+    }
 });
-
-/*
-
- */
