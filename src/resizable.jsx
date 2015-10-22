@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import cloneWithProps from "react-addons-clone-with-props";
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
@@ -25,19 +26,19 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        window.addEventListener('resize', this.handleResize);  //eslint-disable-line
+        window.addEventListener("resize", this.handleResize);  //eslint-disable-line
         this.handleResize();
     },
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.handleResize);  //eslint-disable-line
+        window.removeEventListener("resize", this.handleResize);  //eslint-disable-line
     },
 
     render() {
         const props = {width: this.state.width};
         const child = React.Children.only(this.props.children);
         const childElement = this.state.width ?
-            React.addons.cloneWithProps(child, props) : null;
+            cloneWithProps(child, props) : null;
         return (
             <div ref="container">
                 {childElement}

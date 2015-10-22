@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
-import invariant from "react/lib/invariant";
+import React from "react";
+import invariant from "invariant";
 
 /**
  * A Charts component is a grouping of charts which will be composited on top of

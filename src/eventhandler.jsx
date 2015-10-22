@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import cloneWithProps from "react-addons-clone-with-props";
 import {TimeRange} from "@esnet/pond";
 import $ from "jquery";
 
@@ -177,8 +178,7 @@ export default React.createClass({
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
         const children = React.Children.map(this.props.children, (element) => {
-            return React.addons.cloneWithProps(element,
-                {isPanning: this.state.isPanning});
+            return cloneWithProps(element, {isPanning: this.state.isPanning});
         });
         return (
             <g pointerEvents="all"
