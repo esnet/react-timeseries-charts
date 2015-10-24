@@ -24,7 +24,6 @@ import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import LineChart from "../../src/linechart";
 import Baseline from "../../src/baseline";
-import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
 
 // Docs text
@@ -64,7 +63,6 @@ export default React.createClass({
     },
 
     render() {
-        console.log(series.stdev());
         return (
             <div>
                 <div className="row">
@@ -81,8 +79,8 @@ export default React.createClass({
                                     <Charts>
                                         <LineChart axis="price" series={series} style={style}/>
                                         <Baseline axis="price" value={series.avg()} label="Avg" position="right"/>
-                                        <Baseline axis="price" value={series.avg()-series.stdev()}/>
-                                        <Baseline axis="price" value={series.avg()+series.stdev()}/>
+                                        <Baseline axis="price" value={series.avg() - series.stdev()}/>
+                                        <Baseline axis="price" value={series.avg() + series.stdev()}/>
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

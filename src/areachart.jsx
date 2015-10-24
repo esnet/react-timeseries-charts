@@ -22,31 +22,33 @@ function scaleAsString(scale) {
  * direction, layer, we have layer.values = [points] where each point is
  * in the format {data: .., value, ..}
  */
-function getLayers(seriesList) {
+function getLayers(columns, series) {
+    const up = columns.up || [];
+    const down = columns.down || [];
     return {
-        upLayers: seriesList[0].map(series => {
+        upLayers: up.map(columnName => {
             const points = [];
             for (let i = 0; i < series.size(); i++) {
                 const point = series.at(i);
                 points.push({
                     date: point.timestamp(),
-                    value: point.get()
+                    value: point.get(columnName)
                 });
             }
             return {values: points};
         }),
 
-        downLayers: seriesList[1].map(series => {
+        downLayers: down.map(columnName => {
             const points = [];
             for (let i = 0; i < series.size(); i++) {
                 const point = series.at(i);
                 points.push({
                     date: point.timestamp(),
-                    value: point.get()
+                    value: point.get(columnName)
                 });
             }
             return {values: points};
-        })
+        }),
     };
 }
 
@@ -84,31 +86,28 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
  */
 function getAreaStackers() {
     return {
-        stackUp: d3.layout.stack()
-            .values(d => d.values)
-            .x(d => d.date)
-            .y(d => d.value),
+        stackUp:
+            d3.layout.stack()
+                .values(d => d.values)
+                    .x(d => d.date)
+                    .y(d => d.value),
 
-        stackDown: d3.layout.stack()
-            .values(d => d.values)
-            .x(d => d.date)
-            .y(d => -d.value)
+        stackDown:
+            d3.layout.stack()
+                .values(d => d.values)
+                    .x(d => d.date)
+                    .y(d => -d.value)
     };
 }
 
-function getCroppedSeries(scale, width, seriesList) {
+function getCroppedSeries(scale, width, series) {
     const beginTime = scale.invert(0);
     const endTime = scale.invert(width);
-    return _.map(seriesList, direction => {
-        return _.map(direction, series => {
-            const beginIndex = series.bisect(beginTime);
-            const endIndex = series.bisect(endTime);
-            const cropped = series.slice(beginIndex,
-                                         endIndex === series.size() - 1 ?
-                                         endIndex : endIndex + 1);
-            return cropped;
-        });
-    });
+    const beginIndex = series.bisect(beginTime);
+    const endIndex = series.bisect(endTime);
+    return series.slice(beginIndex,
+                        endIndex === series.size() - 1 ?
+                            endIndex : endIndex + 1);
 }
 
 /**
@@ -119,15 +118,25 @@ export default React.createClass({
     displayName: "AreaChart",
 
     propTypes: {
-        /**
-         * Time in ms to transition the chart when the axis changes scale
-         */
-        transition: React.PropTypes.number,
 
         /**
-         * The d3 interpolation method
+         * The TimeSeries to render
          */
-        interpolate: React.PropTypes.string,
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+
+        /**
+         * The series series columns mapped to stacking up and down.
+         * Has the format:
+         *
+         *  "columns": {
+         *      up: ["in", ...],
+         *      down: ["out", ...]
+         *  }
+         */
+        columns: React.PropTypes.shape({
+            up: React.PropTypes.arrayOf(React.PropTypes.string),
+            down: React.PropTypes.arrayOf(React.PropTypes.string)
+        }),
 
         /**
          * The style of the area chart, with format:
@@ -146,12 +155,14 @@ export default React.createClass({
         }),
 
         /**
-         * The series list. This is a 2 element array, with the first element
-         * build stacked up and the second element being stacked down. Each
-         * element is itself an array of TimeSeries.
+         * Time in ms to transition the chart when the axis changes scale
          */
-        series: React.PropTypes.arrayOf(
-            React.PropTypes.arrayOf(React.PropTypes.instanceOf(TimeSeries)))
+        transition: React.PropTypes.number,
+
+        /**
+         * The d3 interpolation method
+         */
+        interpolate: React.PropTypes.string,
     },
 
     getDefaultProps() {
@@ -161,7 +172,11 @@ export default React.createClass({
             style: {
                 up: ["#448FDD", "#75ACE6", "#A9CBEF"],
                 down: ["#FD8D0D", "#FDA949", "#FEC686"]
-            }
+            },
+            columns: {
+                up: ["value"],
+                down: []
+            },
         };
     },
 
@@ -173,7 +188,7 @@ export default React.createClass({
     },
 
     renderAreaChart(series, timeScale, yScale, interpolate, isPanning) {
-        if (!yScale || !series[0]) {
+        if (!yScale) {
             return null;
         }
 
@@ -184,9 +199,11 @@ export default React.createClass({
                                                series);
 
         const {upArea, downArea} = getAreaGenerators(interpolate,
-                                                   timeScale,
-                                                   yScale);
-        const {upLayers, downLayers} = getLayers(croppedSeries);
+                                                     timeScale,
+                                                     yScale);
+        const {upLayers, downLayers} = getLayers(this.props.columns,
+                                                 croppedSeries);
+
         const {stackUp, stackDown} = getAreaStackers();
 
         // Stack our layers
@@ -237,6 +254,7 @@ export default React.createClass({
                 .style("cursor", cursor)
                 .attr("d", d => downArea(d.values))
                 .attr("clip-path", this.props.clipPathURL);
+
     },
 
     updateAreaChart(series, timeScale, yScale, interpolate) {
@@ -244,9 +262,10 @@ export default React.createClass({
                                                this.props.width,
                                                series);
         const {upArea, downArea} = getAreaGenerators(interpolate,
-                                                   timeScale,
-                                                   yScale);
-        const {upLayers, downLayers} = getLayers(croppedSeries);
+                                                     timeScale,
+                                                     yScale);
+        const {upLayers, downLayers} = getLayers(this.props.columns,
+                                                 croppedSeries);
         const {stackUp, stackDown} = getAreaStackers();
 
         // Stack our layers
@@ -284,28 +303,21 @@ export default React.createClass({
 
         const isPanning = nextProps.isPanning;
 
-        // What changed
+        // What changed?
         const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         const yAxisScaleChanged =
             (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
-        const interpolateChanged = (this.props.interpolate !== interpolate);
-        const isPanningChanged = (this.props.isPanning !== isPanning);
+        const interpolateChanged =
+            (this.props.interpolate !== interpolate);
+        const isPanningChanged =
+            (this.props.isPanning !== isPanning);
 
         let seriesChanged = false;
-        if (oldSeries[0].length !== newSeries[0].length ||
-            oldSeries[0].length !== newSeries[0].length) {
+        if (oldSeries.length !== newSeries.length) {
             seriesChanged = true;
         } else {
-            for (let d = 0; d < 2; d++) {
-                for (let a = 0; a < oldSeries[d].length; a++) {
-                    const o = oldSeries[d][a];
-                    const n = newSeries[d][a];
-                    if (!TimeSeries.is(o, n)) {
-                        seriesChanged = true;
-                    }
-                }
-            }
+            seriesChanged = TimeSeries.is(oldSeries, newSeries);
         }
 
         //
@@ -320,7 +332,8 @@ export default React.createClass({
                                  yScale, interpolate,
                                  isPanning);
         } else if (yAxisScaleChanged) {
-            this.updateAreaChart(newSeries, timeScale, yScale, interpolate);
+            this.updateAreaChart(newSeries, timeScale,
+                                 yScale, interpolate);
         }
     },
 
