@@ -31,7 +31,7 @@ Note: It is recommended that `<ChartContainer>`s be placed within a `<Resizable>
 
 #### axis
 
-Reference to the axis which provides the vertical scale for ## drawing. In the above example, the `axis="traffic"` refers to the YAxis of `id="traffic"`.
+Reference to the axis which provides the vertical scale for the chart rendering. In the above example, the `axis="traffic"` refers to the YAxis of `id="traffic"`.
 
 #### series
 

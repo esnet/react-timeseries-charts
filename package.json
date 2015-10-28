@@ -24,7 +24,6 @@
     "@esnet/pond": "^0.2.x",
     "babel-runtime": "~5.8.3",
     "d3": "^3.5.5",
-    "jquery": "^2.1.4",
     "merge": "^1.2.0",
     "moment": "^2.8.4",
     "paths-js": "^0.3.4",
