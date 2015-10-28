@@ -10,14 +10,13 @@
 
 import React from "react/addons";
 import {TimeRange} from "@esnet/pond";
-import $ from "jquery";
 
 // http://stackoverflow.com/a/28857255
 function getElementOffset(element) {
-    var de = document.documentElement;
-    var box = element.getBoundingClientRect();
-    var top = box.top + window.pageYOffset - de.clientTop;
-    var left = box.left + window.pageXOffset - de.clientLeft;
+    const de = document.documentElement;
+    const box = element.getBoundingClientRect();
+    const top = box.top + window.pageYOffset - de.clientTop;
+    const left = box.left + window.pageXOffset - de.clientLeft;
     return {
         top: top,
         left: left
