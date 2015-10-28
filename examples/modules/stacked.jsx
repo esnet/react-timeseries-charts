@@ -50,12 +50,29 @@ to any of d3's interpolate functions, in this case 'linear'.
 // Data
 const rawData = require("../data/stacked.json");
 
-const seriesList = _.map(rawData, d => {
-    return new TimeSeries({
-        name: `${d.key}`,
-        columns: ["time", "value"],
-        points: d.values
+const numPoints = rawData[0].values.length;
+
+const columns = ["time"];
+const displayColumns = [];
+_.each(rawData, d => {
+    columns.push(d.key);
+    displayColumns.push(d.key);
+});
+
+const points = [];
+for (let i = 0; i < numPoints; i++) {
+    const t = rawData[0].values[i][0];
+    const point = [t];
+    _.each(rawData, d => {
+        point.push(d.values[i][1]);
     });
+    points.push(point);
+}
+
+const series = new TimeSeries({
+    name: "Stacked",
+    columns: columns,
+    points: points
 });
 
 const countriesList = _.map(rawData, d => {
@@ -86,9 +103,12 @@ export default React.createClass({
     },
 
     render() {
-        const style = {up: colorsList};
+        const style = {up: colorsList, down: []};
+        const cols = {up: displayColumns, down: []};
+        const min = 0;
         const max = 130;
-        const axistype = "linear";
+        const axisType = "linear";
+        const interpolationType = "linear";
 
         return (
             <div>
@@ -110,11 +130,20 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
 
-                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition="300" enablePanZoom={true} >
-                                <ChartRow height="350" debug={false}>
-                                    <YAxis id="value" label="" labelOffset={0} max={max} width="60" type={axistype}/>
+                            <ChartContainer timeRange={series.range()}>
+                                <ChartRow height="350">
+                                    <YAxis
+                                        id="value"
+                                        min={min} max={max}
+                                        width="60"
+                                        type={axisType}/>
                                     <Charts>
-                                        <AreaChart axis="value" style={style} series={[seriesList,[]]} interpolate="linear"/>
+                                        <AreaChart
+                                            axis="value"
+                                            style={style}
+                                            series={series}
+                                            columns={cols}
+                                            interpolate={interpolationType} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
