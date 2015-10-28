@@ -317,7 +317,7 @@ export default React.createClass({
         if (oldSeries.length !== newSeries.length) {
             seriesChanged = true;
         } else {
-            seriesChanged = TimeSeries.is(oldSeries, newSeries);
+            seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
 
         //

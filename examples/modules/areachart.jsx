@@ -71,10 +71,9 @@ export default React.createClass({
     },
 
     render() {
-        const dateRangeStyle = {
+        const dateStyle = {
             fontSize: 12,
             color: "#AAA",
-            borderBottomStyle: "solid",
             borderWidth: "1",
             borderColor: "#F4F4F4"
         };
@@ -85,6 +84,7 @@ export default React.createClass({
         ]);
 
         const axistype = "linear";
+        const tracker = this.state.tracker ? `${this.state.tracker}` : "";
 
         return (
             <div>
@@ -102,7 +102,7 @@ export default React.createClass({
                         ]} />
                     </div>
                     <div className="col-md-8">
-                        <span style={dateRangeStyle}>{trafficBNLtoNEWYSeries.range().humanize()}</span>
+                        <span style={dateStyle}>{tracker}</span>
                     </div>
                 </div>
 
