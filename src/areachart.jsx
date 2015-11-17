@@ -292,7 +292,7 @@ export default React.createClass({
     componentDidMount() {
         this.renderAreaChart(this.props.series, this.props.timeScale,
                              this.props.yScale, this.props.interpolate,
-                             this.props.columns);
+                             this.props.isPanning, this.props.columns);
     },
 
     componentWillReceiveProps(nextProps) {
