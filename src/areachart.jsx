@@ -300,8 +300,8 @@ export default React.createClass({
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const interpolate = nextProps.interpolate;
-
         const isPanning = nextProps.isPanning;
+        const columns = nextProps.columns;
 
         // What changed?
         const timeScaleChanged =
@@ -312,6 +312,8 @@ export default React.createClass({
             (this.props.interpolate !== interpolate);
         const isPanningChanged =
             (this.props.isPanning !== isPanning);
+        const columnsChanged =
+            (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -327,7 +329,7 @@ export default React.createClass({
         //
 
         if (seriesChanged || timeScaleChanged ||
-            interpolateChanged || isPanningChanged) {
+            interpolateChanged || isPanningChanged || columnsChanged) {
             this.renderAreaChart(newSeries, timeScale,
                                  yScale, interpolate,
                                  isPanning);
