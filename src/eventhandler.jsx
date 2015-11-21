@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import ReactDOM from "react-dom";
 import {TimeRange} from "@esnet/pond";
 
 // http://stackoverflow.com/a/28857255
@@ -35,7 +36,7 @@ export default React.createClass({
 
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
-        const trackerRect = React.findDOMNode(this.refs.eventrect);
+        const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
         const offset = getElementOffset(trackerRect);
         const x = e.pageX - offset.left;
         const y = e.pageY - offset.top;
