@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
@@ -66,7 +66,7 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     renderNightTime() {
@@ -130,7 +130,7 @@ export default React.createClass({
                                             minDuration={1000 * 60 * 60}
                                             onTimeRangeChanged={this.handleTimeRangeChange}
                                             padding="0"
-                                            transition="300">
+                                            transition={300}>
                                 <ChartRow height="150" debug={false}>
                                     <Charts>
                                         <AreaChart axis="traffic" series={[[trafficBNLtoNEWYSeries],[trafficNEWYtoBNLSeries]]} />

@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 

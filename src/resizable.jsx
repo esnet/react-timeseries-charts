@@ -9,7 +9,6 @@
  */
 
 import React from "react";
-import cloneWithProps from "react-addons-clone-with-props";
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
@@ -22,7 +21,7 @@ export default React.createClass({
     },
 
     handleResize() {
-        this.setState({width: this.refs.container.getDOMNode().offsetWidth});
+        this.setState({width: this.refs.container.offsetWidth});
     },
 
     componentDidMount() {
@@ -38,7 +37,7 @@ export default React.createClass({
         const props = {width: this.state.width};
         const child = React.Children.only(this.props.children);
         const childElement = this.state.width ?
-            cloneWithProps(child, props) : null;
+            React.cloneElement(child, props) : null;
         return (
             <div ref="container">
                 {childElement}

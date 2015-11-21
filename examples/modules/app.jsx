@@ -11,8 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Router from "react-router";
-const {RouteHandler, Link} = Router;
+import { Link } from "react-router";
 
 require("../styles/app.css");
 
@@ -47,7 +46,7 @@ export default React.createClass({
                 <div className="col-md-2" style={sidebarStyle}>
                     <div className="docs-sidebar">
                         <ul className="docs-sidenav nav">
-                            <li><Link to="intro">Introduction</Link></li>
+                            <li><Link to="/">Introduction</Link></li>
 
                             <hr />
 
@@ -89,7 +88,7 @@ export default React.createClass({
                 </div>
 
                 <div className="col-md-10">
-                    <RouteHandler />
+                    {this.props.children}
                 </div>
 
               </div>

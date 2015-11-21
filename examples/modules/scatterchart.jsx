@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react/";
 import _ from "underscore";
 import Moment from "moment";
 import Markdown from "react-markdown";
@@ -24,8 +24,6 @@ import ChartContainer from "../../src/chartcontainer";
 import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
-import AreaChart from "../../src/areachart";
-import LineChart from "../../src/linechart";
 import ScatterChart from "../../src/scatterchart";
 import Resizable from "../../src/resizable";
 

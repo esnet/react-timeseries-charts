@@ -10,8 +10,9 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
-import Router from "react-router";
+import React from "react";
+import { render } from "react-dom";
+import { Router, Route, IndexRoute } from "react-router";
 
 import App from "./app.jsx";
 import Intro from "./intro.jsx";
@@ -30,28 +31,24 @@ import Weather from "./weather.jsx";
 import DDoS from "./ddos.jsx";
 import Table from "./table.jsx";
 
-const {Route, DefaultRoute} = Router;
-
-const routes = (
-    <Route path="/" handler={App}>
-        <DefaultRoute name="intro" handler={Intro} />
-        <Route name="chartcontainer" handler={ChartContainer} />
-        <Route name="chartrow" handler={ChartRow} />
-        <Route name="charts" handler={Charts} />
-        <Route name="yaxis" handler={YAxis} />
-        <Route name="areacharts" handler={AreaCharts} />
-        <Route name="stacked" handler={StackedAreaCharts} />
-        <Route name="linecharts" handler={LineCharts} />
-        <Route name="barcharts" handler={BarCharts} />
-        <Route name="scattercharts" handler={ScatterCharts} />
-        <Route name="baseline" handler={Baseline} />
-        <Route name="legends" handler={Legends} />
-        <Route name="weather" handler={Weather} />
-        <Route name="ddos" handler={DDoS} />
-        <Route name="table" handler={Table} />
-    </Route>
-);
-
-Router.run(routes, (Handler) => {
-    React.render(<Handler/>, document.getElementById("content"));
-});
+render((
+    <Router>
+        <Route path="/" component={App}>
+            <IndexRoute component={Intro}/>
+            <Route path="chartcontainer" component={ChartContainer} />
+            <Route path="chartrow" component={ChartRow} />
+            <Route path="charts" component={Charts} />
+            <Route path="yaxis" component={YAxis} />
+            <Route path="areacharts" component={AreaCharts} />
+            <Route path="stacked" component={StackedAreaCharts} />
+            <Route path="linecharts" component={LineCharts} />
+            <Route path="barcharts" component={BarCharts} />
+            <Route path="scattercharts" component={ScatterCharts} />
+            <Route path="baseline" component={Baseline} />
+            <Route path="legends" component={Legends} />
+            <Route path="weather" component={Weather} />
+            <Route path="ddos" component={DDoS} />
+            <Route path="table" component={Table} />
+        </Route>
+    </Router>
+), document.getElementById("content"));

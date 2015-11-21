@@ -9,7 +9,6 @@
  */
 
 import React from "react";
-import cloneWithProps from "react-addons-clone-with-props";
 import d3 from "d3";
 import _ from "underscore";
 import YAxis from "./yaxis";
@@ -44,8 +43,7 @@ export default React.createClass({
         const clipId = _.uniqueId("clip_");
         const clipPathURL = `url(#${clipId})`;
 
-        return {clipId: clipId,
-                clipPathURL: clipPathURL};
+        return {clipId, clipPathURL};
     },
 
     handleMouseMove(t) {
@@ -232,7 +230,7 @@ export default React.createClass({
                 }
 
                 // Cloned left axis
-                axis = cloneWithProps(yAxisMap[id], props);
+                axis = React.cloneElement(yAxisMap[id], props);
 
                 // Debug rect
                 if (this.props.debug) {
@@ -277,7 +275,7 @@ export default React.createClass({
                 }
 
                 // Cloned right axis
-                axis = cloneWithProps(yAxisMap[id], props);
+                axis = React.cloneElement(yAxisMap[id], props);
 
                 // Debug rect
                 if (this.props.debug) {
@@ -331,7 +329,7 @@ export default React.createClass({
                     };
 
                     chartList.push(
-                        cloneWithProps(chart, chartProps)
+                        React.cloneElement(chart, chartProps)
                     );
 
                     keyCount++;
@@ -357,7 +355,7 @@ export default React.createClass({
                     timeScale: this.props.timeScale,
                     yScale: yAxisScaleMap[child.props.axis]
                 };
-                brushList.push(cloneWithProps(child, brushProps));
+                brushList.push(React.cloneElement(child, brushProps));
             }
             keyCount++;
 

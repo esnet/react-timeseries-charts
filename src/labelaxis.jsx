@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
 import d3 from "d3";
 import _ from "underscore";
 
@@ -64,5 +64,5 @@ export default React.createClass({
                 </text>
             </g>
         );
-    },
+    }
 });

@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
@@ -110,7 +110,7 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
 
-                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition="300" enablePanZoom={true} >
+                            <ChartContainer timeRange={seriesList[0].range()} padding="0" transition={300} enablePanZoom={true} >
                                 <ChartRow height="350" debug={false}>
                                     <YAxis id="value" label="" labelOffset={0} max={max} width="60" type={axistype}/>
                                     <Charts>

@@ -24,7 +24,7 @@ export default React.createClass({
     getDefaultProps() {
         return {
             transition: 0,
-            enablePanZoom: false,
+            enablePanZoom: false
         };
     },
 
@@ -32,7 +32,7 @@ export default React.createClass({
         enablePanZoom: React.PropTypes.bool,
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
-            React.PropTypes.element]),
+            React.PropTypes.element])
     },
 
     handleTrackerChanged(t) {
@@ -190,11 +190,11 @@ export default React.createClass({
                 const rowKey = child.props.key ?
                     child.props.key : `chart-row-row-${i}`;
                 const props = {
+                    timeScale,
+                    leftAxisWidths,
+                    rightAxisWidths,
                     key: rowKey,
                     width: this.props.width,
-                    timeScale: timeScale,
-                    leftAxisWidths: leftAxisWidths,
-                    rightAxisWidths: rightAxisWidths,
                     padding: this.props.padding,
                     minTime: this.props.minTime,
                     maxTime: this.props.maxTime,
@@ -206,7 +206,7 @@ export default React.createClass({
                     onTrackerChanged: this.handleTrackerChanged
                 };
 
-                const row = React.addons.cloneWithProps(chartRow, props);
+                const row = React.cloneElement(chartRow, props);
 
                 chartRows.push(
                     <div key={`chart-row-div-${i}`} className="row">

@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import d3 from "d3";
 import "./yaxis.css";
 
@@ -31,7 +32,7 @@ export default React.createClass({
     displayName: "YAxis",
 
     propTypes: {
-        align: React.PropTypes.string,
+        align: React.PropTypes.string
     },
 
     getDefaultProps() {
@@ -95,7 +96,7 @@ export default React.createClass({
         };
 
         // Remove the old axis from under this DOM node
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
         // Add the new axis
         const x = align === "left" ? width - MARGIN : 0;
@@ -105,7 +106,7 @@ export default React.createClass({
             this.props.classed : "";
         const axisClass = `yaxis ${classed}`;
         const axisLabelClass = `yaxis-label ${classed}`;
-        this.axis = d3.select(this.getDOMNode()).append("g")
+        this.axis = d3.select(ReactDOM.findDOMNode(this)).append("g")
             .attr("transform", `translate(${x},0)`)
             .attr("class", axisClass)
             .call(axisGenerator)
@@ -152,7 +153,7 @@ export default React.createClass({
                 .orient(align);
         }
 
-        d3.select(this.getDOMNode()).select(".yaxis")
+        d3.select(ReactDOM.findDOMNode(this)).select(".yaxis")
             .transition()
             .duration(this.props.transition)
             .ease("sin-in-out")
@@ -181,6 +182,8 @@ export default React.createClass({
     },
 
     render() {
-        return <g/>;
-    },
+        return (
+            <g />
+        );
+    }
 });

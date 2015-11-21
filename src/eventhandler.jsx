@@ -9,7 +9,6 @@
  */
 
 import React from "react";
-import cloneWithProps from "react-addons-clone-with-props";
 import {TimeRange} from "@esnet/pond";
 import $ from "jquery";
 
@@ -178,7 +177,7 @@ export default React.createClass({
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
         const children = React.Children.map(this.props.children, (element) => {
-            return cloneWithProps(element, {isPanning: this.state.isPanning});
+            return React.cloneElement(element, {isPanning: this.state.isPanning});
         });
         return (
             <g pointerEvents="all"
@@ -188,11 +187,11 @@ export default React.createClass({
                onMouseOut={this.handleMouseOut}
                onMouseUp={this.handleMouseUp}>
                 <rect key="handler-hit-rect"
-                      style={{opacity: 0.0, cursor: cursor}}
+                      style={{opacity: 0.0, cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />
                 {children}
             </g>
         );
-    },
+    }
 });
