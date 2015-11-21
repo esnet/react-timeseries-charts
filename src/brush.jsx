@@ -41,7 +41,7 @@ export default React.createClass({
                 .on("brush", () => {
                     this.handleBrushed(d3brush);
                 });
-            this.setState({d3brush: d3brush});
+            this.setState({d3brush});
             d3brush.extent([beginTime,endTime]);
         } else {
             const currentExtent = d3brush.extent();

@@ -48,7 +48,7 @@ function getLayers(columns, series) {
                 });
             }
             return {values: points};
-        }),
+        })
     };
 }
 
@@ -76,7 +76,7 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
         .y1(d => yScale(d.y0 - d.value))
         .interpolate(interpolate);
 
-    return {upArea: upArea, downArea: downArea};
+    return {upArea, downArea};
 }
 
 /**
@@ -162,7 +162,7 @@ export default React.createClass({
         /**
          * The d3 interpolation method
          */
-        interpolate: React.PropTypes.string,
+        interpolate: React.PropTypes.string
     },
 
     getDefaultProps() {
@@ -176,7 +176,7 @@ export default React.createClass({
             columns: {
                 up: ["value"],
                 down: []
-            },
+            }
         };
     },
 
@@ -187,7 +187,8 @@ export default React.createClass({
         return p[0] > 0 && p[0] < this.props.width;
     },
 
-    renderAreaChart(series, timeScale, yScale, interpolate, isPanning) {
+    renderAreaChart(series, timeScale, yScale,
+                    interpolate, isPanning, columns) {
         if (!yScale) {
             return null;
         }
@@ -201,7 +202,7 @@ export default React.createClass({
         const {upArea, downArea} = getAreaGenerators(interpolate,
                                                      timeScale,
                                                      yScale);
-        const {upLayers, downLayers} = getLayers(this.props.columns,
+        const {upLayers, downLayers} = getLayers(columns,
                                                  croppedSeries);
 
         const {stackUp, stackDown} = getAreaStackers();
@@ -257,14 +258,14 @@ export default React.createClass({
 
     },
 
-    updateAreaChart(series, timeScale, yScale, interpolate) {
+    updateAreaChart(series, timeScale, yScale, interpolate, columns) {
         const croppedSeries = getCroppedSeries(timeScale,
                                                this.props.width,
                                                series);
         const {upArea, downArea} = getAreaGenerators(interpolate,
                                                      timeScale,
                                                      yScale);
-        const {upLayers, downLayers} = getLayers(this.props.columns,
+        const {upLayers, downLayers} = getLayers(columns,
                                                  croppedSeries);
         const {stackUp, stackDown} = getAreaStackers();
 
@@ -290,7 +291,8 @@ export default React.createClass({
 
     componentDidMount() {
         this.renderAreaChart(this.props.series, this.props.timeScale,
-                             this.props.yScale, this.props.interpolate);
+                             this.props.yScale, this.props.interpolate,
+                             this.props.isPanning, this.props.columns);
     },
 
     componentWillReceiveProps(nextProps) {
@@ -300,8 +302,8 @@ export default React.createClass({
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const interpolate = nextProps.interpolate;
-
         const isPanning = nextProps.isPanning;
+        const columns = nextProps.columns;
 
         // What changed?
         const timeScaleChanged =
@@ -312,6 +314,8 @@ export default React.createClass({
             (this.props.interpolate !== interpolate);
         const isPanningChanged =
             (this.props.isPanning !== isPanning);
+        const columnsChanged =
+            (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -327,13 +331,13 @@ export default React.createClass({
         //
 
         if (seriesChanged || timeScaleChanged ||
-            interpolateChanged || isPanningChanged) {
+            interpolateChanged || isPanningChanged || columnsChanged) {
             this.renderAreaChart(newSeries, timeScale,
                                  yScale, interpolate,
-                                 isPanning);
+                                 isPanning, columns);
         } else if (yAxisScaleChanged) {
             this.updateAreaChart(newSeries, timeScale,
-                                 yScale, interpolate);
+                                 yScale, interpolate, columns);
         }
     },
 

@@ -20,7 +20,7 @@ export default React.createClass({
 
     propTypes: {
         timerange: React.PropTypes.instanceOf(TimeRange).isRequired,
-        style: React.PropTypes.object,
+        style: React.PropTypes.object
     },
 
     getDefaultProps() {

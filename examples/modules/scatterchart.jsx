@@ -24,8 +24,6 @@ import ChartContainer from "../../src/chartcontainer";
 import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
-import AreaChart from "../../src/areachart";
-import LineChart from "../../src/linechart";
 import ScatterChart from "../../src/scatterchart";
 import Resizable from "../../src/resizable";
 
@@ -55,7 +53,7 @@ _.each(weatherJSON, readings => {
 const series = new TimeSeries({
     name: "Gust",
     columns: ["time", "value", "radius"],
-    points: points
+    points
 });
 
 
@@ -69,7 +67,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
+            markdown: text
         };
     },
 

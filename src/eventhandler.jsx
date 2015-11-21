@@ -17,10 +17,7 @@ function getElementOffset(element) {
     const box = element.getBoundingClientRect();
     const top = box.top + window.pageYOffset - de.clientTop;
     const left = box.left + window.pageXOffset - de.clientLeft;
-    return {
-        top: top,
-        left: left
-    };
+    return {top, left};
 }
 
 export default React.createClass({
@@ -202,11 +199,11 @@ export default React.createClass({
                onMouseUp={this.handleMouseUp}>
                 <rect key="handler-hit-rect"
                       ref="eventrect"
-                      style={{opacity: 0.0, cursor: cursor}}
+                      style={{opacity: 0.0, cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />
                 {children}
             </g>
         );
-    },
+    }
 });

@@ -32,7 +32,7 @@ export default React.createClass({
      */
     generatePath(points) {
         const fn = this.props.smooth ? Bezier : Polygon;
-        return fn({points: points, closed: false}).path.print();
+        return fn({points, closed: false}).path.print();
     },
 
     /**

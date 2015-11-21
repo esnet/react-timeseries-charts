@@ -87,7 +87,7 @@ const requestsSeries = new TimeSeries({
 
 const scheme = {
     connections: "#2ca02c",
-    requests: "#9467bd",
+    requests: "#9467bd"
 };
 
 const connectionsStyle = {

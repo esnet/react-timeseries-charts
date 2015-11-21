@@ -44,8 +44,7 @@ export default React.createClass({
         const clipId = _.uniqueId("clip_");
         const clipPathURL = `url(#${clipId})`;
 
-        return {clipId: clipId,
-                clipPathURL: clipPathURL};
+        return {clipId, clipPathURL};
     },
 
     handleMouseMove(t) {
