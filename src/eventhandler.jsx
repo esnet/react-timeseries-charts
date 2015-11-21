@@ -10,7 +10,15 @@
 
 import React from "react";
 import {TimeRange} from "@esnet/pond";
-import $ from "jquery";
+
+// http://stackoverflow.com/a/28857255
+function getElementOffset(element) {
+    const de = document.documentElement;
+    const box = element.getBoundingClientRect();
+    const top = box.top + window.pageYOffset - de.clientTop;
+    const left = box.left + window.pageXOffset - de.clientLeft;
+    return {top, left};
+}
 
 export default React.createClass({
 
@@ -25,10 +33,12 @@ export default React.createClass({
         };
     },
 
+    // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
-        const target = e.currentTarget;
-        const x = e.pageX - $(target).offset().left;
-        const y = e.pageY - $(target).offset().top;
+        const trackerRect = React.findDOMNode(this.refs.eventrect);
+        const offset = getElementOffset(trackerRect);
+        const x = e.pageX - offset.left;
+        const y = e.pageY - offset.top;
         return [Math.round(x), Math.round(y)];
     },
 
@@ -122,6 +132,7 @@ export default React.createClass({
 
     handleMouseOut(e) {
         e.preventDefault();
+
         if (this.props.onMouseOut) {
             this.props.onMouseOut();
         }
@@ -163,9 +174,8 @@ export default React.createClass({
                 this.props.onZoom(newTimeRange);
             }
         } else if (this.props.onMouseMove) {
-            const target = e.currentTarget;
-            const xx = e.pageX - $(target).offset().left;
-            const time = this.props.scale.invert(xx);
+            const trackerPosition = this.getOffsetMousePosition(e)[0];
+            const time = this.props.scale.invert(trackerPosition);
 
             // onMouseMove callback
             if (this.props.onMouseMove) {
@@ -187,6 +197,7 @@ export default React.createClass({
                onMouseOut={this.handleMouseOut}
                onMouseUp={this.handleMouseUp}>
                 <rect key="handler-hit-rect"
+                      ref="eventrect"
                       style={{opacity: 0.0, cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />

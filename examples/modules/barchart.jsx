@@ -200,16 +200,16 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     handleSelectionChanged(key, value, context) {
         this.setState({
             selection: key,
-            value: value,
+            value,
             series: context.series,
             index: context.index,
-            column: context.column,
+            column: context.column
         });
     },
 

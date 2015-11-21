@@ -4,7 +4,7 @@
 
 This library contains a set of modular charting components used for building flexible interactive charts. It was built for React from the ground up, specifically to visualize timeseries data and network traffic data in particular. Low level elements are constructed using d3, while higher level composability is provided by React. Charts can be stacked as rows, overlayed on top of each other, or any combination, all in a highly declarative manner.
 
-The library is used thoughout the public facing [ESnet Portal](http://my.es.net).
+The library is used throughout the public facing [ESnet Portal](http://my.es.net).
 
 Current features of the library include:
 
@@ -23,7 +23,7 @@ Please browse the examples for a feel for the library, or read on to get started
 Getting started
 ---------------
 
-The charts library is intended to be used with npm and the built into your project with something like webpack.
+The charts library is intended to be used with [npm](https://www.npmjs.com/) and the built into your project with something like [Webpack](https://webpack.github.io/). In addition, it currently assumes that [Bootstrap](http://getbootstrap.com/) is present on the page.
 
     npm install @esnet/react-timeseries-charts --save
 

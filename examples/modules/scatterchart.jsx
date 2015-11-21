@@ -53,7 +53,7 @@ _.each(weatherJSON, readings => {
 const series = new TimeSeries({
     name: "Gust",
     columns: ["time", "value", "radius"],
-    points: points
+    points
 });
 
 
@@ -67,7 +67,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
+            markdown: text
         };
     },
 

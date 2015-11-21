@@ -158,7 +158,7 @@ const columns = [
 
 const measurementColumns = [
     {key: "time", label: "Timestamp"},
-    {key: "value", label: "Measurement", format: percentFormat},
+    {key: "value", label: "Measurement", format: percentFormat}
 ];
 
 function renderPercentAsColor(event, column) {
@@ -204,7 +204,7 @@ export default React.createClass({
 
     setDefaultProps() {
         return {
-            indexFormat: null,
+            indexFormat: null
         };
     },
 
