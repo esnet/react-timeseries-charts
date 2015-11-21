@@ -31,7 +31,7 @@ export default React.createClass({
     displayName: "YAxis",
 
     propTypes: {
-        align: React.PropTypes.string,
+        align: React.PropTypes.string
     },
 
     getDefaultProps() {
@@ -182,5 +182,5 @@ export default React.createClass({
 
     render() {
         return <g/>;
-    },
+    }
 });

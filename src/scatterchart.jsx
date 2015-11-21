@@ -47,7 +47,7 @@ export default React.createClass({
         const style = {
             fill: this.props.style.color || "steelblue",
             fillOpacity: this.props.style.opacity || 1.0,
-            stroke: "none",
+            stroke: "none"
         };
 
         d3.select(this.getDOMNode()).selectAll("*").remove();

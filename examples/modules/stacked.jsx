@@ -71,8 +71,8 @@ for (let i = 0; i < numPoints; i++) {
 
 const series = new TimeSeries({
     name: "Stacked",
-    columns: columns,
-    points: points
+    columns,
+    points
 });
 
 const countriesList = _.map(rawData, d => {

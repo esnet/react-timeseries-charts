@@ -18,7 +18,7 @@ export default React.createClass({
         style: React.PropTypes.object,
         position: React.PropTypes.instanceOf(Date),
         height: React.PropTypes.number,
-        timeScale: React.PropTypes.func.isRequired,
+        timeScale: React.PropTypes.func.isRequired
     },
 
     getDefaultProps() {
@@ -37,5 +37,5 @@ export default React.createClass({
             );
         }
         return null;
-    },
+    }
 });

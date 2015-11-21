@@ -20,7 +20,7 @@ export default React.createClass({
         return {
             style: {},
             labelStyle: {},
-            type: "swatch", // or "line" or "dot"
+            type: "swatch" // or "line" or "dot"
         };
     },
 

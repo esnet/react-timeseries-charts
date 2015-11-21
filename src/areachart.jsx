@@ -48,7 +48,7 @@ function getLayers(columns, series) {
                 });
             }
             return {values: points};
-        }),
+        })
     };
 }
 
@@ -76,7 +76,7 @@ function getAreaGenerators(interpolate, timeScale, yScale) {
         .y1(d => yScale(d.y0 - d.value))
         .interpolate(interpolate);
 
-    return {upArea: upArea, downArea: downArea};
+    return {upArea, downArea};
 }
 
 /**
@@ -162,7 +162,7 @@ export default React.createClass({
         /**
          * The d3 interpolation method
          */
-        interpolate: React.PropTypes.string,
+        interpolate: React.PropTypes.string
     },
 
     getDefaultProps() {
@@ -176,7 +176,7 @@ export default React.createClass({
             columns: {
                 up: ["value"],
                 down: []
-            },
+            }
         };
     },
 
