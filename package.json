@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-  "name": "@esnet/react-timeseries-charts",
-  "version": "0.3.3",
-=======
   "name": "react-timeseries-charts",
   "version": "0.4.0",
->>>>>>> b1cfd5ce36f7ed14cae86f10179d287519307708
   "description": "Declarative timeseries charts",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
@@ -22,7 +17,18 @@
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
-    "start-website": "webpack-dev-server  --config webpack.examples.config.js"
+    "start-website": "webpack-dev-server  --config webpack.examples.config.js",
+    "deploy-website": "gh-pages-deploy"
+  },
+  "pre-commit": [
+    "lint",
+    "build"
+  ],
+  "gh-pages-deploy": {
+    "staticpath": "website",
+    "prep": [
+      "build-website"
+    ]
   },
   "license": "BSD-3-Clause-LBNL",
   "dependencies": {
@@ -60,7 +66,8 @@
     "react-router": "^1.0.0",
     "style-loader": "^0.8.0",
     "url-loader": "^0.5.5",
-    "webpack-dev-server": "^1.6.5"
+    "webpack-dev-server": "^1.6.5",
+    "gh-pages-deploy": "^0.3.0"
   },
   "keywords": [
     "d3",

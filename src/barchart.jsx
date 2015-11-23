@@ -8,13 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-<<<<<<< HEAD
 import React from "react";
-import {TimeSeries} from "@esnet/pond";
-=======
-import React from "react/addons";
 import { TimeSeries } from "pondjs";
->>>>>>> b1cfd5ce36f7ed14cae86f10179d287519307708
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.

@@ -8,14 +8,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-<<<<<<< HEAD
 import React from "react";
 import ReactDOM from "react-dom";
-import {TimeRange} from "@esnet/pond";
-=======
-import React from "react/addons";
 import { TimeRange } from "pondjs";
->>>>>>> b1cfd5ce36f7ed14cae86f10179d287519307708
 
 // http://stackoverflow.com/a/28857255
 function getElementOffset(element) {
