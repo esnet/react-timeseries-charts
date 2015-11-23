@@ -13,7 +13,7 @@ import ReactDOM from "react-dom";
 import d3 from "d3";
 import _ from "underscore";
 
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 import "./scatterchart.css";
 

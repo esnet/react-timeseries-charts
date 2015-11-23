@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
   "name": "@esnet/react-timeseries-charts",
   "version": "0.3.3",
+=======
+  "name": "react-timeseries-charts",
+  "version": "0.4.0",
+>>>>>>> b1cfd5ce36f7ed14cae86f10179d287519307708
   "description": "Declarative timeseries charts",
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
@@ -21,7 +26,7 @@
   },
   "license": "BSD-3-Clause-LBNL",
   "dependencies": {
-    "@esnet/pond": "^0.2.x",
+    "pondjs": "^0.3.x",
     "babel-runtime": "~5.8.3",
     "d3": "^3.5.5",
     "invariant": "^2.1.1",
@@ -58,7 +63,8 @@
     "webpack-dev-server": "^1.6.5"
   },
   "keywords": [
-    "d3 charts",
+    "d3",
+    "charts",
     "react",
     "timeseries"
   ]

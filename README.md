@@ -25,11 +25,11 @@ Getting started
 
 The charts library is intended to be used with [npm](https://www.npmjs.com/) and the built into your project with something like [Webpack](https://webpack.github.io/). In addition, it currently assumes that [Bootstrap](http://getbootstrap.com/) is present on the page.
 
-    npm install @esnet/react-timeseries-charts --save
+    npm install react-timeseries-charts --save
 
 Once installed, you can import the necessary components from the library:
 
-    import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "@esnet/react-timeseries-charts";
+    import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
 
 Then we construct our chart in the `render()` function of our component. For a simple example we create a chart with two line charts on it, specified in JSX:
 
@@ -57,7 +57,7 @@ Data format
 
 This charting library is built on the ESnet timeseries library called [Pond](http://software.es.net/pond). Pond was created to provide a common representation for things like timeseries, timeranges, events and other structures. For the purpose of using the charting library, you need to create a TimeSeries() object as your series, which will be rendered by the chart code. For example:
 
-    import {TimeSeries, TimeRange} from "pond";
+    import {TimeSeries, TimeRange} from "pondjs";
 
     const series1 = new TimeSeries({
         "name": "my series",
