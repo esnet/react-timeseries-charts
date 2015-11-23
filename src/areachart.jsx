@@ -11,7 +11,9 @@
 import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
-import {TimeSeries} from "@esnet/pond";
+
+//Pond
+import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
