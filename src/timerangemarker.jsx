@@ -9,7 +9,7 @@
  */
 
 import React from "react/addons";
-import {TimeRange} from "@esnet/pond";
+import { TimeRange } from "pondjs";
 
 /**
  * Renders a band with extents defined by the supplied TimeRange.

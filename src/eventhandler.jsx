@@ -9,7 +9,7 @@
  */
 
 import React from "react/addons";
-import {TimeRange} from "@esnet/pond";
+import { TimeRange } from "pondjs";
 
 // http://stackoverflow.com/a/28857255
 function getElementOffset(element) {

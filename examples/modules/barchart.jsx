@@ -17,7 +17,7 @@ import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import {TimeSeries} from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../src/chartcontainer";
@@ -41,7 +41,7 @@ error (seen clearly in Oct 10th).
 
 To begin with we converted the original data into Pond's TimeSeries data structure as \`octoberTraffic\`:
 
-    import {TimeSeries} from "@esnet/pond";
+    import { TimeSeries } from "pondjs";
 
     const octoberTraffic = new TimeSeries({
         name: "Traffic",

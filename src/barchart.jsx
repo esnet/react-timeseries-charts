@@ -9,7 +9,7 @@
  */
 
 import React from "react/addons";
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.

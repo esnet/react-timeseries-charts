@@ -12,7 +12,7 @@ import React from "react/addons";
 import d3 from "d3";
 import _ from "underscore";
 
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 import "./scatterchart.css";
 
