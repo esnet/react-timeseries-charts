@@ -57,7 +57,7 @@ Data format
 
 This charting library is built on the ESnet timeseries library called [Pond](http://software.es.net/pond). Pond was created to provide a common representation for things like timeseries, timeranges, events and other structures. For the purpose of using the charting library, you need to create a TimeSeries() object as your series, which will be rendered by the chart code. For example:
 
-    import {TimeSeries, TimeRange} from "pond";
+    import {TimeSeries, TimeRange} from "pondjs";
 
     const series1 = new TimeSeries({
         "name": "my series",
