@@ -23,7 +23,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
+            markdown: text
         };
     },
 

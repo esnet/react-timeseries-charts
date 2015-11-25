@@ -10,13 +10,13 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import TimeSeriesTable from "../../src/table";
@@ -158,7 +158,7 @@ const columns = [
 
 const measurementColumns = [
     {key: "time", label: "Timestamp"},
-    {key: "value", label: "Measurement", format: percentFormat},
+    {key: "value", label: "Measurement", format: percentFormat}
 ];
 
 function renderPercentAsColor(event, column) {
@@ -204,7 +204,7 @@ export default React.createClass({
 
     setDefaultProps() {
         return {
-            indexFormat: null,
+            indexFormat: null
         };
     },
 
@@ -284,7 +284,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown text={`Or in this example the colors of the availability
+                        <Markdown source={`Or in this example the colors of the availability
 numbers are controlled based on the values:`} />
                     </div>
                 </div>

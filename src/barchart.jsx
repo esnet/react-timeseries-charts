@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
-import {TimeSeries} from "@esnet/pond";
+import React from "react";
+import { TimeSeries } from "pondjs";
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.
@@ -28,7 +28,7 @@ export default React.createClass({
         columns: React.PropTypes.array,
         style: React.PropTypes.object,
         size: React.PropTypes.number,
-        onSelectionChange: React.PropTypes.func,
+        onSelectionChange: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -64,7 +64,7 @@ export default React.createClass({
      */
     handleClick(e, key, value, series, column, index) {
         e.stopPropagation();
-        const context = {series: series, column: column, index: index};
+        const context = {series, column, index};
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(key, value, context);
         }

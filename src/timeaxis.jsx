@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import d3 from "d3";
 
 import "./timeaxis.css";
@@ -52,9 +53,9 @@ export default React.createClass({
         }
 
         // Remove the old axis from under this DOM node
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
-        const axisGroup = d3.select(this.getDOMNode()).append("g")
+        const axisGroup = d3.select(ReactDOM.findDOMNode(this)).append("g")
             .attr("class", "x axis")
             .call(axis.tickSize(10));
 
@@ -82,6 +83,5 @@ export default React.createClass({
 
     render() {
         return <g />;
-    },
-
+    }
 });

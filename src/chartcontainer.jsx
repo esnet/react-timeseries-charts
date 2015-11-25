@@ -8,11 +8,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
 import d3 from "d3";
 import _ from "underscore";
-import invariant from "react/lib/invariant";
-import TimeAxis from "./timeaxis"; //eslint-disable-line
+import invariant from "invariant";
+import TimeAxis from "./timeaxis";
 import ChartRow from "./chartrow";
 import Charts from "./charts";
 import Brush from "./brush";
@@ -24,7 +24,7 @@ export default React.createClass({
     getDefaultProps() {
         return {
             transition: 0,
-            enablePanZoom: false,
+            enablePanZoom: false
         };
     },
 
@@ -32,7 +32,7 @@ export default React.createClass({
         enablePanZoom: React.PropTypes.bool,
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
-            React.PropTypes.element]),
+            React.PropTypes.element])
     },
 
     handleTrackerChanged(t) {
@@ -104,7 +104,7 @@ export default React.createClass({
                     let msg = "ChartRow should have one and only one ";
                     msg += "<Charts> tag within it";
                     invariant(false, msg,
-                    childRow.constructor.name
+                        childRow.constructor.name
                     );
                 }
 
@@ -190,11 +190,11 @@ export default React.createClass({
                 const rowKey = child.props.key ?
                     child.props.key : `chart-row-row-${i}`;
                 const props = {
+                    timeScale,
+                    leftAxisWidths,
+                    rightAxisWidths,
                     key: rowKey,
                     width: this.props.width,
-                    timeScale: timeScale,
-                    leftAxisWidths: leftAxisWidths,
-                    rightAxisWidths: rightAxisWidths,
                     padding: this.props.padding,
                     minTime: this.props.minTime,
                     maxTime: this.props.maxTime,
@@ -206,7 +206,7 @@ export default React.createClass({
                     onTrackerChanged: this.handleTrackerChanged
                 };
 
-                const row = React.addons.cloneWithProps(chartRow, props);
+                const row = React.cloneElement(chartRow, props);
 
                 chartRows.push(
                     <div key={`chart-row-div-${i}`} className="row">

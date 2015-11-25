@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import merge from "merge";
 
@@ -20,7 +20,7 @@ export default React.createClass({
         return {
             style: {},
             labelStyle: {},
-            type: "swatch", // or "line" or "dot"
+            type: "swatch" // or "line" or "dot"
         };
     },
 

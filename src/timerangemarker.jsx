@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
-import {TimeRange} from "@esnet/pond";
+import React from "react";
+import { TimeRange } from "pondjs";
 
 /**
  * Renders a band with extents defined by the supplied TimeRange.
@@ -20,7 +20,7 @@ export default React.createClass({
 
     propTypes: {
         timerange: React.PropTypes.instanceOf(TimeRange).isRequired,
-        style: React.PropTypes.object,
+        style: React.PropTypes.object
     },
 
     getDefaultProps() {

@@ -10,14 +10,14 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../src/chartcontainer";

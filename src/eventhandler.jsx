@@ -8,8 +8,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
-import {TimeRange} from "@esnet/pond";
+import React from "react";
+import ReactDOM from "react-dom";
+import { TimeRange } from "pondjs";
 
 // http://stackoverflow.com/a/28857255
 function getElementOffset(element) {
@@ -17,10 +18,7 @@ function getElementOffset(element) {
     const box = element.getBoundingClientRect();
     const top = box.top + window.pageYOffset - de.clientTop;
     const left = box.left + window.pageXOffset - de.clientLeft;
-    return {
-        top: top,
-        left: left
-    };
+    return {top, left};
 }
 
 export default React.createClass({
@@ -38,7 +36,7 @@ export default React.createClass({
 
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
-        const trackerRect = React.findDOMNode(this.refs.eventrect);
+        const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
         const offset = getElementOffset(trackerRect);
         const x = e.pageX - offset.left;
         const y = e.pageY - offset.top;
@@ -190,8 +188,7 @@ export default React.createClass({
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
         const children = React.Children.map(this.props.children, (element) => {
-            return React.addons.cloneWithProps(element,
-                {isPanning: this.state.isPanning});
+            return React.cloneElement(element, {isPanning: this.state.isPanning});
         });
         return (
             <g pointerEvents="all"
@@ -202,11 +199,11 @@ export default React.createClass({
                onMouseUp={this.handleMouseUp}>
                 <rect key="handler-hit-rect"
                       ref="eventrect"
-                      style={{opacity: 0.0, cursor: cursor}}
+                      style={{opacity: 0.0, cursor}}
                       x={0} y={0}
                       width={this.props.width} height={this.props.height} />
                 {children}
             </g>
         );
-    },
+    }
 });

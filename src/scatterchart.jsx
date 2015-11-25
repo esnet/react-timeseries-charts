@@ -8,11 +8,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import d3 from "d3";
 import _ from "underscore";
 
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 import "./scatterchart.css";
 
@@ -47,12 +48,12 @@ export default React.createClass({
         const style = {
             fill: this.props.style.color || "steelblue",
             fillOpacity: this.props.style.opacity || 1.0,
-            stroke: "none",
+            stroke: "none"
         };
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
-        this.scatter = d3.select(this.getDOMNode()).selectAll("dot")
+        this.scatter = d3.select(ReactDOM.findDOMNode(this)).selectAll("dot")
                 .data(data)
             .enter().append("circle")
                 .style(style)

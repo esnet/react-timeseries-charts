@@ -10,13 +10,13 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import Legend from "../../src/legend";
@@ -71,8 +71,8 @@ for (let i = 0; i < numPoints; i++) {
 
 const series = new TimeSeries({
     name: "Stacked",
-    columns: columns,
-    points: points
+    columns,
+    points
 });
 
 const countriesList = _.map(rawData, d => {

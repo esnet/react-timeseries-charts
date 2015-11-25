@@ -10,14 +10,14 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import {TimeSeries} from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../src/chartcontainer";
@@ -41,7 +41,7 @@ error (seen clearly in Oct 10th).
 
 To begin with we converted the original data into Pond's TimeSeries data structure as \`octoberTraffic\`:
 
-    import {TimeSeries} from "@esnet/pond";
+    import { TimeSeries } from "pondjs";
 
     const octoberTraffic = new TimeSeries({
         name: "Traffic",
@@ -200,16 +200,16 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     handleSelectionChanged(key, value, context) {
         this.setState({
             selection: key,
-            value: value,
+            value,
             series: context.series,
             index: context.index,
-            column: context.column,
+            column: context.column
         });
     },
 

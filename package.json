@@ -1,13 +1,17 @@
 {
-  "name": "@esnet/react-timeseries-charts",
-  "version": "0.4.0",
+  "name": "react-timeseries-charts",
+  "version": "0.5.1",
   "description": "Declarative timeseries charts",
+  "keywords": [
+    "d3",
+    "charts",
+    "react",
+    "timeseries"
+  ],
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com:esnet/react-timeseries-charts.git"
-  },
+  "homepage": "https://software.es.net/react-timeseries-charts",
+  "repository": "esnet/react-timeseries-charts",
   "bugs": {
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
@@ -17,44 +21,50 @@
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
-    "build-website": "webpack --config webpack.examples.config.js",
-    "start-website": "webpack-dev-server  --config webpack.examples.config.js"
+    "start-website": "webpack-dev-server  --config webpack.examples.config.js",
+    "build-website": "webpack --config webpack.examples.config.js"
   },
+  "pre-commit": [
+    "lint",
+    "build"
+  ],
   "license": "BSD-3-Clause-LBNL",
   "dependencies": {
-    "@esnet/pond": "^0.2.x",
+    "pondjs": "^0.3.x",
     "babel-runtime": "~5.8.3",
     "d3": "^3.5.5",
+    "invariant": "^2.1.1",
     "merge": "^1.2.0",
     "moment": "^2.8.4",
     "paths-js": "^0.3.4",
     "underscore": "^1.7.0"
   },
   "peerDependencies": {
-    "react": "0.13.x"
+    "react": "^0.14.3"
   },
   "devDependencies": {
-    "react": "^0.13.x",
-    "react-router": "^0.13.x",
-    "react-markdown": "^1.0.3",
-    "eslint": "^1.5.0",
-    "eslint-plugin-react": "^3.4.2",
-    "bundle-loader": "^0.5.0",
-    "url-loader": "^0.5.5",
-    "file-loader": "^0.7.2",
-    "json-loader": "^0.5.1",
-    "style-loader": "^0.8.0",
-    "raw-loader": "^0.5.1",
-    "css-loader": "^0.9.0",
     "babel": "^5.8.3",
-    "babel-loader": "^5.0.0",
     "babel-core": "^5.1.13",
-    "babel-eslint": "4.0.5",
+    "babel-eslint": "^4.1.5",
+    "babel-loader": "^5.0.0",
+    "bundle-loader": "^0.5.0",
+    "css-loader": "^0.9.0",
+    "eslint": "^1.10.0",
+    "eslint-config-esnet": "^0.1.0",
+    "eslint-plugin-babel": "^2.1.1",
+    "eslint-plugin-react": "^3.9.0",
+    "file-loader": "^0.7.2",
+    "history": "^1.13.1",
+    "json-loader": "^0.5.1",
+    "raw-loader": "^0.5.1",
+    "react": "^0.14.3",
+    "react-addons-clone-with-props": "^0.14.0",
+    "react-dom": "^0.14.3",
+    "react-markdown": "^1.0.5",
+    "react-router": "^1.0.0",
+    "scroll-behavior": "^0.3.0",
+    "style-loader": "^0.8.0",
+    "url-loader": "^0.5.5",
     "webpack-dev-server": "^1.6.5"
-  },
-  "keywords": [
-    "d3 charts",
-    "react",
-    "timeseries"
-  ]
+  }
 }

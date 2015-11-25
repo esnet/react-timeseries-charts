@@ -8,12 +8,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import d3 from "d3";
 import Moment from "moment";
 
-import {TimeSeries, IndexedEvent} from "@esnet/pond";
+import { TimeSeries, IndexedEvent } from "pondjs";
 
 export default React.createClass({
 

@@ -10,13 +10,13 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "@esnet/pond";
+import {TimeSeries} from "pondjs";
 
 // Imports from the charts library
 import Legend from "../../src/legend";
@@ -67,7 +67,7 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {
