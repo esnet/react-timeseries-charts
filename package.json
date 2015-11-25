@@ -2,12 +2,16 @@
   "name": "react-timeseries-charts",
   "version": "0.5.0",
   "description": "Declarative timeseries charts",
+  "keywords": [
+    "d3",
+    "charts",
+    "react",
+    "timeseries"
+  ],
   "main": "index.js",
   "author": "ESnet Tools Team <tools@es.net>",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com:esnet/react-timeseries-charts.git"
-  },
+  "homepage": "https://software.es.net/react-timeseries-charts",
+  "repository": "esnet/react-timeseries-charts",
   "bugs": {
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
@@ -18,19 +22,12 @@
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
     "start-website": "webpack-dev-server  --config webpack.examples.config.js",
-    "build-website": "webpack --config webpack.examples.config.js",
-    "deploy-website": "gh-pages-deploy"
+    "build-website": "webpack --config webpack.examples.config.js"
   },
   "pre-commit": [
     "lint",
     "build"
   ],
-  "gh-pages-deploy": {
-    "staticpath": "website",
-    "prep": [
-      "build-website"
-    ]
-  },
   "license": "BSD-3-Clause-LBNL",
   "dependencies": {
     "pondjs": "^0.3.x",
@@ -57,7 +54,6 @@
     "eslint-plugin-babel": "^2.1.1",
     "eslint-plugin-react": "^3.9.0",
     "file-loader": "^0.7.2",
-    "gh-pages-deploy": "^0.3.0",
     "history": "^1.13.1",
     "json-loader": "^0.5.1",
     "raw-loader": "^0.5.1",
@@ -70,11 +66,5 @@
     "style-loader": "^0.8.0",
     "url-loader": "^0.5.5",
     "webpack-dev-server": "^1.6.5"
-  },
-  "keywords": [
-    "d3",
-    "charts",
-    "react",
-    "timeseries"
-  ]
+  }
 }
