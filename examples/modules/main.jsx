@@ -31,7 +31,7 @@ import Weather from "./weather.jsx";
 import DDoS from "./ddos.jsx";
 import Table from "./table.jsx";
 
-import createHistory from "history/lib/createBrowserHistory";
+import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
 const history = useScroll(createHistory)();
 
