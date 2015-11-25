@@ -18,6 +18,7 @@
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
     "start-website": "webpack-dev-server  --config webpack.examples.config.js",
+    "build-website": "webpack --config webpack.examples.config.js",
     "deploy-website": "gh-pages-deploy"
   },
   "pre-commit": [
@@ -36,7 +37,6 @@
     "babel-runtime": "~5.8.3",
     "d3": "^3.5.5",
     "invariant": "^2.1.1",
-    "jquery": "^2.1.4",
     "merge": "^1.2.0",
     "moment": "^2.8.4",
     "paths-js": "^0.3.4",
@@ -53,10 +53,12 @@
     "bundle-loader": "^0.5.0",
     "css-loader": "^0.9.0",
     "eslint": "^1.10.0",
-    "eslint-plugin-react": "^3.9.0",
-    "eslint-plugin-babel": "^2.1.1",
     "eslint-config-esnet": "^0.1.0",
+    "eslint-plugin-babel": "^2.1.1",
+    "eslint-plugin-react": "^3.9.0",
     "file-loader": "^0.7.2",
+    "gh-pages-deploy": "^0.3.0",
+    "history": "^1.13.1",
     "json-loader": "^0.5.1",
     "raw-loader": "^0.5.1",
     "react": "^0.14.3",
@@ -64,10 +66,10 @@
     "react-dom": "^0.14.3",
     "react-markdown": "^1.0.5",
     "react-router": "^1.0.0",
+    "scroll-behavior": "^0.3.0",
     "style-loader": "^0.8.0",
     "url-loader": "^0.5.5",
-    "webpack-dev-server": "^1.6.5",
-    "gh-pages-deploy": "^0.3.0"
+    "webpack-dev-server": "^1.6.5"
   },
   "keywords": [
     "d3",

@@ -31,8 +31,12 @@ import Weather from "./weather.jsx";
 import DDoS from "./ddos.jsx";
 import Table from "./table.jsx";
 
+import createHistory from "history/lib/createBrowserHistory";
+import useScroll from "scroll-behavior/lib/useStandardScroll";
+const history = useScroll(createHistory)();
+
 render((
-    <Router>
+    <Router history={history}>
         <Route path="/" component={App}>
             <IndexRoute component={Intro}/>
             <Route path="chartcontainer" component={ChartContainer} />
