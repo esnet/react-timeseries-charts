@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
@@ -67,7 +67,7 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {

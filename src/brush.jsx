@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import d3 from "d3";
 
 function scaleAsString(scale) {
@@ -57,9 +58,9 @@ export default React.createClass({
                 return;
             }
         }
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
-        d3.select(this.getDOMNode())
+        d3.select(ReactDOM.findDOMNode(this))
             .append("g")
                 .attr("class","x brush")
                 .call(d3brush)

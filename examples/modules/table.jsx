@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
@@ -284,7 +284,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown text={`Or in this example the colors of the availability
+                        <Markdown source={`Or in this example the colors of the availability
 numbers are controlled based on the values:`} />
                     </div>
                 </div>

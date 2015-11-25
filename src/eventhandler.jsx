@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import { TimeRange } from "pondjs";
 
 // http://stackoverflow.com/a/28857255
@@ -35,7 +36,7 @@ export default React.createClass({
 
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
-        const trackerRect = React.findDOMNode(this.refs.eventrect);
+        const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
         const offset = getElementOffset(trackerRect);
         const x = e.pageX - offset.left;
         const y = e.pageY - offset.top;
@@ -187,8 +188,7 @@ export default React.createClass({
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
         const children = React.Children.map(this.props.children, (element) => {
-            return React.addons.cloneWithProps(element,
-                {isPanning: this.state.isPanning});
+            return React.cloneElement(element, {isPanning: this.state.isPanning});
         });
         return (
             <g pointerEvents="all"

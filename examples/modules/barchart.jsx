@@ -10,7 +10,7 @@
 
 /* eslint max-len:0 */
 
-import React from "react/addons";
+import React from "react";
 import _ from "underscore";
 import d3 from "d3";
 import Markdown from "react-markdown";

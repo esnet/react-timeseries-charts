@@ -8,7 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
+import ReactDOM from "react-dom";
 import d3 from "d3";
 import _ from "underscore";
 
@@ -195,7 +196,7 @@ export default React.createClass({
             return null;
         }
 
-        d3.select(this.getDOMNode()).selectAll("*").remove();
+        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
         const croppedSeries = getCroppedSeries(timeScale,
                                                this.props.width,
@@ -223,7 +224,7 @@ export default React.createClass({
         //
 
         // Make a group 'areachart-up-group' for each stacked area
-        const upChart = d3.select(this.getDOMNode())
+        const upChart = d3.select(ReactDOM.findDOMNode(this))
             .selectAll(".areachart-up-group")
                 .data(upLayers)
             .enter().append("g")
@@ -243,7 +244,7 @@ export default React.createClass({
         //
 
         // Make a group 'areachart-down-group' for each stacked area
-        const downChart = d3.select(this.getDOMNode())
+        const downChart = d3.select(ReactDOM.findDOMNode(this))
           .selectAll(".areachart-down-group")
             .data(downLayers)
           .enter().append("g")

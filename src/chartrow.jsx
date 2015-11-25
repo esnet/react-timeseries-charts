@@ -8,15 +8,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react/addons";
+import React from "react";
 import d3 from "d3";
 import _ from "underscore";
-
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
-import Tracker from "./tracker"; //eslint-disable-line
-import EventHandler from "./eventhandler"; //eslint-disable-line
+import Tracker from "./tracker";
+import EventHandler from "./eventhandler";
 
 /**
  * A ChartRow has a set of Y axes and multiple charts which are overlayed
@@ -231,7 +230,7 @@ export default React.createClass({
                 }
 
                 // Cloned left axis
-                axis = React.addons.cloneWithProps(yAxisMap[id], props);
+                axis = React.cloneElement(yAxisMap[id], props);
 
                 // Debug rect
                 if (this.props.debug) {
@@ -276,7 +275,7 @@ export default React.createClass({
                 }
 
                 // Cloned right axis
-                axis = React.addons.cloneWithProps(yAxisMap[id], props);
+                axis = React.cloneElement(yAxisMap[id], props);
 
                 // Debug rect
                 if (this.props.debug) {
@@ -330,7 +329,7 @@ export default React.createClass({
                     };
 
                     chartList.push(
-                        React.addons.cloneWithProps(chart, chartProps)
+                        React.cloneElement(chart, chartProps)
                     );
 
                     keyCount++;
@@ -356,7 +355,7 @@ export default React.createClass({
                     timeScale: this.props.timeScale,
                     yScale: yAxisScaleMap[child.props.axis]
                 };
-                brushList.push(React.addons.cloneWithProps(child, brushProps));
+                brushList.push(React.cloneElement(child, brushProps));
             }
             keyCount++;
 
