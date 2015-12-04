@@ -12,6 +12,11 @@ import React from "react";
 import _ from "underscore";
 import Polygon from "paths-js/polygon";
 import Bezier from "paths-js/bezier";
+import { TimeSeries } from "pondjs";
+
+function scaleAsString(scale) {
+    return `${scale.domain()}-${scale.range()}`;
+}
 
 export default React.createClass({
 
@@ -21,7 +26,8 @@ export default React.createClass({
             style: {
                 color: "#9DA3FF",
                 width: 1
-            }
+            },
+            breakLine: true
         };
     },
 
@@ -31,7 +37,7 @@ export default React.createClass({
      * on this.props.smooth.
      */
     generatePath(points) {
-        const fn = this.props.smooth ? Bezier : Polygon;
+        const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
         return fn({points, closed: false}).path.print();
     },
 
@@ -54,25 +60,122 @@ export default React.createClass({
         };
     },
 
-    renderLine() {
-        // Map series data to scaled points and filter to bounds of drawing area
-        const points = _.filter(
-            _.map(this.props.series.toJSON().points, d => {
-                return [this.props.timeScale(d[0]), this.props.yScale(d[1])];
-            }), p => this.inBounds(p));
+    renderLines() {
+        const pathLines = [];
+        let count = 1;
+        if (this.props.breakLine) {
+            // Remove nulls and NaNs from the line
+            let currentPoints = null;
+            _.each(this.props.series.toJSON().points, d => {
+                const value = d[1];
+                const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                if (!badPoint) {
+                    if (!currentPoints) {
+                        currentPoints = [];
+                    }
+                    currentPoints.push([d[0], d[1]]);
+                } else {
+                    if (currentPoints) {
+                        const points = _.map(currentPoints,
+                            d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
+                        );
+                        if (points.length > 1) {
+                            pathLines.push(
+                                <path
+                                    key={count++}
+                                    style={this.pathStyle()}
+                                    d={this.generatePath(points)}
+                                    clipPath={this.props.clipPathURL} />
+                            );
+                        }
+                        currentPoints = null;
+                    }
+                }
+            });
+            if (currentPoints) {
+                const points = _.map(currentPoints,
+                    d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
+                );
+                if (points.length > 1) {
+                    pathLines.push(
+                        <path
+                            key={count++}
+                            style={this.pathStyle()}
+                            d={this.generatePath(points)}
+                            clipPath={this.props.clipPathURL} />
+                    );
+                }
+            }
+        } else {
+            // Remove nulls and NaNs from the line
+            const cleanedPoints = [];
+            _.each(this.props.series.toJSON().points, d => {
+                const value = d[1];
+                const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                if (!badPoint) {
+                    cleanedPoints.push([d[0], d[1]]);
+                }
+            });
+
+            // Map series data to scaled points and filter to bounds of drawing area
+            const points = _.map(cleanedPoints,
+                d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
+            );
+
+            pathLines.push(
+                <path
+                    key={0}
+                    style={this.pathStyle()}
+                    onMouseMove={this.handleMouseMove}
+                    d={this.generatePath(points)}
+                    clipPath={this.props.clipPathURL} />
+            );
+        }
+        return (
+            <g>
+                {pathLines}
+            </g>
+        );
+    },
+
+    shouldComponentUpdate(nextProps) {
+        const newSeries = nextProps.series;
+        const oldSeries = this.props.series;
+
+        const timeScale = nextProps.timeScale;
+        const yScale = nextProps.yScale;
+        const interpolate = nextProps.interpolate;
+        const isPanning = nextProps.isPanning;
+
+        // What changed?
+        const timeScaleChanged =
+            (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
+        const yAxisScaleChanged =
+            (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
+        const interpolateChanged =
+            (this.props.interpolate !== interpolate);
+        const isPanningChanged =
+            (this.props.isPanning !== isPanning);
+
+        let seriesChanged = false;
+        if (oldSeries.length !== newSeries.length) {
+            seriesChanged = true;
+        } else {
+            seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+        }
 
         return (
-            <path style={this.pathStyle()}
-                  onMouseMove={this.handleMouseMove}
-                  d={this.generatePath(points)}
-                  clipPath={this.props.clipPathURL}/>
-        );
+            seriesChanged ||
+            timeScaleChanged ||
+            interpolateChanged ||
+            isPanningChanged ||
+            yAxisScaleChanged);
     },
 
     render() {
         return (
-            <g>
-                {this.renderLine()}
+            <g >
+                {this.renderLines()}
             </g>
         );
     }

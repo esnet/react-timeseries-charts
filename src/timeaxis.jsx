@@ -11,7 +11,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import d3 from "d3";
+import moment from "moment";
 
+import "moment-duration-format";
 import "./timeaxis.css";
 
 function scaleAsString(scale) {
@@ -46,6 +48,11 @@ export default React.createClass({
                 .orient("bottom")
                 .ticks(d3.time.years, 1)
                 .tickFormat(d3.time.format("%Y"));
+        } else if (this.props.format === "relative") {
+            axis = d3.svg.axis()
+                .scale(scale)
+                .orient("bottom")
+                .tickFormat(d => moment.duration(+d).format());
         } else {
             axis = d3.svg.axis()
                 .scale(scale)

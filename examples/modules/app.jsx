@@ -32,6 +32,7 @@ export default React.createClass({
                         <li><Link to="weather">Weather example</Link></li>
                         <li><Link to="ddos">DDoS example</Link></li>
                         <li><Link to="stacked">Continents</Link></li>
+                        <li><Link to="channels">Cycling example</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>
@@ -61,7 +62,7 @@ export default React.createClass({
                     <div className="sidebar-heading">Related Projects</div>
 
                     <ul className="nav nav-sidebar">
-                        <li><a href="http://software.es.net/pond/">Pond</a></li>
+                        <li><a href="http://software.es.net/pond/">pond.js</a></li>
                         <li><a href="http://software.es.net/react-network-diagrams/">Network Diagrams</a></li>
                     </ul>
                 </div>

@@ -116,19 +116,23 @@ export default React.createClass({
 
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
-        this.setState({isPanning: true,
-                       initialPanBegin: begin,
-                       initialPanEnd: end,
-                       initialPanPosition: xy0});
+        this.setState({
+            isPanning: true,
+            initialPanBegin: begin,
+            initialPanEnd: end,
+            initialPanPosition: xy0
+        });
     },
 
     handleMouseUp(e) {
         e.preventDefault();
 
-        this.setState({isPanning: false,
-                       initialPanBegin: null,
-                       initialPanEnd: null,
-                       initialPanPosition: null});
+        this.setState({
+            isPanning: false,
+            initialPanBegin: null,
+            initialPanEnd: null,
+            initialPanPosition: null
+        });
     },
 
     handleMouseOut(e) {
@@ -191,17 +195,19 @@ export default React.createClass({
             return React.cloneElement(element, {isPanning: this.state.isPanning});
         });
         return (
-            <g pointerEvents="all"
-               onWheel={this.handleScrollWheel}
-               onMouseDown={this.handleMouseDown}
-               onMouseMove={this.handleMouseMove}
-               onMouseOut={this.handleMouseOut}
-               onMouseUp={this.handleMouseUp}>
-                <rect key="handler-hit-rect"
-                      ref="eventrect"
-                      style={{opacity: 0.0, cursor}}
-                      x={0} y={0}
-                      width={this.props.width} height={this.props.height} />
+            <g
+                pointerEvents="all"
+                onWheel={this.handleScrollWheel}
+                onMouseDown={this.handleMouseDown}
+                onMouseMove={this.handleMouseMove}
+                onMouseOut={this.handleMouseOut}
+                onMouseUp={this.handleMouseUp}>
+                <rect
+                    key="handler-hit-rect"
+                    ref="eventrect"
+                    style={{opacity: 0.0, cursor}}
+                    x={0} y={0}
+                    width={this.props.width} height={this.props.height} />
                 {children}
             </g>
         );
