@@ -31,6 +31,10 @@ The TimeSeries to draw. This should be a [Pond TimeSeries](http://software.es.ne
 
 Boolean value that will draw the line as either a Bezier (smooth) or as linear segments.
 
+#### breakLine
+
+The determines how to handle bad/missing values in the supplied TimeSeries. A missing value can be `null` or `NaN`. If `breakLine` is set to true then the line will be broken on either side of the bad value(s). If `breakLine` is false (the default) bad values are simply removed and the adjoining points are connected.
+
 #### style
 
 The style of the line chart drawing (using SVG CSS properties). A typical example would look like this:
@@ -41,5 +45,4 @@ const style = {
     width: 2
 }
 ```
-
 

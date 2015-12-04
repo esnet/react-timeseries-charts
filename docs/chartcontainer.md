@@ -24,6 +24,14 @@ Here is an example:
 
 A Pond TimeRange representing the begin and end time of the chart. Required. It is very important that you supply a valid timeRange, or an invalid scale will cause errors deep in the Charts code.
 
+#### format
+
+Provides several options as to the format of the time axis labels. In general the time axis will generate an appropriate time scale based on the `timeRange` prop and there is no need to set this.
+
+However, four special options exist: setting `format` to `day`, `month` or `year` will show only ticks on those, and every one of those intervals. For example maybe you are showing a bar chart for October 2014 then setting the `format` to `day` will insure that a label is placed for each and every day.
+
+The last option is `relative`. This interprets the time as a duration. This is good for data that is specified relative to its start time, rather than as an actual date/time.
+
 #### width
 
 The width of the chart in pixels. Required. This library also includes a `<Resizable>` component that can be wrapped around a `<ChartContainer>`. The purpose of this is to inject a `width` prop into the `ChartContainer` so that it will fit the surrounding element. This is very handy when you need the chart to resize based on a responsive layout.
