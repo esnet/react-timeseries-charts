@@ -32,23 +32,6 @@ export default React.createClass({
     },
 
     /**
-     * Uses paths.js to generate an SVG element for a path passing
-     * through the points passed in. May be smoothed or not, depending
-     * on this.props.smooth.
-     */
-    generatePath(points) {
-        const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
-        return fn({points, closed: false}).path.print();
-    },
-
-    /**
-     * Checks if the passed in point is within the bounds of the drawing area
-     */
-    inBounds(p) {
-        return p[0] > 0 && p[0] < this.props.width;
-    },
-
-    /**
      * Returns the style used for drawing the path
      */
     pathStyle() {
@@ -58,6 +41,26 @@ export default React.createClass({
             stroke: this.props.style.color || "#9DA3FF",
             strokeWidth: `${this.props.style.width}px` || "1px"
         };
+    },
+
+    /**
+     * Uses paths.js to generate an SVG element for a path passing
+     * through the points passed in. May be smoothed or not, depending
+     * on this.props.smooth.
+     */
+    generatePath(points) {
+        const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
+        return fn({points, closed: false}).path.print();
+    },
+
+    renderPath(points, key) {
+        return (
+            <path
+                key={key}
+                style={this.pathStyle()}
+                d={this.generatePath(points)}
+                clipPath={this.props.clipPathURL} />
+        );
     },
 
     renderLines() {
@@ -80,13 +83,7 @@ export default React.createClass({
                             d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
                         );
                         if (points.length > 1) {
-                            pathLines.push(
-                                <path
-                                    key={count++}
-                                    style={this.pathStyle()}
-                                    d={this.generatePath(points)}
-                                    clipPath={this.props.clipPathURL} />
-                            );
+                            pathLines.push(this.renderPath(points, count++));
                         }
                         currentPoints = null;
                     }
@@ -97,13 +94,7 @@ export default React.createClass({
                     d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
                 );
                 if (points.length > 1) {
-                    pathLines.push(
-                        <path
-                            key={count++}
-                            style={this.pathStyle()}
-                            d={this.generatePath(points)}
-                            clipPath={this.props.clipPathURL} />
-                    );
+                    pathLines.push(this.renderPath(points, count));
                 }
             }
         } else {
@@ -122,14 +113,7 @@ export default React.createClass({
                 d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
             );
 
-            pathLines.push(
-                <path
-                    key={0}
-                    style={this.pathStyle()}
-                    onMouseMove={this.handleMouseMove}
-                    d={this.generatePath(points)}
-                    clipPath={this.props.clipPathURL} />
-            );
+            pathLines.push(this.renderPath(points, count));
         }
         return (
             <g>
