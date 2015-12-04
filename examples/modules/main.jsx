@@ -14,25 +14,27 @@ import React from "react";
 import { render } from "react-dom";
 import { Router, Route, IndexRoute } from "react-router";
 
-import App from "./app.jsx";
-import Intro from "./intro.jsx";
-import ChartContainer from "./chartcontainer.jsx";
-import ChartRow from "./chartrow.jsx";
-import Charts from "./charts.jsx";
-import YAxis from "./yaxis.jsx";
-import AreaCharts from "./areachart.jsx";
-import StackedAreaCharts from "./stacked.jsx";
-import LineCharts from "./linechart.jsx";
-import BarCharts from "./barchart.jsx";
-import ScatterCharts from "./scatterchart.jsx";
-import Baseline from "./baseline.jsx";
-import Legends from "./legend.jsx";
-import Weather from "./weather.jsx";
-import DDoS from "./ddos.jsx";
-import Table from "./table.jsx";
+import App from "./app";
+import Intro from "./intro";
+import ChartContainer from "./chartcontainer";
+import ChartRow from "./chartrow";
+import Charts from "./charts";
+import YAxis from "./yaxis";
+import AreaCharts from "./areachart";
+import StackedAreaCharts from "./stacked";
+import LineCharts from "./linechart";
+import BarCharts from "./barchart";
+import ScatterCharts from "./scatterchart";
+import Baseline from "./baseline";
+import Legends from "./legend";
+import Weather from "./weather";
+import DDoS from "./ddos";
+import Table from "./table";
+import Channels from "./channels";
 
 import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
+
 const history = useScroll(createHistory)();
 
 render((
@@ -53,6 +55,7 @@ render((
             <Route path="weather" component={Weather} />
             <Route path="ddos" component={DDoS} />
             <Route path="table" component={Table} />
+            <Route path="channels" component={Channels} />
         </Route>
     </Router>
 ), document.getElementById("content"));

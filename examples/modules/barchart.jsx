@@ -17,7 +17,7 @@ import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
 // Pond
-import {TimeSeries} from "pondjs";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../src/chartcontainer";
