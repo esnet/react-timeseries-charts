@@ -144,38 +144,17 @@ export default React.createClass({
         }, 0) + rightExtra;
 
         //
-        // Time scale and time axis elements
+        // Time scale
         //
 
         const X_AXIS_HEIGHT = 35;
-
-        const transform = `translate(${leftWidth},0)`;
-        const timeAxisWidth = this.props.width - leftWidth -
-                            rightWidth - padding * 2;
-
-        const [beginTime, endTime] = this.props.timeRange.toJSON();
+        const timeAxisWidth =
+            this.props.width - leftWidth - rightWidth - padding * 2;
+        const [ beginTime, endTime ] = this.props.timeRange.toJSON();
 
         const timeScale = d3.time.scale()
             .domain([beginTime, endTime])
             .range([0, timeAxisWidth]);
-
-        const timeaxis = (
-            <TimeAxis scale={timeScale} format={this.props.format}/>
-        );
-
-        const timeAxis = (
-            <div className="row">
-                <div className="col-md-12" style={{height: X_AXIS_HEIGHT}}>
-                    <div className="chartcontainer timeaxis" >
-                        <svg width={this.props.width} height={X_AXIS_HEIGHT}>
-                            <g transform={transform}>
-                                {timeaxis}
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        );
 
         //
         // For valid children (those children which are ChartRows), we actually
@@ -184,6 +163,7 @@ export default React.createClass({
         //
 
         let i = 0;
+        let yPosition = 0;
         React.Children.forEach(this.props.children, child => {
             if (child.type === ChartRow) {
                 const chartRow = child;
@@ -193,7 +173,6 @@ export default React.createClass({
                     timeScale,
                     leftAxisWidths,
                     rightAxisWidths,
-                    key: rowKey,
                     width: this.props.width,
                     padding: this.props.padding,
                     minTime: this.props.minTime,
@@ -205,21 +184,26 @@ export default React.createClass({
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
-
-                const row = React.cloneElement(chartRow, props);
-
+                const transform = `translate(0,${yPosition})`;
                 chartRows.push(
-                    <div key={`chart-row-div-${i}`} className="row">
-                        <div className="col-md-12">
-                            <div className="chartcontainer chartrow">
-                                {row}
-                            </div>
-                        </div>
-                    </div>
+                    <g transform={transform} key={rowKey}>
+                        {React.cloneElement(chartRow, props)}
+                    </g>
                 );
+                yPosition += parseInt(child.props.height, 10);
             }
             i++;
         });
+
+        //
+        // TimeAxis
+        //
+
+        const timeAxis = (
+            <g transform={`translate(${leftWidth},${yPosition})`}>
+                <TimeAxis scale={timeScale} format={this.props.format}/>
+            </g>
+        );
 
         //
         // Final render of the ChartContainer is composed of a number of
@@ -230,10 +214,12 @@ export default React.createClass({
         //
 
         return (
-            <div className="chartcontainer">
-                {chartRows}
+            <svg width={this.props.width} height={yPosition + X_AXIS_HEIGHT}>
+                <g>
+                    {chartRows}
+                </g>
                 {timeAxis}
-            </div>
+            </svg>
         );
     }
 });

@@ -11,6 +11,7 @@
 import React from "react";
 import d3 from "d3";
 import _ from "underscore";
+
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
@@ -149,8 +150,9 @@ export default React.createClass({
                 const id = child.props.id;
 
                 // Check to see if we think this 'axis' is actually an axis
-                if (child.type === YAxis || (_.has(child.props, "min") &&
-                                             _.has(child.props, "max"))) {
+                if (child.type === YAxis ||
+                    (_.has(child.props, "min") &&
+                    _.has(child.props, "max"))) {
                     const yaxis = child;
                     const {max, min} = yaxis.props;
                     const type = yaxis.props.type || "linear";
@@ -417,7 +419,7 @@ export default React.createClass({
         }
 
         // Clipping
-        const clipDefs = (
+        const clipper = (
             <defs>
                 <clipPath id={this.state.clipId}>
                     <rect x="0" y="0" width={chartWidth} height={innerHeight} />
@@ -433,16 +435,13 @@ export default React.createClass({
         );
 
         return (
-            <div>
-                <svg width={this.props.width}
-                     height={Number(this.props.height)}>
-                    {clipDefs}
-                    {axes}
-                    {charts}
-                    {chartDebug}
-                    {brushes}
-                </svg>
-            </div>
+            <g>
+                {clipper}
+                {axes}
+                {charts}
+                {chartDebug}
+                {brushes}
+            </g>
         );
     }
 });

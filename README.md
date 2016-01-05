@@ -23,7 +23,7 @@ Please browse the examples for a feel for the library, or read on to get started
 Getting started
 ---------------
 
-This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/). In addition, it currently assumes that [Bootstrap](http://getbootstrap.com/) is present on the page.
+This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/).
 
     npm install react-timeseries-charts --save
 
