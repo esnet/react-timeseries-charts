@@ -356,6 +356,70 @@
     "description": "",
     "displayName": "Legend",
     "props": {
+      "type": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"swatch\"",
+              "computed": false
+            },
+            {
+              "value": "\"line\"",
+              "computed": false
+            },
+            {
+              "value": "\"dot\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "The overall style of the legend items, either a color \"swatch\", a\ncolored \"line\", or a \"dot\".",
+        "defaultValue": {
+          "value": "\"swatch\"",
+          "computed": false
+        }
+      },
+      "categories": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "key": {
+                "name": "string",
+                "required": true
+              },
+              "label": {
+                "name": "string",
+                "required": true
+              },
+              "disabled": {
+                "name": "bool",
+                "required": false
+              },
+              "style": {
+                "name": "object",
+                "required": false
+              },
+              "labelStyle": {
+                "name": "object",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": true,
+        "description": "The categories array specifies details and style for each item in the legend. For each item:\n * \"key\" - (required) the name by which the legend will be known\n * \"label\" - (required) the displayed label\n * \"style\" - the swatch, dot, or line style. Typically you'd just specify {backgroundColor: \"#1f77b4\"}\n * \"labelStyle\" - the label style\n * \"disabled\" - a disabled state\n\n```\nconst categories = [\n   {key: \"aust\", label: \"AUD\", disabled: this.state.disabled[\"aust\"], style: {backgroundColor: \"#1f77b4\"}},\n   {key: \"usa\", label: \"USD\", disabled: this.state.disabled[\"usa\"], style: {backgroundColor: \"#aec7e8\"}}\n];\n```"
+      },
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback which will be called when the use enables/disables the legend item\nby clicking on it. The callback will be called with the key and the new\ndisabled state."
+      },
       "style": {
         "defaultValue": {
           "value": "{}",
@@ -365,12 +429,6 @@
       "labelStyle": {
         "defaultValue": {
           "value": "{}",
-          "computed": false
-        }
-      },
-      "type": {
-        "defaultValue": {
-          "value": "\"swatch\"",
           "computed": false
         }
       }

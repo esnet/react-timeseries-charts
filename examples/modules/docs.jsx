@@ -6,6 +6,16 @@ const docsFile = require("../docs.json");
 
 export default React.createClass({
 
+    renderArrayOf(value) {
+        if (value.name === "shape") {
+            return "shape {" + _.map(value.value, (value, key) => {
+                return key;
+            }).join(", ") + "}";
+        } else {
+            return `array of ${value.name}s`;
+        }
+    },
+
     renderPropType(type) {
         if (!type) {
             return "unknown type";
@@ -19,7 +29,11 @@ export default React.createClass({
                 return this.renderPropType(value);
             }).join(", ") + ")";
         } if (type.name === "arrayOf") {
-            return `array of ${type.value.name}s`;
+            return `array of ${this.renderArrayOf(type.value)}`;
+        } if (type.name === "shapes") {
+            return `shape of {` + _.map(type.value, (value, key) => {
+                return key;
+            }).join(", ") + "}";
         } else {
             return `${type.name}`;
         }
