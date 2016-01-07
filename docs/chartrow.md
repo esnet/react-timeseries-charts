@@ -14,7 +14,7 @@ Within the `<ChartRow>` we add:
 * `<YAxis>` elements for our axes to the right of the charts
 
 ```xml
-<ChartContainer timeRange={audSeries.range()} padding="5">
+<ChartContainer timeRange={audSeries.timerange()}>
     <ChartRow height="200">
         <YAxis />
         <YAxis />
@@ -26,8 +26,3 @@ Within the `<ChartRow>` we add:
 </ChartContainer>
 ```
 
-### Props
-
-#### height
-
-Specify the height of the row.

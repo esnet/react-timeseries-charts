@@ -108,13 +108,14 @@ export default React.createClass({
                 }
             });
 
-            // Map series data to scaled points and filter to bounds of drawing area
+            // Map series data to scaled points
             const points = _.map(cleanedPoints,
                 d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
             );
 
             pathLines.push(this.renderPath(points, count));
         }
+
         return (
             <g>
                 {pathLines}
@@ -126,12 +127,15 @@ export default React.createClass({
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;
 
+        const width = nextProps.width;
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const interpolate = nextProps.interpolate;
         const isPanning = nextProps.isPanning;
 
         // What changed?
+        const widthChanged =
+            (this.props.width !== width);
         const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         const yAxisScaleChanged =
@@ -149,11 +153,13 @@ export default React.createClass({
         }
 
         return (
+            widthChanged ||
             seriesChanged ||
             timeScaleChanged ||
             interpolateChanged ||
             isPanningChanged ||
-            yAxisScaleChanged);
+            yAxisScaleChanged
+        );
     },
 
     render() {

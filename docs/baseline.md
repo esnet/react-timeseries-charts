@@ -4,7 +4,7 @@ The BaseLine component displays a simple horizontal line at a value.
 This example overlays the mean of a series and std dev on top of another chart.
 
 ```xml
-<ChartContainer timeRange={series.range()} >
+<ChartContainer timeRange={series.timerange()} >
     <ChartRow height="150">
         <YAxis id="axis" label="Price ($)" min={series.min()} max={series.max()} width="60" format="$,.2f"/>
         <Charts>

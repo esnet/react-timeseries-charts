@@ -61,7 +61,7 @@ Now we can render a the chart. The \`<BarChart>\` element does the rendering of 
 other chart types, the vertical scale is provided by referencing the \`<YAxis>\` (\`axis='traffic'\`).
 
     <ChartContainer
-        timeRange={this.state.timerange} padding="0" format="day"
+        timeRange={this.state.timerange} format="day"
         enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
         maxTime={new Date(1414827330868)}
         minTime={new Date(1412143472795)}
@@ -266,7 +266,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+                            <ChartContainer timeRange={this.state.timerange} format="day"
                                             enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
                                             maxTime={new Date(1414827330868)}
                                             minTime={new Date(1412143472795)}
@@ -318,7 +318,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
@@ -355,7 +355,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
@@ -389,7 +389,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={monthlyAcceptedSeries.range()} padding="0" format="month">
+                            <ChartContainer timeRange={monthlyAcceptedSeries.range()} format="month">
 
                                 <ChartRow height="150">
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"

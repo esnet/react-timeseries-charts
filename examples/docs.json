@@ -1,0 +1,603 @@
+{
+  "src/areachart.jsx": {
+    "description": "Draws an area chart",
+    "displayName": "AreaChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "The TimeSeries to render"
+      },
+      "columns": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "up": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            },
+            "down": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The series series columns mapped to stacking up and down.\nHas the format:\n\n \"columns\": {\n     up: [\"in\", ...],\n     down: [\"out\", ...]\n }",
+        "defaultValue": {
+          "value": "{\n    up: [\"value\"],\n    down: []\n}",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "up": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            },
+            "down": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The style of the area chart, with format:\n\n \"style\": {\n     up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\", ...],\n     down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\", ...]\n }\n\n Where each color in the array corresponds to each area stacked\n either up or down.",
+        "defaultValue": {
+          "value": "{\n    up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\"],\n    down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\"]\n}",
+          "computed": false
+        }
+      },
+      "transition": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Time in ms to transition the chart when the axis changes scale",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "interpolate": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The d3 interpolation method",
+        "defaultValue": {
+          "value": "\"step-after\"",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/barchart.jsx": {
+    "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different in that it will render\nonto a time axis, rather than rendering to specific values. As a result,\nan Aug 2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": ""
+      },
+      "spacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "offset": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "columns": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": ""
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{value: {fill: \"#619F3A\"}}",
+          "computed": false
+        }
+      },
+      "size": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src/baseline.jsx": {
+    "description": "Draws a horizontal line across the chart\n\nProps:\n\n- value          The positon of the horizontal line, which is transformed to\n                 a pixel position using the yscale\n- label          A label to display along side the line\n- position       The position of the label, either left or right\n\n- yscale         The scale of the y axis to transform the value\n                 (passed in automatically)",
+    "props": {
+      "value": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "label": {
+        "defaultValue": {
+          "value": "\"\"",
+          "computed": false
+        }
+      },
+      "position": {
+        "defaultValue": {
+          "value": "\"left\"",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/brush.jsx": {
+    "description": "",
+    "displayName": "Brush"
+  },
+  "src/chartcontainer.jsx": {
+    "description": "",
+    "props": {
+      "timeRange": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeRange"
+        },
+        "required": true,
+        "description": "A Pond TimeRange representing the begin and end time of the chart."
+      },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "element"
+              }
+            },
+            {
+              "name": "element"
+            }
+          ]
+        },
+        "required": true,
+        "description": "Children of the ChartContainer should be ChartRows."
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the chart. This library also includes a <Resizable> component\nthat can be wrapped around a \\<ChartContainer\\>. The purpose of this is to\ninject a width prop into the ChartContainer so that it will fit the\nsurrounding element. This is very handy when you need the chart to resize\nbased on a responsive layout.",
+        "defaultValue": {
+          "value": "800",
+          "computed": false
+        }
+      },
+      "minTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "Constrain the timerange to not move back in time further than this Date."
+      },
+      "maxTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "Constrain the timerange to not move forward in time than this Date. A\ncommon example is setting this to the current time or the end time\nof a fixed set of data."
+      },
+      "transition": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The transition time to move scales. Typically you might set this to\n300 (ms) to allow the axes to animate to the new scale. Experimental.",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "enablePanZoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Boolean to turn on interactive pan and zoom behavior for the chart.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "minDuration": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If this is set the timerange of the chart cannot be zoomed in further\nthan this duration, in milliseconds. This might be determined by the\nresolution of your data."
+      },
+      "format": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to day, month or\nyear will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to day will insure that a label is placed for each and every day.\n\nThe last option is relative. This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
+      },
+      "trackerPosition": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "A Date specifying the position of the tracker line on the chart. It is\ncommon to take this from the onTrackerChanged callback so that the tracker\nfollowers the user's cursor, but it could be modified to snap to a point or\nto the nearest minute, for example."
+      },
+      "onTrackerChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Will be called when the user hovers over a chart. The callback will\nbe called with the timestamp (a Date object) of the position hovered\nover. This maybe then used as the trackerPosition (see above), or to\ninformation data about the time hovered over within the greater page.\nCommonly we might do something like this:\n```\n  <ChartContainer\n    onTrackerChanged={(tracker) => this.setState({tracker})}\n    trackerPosition={this.state.tracker}\n    ... />\n```"
+      },
+      "onTimeRangeChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "This will be called if the user pans and/or zooms the chart. The callback\nwill be called with the new TimeRange. This can be fed into the timeRange\nprop as well as used elsewhere on the greater page. Typical use might look\nlike this:\n```\n  <ChartContainer\n    onTimeRangeChanged={(timerange) => this.setState({timerange})}\n    timeRange={this.state.timerange}\n    ... />\n```"
+      },
+      "padding": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/chartrow.jsx": {
+    "description": "A ChartRow has a set of Y axes and multiple charts which are overlayed\non each other in a central canvas.",
+    "displayName": "ChartRow",
+    "props": {
+      "height": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The height of the row.",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "enablePanZoom": {
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/charts.jsx": {
+    "description": "A Charts component is a grouping of charts which will be composited on top of\neach other. It does no actual rendering itself, but instead is used for\norganizing ChartRow children. There must be one, and only one, Charts\ngrouping within a ChartRow. All children of a ChartRow, for which there must\nbe at least one, are considered a chart. They should return an SVG <g>\ncontaining their render.",
+    "displayName": "Charts"
+  },
+  "src/eventchart.jsx": {
+    "description": "Renders an event view that shows the supplied set of\nevents along a time axis.\n\nEXPERIMENTAL\n\nTODO: Convert to use Pond Events",
+    "displayName": "EventChart"
+  },
+  "src/eventhandler.jsx": {
+    "description": "",
+    "displayName": "EventHandler"
+  },
+  "src/labelaxis.jsx": {
+    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
+    "displayName": "LabelAxis"
+  },
+  "src/legend.jsx": {
+    "description": "",
+    "displayName": "Legend",
+    "props": {
+      "style": {
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "labelStyle": {
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "type": {
+        "defaultValue": {
+          "value": "\"swatch\"",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/linechart.jsx": {
+    "description": "",
+    "props": {
+      "smooth": {
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{\n    color: \"#9DA3FF\",\n    width: 1\n}",
+          "computed": false
+        }
+      },
+      "breakLine": {
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/resizable.jsx": {
+    "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width."
+  },
+  "src/scatterchart.jsx": {
+    "description": "",
+    "props": {
+      "radius": {
+        "defaultValue": {
+          "value": "2.0",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{\n    color: \"steelblue\",\n    opacity: 1\n}",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/table.jsx": {
+    "description": "",
+    "displayName": "Table",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": ""
+      },
+      "width": {
+        "defaultValue": {
+          "value": "300",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/timeaxis.jsx": {
+    "description": "Renders a horizontal time axis",
+    "displayName": "TimeAxis"
+  },
+  "src/timerangemarker.jsx": {
+    "description": "Renders a band with extents defined by the supplied TimeRange.",
+    "displayName": "TimeRangeMarker",
+    "props": {
+      "timerange": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeRange"
+        },
+        "required": true,
+        "description": ""
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{fill: \"rgba(70, 130, 180, 0.25);\"}",
+          "computed": false
+        }
+      },
+      "spacing": {
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "offset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/tracker.jsx": {
+    "description": "",
+    "displayName": "Tracker",
+    "props": {
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{stroke: \"#AAA\", cursor: \"crosshair\"}",
+          "computed": false
+        }
+      },
+      "position": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "offset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/valueaxis.jsx": {
+    "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n\n EXPERIMENTAL",
+    "displayName": "ValueAxis"
+  },
+  "src/yaxis.jsx": {
+    "description": "Renders a horizontal time axis\n\nProps:\n    * align - if the axis should be draw as if it is on the\n              left or right (defaults to left)\n    * scale - a d3 scale that defines the domain and range of the axis",
+    "displayName": "YAxis",
+    "props": {
+      "align": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"left\"",
+          "computed": false
+        }
+      },
+      "id": {
+        "defaultValue": {
+          "value": "\"yaxis\"",
+          "computed": false
+        }
+      },
+      "min": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "max": {
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "type": {
+        "defaultValue": {
+          "value": "\"linear\"",
+          "computed": false
+        }
+      },
+      "absolute": {
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "format": {
+        "defaultValue": {
+          "value": "\".2s\"",
+          "computed": false
+        }
+      },
+      "labelOffset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "transition": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{\n    labelColor: \"#8B7E7E\", // Default label color\n    labelWeight: 100,\n    labelSize: 12\n}",
+          "computed": false
+        }
+      }
+    }
+  }
+}

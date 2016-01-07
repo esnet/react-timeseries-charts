@@ -83,7 +83,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={series.range()} padding="10">
+                            <ChartContainer timeRange={series.range()}>
                                 <ChartRow height="150" debug={false}>
                                     <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5}
                                            min={0} max={series.max()} width="100" type="linear" format=",.1f"/>

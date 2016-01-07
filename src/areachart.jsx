@@ -190,8 +190,7 @@ export default React.createClass({
         return p[0] > 0 && p[0] < this.props.width;
     },
 
-    renderAreaChart(series, timeScale, yScale,
-                    interpolate, isPanning, columns) {
+    renderAreaChart(series, timeScale, yScale, interpolate, isPanning, columns, width) {
         if (!yScale) {
             return null;
         }
@@ -199,7 +198,7 @@ export default React.createClass({
         d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
         const croppedSeries = getCroppedSeries(timeScale,
-                                               this.props.width,
+                                               width,
                                                series);
 
         const {upArea, downArea} = getAreaGenerators(interpolate,
@@ -261,9 +260,9 @@ export default React.createClass({
 
     },
 
-    updateAreaChart(series, timeScale, yScale, interpolate, columns) {
+    updateAreaChart(series, timeScale, yScale, interpolate, columns, width) {
         const croppedSeries = getCroppedSeries(timeScale,
-                                               this.props.width,
+                                               width,
                                                series);
         const {upArea, downArea} = getAreaGenerators(interpolate,
                                                      timeScale,
@@ -302,6 +301,7 @@ export default React.createClass({
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;
 
+        const width = nextProps.width;
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const interpolate = nextProps.interpolate;
@@ -309,6 +309,8 @@ export default React.createClass({
         const columns = nextProps.columns;
 
         // What changed?
+        const widthChanged =
+            (this.props.width !== width);
         const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         const yAxisScaleChanged =
@@ -333,14 +335,14 @@ export default React.createClass({
         // transition so that we can get smooth axis transitions.
         //
 
-        if (seriesChanged || timeScaleChanged ||
+        if (seriesChanged || timeScaleChanged || widthChanged ||
             interpolateChanged || isPanningChanged || columnsChanged) {
             this.renderAreaChart(newSeries, timeScale,
                                  yScale, interpolate,
-                                 isPanning, columns);
+                                 isPanning, columns, width);
         } else if (yAxisScaleChanged) {
             this.updateAreaChart(newSeries, timeScale,
-                                 yScale, interpolate, columns);
+                                 yScale, interpolate, columns, width);
         }
     },
 

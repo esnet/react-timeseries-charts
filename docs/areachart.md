@@ -7,7 +7,7 @@ The AreaChart should be used within a `<ChartContainer />` structure, as this wi
     render() {
         return (
             ...
-            <ChartContainer timeRange={trafficSeries.range()} width="1080">
+            <ChartContainer timeRange={trafficSeries.timerange()} width="1080">
                 <ChartRow height="150">
                     <Charts>
                         <AreaChart

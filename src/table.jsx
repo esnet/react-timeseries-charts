@@ -19,17 +19,14 @@ export default React.createClass({
 
     displayName: "Table",
 
-    propTypes() {
+    getDefaultProps() {
         return {
-            series: React.PropTypes.instanceOf(TimeSeries).isRequired
+            width: 300
         };
     },
 
-    getDefaultProps() {
-        return {
-            timeFormat: undefined,
-            width: 300
-        };
+    propTypes: {
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired
     },
 
     renderCells(event) {

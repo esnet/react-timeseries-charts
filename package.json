@@ -17,6 +17,7 @@
   },
   "scripts": {
     "prepublish": "npm test && npm run build",
+    "docs": "react-docgen src/ -x jsx -o examples/docs.json --pretty",
     "lint": "eslint src/*.jsx",
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
@@ -59,7 +60,7 @@
     "json-loader": "^0.5.1",
     "raw-loader": "^0.5.1",
     "react": "^0.14.3",
-    "react-addons-clone-with-props": "^0.14.0",
+    "react-docgen": "^2.4.0",
     "react-dom": "^0.14.3",
     "react-markdown": "^1.0.5",
     "react-router": "^1.0.0",

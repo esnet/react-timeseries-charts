@@ -4,7 +4,7 @@ The LineChart widget is able to display a single line chart.
 The LineChart should be used within `<ChartContainer>` etc., as this will construct the horizontal and vertical axis, and manage other elements. Here is an example of two LineCharts overlaid on top of each other, along with a `<BaseLine>`:
 
 ```xml
-<ChartContainer timeRange={audSeries.range()} padding="5">
+<ChartContainer timeRange={audSeries.timerange()}>
     <ChartRow height="200">
         <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
         <Charts>

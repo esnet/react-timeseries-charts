@@ -44,7 +44,7 @@ This example uses inline styles:
 
 Which are then specified for each LineChart:
 
-    <ChartContainer timeRange={requestsSeries.range()} padding="5">
+    <ChartContainer timeRange={requestsSeries.range()}>
         <ChartRow height="300" debug={false}>
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
@@ -112,7 +112,7 @@ export default React.createClass({
 
     renderChart() {
         return (
-            <ChartContainer timeRange={requestsSeries.range()} padding="5">
+            <ChartContainer timeRange={requestsSeries.range()}>
                 <ChartRow height="300" debug={false}>
                     <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                            labelOffset={-10} min={0} max={1000} format=",.0f" width="60" type="linear" />

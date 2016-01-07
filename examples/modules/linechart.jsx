@@ -66,12 +66,12 @@ export default React.createClass({
         };
     },
 
-    handleTrackerChanged(t) {
-        this.setState({tracker: t});
+    handleTrackerChanged(tracker) {
+        this.setState({tracker});
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {
@@ -93,7 +93,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} padding="5"
+                            <ChartContainer timeRange={this.state.timerange}
                                             trackerPosition={this.state.tracker}
                                             onTrackerChanged={this.handleTrackerChanged}
                                             enablePanZoom={true}

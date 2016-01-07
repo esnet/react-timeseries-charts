@@ -5,8 +5,8 @@ The ScatterChart should be used within `<ChartContainer>` etc., as this will con
 
 
 ```xml
-<ChartContainer timeRange={series.range()} padding="10">
-    <ChartRow height="150" debug={false}>
+<ChartContainer timeRange={series.timerange()}>
+    <ChartRow height="150">
         <YAxis id="wind" label="Wind gust (mph)" labelOffset={-5}
                min={0} max={series.max()} width="100" type="linear" format=",.1f"/>
         <Charts>

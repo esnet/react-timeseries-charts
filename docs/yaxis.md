@@ -16,7 +16,7 @@ Each axis also defines a scale through a `min` and `max` prop. Charts may then r
 Here is an example of two line charts that each have their own axis:
 
 ```js
-<ChartContainer timeRange={audSeries.range()} padding="5">
+<ChartContainer timeRange={audSeries.timerange()}>
     <ChartRow height="200">
         <YAxis id="aud" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
         <Charts>

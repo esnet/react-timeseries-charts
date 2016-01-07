@@ -13,6 +13,7 @@
 import React from "react";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Docs text
 import text from "raw!../../docs/chartrow.md";
@@ -38,6 +39,14 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Markdown source={this.state.markdown}/>
+                    </div>
+                </div>
+
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <hr />
+                        <APIDocs file="src/chartrow.jsx"/>
                     </div>
                 </div>
             </div>

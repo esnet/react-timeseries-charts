@@ -15,7 +15,6 @@ import _ from "underscore";
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
-import Tracker from "./tracker";
 import EventHandler from "./eventhandler";
 
 /**
@@ -28,12 +27,19 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
-            enablePanZoom: false
+            enablePanZoom: false,
+            height: 100
         };
     },
 
     propTypes: {
-        enablePanZoom: React.PropTypes.bool
+        /**
+         * The height of the row.
+         */
+        height: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ])
     },
 
     getInitialState() {
@@ -102,16 +108,11 @@ export default React.createClass({
         const chartList = []; // Contains all the chart elements used
                             // in the render
 
-        const margin = this.props.margin !== undefined ?
-            Number(this.props.margin) : 5;
-        const padding = this.props.padding !== undefined ?
-            Number(this.props.padding) : 2;
-
         // Extra padding above and below the axis since numbers need to be
         // displayed there
         const AXIS_MARGIN = 5;
 
-        const innerHeight = Number(this.props.height) - AXIS_MARGIN * 2;
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
 
@@ -192,17 +193,13 @@ export default React.createClass({
         let axis;
         let posx = 0;
 
-        // Extra space used by padding between columns
-        const leftExtra = (this.props.leftAxisWidths.length - 1) * padding;
-        const rightExtra = (this.props.rightAxisWidths.length - 1) * padding;
-
         // Space used by columns on left and right of charts
         const leftWidth = _.reduce(this.props.leftAxisWidths, (a, b) => {
             return a + b;
-        }, 0) + leftExtra;
+        }, 0);
         const rightWidth = _.reduce(this.props.rightAxisWidths, (a, b) => {
             return a + b;
-        }, 0) + rightExtra;
+        }, 0);
 
         let debug;
 
@@ -214,13 +211,10 @@ export default React.createClass({
             const colWidth = this.props.leftAxisWidths[leftColumnIndex];
 
             posx -= colWidth;
-            if (leftColumnIndex > 0) {
-                posx -= padding;
-            }
 
             if (leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
-                transform = `translate(${posx},${margin})`;
+                transform = `translate(${posx},0)`;
 
                 // Additional props for left aligned axes
                 props = {width: colWidth,
@@ -265,7 +259,7 @@ export default React.createClass({
 
             if (rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
-                transform = `translate(${posx},${margin})`;
+                transform = `translate(${posx},0)`;
 
                 // Additional props for right aligned axes
                 props = {width: colWidth,
@@ -300,7 +294,7 @@ export default React.createClass({
                 );
             }
 
-            posx = posx + colWidth + padding;
+            posx = posx + colWidth;
         }
 
         //
@@ -310,7 +304,7 @@ export default React.createClass({
         //
 
         const chartWidth = this.props.width - leftWidth - rightWidth;
-        const chartTransform = `translate(${leftWidth},${margin})`;
+        const chartTransform = `translate(${leftWidth},0)`;
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
@@ -363,15 +357,6 @@ export default React.createClass({
 
         });
 
-        // Hover tracker line
-        const tracker = (
-            <g key="tracker-group" style={{pointerEvents: "none"}}>
-                <Tracker height={innerHeight}
-                         timeScale={this.props.timeScale}
-                         position={this.props.trackerPosition} />
-            </g>
-        );
-
         // Charts with or without pan and zoom event handling
         let charts;
         if (this.props.enablePanZoom || this.props.onTrackerChanged) {
@@ -388,10 +373,7 @@ export default React.createClass({
                                   onMouseMove={this.handleMouseMove}
                                   onZoom={this.handleZoom}
                                   onResize={this.handleResize}>
-
                         {chartList}
-                        {tracker}
-
                     </EventHandler>
                 </g>
             );
@@ -400,9 +382,6 @@ export default React.createClass({
                 <g transform={chartTransform} key="event-rect-group">
                     <g key="charts">
                         {chartList}
-                    </g>
-                    <g key="tracker">
-                        {tracker}
                     </g>
                 </g>
             );
@@ -413,7 +392,7 @@ export default React.createClass({
         if (this.props.debug) {
             chartDebug = (
                 <rect className="chart-debug"
-                      x={leftWidth} y={margin}
+                      x={leftWidth} y={0}
                       width={chartWidth} height={innerHeight} />
             );
         }
