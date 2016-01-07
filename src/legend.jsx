@@ -24,11 +24,18 @@ export default React.createClass({
         };
     },
 
+    handleClick(key, disabled) {
+        if (this.props.onChange) {
+            this.props.onChange(key, disabled);
+        }
+    },
+
     render() {
 
         const legendStyle = {
             listStyle: "none",
-            paddingLeft: 0
+            paddingLeft: 0,
+            cursor: "pointer"
         };
 
         const legendListStyle = {
@@ -42,7 +49,7 @@ export default React.createClass({
             height: 15,
             margin: 2,
             borderRadius: 2,
-            backgroundColor: "#CCC"
+            backgroundColor: "#EFEFEF"
         };
 
         const lineStyle = {
@@ -51,7 +58,7 @@ export default React.createClass({
             height: 3,
             margin: 2,
             marginTop: 8,
-            backgroundColor: "#CCC"
+            backgroundColor: "#EFEFEF"
         };
 
         const dotStyle = {
@@ -61,7 +68,7 @@ export default React.createClass({
             margin: 2,
             marginTop: 6,
             borderRadius: 4,
-            backgroundColor: "#CCC"
+            backgroundColor: "#EFEFEF"
         };
 
         const items = [];
@@ -69,18 +76,22 @@ export default React.createClass({
             let style;
             const categoryStyle = category.style || {};
             const categoryLabelStyle = category.labelStyle || {};
+            const disabled = category.disabled || false;
             if (this.props.type === "swatch") {
-                style = merge(true, swatchStyle, categoryStyle);
+                style = disabled ? swatchStyle : merge(true, swatchStyle, categoryStyle);
             } else if (this.props.type === "line") {
-                style = merge(true, lineStyle, categoryStyle);
+                style = disabled ? lineStyle : merge(true, lineStyle, categoryStyle);
             } else if (this.props.type === "dot") {
-                style = merge(true, dotStyle, categoryStyle);
+                style = disabled ? dotStyle : merge(true, dotStyle, categoryStyle);
             }
 
             const labelStyle = merge(true, labelStyle, categoryLabelStyle);
 
             items.push(
-                <li key={`legend-item-${category.key}`} style={legendListStyle}>
+                <li
+                    key={`legend-item-${category.key}`}
+                    style={legendListStyle}
+                    onClick={() => this.handleClick(category.key, !disabled)}>
                     <span style={style}/>
                     <span style={labelStyle}> {category.label} </span>
                 </li>

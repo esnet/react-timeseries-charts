@@ -21,15 +21,24 @@ const text = `
 
 Legends are simple to define:
 
-    const categories={[{key: "aust", label: "AUD", style: {backgroundColor: "#1f77b4"}},
-                       {key: "usa", label: "USD", style: {backgroundColor: "#aec7e8"}}]}
+    const categories = [
+        {key: "aust", label: "AUD", disabled={true} style: {backgroundColor: "#1f77b4"}},
+        {key: "usa", label: "USD", disabled={false} style: {backgroundColor: "#aec7e8"}}
+    ];
 
-    <Legend type="line" categories={categories} />
+    <Legend type="line" categories={categories} onChange={this.handleLegendChange}/>
 
 The 'type' maybe: line, switch or dot.
 
-For each category to display you must provide a key and a label. You may also provide a style
-which will be merged in with the base style for that type.
+For each category to display you must provide a key, a label and if it should be displayed
+disabled or not. You may also provide a style which will be merged in with the base style
+for that type.
+
+The legend can also be supplied with a callback function which will tell you if the user
+has clicked on one of the legend items to enable/disable that item. The callback will be
+called with the key and the new enabled/disabled state. You can use this to hide or show
+the series on the chart, for example. Note that you'll want to pass the state back into
+the legend as that category's disabled value.
 
 `;
 
@@ -39,11 +48,24 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text
+            markdown: text,
+            disabled: {
+                aust: false,
+                usa: false,
+                oscars: false,
+                total: false
+            }
         };
     },
 
+    handleLegendChange(key, v) {
+        const disabled = this.state.disabled;
+        disabled[key] = v;
+        this.setState({disabled});
+    },
+
     render() {
+        console.log(this.state.disabled);
         return (
             <div>
                 <div className="row">
@@ -67,18 +89,21 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-3">
                         <Legend type="line" categories={[
-                            {key: "aust", label: "AUD", style: {backgroundColor: "#1f77b4"}},
-                            {key: "usa", label: "USD", style: {backgroundColor: "#aec7e8"}}]} />
+                            {key: "aust", label: "AUD", disabled: this.state.disabled["aust"], style: {backgroundColor: "#1f77b4"}},
+                            {key: "usa", label: "USD", disabled: this.state.disabled["usa"], style: {backgroundColor: "#aec7e8"}}]}
+                            onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="swatch" categories={[
-                            {key: "oscars", label: "Oscars", style: {backgroundColor: "#ff7f0e"}},
-                            {key: "total", label: "Total", style: {backgroundColor: "#ffbb78"}}]} />
+                            {key: "oscars", label: "Oscars", disabled: this.state.disabled["oscars"], style: {backgroundColor: "#ff7f0e"}},
+                            {key: "total", label: "Total", disabled: this.state.disabled["total"], style: {backgroundColor: "#ffbb78"}}]}
+                            onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="dot" categories={[
-                            {key: "site", label: "Site", style: {backgroundColor: "#98df8a"}},
-                            {key: "router", label: "Router", style: {backgroundColor: "#d62728"}}]} />
+                            {key: "site", label: "Site", disabled: this.state.disabled["site"], style: {backgroundColor: "#98df8a"}},
+                            {key: "router", label: "Router", disabled: this.state.disabled["router"], style: {backgroundColor: "#d62728"}}]}
+                            onChange={this.handleLegendChange} />
                     </div>
                 </div>
 
