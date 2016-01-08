@@ -11,8 +11,8 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -25,9 +25,6 @@ import YAxis from "../../src/yaxis";
 import LineChart from "../../src/linechart";
 import Baseline from "../../src/baseline";
 import Resizable from "../../src/resizable";
-
-// Docs text
-import text from "raw!../../docs/baseline.md";
 
 // Data
 const data = require("../data/usd_vs_euro.json");
@@ -48,18 +45,17 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
             tracker: null,
             timerange: series.range()
         };
     },
 
-    handleTrackerChanged(t) {
-        this.setState({tracker: t});
+    handleTrackerChanged(tracker) {
+        this.setState({tracker});
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {
@@ -67,7 +63,7 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>Baseline</h3>
+                        <h3>Baseline Example</h3>
                     </div>
                 </div>
                 <div className="row">
@@ -92,7 +88,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
+                        <APIDocs file="src/baseline.jsx"/>
                     </div>
                 </div>
             </div>

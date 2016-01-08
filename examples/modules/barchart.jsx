@@ -15,6 +15,7 @@ import _ from "underscore";
 import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -79,7 +80,7 @@ other chart types, the vertical scale is provided by referencing the \`<YAxis>\`
                 <Baseline
                     axis="traffic"
                     value={avgIn}
-                    label="Avg
+                    label="Avg"
                     position="right" />
             </Charts>
             <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -250,7 +251,7 @@ export default React.createClass({
 
                <div className="row">
                     <div className="col-md-12">
-                        <h3>BarChart</h3>
+                        <h3>BarChart Examples</h3>
                     </div>
                 </div>
 
@@ -279,7 +280,7 @@ export default React.createClass({
                                                   series={octoberTrafficSeries}
                                                   selection={this.state.selection}
                                                   onSelectionChange={this.handleSelectionChanged}/>
-                                        <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
+                                        <Baseline axis="traffic" value={avgIn} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -415,6 +416,14 @@ export default React.createClass({
 
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <APIDocs file="src/barchart.jsx"/>
                     </div>
                 </div>
             </div>

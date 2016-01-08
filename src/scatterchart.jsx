@@ -21,7 +21,30 @@ function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
+/**
+ * The `<ScatterChart >` widget is able to display a single series
+ * scattered across a time axis.
+ *
+ * The ScatterChart should be used within `<ChartContainer>` etc.,
+ * as this will construct the horizontal and vertical axis, and
+ * manage other elements.
+ *
+ *
+ * ```
+ * <ChartContainer timeRange={series.timerange()}>
+ *     <ChartRow height="150">
+ *         <YAxis id="wind" label="Wind gust (mph)" labelOffset={-5}
+ *                min={0} max={series.max()} width="100" type="linear" format=",.1f"/>
+ *         <Charts>
+ *             <ScatterChart axis="wind" series={series} style={{color: "steelblue", opacity: 0.5}} />
+ *         </Charts>
+ *     </ChartRow>
+ * </ChartContainer>
+ * ```
+ */
 export default React.createClass({
+
+    displayName: "ScatterChart",
 
     getDefaultProps() {
         return {
@@ -31,6 +54,40 @@ export default React.createClass({
                 opacity: 1
             }
         };
+    },
+
+    propTypes: {
+
+        /**
+         * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
+         */
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+
+        /**
+         * Reference to the axis which provides the vertical scale for drawing. e.g.
+         * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+         */
+        axis: React.PropTypes.string.isRequired,
+
+        /**
+         * The radius of each point if a radius is not present in the series.
+         */
+        radius: React.PropTypes.number,
+
+        /**
+         * The style of the scatter chart drawing (using SVG CSS properties). For example:
+         * ```
+         * style = {
+         *     color: "steelblue",
+         *     opacity: 0.5
+         * }
+         * ```
+         */
+        style: React.PropTypes.shape({
+            color: React.PropTypes.string,
+            opacity: React.PropTypes.number
+        })
+
     },
 
     renderScatterChart(series, timeScale, yScale, radius) {

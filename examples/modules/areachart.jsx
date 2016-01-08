@@ -12,8 +12,8 @@
 
 import React from "react";
 import _ from "underscore";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Pond
 import {TimeSeries} from "pondjs";
@@ -26,9 +26,6 @@ import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import AreaChart from "../../src/areachart";
 import Resizable from "../../src/resizable";
-
-// Docs text
-import exampleText from "raw!../../docs/areachart.md";
 
 // Data
 const rawTrafficData = require("../data/link-traffic.json");
@@ -56,7 +53,6 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: exampleText,
             tracker: null,
             timerange: traffic.range()
         };
@@ -140,10 +136,9 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
+                        <APIDocs file="src/areachart.jsx"/>
                     </div>
                 </div>
-
             </div>
         );
     }

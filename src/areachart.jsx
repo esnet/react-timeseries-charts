@@ -114,7 +114,44 @@ function getCroppedSeries(scale, width, series) {
 }
 
 /**
- * Draws an area chart
+ * The AreaChart widget is able to display single or multiple stacked
+ * areas above or below the axis. It used throughout the
+ * [My ESnet Portal](http://my.es.net).
+
+ * The AreaChart should be used within a `<ChartContainer>` structure,
+ * as this will construct the horizontal and vertical axis, and manage
+ * other elements. Here is an example of an AreaChart with an up and down
+ * traffic visualization:
+ *
+ *  ```
+ *   render() {
+ *      return (
+ *          ...
+ *          <ChartContainer timeRange={trafficSeries.timerange()} width="1080">
+ *              <ChartRow height="150">
+ *                  <Charts>
+ *                      <AreaChart
+ *                          axis="traffic"
+ *                          series={trafficSeries}
+ *                          columns={{up: ["in"], down: ["out"]}}/>
+ *                  </Charts>
+ *                  <YAxis id="traffic" label="Traffic (bps)" min={-max} max={max} absolute={true} width="60" type="linear"/>
+ *              </ChartRow>
+ *          </ChartContainer>
+ *          ...
+ *      );
+ *  }
+ *  ```
+ * The `<AreaChart>`` takes a single `TimeSeries` object into its `series` prop. This
+ * series can contain multiple columns and those columns can be referenced using the `columns`
+ * prop. The `columns` props allows you to map columns in the series to the chart,
+ * letting you specify the stacking and orientation of the data. In the above example
+ * we map the "in" column in `trafficSeries` to the up direction and the "out" column to
+ * the down direction. Each direction is specified as an array, so adding multiple
+ * columns into a direction will stack the areas in that direction.
+ *
+ * Note: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,
+ * rather than hard coding the width as in the above example.
  */
 export default React.createClass({
 
@@ -123,18 +160,25 @@ export default React.createClass({
     propTypes: {
 
         /**
-         * The TimeSeries to render
+         * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
          */
         series: React.PropTypes.instanceOf(TimeSeries).isRequired,
 
         /**
+         * Reference to the axis which provides the vertical scale for ## drawing. e.g.
+         * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+         */
+        axis: React.PropTypes.string.isRequired,
+
+        /**
          * The series series columns mapped to stacking up and down.
          * Has the format:
-         *
+         * ```
          *  "columns": {
          *      up: ["in", ...],
          *      down: ["out", ...]
          *  }
+         *  ```
          */
         columns: React.PropTypes.shape({
             up: React.PropTypes.arrayOf(React.PropTypes.string),
@@ -143,24 +187,19 @@ export default React.createClass({
 
         /**
          * The style of the area chart, with format:
-         *
-         *  "style": {
-         *      up: ["#448FDD", "#75ACE6", "#A9CBEF", ...],
-         *      down: ["#FD8D0D", "#FDA949", "#FEC686", ...]
-         *  }
-         *
-         *  Where each color in the array corresponds to each area stacked
-         *  either up or down.
+         * ```
+         * "style": {
+         *     up: ["#448FDD", "#75ACE6", "#A9CBEF", ...],
+         *     down: ["#FD8D0D", "#FDA949", "#FEC686", ...]
+         * }
+         * ```
+         * Where each color in the array corresponds to each area stacked
+         * either up or down.
          */
         style: React.PropTypes.shape({
             up: React.PropTypes.arrayOf(React.PropTypes.string),
             down: React.PropTypes.arrayOf(React.PropTypes.string)
         }),
-
-        /**
-         * Time in ms to transition the chart when the axis changes scale
-         */
-        transition: React.PropTypes.number,
 
         /**
          * The d3 interpolation method
@@ -292,9 +331,12 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.renderAreaChart(this.props.series, this.props.timeScale,
-                             this.props.yScale, this.props.interpolate,
-                             this.props.isPanning, this.props.columns);
+        this.renderAreaChart(this.props.series,
+                             this.props.timeScale,
+                             this.props.yScale,
+                             this.props.interpolate,
+                             this.props.isPanning,
+                             this.props.columns);
     },
 
     componentWillReceiveProps(nextProps) {

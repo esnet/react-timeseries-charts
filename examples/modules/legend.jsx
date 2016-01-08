@@ -11,36 +11,11 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
 // Imports from the charts library
 import Legend from "../../src/legend";
-
-const text = `
-
-Legends are simple to define. First define the items you want in it using an array as follows:
-
-    const categories = [
-        {key: "aust", label: "AUD", disabled={true} style: {backgroundColor: "#1f77b4"}},
-        {key: "usa", label: "USD", disabled={false} style: {backgroundColor: "#aec7e8"}}
-    ];
-
-Then render the legend as either "line", "swatch" or "dot" style:
-
-    <Legend type="line" categories={categories} onChange={this.handleLegendChange}/>
-
-For each category to display you must provide a key, a label and if it should be displayed
-disabled or not. You may also provide a style which will be merged in with the base style
-for that type and a disabled boolean if it should be rendered with a disabled appearance.
-
-The legend can also be supplied with a callback function which will tell you if the user
-has clicked on one of the legend items to enable/disable that item. The callback will be
-called with the key and the new enabled/disabled state. You can use this to hide or show
-the series on the chart, for example. Note that you'll want to pass the state back into
-the legend as that category's disabled value.
-`;
 
 export default React.createClass({
 
@@ -48,7 +23,6 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
             disabled: {
                 aust: false,
                 usa: false,
@@ -69,7 +43,7 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>Horizontal Legend</h3>
+                        <h3>Legend Examples</h3>
                     </div>
                 </div>
 
@@ -110,13 +84,6 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-md-12">
-                        <hr />
                         <APIDocs file="src/legend.jsx"/>
                     </div>
                 </div>

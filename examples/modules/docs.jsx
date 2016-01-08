@@ -28,6 +28,8 @@ export default React.createClass({
             return "one of (" + _.map(type.value, value => {
                 return this.renderPropType(value);
             }).join(", ") + ")";
+        } if (type.name === "instanceOf") {
+            return `instance of a ${type.value}`;
         } if (type.name === "arrayOf") {
             return `array of ${this.renderArrayOf(type.value)}`;
         } if (type.name === "shapes") {
@@ -74,7 +76,7 @@ export default React.createClass({
                     <Markdown source={prop.description ? prop.description : ""} />
                 </div>
                 <span style={typeStyle} >
-                    {this.renderPropType(prop.type)}
+                    Type: {this.renderPropType(prop.type)}
                 </span>
                 <hr />
             </div>
@@ -86,11 +88,12 @@ export default React.createClass({
         const docs = docsFile[file];
         return (
             <div>
-                <h3>API</h3>
+                <h3>{docs.displayName} Documentation</h3>
                 <Markdown source={docs.description} />
                 <hr />
-                <h4>Props</h4>
-                {this.renderProps(docs.props)}
+                <h3>{docs.displayName} Props</h3>
+                <hr />
+                {docs.props ? this.renderProps(docs.props) : "none"}
             </div>
         );
     }
