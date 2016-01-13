@@ -44,7 +44,7 @@ This example uses inline styles:
 
 Which are then specified for each LineChart:
 
-    <ChartContainer timeRange={requestsSeries.range()} padding="5">
+    <ChartContainer timeRange={requestsSeries.range()}>
         <ChartRow height="300" debug={false}>
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
@@ -106,19 +106,33 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text
+            markdown: text,
+            active: {
+                requests: true,
+                connections: true
+            }
         };
     },
 
     renderChart() {
+        let charts = [];
+        if (this.state.active.requests) {
+            charts.push(
+                <LineChart key="requests" axis="axis1" series={requestsSeries} style={requestsStyle}/>
+            );
+        }
+        if (this.state.active.connections) {
+            charts.push(
+                <LineChart key="connections" axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
+            );
+        }
         return (
-            <ChartContainer timeRange={requestsSeries.range()} padding="5">
+            <ChartContainer timeRange={requestsSeries.range()}>
                 <ChartRow height="300" debug={false}>
                     <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                            labelOffset={-10} min={0} max={1000} format=",.0f" width="60" type="linear" />
                     <Charts>
-                        <LineChart axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
-                        <LineChart axis="axis1" series={requestsSeries} style={requestsStyle}/>
+                        {charts}
                     </Charts>
                     <YAxis id="axis2" label="Connections" style={{labelColor: scheme.connections}}
                            labelOffset={12} min={0} format=",.0f" max={10000} width="80" type="linear"/>
@@ -127,7 +141,26 @@ export default React.createClass({
         );
     },
 
+    handleActiveChange(key, disabled) {
+        const active = this.state.active;
+        active[key] = !disabled;
+        this.setState({active});
+    },
+
     render() {
+        const legend = [
+            {
+                key: "requests",
+                label: "Requests",
+                disabled: !this.state.active.requests,
+                style: {backgroundColor: "#9467bd"}
+            },{
+                key: "connections",
+                label: "Connections",
+                disabled: !this.state.active.connections,
+                style: {backgroundColor: "#2ca02c"}
+            }
+        ];
         return (
             <div>
                 <div className="row">
@@ -138,10 +171,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Legend type="line" categories={[
-                            {key: "requests", label: "Requests", style: {backgroundColor: "#9467bd"}},
-                            {key: "connections", label: "Connections", style: {backgroundColor: "#2ca02c"}}
-                        ]} />
+                        <Legend type="line" categories={legend} onChange={this.handleActiveChange}/>
                     </div>
                 </div>
 

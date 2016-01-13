@@ -20,20 +20,50 @@ function scaleAsString(scale) {
 }
 
 /**
- * Renders a horizontal time axis
+ * The YAxis widget displays a vertical axis to the left or right
+ * of the charts. A YAxis always appears within a `ChartRow`, from
+ * which it gets its height and positioning. You can have more than
+ * one axis per row.
  *
- * Props:
- *     * align - if the axis should be draw as if it is on the
- *               left or right (defaults to left)
- *     * scale - a d3 scale that defines the domain and range of the axis
+ * ![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png "YAxis")
+ *
+ * Here's a simple YAxis example:
+ *
+ * ```js
+ * <YAxis id="price-axis" label="Price (USD)" min={0} max={100} width="60" type="linear" format="$,.2f"/>
+ * ```
+ *
+ * Visually you can control the axis `label`, its size via the `width`
+ * prop, its `format`, and `type` of scale (linear).
+ *
+ * Each axis also defines a scale through a `min` and `max` prop. Charts
+ * may then refer to the axis by by citing the axis `id` in their `axis`
+ * prop. Those charts will then use the axis scale for their y-scale.
+ *
+ * Here is an example of two line charts that each have their own axis:
+ *
+ * ```js
+ * <ChartContainer timeRange={audSeries.timerange()}>
+ *     <ChartRow height="200">
+ *         <YAxis id="aud" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
+ *         <Charts>
+ *             <LineChart axis="aud" series={audSeries} style={audStyle}/>
+ *             <LineChart axis="euro" series={euroSeries} style={euroStyle}/>
+ *         </Charts>
+ *         <YAxis id="euro" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
+ *     </ChartRow>
+ * </ChartContainer>
+ * ```
+ *
+ *  Note that there are two `<YAxis>` components defined here, one before
+ *  the `<Charts>` block and one after. This defines that the first axis will
+ *  appear to the left of the charts and the second will appear after the charts.
+ *  Each of the line charts uses its `axis` prop to identify the axis ("aud" or "euro")
+ *  it will use for its vertical scale.
  */
 export default React.createClass({
 
     displayName: "YAxis",
-
-    propTypes: {
-        align: React.PropTypes.string
-    },
 
     getDefaultProps() {
         return {
@@ -46,12 +76,62 @@ export default React.createClass({
             format: ".2s",           // Format string for d3.format
             labelOffset: 0,          // Offset the label position
             transition: 0,           // Axis transition time
+            width: 80,
             style: {
                 labelColor: "#8B7E7E", // Default label color
                 labelWeight: 100,
                 labelSize: 12
             }
         };
+    },
+
+    propTypes: {
+
+        /**
+         * A name for the axis which can be used by a chart to reference the axis.
+         */
+        id: React.PropTypes.string.isRequired,
+
+        /**
+         * The label to be displayed alongside the axis.
+         */
+        label: React.PropTypes.string,
+
+        /**
+         * Minium value, which combined with "max", define the scale of the axis.
+         */
+        min: React.PropTypes.number.isRequired,
+
+        /**
+         * Maxium value, which combined with "min,"" define the scale of the axis.
+         */
+        max: React.PropTypes.number.isRequired,
+
+        width: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ]),
+
+        /**
+         * The scale type: linear, log, or exp.
+         */
+        type: React.PropTypes.oneOf([
+            "linear",
+            "log",
+            "exp"
+        ]),
+
+        /**
+         * d3.format for the axis labels. e.g. `format="$,.2f"`
+         */
+        format: React.PropTypes.string,
+
+        /**
+         * If the chart should be rendered to with the axis on the left or right.
+         * If you are using the axis in a ChartRow, you do not need to provide this.
+         */
+        align: React.PropTypes.string
+
     },
 
     renderAxis(align, scale, width, absolute, format) {
@@ -161,7 +241,7 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.renderAxis(this.props.align, this.props.scale, this.props.width,
+        this.renderAxis(this.props.align, this.props.scale, +this.props.width,
                         this.props.absolute, this.props.format);
     },
 

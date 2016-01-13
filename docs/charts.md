@@ -6,7 +6,7 @@ The `<Charts>` element is a grouping for charts within a row. It takes no props.
 Here is an example of two line charts within a `<Charts>` group:
 
 ```xml
-<ChartContainer timeRange={audSeries.range()} padding="5">
+<ChartContainer timeRange={audSeries.timerange()}>
     <ChartRow height="200">
         <YAxis/>
         <Charts>

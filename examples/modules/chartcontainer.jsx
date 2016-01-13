@@ -11,33 +11,20 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
-
-// Docs text
-import text from "raw!../../docs/chartcontainer.md";
+import APIDocs from "./docs";
 
 export default React.createClass({
 
     mixins: [Highlighter],
-
-    getInitialState() {
-        return {
-            markdown: text
-        };
-    },
 
     render() {
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>ChartContainer</h3>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
+                        <hr />
+                        <APIDocs file="src/chartcontainer.jsx"/>
                     </div>
                 </div>
             </div>

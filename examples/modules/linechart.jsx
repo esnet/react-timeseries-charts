@@ -11,8 +11,8 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -26,9 +26,6 @@ import LineChart from "../../src/linechart";
 import Baseline from "../../src/baseline";
 import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
-
-// Docs text
-import text from "raw!../../docs/linechart.md";
 
 // Data
 const aud = require("../data/usd_vs_aud.json");
@@ -60,18 +57,17 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            markdown: text,
             tracker: null,
             timerange: audSeries.range()
         };
     },
 
-    handleTrackerChanged(t) {
-        this.setState({tracker: t});
+    handleTrackerChanged(tracker) {
+        this.setState({tracker});
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {
@@ -93,7 +89,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} padding="5"
+                            <ChartContainer timeRange={this.state.timerange}
                                             trackerPosition={this.state.tracker}
                                             onTrackerChanged={this.handleTrackerChanged}
                                             enablePanZoom={true}
@@ -117,7 +113,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
+                        <APIDocs file="src/linechart.jsx"/>
                     </div>
                 </div>
             </div>
