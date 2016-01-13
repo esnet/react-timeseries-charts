@@ -11,9 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
-import _ from "underscore";
 
 // Pond
 import { TimeSeries, TimeRange } from "pondjs";
@@ -25,14 +23,10 @@ import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import LineChart from "../../src/linechart";
 import AreaChart from "../../src/areachart";
-import ScatterChart from "../../src/scatterchart";
-import Baseline from "../../src/baseline";
-import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
 
 // Data
 const data = require("../data/bike.json");
-const start = 1343488020000;
 
 const pacePoints = [];
 const speedPoints = [];
@@ -50,7 +44,7 @@ for (let i = 0; i < data.time.length; i++) {
         const speed = (data.distance[i] - data.distance[i - 1]) /
                       (data.time[i] - data.time[i - 1]);  // meters/sec
         const speedMph = 2.236941 * speed;  // convert m/s to miles/hr
-        const pace = speedMph > 0.1 ? 60 / speedMph : null; // convert miles/hr to mins/mile
+        // const pace = speedMph > 0.1 ? 60 / speedMph : null; // convert miles/hr to mins/mile
         const hr = data.heartrate[i];
         const altitude = data.altitude[i] * 3.28084; // convert m to ft
 
@@ -144,8 +138,7 @@ export default React.createClass({
                                 maxTime={pace.range().end()}
                                 minTime={pace.range().begin()}
                                 minDuration={10 * 60 * 1000}
-                                onTimeRangeChanged={this.handleTimeRangeChange}
-                                margin={0} padding={0} >
+                                onTimeRangeChanged={this.handleTimeRangeChange} >
                                 <ChartRow height="200" debug={false}>
                                     <YAxis
                                         id="axis1"

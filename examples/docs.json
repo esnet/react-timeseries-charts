@@ -1,0 +1,843 @@
+{
+  "src/areachart.jsx": {
+    "description": "The AreaChart widget is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe AreaChart should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an AreaChart with an up and down\ntraffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}/>\n                 </Charts>\n                 <YAxis id=\"traffic\" label=\"Traffic (bps)\" min={-max} max={max} absolute={true} width=\"60\" type=\"linear\"/>\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>`` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.",
+    "displayName": "AreaChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "axis": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "Reference to the axis which provides the vertical scale for ## drawing. e.g.\nspecifying axis=\"trafficRate\" would refer the y-scale to the YAxis of id=\"trafficRate\"."
+      },
+      "columns": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "up": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            },
+            "down": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The series series columns mapped to stacking up and down.\nHas the format:\n```\n \"columns\": {\n     up: [\"in\", ...],\n     down: [\"out\", ...]\n }\n ```",
+        "defaultValue": {
+          "value": "{\n    up: [\"value\"],\n    down: []\n}",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "up": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            },
+            "down": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The style of the area chart, with format:\n```\n\"style\": {\n    up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\", ...],\n    down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\", ...]\n}\n```\nWhere each color in the array corresponds to each area stacked\neither up or down.",
+        "defaultValue": {
+          "value": "{\n    up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\"],\n    down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\"]\n}",
+          "computed": false
+        }
+      },
+      "interpolate": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The d3 interpolation method",
+        "defaultValue": {
+          "value": "\"step-after\"",
+          "computed": false
+        }
+      },
+      "transition": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/barchart.jsx": {
+    "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different in that it will render\nonto a time axis, rather than rendering to specific values. As a result,\nan Aug 2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.",
+    "displayName": "BarChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "spacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The distance in pixels to inset the bar chart from its actual timerange",
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "offset": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The distance in pixels to offset the bar from its center position within the timerange\nit represents",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "columns": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "A list of columns within the series that will be stacked on top of each other"
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style provides the coloring, relating each column to styles for normal, highlight (hover) and selected:\n```\nconst style = {\n    \"in\": {\n        normal: {fill: \"#619F3A\"},\n        highlight: {fill: \"rgb(113, 187, 67)\"},\n        selected: {fill: \"#436D28\"}\n    }\n};\n```",
+        "defaultValue": {
+          "value": "{\n    value: {fill: \"#619F3A\"}\n}",
+          "computed": false
+        }
+      },
+      "size": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the bar will be this number of pixels wide. This\nprop takes priority of \"spacing\"."
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith the key, which is $series.name-$index-$column, the value of that event,\nalong with the context. The context provides the series (a Pond TimeSeries),\nthe column (a string) and the index (a Pond Index)."
+      }
+    }
+  },
+  "src/baseline.jsx": {
+    "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis id=\"price\" label=\"Price ($)\" min={series.min()} max={series.max()} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style}/>\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\"/>\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()}/>\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()}/>\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "Baseline",
+    "props": {
+      "axis": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "Reference to the axis which provides the vertical scale for drawing. e.g.\nspecifying axis=\"trafficRate\" would refer the y-scale to the YAxis of id=\"trafficRate\"."
+      },
+      "value": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The y-value to display the line at.",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The label to display with the axis.",
+        "defaultValue": {
+          "value": "\"\"",
+          "computed": false
+        }
+      },
+      "position": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"left\"",
+              "computed": false
+            },
+            {
+              "value": "\"right\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Whether to display the label on the \"left\" or \"right\".",
+        "defaultValue": {
+          "value": "\"left\"",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/brush.jsx": {
+    "description": "",
+    "displayName": "Brush"
+  },
+  "src/chartcontainer.jsx": {
+    "description": "The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.\n\n![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png \"ChartContainer\")\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "ChartContainer",
+    "props": {
+      "timeRange": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeRange"
+        },
+        "required": true,
+        "description": "A Pond TimeRange representing the begin and end time of the chart."
+      },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "element"
+              }
+            },
+            {
+              "name": "element"
+            }
+          ]
+        },
+        "required": true,
+        "description": "Children of the ChartContainer should be ChartRows."
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the chart. This library also includes a <Resizable> component\nthat can be wrapped around a \\<ChartContainer\\>. The purpose of this is to\ninject a width prop into the ChartContainer so that it will fit the\nsurrounding element. This is very handy when you need the chart to resize\nbased on a responsive layout.",
+        "defaultValue": {
+          "value": "800",
+          "computed": false
+        }
+      },
+      "minTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "Constrain the timerange to not move back in time further than this Date."
+      },
+      "maxTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "Constrain the timerange to not move forward in time than this Date. A\ncommon example is setting this to the current time or the end time\nof a fixed set of data."
+      },
+      "transition": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The transition time to move scales. Typically you might set this to\n300 (ms) to allow the axes to animate to the new scale. Experimental.",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "enablePanZoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Boolean to turn on interactive pan and zoom behavior for the chart.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "minDuration": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If this is set the timerange of the chart cannot be zoomed in further\nthan this duration, in milliseconds. This might be determined by the\nresolution of your data."
+      },
+      "format": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to day, month or\nyear will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to day will insure that a label is placed for each and every day.\n\nThe last option is relative. This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
+      },
+      "trackerPosition": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": "A Date specifying the position of the tracker line on the chart. It is\ncommon to take this from the onTrackerChanged callback so that the tracker\nfollowers the user's cursor, but it could be modified to snap to a point or\nto the nearest minute, for example."
+      },
+      "onTrackerChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Will be called when the user hovers over a chart. The callback will\nbe called with the timestamp (a Date object) of the position hovered\nover. This maybe then used as the trackerPosition (see above), or to\ninformation data about the time hovered over within the greater page.\nCommonly we might do something like this:\n```\n  <ChartContainer\n    onTrackerChanged={(tracker) => this.setState({tracker})}\n    trackerPosition={this.state.tracker}\n    ... />\n```"
+      },
+      "onTimeRangeChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "This will be called if the user pans and/or zooms the chart. The callback\nwill be called with the new TimeRange. This can be fed into the timeRange\nprop as well as used elsewhere on the greater page. Typical use might look\nlike this:\n```\n  <ChartContainer\n    onTimeRangeChanged={(timerange) => this.setState({timerange})}\n    timeRange={this.state.timerange}\n    ... />\n```"
+      },
+      "padding": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/chartrow.jsx": {
+    "description": "A ChartRow is a container for a set of Y axes and multiple charts\nwhich are overlaid on each other in a central canvas.\n\n![ChartRow](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartrows.png \"ChartRow\")\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "ChartRow",
+    "props": {
+      "height": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The height of the row.",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "enablePanZoom": {
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/charts.jsx": {
+    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### clipPathURL\n\nA URL for the clip path applied around this chart area\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
+    "displayName": "Charts"
+  },
+  "src/eventchart.jsx": {
+    "description": "Renders an event view that shows the supplied set of\nevents along a time axis.\n\nEXPERIMENTAL\n\nTODO: Convert to use Pond Events",
+    "displayName": "EventChart"
+  },
+  "src/eventhandler.jsx": {
+    "description": "",
+    "displayName": "EventHandler"
+  },
+  "src/labelaxis.jsx": {
+    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
+    "displayName": "LabelAxis"
+  },
+  "src/legend.jsx": {
+    "description": "Legends are simple to define. First define the items you want in\nit using an array as follows:\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", disabled={true} style: {backgroundColor: \"#1f77b4\"}},\n    {key: \"usa\", label: \"USD\", disabled={false} style: {backgroundColor: \"#aec7e8\"}}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. You may also provide a\nstyle which will be merged in with the base style for that type and\na disabled boolean if it should be rendered with a disabled appearance.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show the series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
+    "displayName": "Legend",
+    "props": {
+      "type": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"swatch\"",
+              "computed": false
+            },
+            {
+              "value": "\"line\"",
+              "computed": false
+            },
+            {
+              "value": "\"dot\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "The overall style of the legend items, either a color \"swatch\", a\ncolored \"line\", or a \"dot\".",
+        "defaultValue": {
+          "value": "\"swatch\"",
+          "computed": false
+        }
+      },
+      "categories": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "key": {
+                "name": "string",
+                "required": true
+              },
+              "label": {
+                "name": "string",
+                "required": true
+              },
+              "disabled": {
+                "name": "bool",
+                "required": false
+              },
+              "style": {
+                "name": "object",
+                "required": false
+              },
+              "labelStyle": {
+                "name": "object",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": true,
+        "description": "The categories array specifies details and style for each item in the legend. For each item:\n * \"key\" - (required) the name by which the legend will be known\n * \"label\" - (required) the displayed label\n * \"style\" - the swatch, dot, or line style. Typically you'd just specify {backgroundColor: \"#1f77b4\"}\n * \"labelStyle\" - the label style\n * \"disabled\" - a disabled state\n\n```\nconst categories = [\n   {key: \"aust\", label: \"AUD\", disabled: this.state.disabled[\"aust\"], style: {backgroundColor: \"#1f77b4\"}},\n   {key: \"usa\", label: \"USD\", disabled: this.state.disabled[\"usa\"], style: {backgroundColor: \"#aec7e8\"}}\n];\n```"
+      },
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback which will be called when the use enables/disables the legend item\nby clicking on it. The callback will be called with the key and the new\ndisabled state."
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "labelStyle": {
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/linechart.jsx": {
+    "description": "The LineChart widget is able to display a single line chart.\n\nThe LineChart should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\nHere is an example of two LineCharts overlaid on top of each other, along\nwith a BaseLine:\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"axis1\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"axis1\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"axis2\" series={euroSeries} style={euroStyle}/>\n            <Baseline  axis=\"axis1\" value={1.0} label=\"USD Baseline\" position=\"right\"/>\n        </Charts>\n        <YAxis id=\"axis2\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\nNote: Currently the line chart will take the first column for rendering.",
+    "displayName": "LineChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "axis": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "Reference to the axis which provides the vertical scale for drawing.\ne.g. specifying `axis=\"trafficRate\"` would refer the y-scale of the YAxis\nwith id=\"trafficRate\"."
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "color": {
+              "name": "string",
+              "required": false
+            },
+            "width": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The style of the line chart, with format:\n```\n\"style\": {\n    color: \"#448FDD\",\n    width: 2\n}\n```",
+        "defaultValue": {
+          "value": "{\n    color: \"#9DA3FF\",\n    width: 1\n}",
+          "computed": false
+        }
+      },
+      "smooth": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Smooth the line (using a bezier curve) or not.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "breakLine": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "The determines how to handle bad/missing values in the supplied\nTimeSeries. A missing value can be null or NaN. If breakLine\nis set to true then the line will be broken on either side of\nthe bad value(s). If breakLine is false (the default) bad values\nare simply removed and the adjoining points are connected.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/resizable.jsx": {
+    "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width."
+  },
+  "src/scatterchart.jsx": {
+    "description": "The `<ScatterChart >` widget is able to display a single series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements.\n\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "ScatterChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "axis": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "Reference to the axis which provides the vertical scale for drawing. e.g.\nspecifying axis=\"trafficRate\" would refer the y-scale to the YAxis of id=\"trafficRate\"."
+      },
+      "radius": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The radius of each point if a radius is not present in the series.",
+        "defaultValue": {
+          "value": "2.0",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "color": {
+              "name": "string",
+              "required": false
+            },
+            "opacity": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The style of the scatter chart drawing (using SVG CSS properties). For example:\n```\nstyle = {\n    color: \"steelblue\",\n    opacity: 0.5\n}\n```",
+        "defaultValue": {
+          "value": "{\n    color: \"steelblue\",\n    opacity: 1\n}",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/table.jsx": {
+    "description": "",
+    "displayName": "Table",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": ""
+      },
+      "width": {
+        "defaultValue": {
+          "value": "300",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/timeaxis.jsx": {
+    "description": "Renders a horizontal time axis",
+    "displayName": "TimeAxis"
+  },
+  "src/timerangemarker.jsx": {
+    "description": "Renders a band with extents defined by the supplied TimeRange.",
+    "displayName": "TimeRangeMarker",
+    "props": {
+      "timerange": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeRange"
+        },
+        "required": true,
+        "description": ""
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{fill: \"rgba(70, 130, 180, 0.25);\"}",
+          "computed": false
+        }
+      },
+      "spacing": {
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "offset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/tracker.jsx": {
+    "description": "",
+    "displayName": "Tracker",
+    "props": {
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{stroke: \"#AAA\", cursor: \"crosshair\"}",
+          "computed": false
+        }
+      },
+      "position": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "offset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/valueaxis.jsx": {
+    "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n\n EXPERIMENTAL",
+    "displayName": "ValueAxis"
+  },
+  "src/yaxis.jsx": {
+    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\n![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png \"YAxis\")\n\nHere's a simple YAxis example:\n\n```js\n<YAxis id=\"price-axis\" label=\"Price (USD)\" min={0} max={100} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
+    "displayName": "YAxis",
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "A name for the axis which can be used by a chart to reference the axis.",
+        "defaultValue": {
+          "value": "\"yaxis\"",
+          "computed": false
+        }
+      },
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The label to be displayed alongside the axis."
+      },
+      "min": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "Minium value, which combined with \"max\", define the scale of the axis.",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "max": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "Maxium value, which combined with \"min,\"\" define the scale of the axis.",
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "width": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "80",
+          "computed": false
+        }
+      },
+      "type": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"linear\"",
+              "computed": false
+            },
+            {
+              "value": "\"log\"",
+              "computed": false
+            },
+            {
+              "value": "\"exp\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "The scale type: linear, log, or exp.",
+        "defaultValue": {
+          "value": "\"linear\"",
+          "computed": false
+        }
+      },
+      "format": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "d3.format for the axis labels. e.g. `format=\"$,.2f\"`",
+        "defaultValue": {
+          "value": "\".2s\"",
+          "computed": false
+        }
+      },
+      "align": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "If the chart should be rendered to with the axis on the left or right.\nIf you are using the axis in a ChartRow, you do not need to provide this.",
+        "defaultValue": {
+          "value": "\"left\"",
+          "computed": false
+        }
+      },
+      "absolute": {
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "labelOffset": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "transition": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{\n    labelColor: \"#8B7E7E\", // Default label color\n    labelWeight: 100,\n    labelSize: 12\n}",
+          "computed": false
+        }
+      }
+    }
+  }
+}

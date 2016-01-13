@@ -12,12 +12,56 @@ import React from "react";
 import invariant from "invariant";
 
 /**
- * A Charts component is a grouping of charts which will be composited on top of
- * each other. It does no actual rendering itself, but instead is used for
- * organizing ChartRow children. There must be one, and only one, Charts
- * grouping within a ChartRow. All children of a ChartRow, for which there must
- * be at least one, are considered a chart. They should return an SVG <g>
- * containing their render.
+ *
+ * The `<Charts>` element is a grouping for charts within a row.
+ * It takes no props. Each chart within the group will be overlaid
+ * on top of each other.
+ *
+ * ![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png "Charts")
+ *
+ * Here is an example of two line charts within a `<Charts>` group:
+ *
+ * ```xml
+ * <ChartContainer timeRange={audSeries.timerange()}>
+ *     <ChartRow height="200">
+ *         <YAxis/>
+ *         <Charts>
+ *             <LineChart axis="aud" series={audSeries} style={audStyle}/>
+ *             <LineChart axis="euro" series={euroSeries} style={euroStyle}/>
+ *         </Charts>
+ *         <YAxis/>
+ *     </ChartRow>
+ * </ChartContainer>
+ * ```
+ *
+ * ## Making your own chart
+ *
+ * Anything within this grouping is considered a chart, meaning it will have
+ * certain props injected into it. As a result you can easily implement your own chart
+ * by simply expecting to have these props available and rendering as such.
+ *
+ * For your own chart, the render() method should return a SVG group `<g>` at the
+ * top level, and then your chart rendering within that.
+ *
+ * In addition to any props you add to your chart, the following props are passed into
+ * each chart automatically:
+ *
+ * #### timeScale
+ *
+ * A d3 scale for the time axis which you can use to transform your data in the x direction
+ *
+ * #### yScale
+ *
+ * A d3 scale for the y-axis which you can use to transform your data in the y direction
+ *
+ * #### clipPathURL
+ *
+ * A URL for the clip path applied around this chart area
+ *
+ * #### transition
+ *
+ * The time in ms it is expected the code will take to move from one state to another
+ *
  */
 export default React.createClass({
 
@@ -25,7 +69,7 @@ export default React.createClass({
 
     render() {
         invariant(false,
-            `${this.constructor.name} elements are for schema configuration only
+            `${this.constructor.name} elements are for configuration only
 and should not be rendered`
         );
     }

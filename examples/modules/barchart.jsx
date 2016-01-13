@@ -15,6 +15,7 @@ import _ from "underscore";
 import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+import APIDocs from "./docs";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -61,7 +62,7 @@ Now we can render a the chart. The \`<BarChart>\` element does the rendering of 
 other chart types, the vertical scale is provided by referencing the \`<YAxis>\` (\`axis='traffic'\`).
 
     <ChartContainer
-        timeRange={this.state.timerange} padding="0" format="day"
+        timeRange={this.state.timerange} format="day"
         enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
         maxTime={new Date(1414827330868)}
         minTime={new Date(1412143472795)}
@@ -79,7 +80,7 @@ other chart types, the vertical scale is provided by referencing the \`<YAxis>\`
                 <Baseline
                     axis="traffic"
                     value={avgIn}
-                    label="Avg
+                    label="Avg"
                     position="right" />
             </Charts>
             <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -250,7 +251,7 @@ export default React.createClass({
 
                <div className="row">
                     <div className="col-md-12">
-                        <h3>BarChart</h3>
+                        <h3>BarChart Examples</h3>
                     </div>
                 </div>
 
@@ -266,7 +267,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} padding="0" format="day"
+                            <ChartContainer timeRange={this.state.timerange} format="day"
                                             enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
                                             maxTime={new Date(1414827330868)}
                                             minTime={new Date(1412143472795)}
@@ -279,7 +280,7 @@ export default React.createClass({
                                                   series={octoberTrafficSeries}
                                                   selection={this.state.selection}
                                                   onSelectionChange={this.handleSelectionChanged}/>
-                                        <Baseline axis="traffic" value={avgIn} label="Avg "position="right"/>
+                                        <Baseline axis="traffic" value={avgIn} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -318,7 +319,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
@@ -355,7 +356,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} padding="0" format="day">
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
@@ -389,7 +390,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={monthlyAcceptedSeries.range()} padding="0" format="month">
+                            <ChartContainer timeRange={monthlyAcceptedSeries.range()} format="month">
 
                                 <ChartRow height="150">
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
@@ -415,6 +416,14 @@ export default React.createClass({
 
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <APIDocs file="src/barchart.jsx"/>
                     </div>
                 </div>
             </div>

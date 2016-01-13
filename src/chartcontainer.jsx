@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2015-2016, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -11,28 +11,153 @@
 import React from "react";
 import d3 from "d3";
 import _ from "underscore";
+import { TimeRange } from "pondjs";
 import invariant from "invariant";
+
 import TimeAxis from "./timeaxis";
 import ChartRow from "./chartrow";
 import Charts from "./charts";
 import Brush from "./brush";
+import Tracker from "./tracker";
 
-import "./chartcontainer.css";
-
+/**
+ * The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.
+ *
+ * ![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png "ChartContainer")
+ *
+ * Here is an example:
+ *
+ * ```xml
+ * <ChartContainer timeRange={audSeries.timerange()} width="800">
+ *     <ChartRow>
+ *         ...
+ *     </ChartRow>
+ *     <ChartRow>
+ *         ...
+ *     </ChartRow>
+ * </ChartContainer>
+ * ```
+ */
 export default React.createClass({
+
+    displayName: "ChartContainer",
 
     getDefaultProps() {
         return {
+            width: 800,
+            padding: 0,
             transition: 0,
             enablePanZoom: false
         };
     },
 
     propTypes: {
-        enablePanZoom: React.PropTypes.bool,
+
+        /**
+         * A Pond TimeRange representing the begin and end time of the chart.
+         */
+        timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
+
+        /**
+         * Children of the ChartContainer should be ChartRows.
+         */
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
-            React.PropTypes.element])
+            React.PropTypes.element
+        ]).isRequired,
+
+        /**
+         * The width of the chart. This library also includes a <Resizable> component
+         * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
+         * inject a width prop into the ChartContainer so that it will fit the
+         * surrounding element. This is very handy when you need the chart to resize
+         * based on a responsive layout.
+         */
+        width: React.PropTypes.number,
+
+        /**
+         * Constrain the timerange to not move back in time further than this Date.
+         */
+        minTime: React.PropTypes.instanceOf(Date),
+
+        /**
+         * Constrain the timerange to not move forward in time than this Date. A
+         * common example is setting this to the current time or the end time
+         * of a fixed set of data.
+         */
+        maxTime: React.PropTypes.instanceOf(Date),
+
+        /**
+         * The transition time to move scales. Typically you might set this to
+         * 300 (ms) to allow the axes to animate to the new scale. Experimental.
+         */
+        transition: React.PropTypes.number,
+
+        /**
+         * Boolean to turn on interactive pan and zoom behavior for the chart.
+         */
+        enablePanZoom: React.PropTypes.bool,
+
+        /**
+         * If this is set the timerange of the chart cannot be zoomed in further
+         * than this duration, in milliseconds. This might be determined by the
+         * resolution of your data.
+         */
+        minDuration: React.PropTypes.number,
+
+        /**
+         * Provides several options as to the format of the time axis labels.
+         * In general the time axis will generate an appropriate time scale based
+         * on the timeRange prop and there is no need to set this.
+         *
+         * However, four special options exist: setting format to day, month or
+         * year will show only ticks on those, and every one of those intervals.
+         * For example maybe you are showing a bar chart for October 2014 then setting
+         * the format to day will insure that a label is placed for each and every day.
+         *
+         * The last option is relative. This interprets the time as a duration. This
+         * is good for data that is specified relative to its start time, rather than
+         * as an actual date/time.
+         */
+        format: React.PropTypes.string,
+
+        /**
+         * A Date specifying the position of the tracker line on the chart. It is
+         * common to take this from the onTrackerChanged callback so that the tracker
+         * followers the user's cursor, but it could be modified to snap to a point or
+         * to the nearest minute, for example.
+         */
+        trackerPosition: React.PropTypes.instanceOf(Date),
+
+        /**
+         * Will be called when the user hovers over a chart. The callback will
+         * be called with the timestamp (a Date object) of the position hovered
+         * over. This maybe then used as the trackerPosition (see above), or to
+         * information data about the time hovered over within the greater page.
+         * Commonly we might do something like this:
+         * ```
+         *   <ChartContainer
+         *     onTrackerChanged={(tracker) => this.setState({tracker})}
+         *     trackerPosition={this.state.tracker}
+         *     ... />
+         * ```
+         */
+        onTrackerChanged: React.PropTypes.func,
+
+        /**
+         * This will be called if the user pans and/or zooms the chart. The callback
+         * will be called with the new TimeRange. This can be fed into the timeRange
+         * prop as well as used elsewhere on the greater page. Typical use might look
+         * like this:
+         * ```
+         *   <ChartContainer
+         *     onTimeRangeChanged={(timerange) => this.setState({timerange})}
+         *     timeRange={this.state.timerange}
+         *     ... />
+         * ```
+         */
+        onTimeRangeChanged: React.PropTypes.func
+
     },
 
     handleTrackerChanged(t) {
@@ -54,7 +179,6 @@ export default React.createClass({
 
     render() {
         const chartRows = [];
-        const padding = this.props.padding || 0;
 
         //
         // How much room does the axes of all the charts take up on the right
@@ -131,51 +255,26 @@ export default React.createClass({
             }
         });
 
-        // Extra space used by padding between columns
-        const leftExtra = (leftAxisWidths.length - 1) * padding;
-        const rightExtra = (rightAxisWidths.length - 1) * padding;
-
         // Space used by columns on left and right of charts
         const leftWidth = _.reduce(leftAxisWidths, (a, b) => {
             return a + b;
-        }, 0) + leftExtra;
+        }, 0);
         const rightWidth = _.reduce(rightAxisWidths, (a, b) => {
             return a + b;
-        }, 0) + rightExtra;
+        }, 0);
 
         //
-        // Time scale and time axis elements
+        // Time scale
         //
 
         const X_AXIS_HEIGHT = 35;
-
-        const transform = `translate(${leftWidth},0)`;
-        const timeAxisWidth = this.props.width - leftWidth -
-                            rightWidth - padding * 2;
-
-        const [beginTime, endTime] = this.props.timeRange.toJSON();
+        const timeAxisWidth =
+            this.props.width - leftWidth - rightWidth;
+        const [ beginTime, endTime ] = this.props.timeRange.toJSON();
 
         const timeScale = d3.time.scale()
             .domain([beginTime, endTime])
             .range([0, timeAxisWidth]);
-
-        const timeaxis = (
-            <TimeAxis scale={timeScale} format={this.props.format}/>
-        );
-
-        const timeAxis = (
-            <div className="row">
-                <div className="col-md-12" style={{height: X_AXIS_HEIGHT}}>
-                    <div className="chartcontainer timeaxis" >
-                        <svg width={this.props.width} height={X_AXIS_HEIGHT}>
-                            <g transform={transform}>
-                                {timeaxis}
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        );
 
         //
         // For valid children (those children which are ChartRows), we actually
@@ -184,6 +283,7 @@ export default React.createClass({
         //
 
         let i = 0;
+        let yPosition = 0;
         React.Children.forEach(this.props.children, child => {
             if (child.type === ChartRow) {
                 const chartRow = child;
@@ -193,7 +293,6 @@ export default React.createClass({
                     timeScale,
                     leftAxisWidths,
                     rightAxisWidths,
-                    key: rowKey,
                     width: this.props.width,
                     padding: this.props.padding,
                     minTime: this.props.minTime,
@@ -205,21 +304,39 @@ export default React.createClass({
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
-
-                const row = React.cloneElement(chartRow, props);
-
+                const transform = `translate(0,${yPosition})`;
                 chartRows.push(
-                    <div key={`chart-row-div-${i}`} className="row">
-                        <div className="col-md-12">
-                            <div className="chartcontainer chartrow">
-                                {row}
-                            </div>
-                        </div>
-                    </div>
+                    <g transform={transform} key={rowKey}>
+                        {React.cloneElement(chartRow, props)}
+                    </g>
                 );
+                yPosition += parseInt(child.props.height, 10);
             }
             i++;
         });
+
+
+        // Hover tracker line
+        const tracker = (
+            <g
+                key="tracker-group"
+                style={{pointerEvents: "none"}}
+                transform={`translate(${leftWidth},0)`}>
+                <Tracker height={yPosition}
+                         timeScale={timeScale}
+                         position={this.props.trackerPosition} />
+            </g>
+        );
+
+        //
+        // TimeAxis
+        //
+
+        const timeAxis = (
+            <g transform={`translate(${leftWidth},${yPosition})`}>
+                <TimeAxis scale={timeScale} format={this.props.format}/>
+            </g>
+        );
 
         //
         // Final render of the ChartContainer is composed of a number of
@@ -230,10 +347,16 @@ export default React.createClass({
         //
 
         return (
-            <div className="chartcontainer">
-                {chartRows}
+            <svg
+                width={this.props.width}
+                height={yPosition + X_AXIS_HEIGHT}
+                style={{display: "block"}}>
+                <g>
+                    {chartRows}
+                </g>
                 {timeAxis}
-            </div>
+                {tracker}
+            </svg>
         );
     }
 });

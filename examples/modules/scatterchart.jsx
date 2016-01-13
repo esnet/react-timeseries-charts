@@ -13,7 +13,7 @@
 import React from "react/";
 import _ from "underscore";
 import Moment from "moment";
-import Markdown from "react-markdown";
+import APIDocs from "./docs";
 import Highlighter from "./highlighter";
 
 // Pond
@@ -29,9 +29,6 @@ import Resizable from "../../src/resizable";
 
 // Weather data
 import weatherJSON from "../data/weather.json";
-
-// Docs text
-import text from "raw!../../docs/scatterchart.md";
 
 //
 // Read in the weather data and add some randomness and intensity for fun
@@ -65,28 +62,22 @@ export default React.createClass({
 
     mixins: [Highlighter],
 
-    getInitialState() {
-        return {
-            markdown: text
-        };
-    },
-
     render() {
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>ScatterChart</h3>
+                        <h3>ScatterChart Example</h3>
                     </div>
                 </div>
 
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={series.range()} padding="10">
+                            <ChartContainer timeRange={series.range()}>
                                 <ChartRow height="150" debug={false}>
                                     <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5}
-                                           min={0} max={series.max()} width="100" type="linear" format=",.1f"/>
+                                           min={0} max={series.max()} width="70" type="linear" format=",.1f"/>
                                     <Charts>
                                         <ScatterChart axis="wind-gust" series={series} style={{color: "steelblue", opacity: 0.5}} />
                                     </Charts>
@@ -100,7 +91,7 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown}/>
+                        <APIDocs file="src/scatterchart.jsx"/>
                     </div>
                 </div>
             </div>

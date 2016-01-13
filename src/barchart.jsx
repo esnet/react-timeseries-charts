@@ -21,22 +21,70 @@ import { TimeSeries } from "pondjs";
  */
 export default React.createClass({
 
-    propTypes: {
-        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-        spacing: React.PropTypes.number,
-        offset: React.PropTypes.number,
-        columns: React.PropTypes.array,
-        style: React.PropTypes.object,
-        size: React.PropTypes.number,
-        onSelectionChange: React.PropTypes.func
-    },
+    displayName: "BarChart",
 
     getDefaultProps() {
         return {
             spacing: 1,
             offset: 0,
-            style: {value: {fill: "#619F3A"}}
+            style: {
+                value: {fill: "#619F3A"}
+            }
         };
+    },
+
+    propTypes: {
+
+        /**
+         * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
+         */
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+
+        /**
+         * The distance in pixels to inset the bar chart from its actual timerange
+         */
+        spacing: React.PropTypes.number,
+
+        /**
+         * The distance in pixels to offset the bar from its center position within the timerange
+         * it represents
+         */
+        offset: React.PropTypes.number,
+
+        /**
+         * A list of columns within the series that will be stacked on top of each other
+         */
+        columns: React.PropTypes.arrayOf(
+            React.PropTypes.string
+        ),
+
+        /**
+         * The style provides the coloring, relating each column to styles for normal, highlight (hover) and selected:
+         * ```
+         * const style = {
+         *     "in": {
+         *         normal: {fill: "#619F3A"},
+         *         highlight: {fill: "rgb(113, 187, 67)"},
+         *         selected: {fill: "#436D28"}
+         *     }
+         * };
+         * ```
+         */
+        style: React.PropTypes.object,
+        
+        /**
+         * If size is specified, then the bar will be this number of pixels wide. This
+         * prop takes priority of "spacing".
+         */
+        size: React.PropTypes.number,
+        
+        /**
+         * A callback that will be called when the selection changes. It will be called
+         * with the key, which is $series.name-$index-$column, the value of that event,
+         * along with the context. The context provides the series (a Pond TimeSeries),
+         * the column (a string) and the index (a Pond Index).
+         */
+        onSelectionChange: React.PropTypes.func
     },
 
     /**
@@ -71,8 +119,8 @@ export default React.createClass({
     },
 
     renderBars() {
-        const spacing = Number(this.props.spacing);
-        const offset = Number(this.props.offset);
+        const spacing = +this.props.spacing;
+        const offset = +this.props.offset;
         const series = this.props.series;
         const timeScale = this.props.timeScale;
         const yScale = this.props.yScale;

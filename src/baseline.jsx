@@ -12,19 +12,29 @@ import React from "react";
 import "./baseline.css";
 
 /**
- * Draws a horizontal line across the chart
  *
- * Props:
+ * The BaseLine component displays a simple horizontal line at a value.
  *
- * - value          The positon of the horizontal line, which is transformed to
- *                  a pixel position using the yscale
- * - label          A label to display along side the line
- * - position       The position of the label, either left or right
+ * For example the following code overlays Baselines for the mean and stdev
+ * of a series on top of another chart.
  *
- * - yscale         The scale of the y axis to transform the value
- *                  (passed in automatically)
+ * ```
+ * <ChartContainer timeRange={series.timerange()} >
+ *     <ChartRow height="150">
+ *         <YAxis id="price" label="Price ($)" min={series.min()} max={series.max()} width="60" format="$,.2f"/>
+ *         <Charts>
+ *             <LineChart axis="price" series={series} style={style}/>
+ *             <Baseline axis="price" value={series.avg()} label="Avg" position="right"/>
+ *             <Baseline axis="price" value={series.avg()-series.stdev()}/>
+ *             <Baseline axis="price" value={series.avg()+series.stdev()}/>
+ *         </Charts>
+ *     </ChartRow>
+ * </ChartContainer>
+ * ```
  */
 export default React.createClass({
+
+    displayName: "Baseline",
 
     getDefaultProps() {
         return {
@@ -32,6 +42,30 @@ export default React.createClass({
             label: "",
             position: "left"
         };
+    },
+
+    propTypes: {
+
+        /**
+         * Reference to the axis which provides the vertical scale for drawing. e.g.
+         * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+         */
+        axis: React.PropTypes.string.isRequired,
+
+        /**
+         * The y-value to display the line at.
+         */
+        value: React.PropTypes.number,
+
+        /**
+         * The label to display with the axis.
+         */
+        label: React.PropTypes.string,
+
+        /**
+         * Whether to display the label on the "left" or "right".
+         */
+        position: React.PropTypes.oneOf(["left", "right"])
     },
 
     render() {

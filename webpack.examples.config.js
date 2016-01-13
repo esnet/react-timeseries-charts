@@ -15,7 +15,7 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.(js|jsx)$/,
-              loader: "babel?optional=es7.objectRestSpread" },
+              loader: "babel?stage=0" },
             { test: /\.css$/, loader: "style-loader!css-loader" },
             { test: /\.(png|jpg|gif)$/, loader: "url-loader?limit=8192"},
             { test: /\.json$/, loader: "json-loader" },
