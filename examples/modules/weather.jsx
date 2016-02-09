@@ -146,7 +146,7 @@ export default React.createClass({
     getInitialState() {
         return {
             tracker: null
-        }
+        };
     },
 
     render() {
