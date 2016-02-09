@@ -24,6 +24,9 @@ import YAxis from "../../src/yaxis";
 import LineChart from "../../src/linechart";
 import AreaChart from "../../src/areachart";
 import Resizable from "../../src/resizable";
+import Brush from "../../src/brush";
+
+import "./channels.css";
 
 // Data
 const data = require("../data/bike.json");
@@ -103,7 +106,7 @@ export default React.createClass({
     },
 
     handleTimeRangeChange(timerange) {
-        this.setState({timerange: timerange});
+        this.setState({timerange});
     },
 
     render() {
@@ -121,9 +124,13 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <h3>Cycling example</h3>
-                        This example shows an activity (a 112 mile bike ride) as multiple channels of data.
-                        It demonstrates broken line capability with the line charts. Drag to pan, scrollwheel
-                        to zoom.
+                        This example shows an activity (a 112 mile bike ride) as two overlaid line charts.
+                        It demonstrates:
+                        <ul>
+                            <li>Broken line capability with the line charts</li>
+                            <li>Pan and zoom: Drag to pan, scrollwheel</li>
+                            <li>Brushing</li>
+                        </ul>
                     </div>
                 </div>
                 <div className="row">
@@ -165,14 +172,36 @@ export default React.createClass({
                                         width="80"
                                         type="linear" format="d"/>
                                 </ChartRow>
+                            </ChartContainer>
+                        </Resizable>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Resizable>
+                            <ChartContainer
+                                timeRange={altitude.range()}
+                                format="relative"
+                                trackerPosition={this.state.tracker}
+                                onTrackerChanged={this.handleTrackerChanged}>
                                 <ChartRow height="100" debug={false}>
+                                    <Brush
+                                        id="brush"
+                                        beginTime={this.state.timerange.begin()}
+                                        endTime={this.state.timerange.end()}
+                                        onTimeRangeChanged={this.handleTimeRangeChange} />
                                     <YAxis
                                         id="axis1"
                                         label="Altitude (ft)"
                                         min={0} max={altitude.max("altitude")}
-                                        width="60" type="linear" format="d"/>
+                                        width={60} type="linear" format="d"/>
                                     <Charts>
-                                        <AreaChart axis="axis1" columns={{up: ["altitude"], down: []}} series={altitude} />
+                                        <AreaChart
+                                            axis="axis1"
+                                            style={{up: ["#DDD"]}}
+                                            columns={{up: ["altitude"], down: []}}
+                                            series={altitude} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

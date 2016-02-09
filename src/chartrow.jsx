@@ -175,7 +175,6 @@ export default React.createClass({
                 align = "right";
             } else {
                 const id = child.props.id;
-
                 // Check to see if we think this 'axis' is actually an axis
                 if (child.type === YAxis ||
                     (_.has(child.props, "min") &&
@@ -193,13 +192,12 @@ export default React.createClass({
                     // and scaleType props
                     yAxisScaleMap[id] = this.createScale(yaxis, type, min, max,
                                                          rangeBottom, rangeTop);
-                }
-
-                // Columns counts
-                if (align === "left") {
-                    leftAxisList.push(id);
-                } else if (align === "right") {
-                    rightAxisList.push(id);
+                    // Columns counts
+                    if (align === "left") {
+                        leftAxisList.push(id);
+                    } else if (align === "right") {
+                        rightAxisList.push(id);
+                    }
                 }
             }
         });
