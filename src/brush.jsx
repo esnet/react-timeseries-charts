@@ -28,14 +28,14 @@ export default React.createClass({
         }
     },
 
-    renderBrush(timeScale, beginTime, endTime) {
+    renderBrush(timeScale, timeRange) {
         if (!this.brush) {
             this.brush = d3.svg.brush()
                 .x(timeScale)
                 .on("brush", () => {
                     this.handleBrushed(this.brush);
                 });
-            this.brush.extent([beginTime, endTime]);
+            this.brush.extent([timeRange.begin(), timeRange.end()]);
         } else {
             const currentExtent = this.brush.extent();
             const currentBegin = currentExtent[0];
@@ -43,8 +43,8 @@ export default React.createClass({
 
             // This check is critical to break feedback cycles that
             // will cause the brush to get very confused.
-            if (currentBegin.getTime() !== beginTime.getTime() ||
-                currentEnd.getTime() !== endTime.getTime()) {
+            if (currentBegin.getTime() !== timeRange.begin().getTime() ||
+                currentEnd.getTime() !== timeRange.end().getTime()) {
                 this.brush.extent([beginTime, endTime]);
             } else {
                 return;
@@ -62,20 +62,15 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.renderBrush(this.props.timeScale,
-                         this.props.beginTime,
-                         this.props.endTime);
+        this.renderBrush(this.props.timeScale, this.props.timeRange);
     },
 
     componentWillReceiveProps(nextProps) {
         const timeScale = nextProps.timeScale;
-        const beginTime = nextProps.beginTime;
-        const endTime = nextProps.endTime;
-
+        const timeRange = nextProps.timeRange;
         if (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            this.props.beginTime.getTime() !== beginTime.getTime() ||
-            this.props.endTime.getTime() !== endTime.getTime() ) {
-            this.renderBrush(timeScale, beginTime, endTime);
+            this.props.timeRange !== timeRange) {
+            this.renderBrush(timeScale, timeRange);
         }
     },
 

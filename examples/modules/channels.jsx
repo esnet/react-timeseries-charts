@@ -83,11 +83,13 @@ const speed = new TimeSeries({
 });
 
 const paceStyle = {
-    color: "steelblue"
+    color: "steelblue",
+    width: 0.5
 };
 
 const hrStyle = {
-    color: "red"
+    color: "red",
+    width: 0.5
 };
 
 export default React.createClass({
@@ -97,7 +99,7 @@ export default React.createClass({
     getInitialState() {
         return {
             tracker: null,
-            timerange: new TimeRange([0, 120 * 60 * 1000])
+            timerange: new TimeRange([75 * 60 * 1000, 125 * 60 * 1000])
         };
     },
 
@@ -123,14 +125,15 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>Cycling example</h3>
-                        This example shows an activity (a 112 mile bike ride) as two overlaid line charts.
+                        <h3>Brushing example</h3>
+                        This example shows a 112 mile bike ride as two overlaid line charts: speed and heart rate.
                         It demonstrates:
                         <ul>
-                            <li>Broken line capability with the line charts</li>
-                            <li>Pan and zoom: Drag to pan, scrollwheel</li>
-                            <li>Brushing</li>
+                            <li>Broken lines for missing data</li>
+                            <li>Pan and zoom: Drag to pan, scrollwheel to zoom</li>
+                            <li>Brushing over an elevation chart: drag and resize the blue rectangle to pan and zoom</li>
                         </ul>
+                        <hr />
                     </div>
                 </div>
                 <div className="row">
@@ -153,6 +156,12 @@ export default React.createClass({
                                         min={0} max={35}
                                         width="60"
                                         type="linear" format=",.1f"/>
+                                    <YAxis
+                                        id="axis2"
+                                        label="Heart Rate (bpm)"
+                                        min={60} max={200}
+                                        width="60"
+                                        type="linear" format="d"/>
                                     <Charts>
                                         <LineChart
                                             axis="axis1"
@@ -165,12 +174,6 @@ export default React.createClass({
                                             style={hrStyle}
                                             breakLine={true}/>
                                     </Charts>
-                                    <YAxis
-                                        id="axis2"
-                                        label="Heart Rate (bpm)"
-                                        min={60} max={200}
-                                        width="80"
-                                        type="linear" format="d"/>
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
@@ -183,19 +186,16 @@ export default React.createClass({
                             <ChartContainer
                                 timeRange={altitude.range()}
                                 format="relative"
-                                trackerPosition={this.state.tracker}
-                                onTrackerChanged={this.handleTrackerChanged}>
+                                trackerPosition={this.state.tracker} >
                                 <ChartRow height="100" debug={false}>
                                     <Brush
-                                        id="brush"
-                                        beginTime={this.state.timerange.begin()}
-                                        endTime={this.state.timerange.end()}
+                                        timeRange={this.state.timerange}
                                         onTimeRangeChanged={this.handleTimeRangeChange} />
                                     <YAxis
                                         id="axis1"
                                         label="Altitude (ft)"
                                         min={0} max={altitude.max("altitude")}
-                                        width={60} type="linear" format="d"/>
+                                        width={120} type="linear" format="d"/>
                                     <Charts>
                                         <AreaChart
                                             axis="axis1"
