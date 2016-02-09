@@ -41,11 +41,10 @@ export default React.createClass({
             const currentBegin = currentExtent[0];
             const currentEnd = currentExtent[1];
 
-            // This check is critical to break feedback cycles that
-            // will cause the brush to get very confused.
+            // Break feedback cycles
             if (currentBegin.getTime() !== timeRange.begin().getTime() ||
                 currentEnd.getTime() !== timeRange.end().getTime()) {
-                this.brush.extent([beginTime, endTime]);
+                this.brush.extent([timeRange.begin(), timeRange.end()]);
             } else {
                 return;
             }
