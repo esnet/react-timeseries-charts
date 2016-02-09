@@ -236,9 +236,11 @@ export default React.createClass({
                 let pos = countLeft - 1;
 
                 React.Children.forEach(childRow.props.children, child => {
-                    if (child.type === Charts) {
-                        align = "right";
-                        pos = 0;
+                    if (child.type === Charts || child.type === Brush) {
+                        if (child.type === Charts) {
+                            align = "right";
+                            pos = 0;
+                        }
                     } else {
                         const width = Number(child.props.width) || 40;
                         if (align === "left") {
@@ -334,6 +336,7 @@ export default React.createClass({
 
         const timeAxis = (
             <g transform={`translate(${leftWidth},${yPosition})`}>
+                <path d="M0,10V0H1299V10" style={{stroke: "#EDEDED", strokeWidth: 1, fill: "none"}}></path>
                 <TimeAxis scale={timeScale} format={this.props.format}/>
             </g>
         );

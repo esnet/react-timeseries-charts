@@ -11,6 +11,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import d3 from "d3";
+import { TimeRange } from "pondjs";
 
 function scaleAsString(scale) {
     return `${scale.domain().toString()}-${scale.range().toString()}`;
@@ -20,40 +21,30 @@ export default React.createClass({
 
     displayName: "Brush",
 
-    getInitialState() {
-        return {
-            d3brush: null
-        };
-    },
-
     handleBrushed(brush) {
         const extent = brush.extent();
-        if (this.props.onBrushed) {
-            this.props.onBrushed(brush,extent[0],extent[1]);
+        if (this.props.onTimeRangeChanged) {
+            this.props.onTimeRangeChanged(new TimeRange(extent[0], extent[1]));
         }
     },
 
-    renderBrush(timeScale,beginTime,endTime) {
-        let d3brush = this.state.d3brush;
-
-        if (!d3brush) {
-            d3brush = d3.svg.brush()
+    renderBrush(timeScale, timeRange) {
+        if (!this.brush) {
+            this.brush = d3.svg.brush()
                 .x(timeScale)
                 .on("brush", () => {
-                    this.handleBrushed(d3brush);
+                    this.handleBrushed(this.brush);
                 });
-            this.setState({d3brush});
-            d3brush.extent([beginTime,endTime]);
+            this.brush.extent([timeRange.begin(), timeRange.end()]);
         } else {
-            const currentExtent = d3brush.extent();
-            const curBegin = currentExtent[0];
-            const curEnd = currentExtent[1];
+            const currentExtent = this.brush.extent();
+            const currentBegin = currentExtent[0];
+            const currentEnd = currentExtent[1];
 
-            // This check is critical to break feedback cycles that
-            // will cause the brush to get very confused.
-            if (curBegin.getTime() !== beginTime.getTime() ||
-                curEnd.getTime() !== endTime.getTime()) {
-                d3brush.extent([beginTime,endTime]);
+            // Break feedback cycles
+            if (currentBegin.getTime() !== timeRange.begin().getTime() ||
+                currentEnd.getTime() !== timeRange.end().getTime()) {
+                this.brush.extent([timeRange.begin(), timeRange.end()]);
             } else {
                 return;
             }
@@ -62,28 +53,23 @@ export default React.createClass({
 
         d3.select(ReactDOM.findDOMNode(this))
             .append("g")
-                .attr("class","x brush")
-                .call(d3brush)
+                .attr("class", "x brush")
+                .call(this.brush)
                 .selectAll("rect")
                 .attr("y", -6)
                 .attr("height", this.props.height + 7);
     },
 
     componentDidMount() {
-        this.renderBrush(this.props.timeScale,
-                         this.props.beginTime,
-                         this.props.endTime);
+        this.renderBrush(this.props.timeScale, this.props.timeRange);
     },
 
     componentWillReceiveProps(nextProps) {
         const timeScale = nextProps.timeScale;
-        const beginTime = nextProps.beginTime;
-        const endTime = nextProps.endTime;
-
+        const timeRange = nextProps.timeRange;
         if (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale) ||
-            this.props.beginTime.getTime() !== beginTime.getTime() ||
-            this.props.endTime.getTime() !== endTime.getTime() ) {
-            this.renderBrush(timeScale, beginTime, endTime);
+            this.props.timeRange !== timeRange) {
+            this.renderBrush(timeScale, timeRange);
         }
     },
 
