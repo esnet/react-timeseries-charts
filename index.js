@@ -2,6 +2,7 @@ module.exports = {
     AreaChart: require("./lib/areachart"),
     BarChart: require("./lib/barchart"),
     Baseline: require("./lib/baseline"),
+    Brush: require("./lib/brush"),
     ChartContainer: require("./lib/chartcontainer"),
     Charts: require("./lib/charts"),
     ChartRow: require("./lib/chartrow"),
