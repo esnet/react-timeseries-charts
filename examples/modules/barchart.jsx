@@ -76,7 +76,8 @@ other chart types, the vertical scale is provided by referencing the \`<YAxis>\`
                     columns={["in"]}
                     series={octoberTrafficSeries}
                     selection={this.state.selection}
-                    onSelectionChange={this.handleSelectionChanged} />
+                    onSelectionChange={this.handleSelectionChanged}
+                    format={formatter} />
                 <Baseline
                     axis="traffic"
                     value={avgIn}
@@ -98,6 +99,15 @@ selected:
             selected: {fill: "#436D28"}
         }
     };
+
+The format prop provides the text that is displayed when bars are hovered over. This can either 
+be a d3 format string or a function. In this case we use a function to return the value:
+
+    // Return the value as the number of bytes e.g. "36 TB"
+    function formatter(value) {
+        const prefix = d3.formatPrefix(value);
+        return prefix.scale(value).toFixed() + " " + prefix.symbol + "B";
+    }
 
 As a side note, this chart can also be zoomed in and then panned with constraints. This is controlled
 using the \`<ChartContainer>\` props.
@@ -176,6 +186,11 @@ _.each(monthlyJSON, (router) => {
     }
 });
 
+function formatter(value) {
+    const prefix = d3.formatPrefix(value);
+    return `${prefix.scale(value).toFixed()} ${prefix.symbol}B`;
+}
+
 const monthlyAcceptedSeries = new TimeSeries({
     name: "Monthly Accepted",
     columns: ["time", "value"],
@@ -215,7 +230,6 @@ export default React.createClass({
     },
 
     render() {
-        const formatter = d3.format(".2s");
 
         const style = {
             in: {
@@ -283,7 +297,8 @@ export default React.createClass({
                                         <BarChart axis="traffic" style={leftStyle} columns={["in"]}
                                                   series={octoberTrafficSeries}
                                                   selection={this.state.selection}
-                                                  onSelectionChange={this.handleSelectionChanged}/>
+                                                  onSelectionChange={this.handleSelectionChanged}
+                                                  format={formatter} />
                                         <Baseline axis="traffic" value={avgIn} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -328,8 +343,20 @@ export default React.createClass({
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic-volume" style={leftStyle} size={10} offset={5.5} columns={["in"]} series={octoberTrafficSeries} />
-                                        <BarChart axis="traffic-volume" style={rightStyle} size={10} offset={-5.5} columns={["out"]} series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={leftStyle}
+                                            size={10}
+                                            offset={5.5}
+                                            columns={["in"]}
+                                            series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={rightStyle}
+                                            size={10}
+                                            offset={-5.5}
+                                            columns={["out"]}
+                                            series={octoberTrafficSeries} />
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -365,7 +392,12 @@ export default React.createClass({
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic-volume" style={style} spacing={3} series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={style}
+                                            spacing={3}
+                                            series={octoberTrafficSeries}
+                                            format={formatter}/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -400,7 +432,10 @@ export default React.createClass({
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
                                            min={0} max={1500000000000000} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic" series={monthlyAcceptedSeries} />
+                                        <BarChart
+                                            axis="traffic"
+                                            series={monthlyAcceptedSeries}
+                                            format={formatter}/>
                                         <Baseline axis="traffic" value={monthlyAcceptedSeries.avg()} label="Avg "position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -411,7 +446,10 @@ export default React.createClass({
                                     <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
                                            min={0} max={1500000000000000} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic" series={monthlyDeliveredSeries} />
+                                        <BarChart
+                                            axis="traffic"
+                                            series={monthlyDeliveredSeries}
+                                            format={formatter}/>
                                         <Baseline axis="traffic" value={monthlyDeliveredSeries.avg()} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"

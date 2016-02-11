@@ -10,6 +10,8 @@
 
 import React from "react";
 import d3 from "d3";
+import _ from "underscore";
+
 import { TimeSeries } from "pondjs";
 
 /**
@@ -73,6 +75,16 @@ export default React.createClass({
          */
         style: React.PropTypes.object,
         
+        /**
+         * The format is used to format the hover text for the bar. It can be specified as a d3
+         * format string (such as ".2f") or a function. The function will be called with the value
+         * and should return a string.
+         */
+        format: React.PropTypes.oneOfType([
+            React.PropTypes.func,
+            React.PropTypes.string
+        ]),
+
         /**
          * If size is specified, then the bar will be this number of pixels wide. This
          * prop takes priority of "spacing".
@@ -193,8 +205,15 @@ export default React.createClass({
                 }
 
                 // Hover text
-                if (key === this.state.hover || key === this.props.selection) {
-                    const formatter = this.props.textFormat || d3.format(".2s");
+                let text = `${value}`;
+                if (this.props.format && (key === this.state.hover || key === this.props.selection)) {
+                    if (this.props.format && _.isString(this.props.format)) {
+                        const formatter = d3.format(this.props.format);
+                        text = formatter(value);
+                    } else if (_.isFunction(this.props.format)) {
+                        text = this.props.format(value);
+                    }
+                    
                     const barTextStyle = this.props.style[column].text || {stroke: "steelblue"};
                     hoverText = (
                         <text
@@ -205,7 +224,7 @@ export default React.createClass({
                             fontFamily="Verdana"
                             textAnchor="middle"
                             fontSize="12">
-                            {formatter(value)}
+                            {text}
                         </text>
                     );
                 }
