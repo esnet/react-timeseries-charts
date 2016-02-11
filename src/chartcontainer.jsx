@@ -336,7 +336,9 @@ export default React.createClass({
 
         const timeAxis = (
             <g transform={`translate(${leftWidth},${yPosition})`}>
-                <path d="M0,10V0H1299V10" style={{stroke: "#EDEDED", strokeWidth: 1, fill: "none"}}></path>
+                <line
+                    x1={0} y1={0} x2={this.props.width - leftWidth - rightWidth} y1={0}
+                    style={{stroke: "#EDEDED", strokeWidth: 1, fill: "none"}} />
                 <TimeAxis scale={timeScale} format={this.props.format}/>
             </g>
         );
