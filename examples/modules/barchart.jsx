@@ -221,12 +221,14 @@ export default React.createClass({
             in: {
                 normal: {fill: "#619F3A"},
                 highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"}
+                selected: {fill: "#436D28"},
+                text: {fill: "#619F3A", stroke: "none"}
             },
             out: {
                 normal: {fill: "#E37E23"},
                 highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#A55D1C"}
+                selected: {fill: "#A55D1C"},
+                text: {fill: "#E37E23", stroke: "none"}
             }
         };
 
@@ -234,7 +236,8 @@ export default React.createClass({
             in: {
                 normal: {fill: "#619F3A"},
                 highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"}
+                selected: {fill: "#436D28"},
+                text: {fill: "#619F3A", stroke: "none"}
             }
         };
 
@@ -242,7 +245,8 @@ export default React.createClass({
             out: {
                 normal: {fill: "#E37E23"},
                 highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#B3621A"}
+                selected: {fill: "#B3621A"},
+                text: {fill: "#E37E23", stroke: "none"}
             }
         };
 

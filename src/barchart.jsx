@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import d3 from "d3";
 import { TimeSeries } from "pondjs";
 
 /**
@@ -127,6 +128,8 @@ export default React.createClass({
         const columns = this.props.columns || series._columns;
 
         const rects = [];
+        const hover = [];
+
         for (const event of series.events()) {
             const begin = event.begin();
             const end = event.end();
@@ -168,6 +171,7 @@ export default React.createClass({
                 const y = ypos - height;
 
                 let barStyle;
+                let hoverText = null;
                 if (key === this.props.selection) {
                     if (this.props.style && this.props.style[column].selected) {
                         barStyle = this.props.style[column].selected;
@@ -188,28 +192,52 @@ export default React.createClass({
                     barStyle = {fill: "steelblue"};
                 }
 
+                // Hover text
+                if (key === this.state.hover || key === this.props.selection) {
+                    const formatter = this.props.textFormat || d3.format(".2s");
+                    const barTextStyle = this.props.style[column].text || {stroke: "steelblue"};
+                    hoverText = (
+                        <text
+                            key={key}
+                            style={barTextStyle}
+                            x={x + width / 2}
+                            y={y - 2}
+                            fontFamily="Verdana"
+                            textAnchor="middle"
+                            fontSize="12">
+                            {formatter(value)}
+                        </text>
+                    );
+                }
+
+                if (hoverText) {
+                    hover.push(hoverText);
+                }
                 rects.push(
-                    <rect key={key}
-                          x={x} y={y} width={width} height={height}
-                          pointerEvents="none"
-                          style={barStyle}
-                          clipPath={this.props.clipPathURL}
-                          onClick={e => {
-                              this.handleClick(e, key, value, series,
-                                               column, index);
-                          }}
-                          onMouseLeave={() => {
-                              this.setState({hover: null});
-                          }}
-                          onMouseMove={e => {
-                              this.handleMouseMove(e, key);
-                          }}/>
+                    <rect
+                        key={key}
+                        x={x}
+                        y={y}
+                        width={width}
+                        height={height}
+                        pointerEvents="none"
+                        style={barStyle}
+                        clipPath={this.props.clipPathURL}
+                        onClick={e => this.handleClick(e, key, value, series, column, index)}
+                        onMouseLeave={() => this.setState({hover: null})}
+                        onMouseMove={e => this.handleMouseMove(e, key)}/>
                 );
 
                 ypos -= height;
             }
         }
-        return rects;
+
+        return (
+            <g>
+                {rects}
+                {hover}
+            </g>
+        );
     },
 
     render() {
