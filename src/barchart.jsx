@@ -9,6 +9,9 @@
  */
 
 import React from "react";
+import d3 from "d3";
+import _ from "underscore";
+
 import { TimeSeries } from "pondjs";
 
 /**
@@ -73,6 +76,16 @@ export default React.createClass({
         style: React.PropTypes.object,
         
         /**
+         * The format is used to format the hover text for the bar. It can be specified as a d3
+         * format string (such as ".2f") or a function. The function will be called with the value
+         * and should return a string.
+         */
+        format: React.PropTypes.oneOfType([
+            React.PropTypes.func,
+            React.PropTypes.string
+        ]),
+
+        /**
          * If size is specified, then the bar will be this number of pixels wide. This
          * prop takes priority of "spacing".
          */
@@ -127,6 +140,8 @@ export default React.createClass({
         const columns = this.props.columns || series._columns;
 
         const rects = [];
+        const hover = [];
+
         for (const event of series.events()) {
             const begin = event.begin();
             const end = event.end();
@@ -168,6 +183,7 @@ export default React.createClass({
                 const y = ypos - height;
 
                 let barStyle;
+                let hoverText = null;
                 if (key === this.props.selection) {
                     if (this.props.style && this.props.style[column].selected) {
                         barStyle = this.props.style[column].selected;
@@ -188,28 +204,59 @@ export default React.createClass({
                     barStyle = {fill: "steelblue"};
                 }
 
+                // Hover text
+                let text = `${value}`;
+                if (this.props.format && (key === this.state.hover || key === this.props.selection)) {
+                    if (this.props.format && _.isString(this.props.format)) {
+                        const formatter = d3.format(this.props.format);
+                        text = formatter(value);
+                    } else if (_.isFunction(this.props.format)) {
+                        text = this.props.format(value);
+                    }
+                    
+                    const barTextStyle = this.props.style[column].text || {stroke: "steelblue"};
+                    hoverText = (
+                        <text
+                            key={key}
+                            style={barTextStyle}
+                            x={x + width / 2}
+                            y={y - 2}
+                            fontFamily="Verdana"
+                            textAnchor="middle"
+                            fontSize="12">
+                            {text}
+                        </text>
+                    );
+                }
+
+                if (hoverText) {
+                    hover.push(hoverText);
+                }
                 rects.push(
-                    <rect key={key}
-                          x={x} y={y} width={width} height={height}
-                          pointerEvents="none"
-                          style={barStyle}
-                          clipPath={this.props.clipPathURL}
-                          onClick={e => {
-                              this.handleClick(e, key, value, series,
-                                               column, index);
-                          }}
-                          onMouseLeave={() => {
-                              this.setState({hover: null});
-                          }}
-                          onMouseMove={e => {
-                              this.handleMouseMove(e, key);
-                          }}/>
+                    <rect
+                        key={key}
+                        x={x}
+                        y={y}
+                        width={width}
+                        height={height}
+                        pointerEvents="none"
+                        style={barStyle}
+                        clipPath={this.props.clipPathURL}
+                        onClick={e => this.handleClick(e, key, value, series, column, index)}
+                        onMouseLeave={() => this.setState({hover: null})}
+                        onMouseMove={e => this.handleMouseMove(e, key)}/>
                 );
 
                 ypos -= height;
             }
         }
-        return rects;
+
+        return (
+            <g>
+                {rects}
+                {hover}
+            </g>
+        );
     },
 
     render() {

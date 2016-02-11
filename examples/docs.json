@@ -146,6 +146,21 @@
           "computed": false
         }
       },
+      "format": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "func"
+            },
+            {
+              "name": "string"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The format is used to format the hover text for the bar. It can be specified as a d3\nformat string (such as \".2f\") or a function. The function will be called with the value\nand should return a string."
+      },
       "size": {
         "type": {
           "name": "number"
