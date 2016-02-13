@@ -31,6 +31,7 @@ import Weather from "./weather";
 import DDoS from "./ddos";
 import Table from "./table";
 import Channels from "./channels";
+import Horizontal from "./horizontal";
 
 import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
@@ -56,6 +57,7 @@ render((
             <Route path="ddos" component={DDoS} />
             <Route path="table" component={Table} />
             <Route path="channels" component={Channels} />
+            <Route path="horizontal" component={Horizontal} />
         </Route>
     </Router>
 ), document.getElementById("content"));

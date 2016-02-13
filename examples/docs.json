@@ -403,6 +403,116 @@
     "description": "",
     "displayName": "EventHandler"
   },
+  "src/horizontalbarchart.jsx": {
+    "description": "",
+    "displayName": "HorizontalBarChart",
+    "props": {
+      "seriesList": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "instanceOf",
+            "value": "TimeSeries"
+          }
+        },
+        "required": true,
+        "description": "A list of [TimeSeries](http://software.es.net/pond#timeseries) objects to visualize",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "columns": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "Columns in each timeseries to display",
+        "defaultValue": {
+          "value": "[\"value\"]",
+          "computed": false
+        }
+      },
+      "sortBy": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"name\"",
+              "computed": false
+            },
+            {
+              "value": "\"max\"",
+              "computed": false
+            },
+            {
+              "value": "\"avg\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Sort by either \"max\", \"avg\" or \"name\"",
+        "defaultValue": {
+          "value": "\"max\"",
+          "computed": false
+        }
+      },
+      "size": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height or thickness of each bar",
+        "defaultValue": {
+          "value": "12",
+          "computed": false
+        }
+      },
+      "spacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The spacing between each bar (column) of the series",
+        "defaultValue": {
+          "value": "2",
+          "computed": false
+        }
+      },
+      "padding": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The spacing above and below each series",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
+      "labelWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the label area",
+        "defaultValue": {
+          "value": "240",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "[{fill: \"steelblue\"}]",
+          "computed": false
+        }
+      }
+    }
+  },
   "src/labelaxis.jsx": {
     "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
     "displayName": "LabelAxis"
