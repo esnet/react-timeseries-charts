@@ -194,6 +194,11 @@ export default React.createClass({
         sortBy: React.PropTypes.oneOf(["name", "max", "avg"]),
 
         /**
+         * Display only the top n
+         */
+        top: React.PropTypes.number,
+
+        /**
          * The height or thickness of each bar
          */
         size: React.PropTypes.number,
@@ -315,6 +320,9 @@ export default React.createClass({
             }
         });
 
+        // Top n
+        const list = this.props.top ? sortedList.slice(0, this.props.top) : sortedList;
+
         const containerStyle = {
             borderTopStyle: "solid",
             borderTopWidth: 1,
@@ -326,7 +334,7 @@ export default React.createClass({
 
         return (
             <div style={containerStyle}>
-                {this.renderRows(sortedList)}
+                {this.renderRows(list)}
             </div>
         );
     }

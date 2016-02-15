@@ -407,6 +407,31 @@
     "description": "",
     "displayName": "HorizontalBarChart",
     "props": {
+      "display": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"avg\"",
+              "computed": false
+            },
+            {
+              "value": "\"max\"",
+              "computed": false
+            },
+            {
+              "value": "\"range\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Sort by either \"max\", \"avg\" or \"name\"",
+        "defaultValue": {
+          "value": "\"avg\"",
+          "computed": false
+        }
+      },
       "seriesList": {
         "type": {
           "name": "arrayOf",
@@ -461,6 +486,13 @@
           "computed": false
         }
       },
+      "top": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Display only the top n"
+      },
       "size": {
         "type": {
           "name": "number"
@@ -468,7 +500,7 @@
         "required": false,
         "description": "The height or thickness of each bar",
         "defaultValue": {
-          "value": "12",
+          "value": "14",
           "computed": false
         }
       },
@@ -504,6 +536,21 @@
           "value": "240",
           "computed": false
         }
+      },
+      "format": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "func"
+            },
+            {
+              "name": "string"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The format is used to format the display text for the bar. It can be specified as a d3\nformat string (such as \".2f\") or a function. The function will be called with the value\nand should return a string."
       },
       "style": {
         "defaultValue": {

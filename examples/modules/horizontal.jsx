@@ -163,6 +163,7 @@ export default React.createClass({
                             display="range"
                             seriesList={interfaces}
                             columns={["in", "out"]}
+                            top={5}
                             sortBy="max"
                             timestamp={this.state.tracker}
                             format={formatter}
