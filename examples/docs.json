@@ -403,8 +403,8 @@
     "description": "",
     "displayName": "EventHandler"
   },
-  "src/horizontalbarchart.jsx": {
-    "description": "",
+  "src/hbarchart.jsx": {
+    "description": "The HorizontalBarChart takes a list of `TimeSeries` objects and displays a bar chart\nvisualization summarizing those. As an example, let's say we have a set of interfaces, which\ntogether carry the entire network traffic to a particular location. We want to see which\ninterfaces contribute the most to the total traffic.\n\nTo display this we render the HorizontalBarChart in our page:\n \n    <HorizontalBarChart\n        display=\"range\"\n        seriesList={interfaces}\n        columns={[\"out\", \"in\"]}\n        top={5} sortBy=\"max\"\n        timestamp={this.state.tracker}\n        format={formatter}\n        selected={this.state.selected}\n        onSelectionChanged={this.handleSelectionChange}\n        selectionColor=\"#37B6D3\"\n        style={[{fill: \"#1F78B4\"}, {fill: \"#FF7F00\"}]} >\n\n        <SeriesSummary />\n\n    </HorizontalBarChart>\n\nOur first prop `display` tells the component how to draw the bars. In this case we use the\n\"range\", which will draw from min to max (with additional drawing to show 1 stdev away from\nthe center).\n\nNext we specify the `seriesList` itself. This should be an array of Pond TimeSeries objects.\n\nThe `columns` prop tells us which columns within the TimeSeries should be displayed as a bar.\nIn this case we have `in` and `out` traffic columns, so we'll get two bars for each series.\n\n`top` and `sortBy` are used to order and trim the list of TimeSeries. Here we order by the max\nvalues in the specified columns, then just display the top 5.\n\nThe `timestamp` lets the component know the current value. You could display the last timestamp\nin the series, or perhaps a time being interacted with in the UI.\n\nThe `format` can either be a d3 format string of a function. In this case we have our own\nformatter function to display values:\n\n    function formatter(value) {\n        const prefix = d3.formatPrefix(value);\n        return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;\n    }\n\nSelection is handled with `selected`, which gives the name of the TimeSeries currently selected.\nIf the user selects a different row the callback passed to `onSelectionChanged` will be called\nwith the name of the TimeSeries represented in the newly selected row. We also specify a color\nto mark the selected item with the `selectionColor` prop.\n\nNext we specify the `style`. This is the css style of each column's bars. Typically you would\njust want to specify the fill color. Each bar is a svg rect.\n\nFinally, you can specify a child component, in this case `<SeriesSummary>`. This can be any\ncomponent and will be rendered under the bars when the row is selected. The component can render\nanything it wants. In our case we render some text for the averages of the series:\n\n    const SeriesSummary = ({series}) => (\n        <table><tbody><tr>\n            <td><b>Avg:</b></td>\n            <td style={{paddingLeft: 5}}>{formatter(series.avg(\"in\"))} to site</td>\n            <td style={{paddingLeft: 15}}>{formatter(series.avg(\"out\"))} from site</td>\n        </tr> </tbody></table>\n    );\n\nNote that the component will have the `series` it is rendering, as well as the `timestamp` injected\ninto its props so you can use those when rendering.",
     "displayName": "HorizontalBarChart",
     "props": {
       "display": {
@@ -480,7 +480,7 @@
           ]
         },
         "required": false,
-        "description": "Sort by either \"max\", \"avg\" or \"name\"",
+        "description": "Sort by either \"name\", \"max\", or \"avg\"",
         "defaultValue": {
           "value": "\"max\"",
           "computed": false
@@ -537,6 +537,31 @@
           "computed": false
         }
       },
+      "onSelectionChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback for when the selection changes. The callback function will be called\nwith the name of the TimeSeries selected."
+      },
+      "selected": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Specify which TimeSeries is selected by providing the name of the selected\nseries."
+      },
+      "selectionColor": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Color to mark the selected row with.",
+        "defaultValue": {
+          "value": "\"steelblue\"",
+          "computed": false
+        }
+      },
       "format": {
         "type": {
           "name": "union",
@@ -551,6 +576,13 @@
         },
         "required": false,
         "description": "The format is used to format the display text for the bar. It can be specified as a d3\nformat string (such as \".2f\") or a function. The function will be called with the value\nand should return a string."
+      },
+      "children": {
+        "type": {
+          "name": "element"
+        },
+        "required": false,
+        "description": "A single child which will be rendered when the item is selected. The child will have\na couple of additional props injected onto it when rendered:\n * `series` - the TimeSeries of the row being rendered\n * `timestamp` - the current timestamp being shown"
       },
       "style": {
         "defaultValue": {

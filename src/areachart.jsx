@@ -12,8 +12,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import d3 from "d3";
 import _ from "underscore";
-
-//Pond
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
@@ -229,7 +227,8 @@ export default React.createClass({
         return p[0] > 0 && p[0] < this.props.width;
     },
 
-    renderAreaChart(series, timeScale, yScale, interpolate, isPanning, columns, width) {
+    renderAreaChart(series, timeScale, yScale, interpolate,
+                    isPanning, columns, width, style) {
         if (!yScale) {
             return null;
         }
@@ -271,7 +270,7 @@ export default React.createClass({
         // Append the area chart path onto the areachart-up-group group
         this.upChart = upChart
             .append("path")
-                .style("fill", (d, i) => this.props.style.up[i])
+                .style("fill", (d, i) => style.up[i])
                 .style("pointerEvents", "none")
                 .style("cursor", cursor)
                 .attr("d", d => upArea(d.values))
@@ -291,7 +290,7 @@ export default React.createClass({
         // Append the area chart path onto the areachart-down-group group
         this.downChart = downChart
             .append("path")
-                .style("fill", (d, i) => this.props.style.down[i])
+                .style("fill", (d, i) => style.down[i])
                 .style("pointerEvents", "none")
                 .style("cursor", cursor)
                 .attr("d", d => downArea(d.values))
@@ -336,7 +335,9 @@ export default React.createClass({
                              this.props.yScale,
                              this.props.interpolate,
                              this.props.isPanning,
-                             this.props.columns);
+                             this.props.columns,
+                             this.props.width,
+                             this.props.style);
     },
 
     componentWillReceiveProps(nextProps) {
@@ -349,6 +350,7 @@ export default React.createClass({
         const interpolate = nextProps.interpolate;
         const isPanning = nextProps.isPanning;
         const columns = nextProps.columns;
+        const style = nextProps.style;
 
         // What changed?
         const widthChanged =
@@ -363,6 +365,8 @@ export default React.createClass({
             (this.props.isPanning !== isPanning);
         const columnsChanged =
             (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
+        const styleChanged =
+            (JSON.stringify(this.props.style) !== JSON.stringify(style));
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -378,10 +382,12 @@ export default React.createClass({
         //
 
         if (seriesChanged || timeScaleChanged || widthChanged ||
-            interpolateChanged || isPanningChanged || columnsChanged) {
+            interpolateChanged || isPanningChanged || columnsChanged ||
+            styleChanged) {
             this.renderAreaChart(newSeries, timeScale,
                                  yScale, interpolate,
-                                 isPanning, columns, width);
+                                 isPanning, columns,
+                                 width, style);
         } else if (yAxisScaleChanged) {
             this.updateAreaChart(newSeries, timeScale,
                                  yScale, interpolate, columns, width);

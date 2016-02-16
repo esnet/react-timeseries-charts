@@ -7,6 +7,7 @@ module.exports = {
     Charts: require("./lib/charts"),
     ChartRow: require("./lib/chartrow"),
     EventChart: require("./lib/eventchart"),
+    HorizontalBarChart: require("./lib/hbarchart"),
     LabelAxis: require("./lib/labelaxis"),
     Legend: require("./lib/legend"),
     LineChart: require("./lib/linechart"),

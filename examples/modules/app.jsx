@@ -47,9 +47,14 @@ export default React.createClass({
                         <li><Link to="barcharts">BarChart</Link></li>
                         <li><Link to="scattercharts">ScatterChart</Link></li>
                         <li><Link to="baseline">Baseline</Link></li>
+                    </ul>
+                        
+                    <div className="sidebar-heading">Extras</div>
+
+                    <ul className="nav nav-sidebar">
                         <li><Link to="legends">Legend</Link></li>
                         <li><Link to="horizontal">Horizontal BarChart</Link></li>
-                        <li><Link to="table">Tables</Link></li>
+                        <li><Link to="table">Timeseries Tables</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">Links</div>
