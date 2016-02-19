@@ -562,6 +562,24 @@
           "computed": false
         }
       },
+      "onNavigate": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Renders the series name as a link and calls this callback function when it is clicked."
+      },
+      "navigateColor": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Color to render the series name if navigate is enabled",
+        "defaultValue": {
+          "value": "\"steelblue\"",
+          "computed": false
+        }
+      },
       "format": {
         "type": {
           "name": "union",

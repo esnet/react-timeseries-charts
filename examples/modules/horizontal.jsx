@@ -84,7 +84,9 @@ function formatter(value) {
     return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;
 }
 
+
 const SeriesSummary = ({series}) => (
+    <div style={{fontSize: 12, color: "#999"}}>
     <table><tbody>
         <tr>
         <td><b>Avg:</b></td>
@@ -92,7 +94,16 @@ const SeriesSummary = ({series}) => (
         <td style={{paddingLeft: 15}}>{formatter(series.avg("out"))} from site</td>
         </tr>
     </tbody></table>
+    </div>
 );
+
+/*
+const SVGTest = ({series, width}) => (
+    <svg width="100%" height={10}>
+        <rect x={5} y={2} width={width-10} height={8} style={{fill: "#6ACACA"}} />
+    </svg>
+);
+*/
 
 export default React.createClass({
 

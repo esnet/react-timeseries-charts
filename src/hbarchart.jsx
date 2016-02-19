@@ -181,17 +181,32 @@ const Row = React.createClass({
         }
     },
 
+    handleNavigate() {
+        if (this.props.onNavigate) {
+            this.props.onNavigate(this.props.series.name());
+        }
+    },
+
     renderLabel() {
         const style = {
             marginTop: 5,
-            cursor: "default"
+            cursor: this.props.onNavigate ? "pointer" : "default"
         };
 
-        return (
-            <span style={style}>
-                {this.props.series.name().toUpperCase()}
-            </span>
-        );
+        if (this.props.onNavigate) {
+            style.color = this.props.navigateColor;
+            return (
+                <span style={style} onClick={this.handleNavigate}>
+                    {this.props.series.name().toUpperCase()}
+                </span>
+            );
+        } else {
+            return (
+                <span style={style}>
+                    {this.props.series.name().toUpperCase()}
+                </span>
+            );
+        }
     },
 
     renderBars() {
@@ -244,6 +259,11 @@ const Row = React.createClass({
             boxShadow: "inset 11px 0px 7px -9px rgba(0,0,0,0.28)"
         };
 
+        const resizableStyle = {
+            marginLeft: 5,
+            background: "#F8F8F8"
+        };
+
         if (this.props.child && this.props.selected) {
             const props = {
                 series: this.props.series,
@@ -251,11 +271,11 @@ const Row = React.createClass({
             };
             const child =  React.cloneElement(this.props.child, props);
             return (
-                <FlexBox style={rowStyle}>
-                    <div style={{marginLeft: 5}}>
+                <div style={rowStyle}>
+                    <Resizable style={resizableStyle}>
                         {child}
-                    </div>
-                </FlexBox>
+                    </Resizable>
+                </div>
             );
         }
     },
@@ -449,6 +469,16 @@ export default React.createClass({
         selectionColor: React.PropTypes.string,
 
         /**
+         * Renders the series name as a link and calls this callback function when it is clicked.
+         */
+        onNavigate: React.PropTypes.func,
+
+        /**
+         * Color to render the series name if navigate is enabled
+         */
+        navigateColor: React.PropTypes.string,
+
+        /**
          * The format is used to format the display text for the bar. It can be specified as a d3
          * format string (such as ".2f") or a function. The function will be called with the value
          * and should return a string.
@@ -478,7 +508,8 @@ export default React.createClass({
             seriesList: [],
             columns: ["value"],
             sortBy: "max",
-            selectionColor: "steelblue"
+            selectionColor: "steelblue",
+            navigateColor: "steelblue"
         };
     },
 
@@ -496,7 +527,9 @@ export default React.createClass({
             display,
             timestamp,
             onSelectionChanged,
-            selectionColor
+            selectionColor,
+            onNavigate,
+            navigateColor
         } = this.props;
 
         seriesList.forEach(series => {
@@ -520,6 +553,8 @@ export default React.createClass({
                 selected={this.props.selected === series.name()}
                 onSelectionChanged={onSelectionChanged}
                 selectionColor={selectionColor}
+                onNavigate={onNavigate}
+                navigateColor={navigateColor}
                 columns={columns}
                 spacing={spacing}
                 padding={padding}
