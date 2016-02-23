@@ -141,7 +141,7 @@ const Bars = React.createClass({
                     if (centerWidth <= 1) centerWidth = 1;
 
                     const barElementBackground = (
-                        <rect style={rectStyleBackground} rx="2" ry={2} x={start} y={y+1} width={backgroundWidth} height={size-2} />
+                        <rect style={rectStyleBackground} rx={2} ry={2} x={start} y={y+1} width={backgroundWidth} height={size-2} />
                     );
                     const barElementCenter = (
                         <rect style={rectStyleCenter} x={centerStart} y={y} width={centerWidth} height={size} />
