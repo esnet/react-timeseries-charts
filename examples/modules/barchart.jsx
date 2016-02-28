@@ -26,6 +26,7 @@ import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import BarChart from "../../src/barchart";
+import EventChart from "../../src/eventchart";
 import Baseline from "../../src/baseline";
 import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
@@ -149,9 +150,11 @@ _.each(days, (value, day) => {
 const octoberTrafficSeries = new TimeSeries({
     name: "October Traffic",
     utc: false,
-    columns: ["time", "in", "out"],
+    columns: ["index", "in", "out"],
     points: trafficPoints
 });
+
+console.log(octoberTrafficSeries);
 
 max /= 100;
 
@@ -193,13 +196,13 @@ function formatter(value) {
 
 const monthlyAcceptedSeries = new TimeSeries({
     name: "Monthly Accepted",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].accepted
 });
 
 const monthlyDeliveredSeries = new TimeSeries({
     name: "Monthly Delivered",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].delivered
 });
 
@@ -304,7 +307,11 @@ export default React.createClass({
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
                                 </ChartRow>
-
+                                <ChartRow height="35" debug={false}>
+                                    <Charts>
+                                        <EventChart series={octoberTrafficSeries} spacing={2} size={30} />
+                                    </Charts>
+                                </ChartRow>
                             </ChartContainer>
                         </Resizable>
                     </div>

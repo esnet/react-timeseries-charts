@@ -25,6 +25,7 @@ import StackedAreaCharts from "./stacked";
 import LineCharts from "./linechart";
 import BarCharts from "./barchart";
 import ScatterCharts from "./scatterchart";
+import EventCharts from "./eventchart";
 import Baseline from "./baseline";
 import Legends from "./legend";
 import Weather from "./weather";
@@ -51,6 +52,7 @@ render((
             <Route path="linecharts" component={LineCharts} />
             <Route path="barcharts" component={BarCharts} />
             <Route path="scattercharts" component={ScatterCharts} />
+            <Route path="eventcharts" component={EventCharts} />
             <Route path="baseline" component={Baseline} />
             <Route path="legends" component={Legends} />
             <Route path="weather" component={Weather} />

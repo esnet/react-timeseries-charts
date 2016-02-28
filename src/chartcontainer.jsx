@@ -272,6 +272,11 @@ export default React.createClass({
         const X_AXIS_HEIGHT = 35;
         const timeAxisWidth =
             this.props.width - leftWidth - rightWidth;
+
+        if (!this.props.timeRange) {
+            throw Error("Invalid timerange passed to ChartContainer");
+        }
+
         const [ beginTime, endTime ] = this.props.timeRange.toJSON();
 
         const timeScale = d3.time.scale()
@@ -345,10 +350,7 @@ export default React.createClass({
 
         //
         // Final render of the ChartContainer is composed of a number of
-        // chartRows and a timeAxis
-        //
-        // TODO: We might want to consider rendering this whole thing in a
-        // single SVG rather than depending on Bootstrap for layout.
+        // chartRows, a timeAxis and the tracker indicator
         //
 
         return (

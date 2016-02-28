@@ -46,6 +46,7 @@ export default React.createClass({
                         <li><Link to="areacharts">AreaChart</Link></li>
                         <li><Link to="barcharts">BarChart</Link></li>
                         <li><Link to="scattercharts">ScatterChart</Link></li>
+                        <li><Link to="eventcharts">EventChart</Link></li>
                         <li><Link to="baseline">Baseline</Link></li>
                     </ul>
                         

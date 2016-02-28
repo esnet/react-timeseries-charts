@@ -116,6 +116,14 @@ export default React.createClass({
 
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
+
+
+        console.log("setCapture", e.target);
+
+        console.log("Mouse down:", e.target);
+        const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
+        trackerRect.setCapture();
+
         this.setState({
             isPanning: true,
             initialPanBegin: begin,

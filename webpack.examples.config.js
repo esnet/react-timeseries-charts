@@ -14,13 +14,27 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.(js|jsx)$/,
-              loader: "babel?stage=0" },
-            { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.(png|jpg|gif)$/, loader: "url-loader?limit=8192"},
-            { test: /\.json$/, loader: "json-loader" },
-            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-              loader: "file-loader?name=[name].[ext]" }
+            {
+                test: /\.jsx$/,
+                loader: 'babel',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                loader: "style-loader!css-loader"
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                loader: "url-loader?limit=8192"
+            },
+            {
+                test: /\.json$/,
+                loader: "json-loader"
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: "file-loader?name=[name].[ext]"
+            }
         ]
     },
 

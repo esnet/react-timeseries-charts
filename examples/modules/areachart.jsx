@@ -16,7 +16,7 @@ import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
 // Pond
-import {TimeSeries} from "pondjs";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import Legend from "../../src/legend";
