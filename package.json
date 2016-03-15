@@ -39,7 +39,7 @@
     "moment": "^2.8.4",
     "moment-duration-format": "^1.3.0",
     "paths-js": "^0.3.4",
-    "pondjs": "^0.4.2",
+    "pondjs": "git+ssh://git@github.com/esnet/pond.git#aggregation-windows",
     "react-flexbox": "^3.0.0",
     "underscore": "^1.7.0"
   },

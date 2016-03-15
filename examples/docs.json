@@ -397,7 +397,46 @@
   },
   "src/eventchart.jsx": {
     "description": "Renders an event view that shows the supplied set of\nevents along a time axis.\n\nEXPERIMENTAL\n\nTODO: Convert to use Pond Events",
-    "displayName": "EventChart"
+    "displayName": "EventChart",
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "size": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height in pixels for the event bar",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "spacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The distance in pixels to inset the bar chart from its actual timerange",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A function that should return the style of the event box"
+      }
+    }
   },
   "src/eventhandler.jsx": {
     "description": "",
@@ -612,7 +651,44 @@
   },
   "src/labelaxis.jsx": {
     "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
-    "displayName": "LabelAxis"
+    "displayName": "LabelAxis",
+    "props": {
+      "values": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "union",
+                "value": [
+                  {
+                    "name": "number"
+                  },
+                  {
+                    "name": "string"
+                  }
+                ],
+                "required": false
+              }
+            }
+          }
+        },
+        "required": true,
+        "description": ""
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the axis"
+      }
+    }
   },
   "src/legend.jsx": {
     "description": "Legends are simple to define. First define the items you want in\nit using an array as follows:\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", disabled={true} style: {backgroundColor: \"#1f77b4\"}},\n    {key: \"usa\", label: \"USD\", disabled={false} style: {backgroundColor: \"#aec7e8\"}}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. You may also provide a\nstyle which will be merged in with the base style for that type and\na disabled boolean if it should be rendered with a disabled appearance.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show the series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
@@ -888,7 +964,7 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "{stroke: \"#AAA\", cursor: \"crosshair\"}",
+          "value": "{\n    line: {\n        stroke: \"#AAA\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"#FFF\",\n        opacity: 0.85,\n        stroke: \"#AAA\"\n    }\n}",
           "computed": false
         }
       },
@@ -907,6 +983,13 @@
         "required": false,
         "description": ""
       },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
       "timeScale": {
         "type": {
           "name": "func"
@@ -919,12 +1002,107 @@
           "value": "0",
           "computed": false
         }
+      },
+      "trackerHintWidth": {
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "trackerHintHeight": {
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
       }
     }
   },
   "src/valueaxis.jsx": {
     "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n\n EXPERIMENTAL",
     "displayName": "ValueAxis"
+  },
+  "src/valuelist.jsx": {
+    "description": "Renders a list of values in svg\n\n     +----------------+\n     | Max 100 Gbps   |\n     | Avg 26 Gbps    |\n     +----------------+",
+    "displayName": "ValueList",
+    "props": {
+      "align": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"center\"",
+              "computed": false
+            },
+            {
+              "value": "\"left\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"center\"",
+          "computed": false
+        }
+      },
+      "values": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "union",
+                "value": [
+                  {
+                    "name": "number"
+                  },
+                  {
+                    "name": "string"
+                  }
+                ],
+                "required": false
+              }
+            }
+          }
+        },
+        "required": true,
+        "description": "An array of label value pairs to render"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the rectangle to render into",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the rectangle to render into",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{fill: \"#FEFEFE\", stroke: \"#DDD\", opacity: 0.8}",
+          "computed": false
+        }
+      }
+    }
   },
   "src/yaxis.jsx": {
     "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\n![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png \"YAxis\")\n\nHere's a simple YAxis example:\n\n```js\n<YAxis id=\"price-axis\" label=\"Price (USD)\" min={0} max={100} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",

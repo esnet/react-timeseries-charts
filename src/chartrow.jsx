@@ -15,7 +15,6 @@ import _ from "underscore";
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
-import EventHandler from "./eventhandler";
 
 /**
  * A ChartRow is a container for a set of Y axes and multiple charts
@@ -77,30 +76,6 @@ export default React.createClass({
         const clipPathURL = `url(#${clipId})`;
 
         return {clipId, clipPathURL};
-    },
-
-    handleMouseMove(t) {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(t);
-        }
-    },
-
-    handleMouseOut() {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(null);
-        }
-    },
-
-    handleZoom(timerange) {
-        if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(timerange);
-        }
-    },
-
-    handleResize(width, height) {
-        if (this.props.onChartResize) {
-            this.props.onChartResize(width, height);
-        }
     },
 
     createScale(yaxis, type, min, max, y0, y1) {
@@ -381,35 +356,13 @@ export default React.createClass({
 
         });
 
-        // Charts with or without pan and zoom event handling
-        let charts;
-        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
-            charts = (
-                <g transform={chartTransform} key="event-rect-group">
-                    <EventHandler key="event-handler"
-                                  width={chartWidth} height={innerHeight}
-                                  scale={this.props.timeScale}
-                                  enablePanZoom={this.props.enablePanZoom}
-                                  minDuration={this.props.minDuration}
-                                  minTime={this.props.minTime}
-                                  maxTime={this.props.maxTime}
-                                  onMouseOut={this.handleMouseOut}
-                                  onMouseMove={this.handleMouseMove}
-                                  onZoom={this.handleZoom}
-                                  onResize={this.handleResize}>
-                        {chartList}
-                    </EventHandler>
+        const charts = (
+            <g transform={chartTransform} key="event-rect-group">
+                <g key="charts">
+                    {chartList}
                 </g>
-            );
-        } else {
-            charts = (
-                <g transform={chartTransform} key="event-rect-group">
-                    <g key="charts">
-                        {chartList}
-                    </g>
-                </g>
-            );
-        }
+            </g>
+        );
 
         // Debug outlining
         let chartDebug = null;

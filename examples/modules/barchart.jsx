@@ -154,8 +154,6 @@ const octoberTrafficSeries = new TimeSeries({
     points: trafficPoints
 });
 
-console.log(octoberTrafficSeries);
-
 max /= 100;
 
 const avgIn = totalIn / count;

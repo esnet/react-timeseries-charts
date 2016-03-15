@@ -30,6 +30,8 @@ export default React.createClass({
     renderTimeAxis(scale) {
         let axis;
 
+        const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
+
         if (this.props.format === "day") {
             axis = d3.svg.axis()
                 .scale(scale)
@@ -56,21 +58,17 @@ export default React.createClass({
         } else {
             axis = d3.svg.axis()
                 .scale(scale)
+                .tickSize(-100, 0, 0)
                 .orient("bottom");
         }
 
         // Remove the old axis from under this DOM node
         d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
-        const axisGroup = d3.select(ReactDOM.findDOMNode(this)).append("g")
+        // Draw the new axis
+        d3.select(ReactDOM.findDOMNode(this)).append("g")
             .attr("class", "x axis")
-            .call(axis.tickSize(10));
-
-        axisGroup.selectAll("tick").append("line")
-            .attr("shape-rendering", "crispEdge")
-            .attr("stroke", "#FFF")
-            .attr("y1", 0)
-            .attr("y2", this.props.height);
+            .call(axis.tickSize(tickSize));
     },
 
     componentDidMount() {

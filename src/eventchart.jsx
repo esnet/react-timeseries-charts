@@ -11,7 +11,6 @@
 import React from "react";
 import _ from "underscore";
 import merge from "merge";
-
 import { TimeSeries } from "pondjs";
 
 /**
@@ -95,7 +94,6 @@ export default React.createClass({
         // Create and array of markers, one for each event
         let i = 0;
         for (const event of series.events()) {
-            // console.log(" - event", event.toString());
             const begin = event.begin();
             const end = event.end();
             const beginPos = scale(begin);

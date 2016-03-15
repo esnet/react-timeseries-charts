@@ -49,6 +49,7 @@ export default React.createClass({
     getDefaultProps() {
         return {
             smooth: true,
+            tension: 0.3,
             style: {
                 color: "#9DA3FF",
                 width: 1
@@ -118,8 +119,10 @@ export default React.createClass({
      * on this.props.smooth.
      */
     generatePath(points) {
+        const closed = false;
+        const tension = this.props.tension;
         const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
-        return fn({points, closed: false}).path.print();
+        return fn({points, closed, tension}).path.print();
     },
 
     renderPath(points, key) {

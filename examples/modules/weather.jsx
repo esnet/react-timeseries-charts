@@ -157,6 +157,7 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <h3>Weather example</h3>
+                        <hr />
                     </div>
                 </div>
 
@@ -165,6 +166,7 @@ export default React.createClass({
                         <Resizable>
                             <ChartContainer
                                 timeRange={tempSeries.timerange()}
+                                showGrid
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={(tracker) => this.setState({tracker})} >
 

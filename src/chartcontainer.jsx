@@ -14,10 +14,11 @@ import _ from "underscore";
 import { TimeRange } from "pondjs";
 import invariant from "invariant";
 
-import TimeAxis from "./timeaxis";
+import Brush from "./brush";
+import EventHandler from "./eventhandler";
 import ChartRow from "./chartrow";
 import Charts from "./charts";
-import Brush from "./brush";
+import TimeAxis from "./timeaxis";
 import Tracker from "./tracker";
 
 /**
@@ -177,7 +178,33 @@ export default React.createClass({
         }
     },
 
+
+    handleMouseMove(t) {
+        if (this.props.onTrackerChanged) {
+            this.props.onTrackerChanged(t);
+        }
+    },
+
+    handleMouseOut() {
+        if (this.props.onTrackerChanged) {
+            this.props.onTrackerChanged(null);
+        }
+    },
+
+    handleZoom(timerange) {
+        if (this.props.onTimeRangeChanged) {
+            this.props.onTimeRangeChanged(timerange);
+        }
+    },
+
+    handleResize(width, height) {
+        if (this.props.onChartResize) {
+            this.props.onChartResize(width, height);
+        }
+    },
+
     render() {
+        console.log("ChartContainer", this.props);
         const chartRows = [];
 
         //
@@ -258,29 +285,22 @@ export default React.createClass({
         });
 
         // Space used by columns on left and right of charts
-        const leftWidth = _.reduce(leftAxisWidths, (a, b) => {
-            return a + b;
-        }, 0);
-        const rightWidth = _.reduce(rightAxisWidths, (a, b) => {
-            return a + b;
-        }, 0);
+        const leftWidth = _.reduce(leftAxisWidths, (a, b) => a + b, 0);
+        const rightWidth = _.reduce(rightAxisWidths, (a, b) => a + b, 0);
 
         //
         // Time scale
         //
 
-        const X_AXIS_HEIGHT = 35;
-        const timeAxisWidth =
-            this.props.width - leftWidth - rightWidth;
+        const timeAxisHeight = 35;
+        const timeAxisWidth = this.props.width - leftWidth - rightWidth;
 
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        const [ beginTime, endTime ] = this.props.timeRange.toJSON();
-
         const timeScale = d3.time.scale()
-            .domain([beginTime, endTime])
+            .domain(this.props.timeRange.toJSON())
             .range([0, timeAxisWidth]);
 
         //
@@ -311,7 +331,7 @@ export default React.createClass({
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
-                const transform = `translate(0,${yPosition})`;
+                const transform = `translate(${-leftWidth},${yPosition})`;
                 chartRows.push(
                     <g transform={transform} key={rowKey}>
                         {React.cloneElement(chartRow, props)}
@@ -322,31 +342,88 @@ export default React.createClass({
             i++;
         });
 
+        const chartsHeight = yPosition;
+        const chartsWidth = this.props.width - leftWidth - rightWidth;
 
         // Hover tracker line
-        const tracker = (
-            <g
-                key="tracker-group"
-                style={{pointerEvents: "none"}}
-                transform={`translate(${leftWidth},0)`}>
-                <Tracker height={yPosition}
-                         timeScale={timeScale}
-                         position={this.props.trackerPosition} />
-            </g>
-        );
+        let tracker;
+        if (this.props.trackerPosition &&
+            this.props.timeRange.contains(this.props.trackerPosition)) {
+            console.log("container: tracker values", this.props);
+            tracker = (
+                <g
+                    key="tracker-group"
+                    style={{pointerEvents: "none"}}
+                    transform={`translate(${leftWidth},0)`}>
+                    <Tracker
+                        height={chartsHeight}
+                        timeScale={timeScale}
+                        position={this.props.trackerPosition}
+                        format={this.props.format}
+                        width={chartsWidth}
+                        trackerHintWidth={this.props.trackerHintWidth}
+                        trackerHintHeight={this.props.trackerHintHeight}
+                        trackerValues={this.props.trackerValues} />
+                </g>
+            );
+        }
 
         //
         // TimeAxis
         //
 
+        const timeAxisStyle = {
+            stroke: "#EDEDED",
+            strokeWidth: 1,
+            fill: "none",
+            pointerEvents: "none"
+        };
+
         const timeAxis = (
-            <g transform={`translate(${leftWidth},${yPosition})`}>
+            <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line
-                    x1={0} y1={0} x2={this.props.width - leftWidth - rightWidth} y1={0}
-                    style={{stroke: "#EDEDED", strokeWidth: 1, fill: "none"}} />
-                <TimeAxis scale={timeScale} format={this.props.format}/>
+                    x1={-leftWidth} y1={0} x2={this.props.width} y1={0}
+                    style={timeAxisStyle} />
+                <TimeAxis
+                    scale={timeScale}
+                    format={this.props.format}
+                    showGrid={this.props.showGrid}
+                    gridHeight={chartsHeight} />
             </g>
         );
+
+        //
+        // Event handler
+        //
+
+        let rows;
+        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
+            rows = (
+                <g transform={`translate(${leftWidth},${0})`}>
+                    <EventHandler
+                        key="event-handler"
+                        width={chartsWidth}
+                        height={chartsHeight + timeAxisHeight}
+                        scale={timeScale}
+                        enablePanZoom={this.props.enablePanZoom}
+                        minDuration={this.props.minDuration}
+                        minTime={this.props.minTime}
+                        maxTime={this.props.maxTime}
+                        onMouseOut={this.handleMouseOut}
+                        onMouseMove={this.handleMouseMove}
+                        onZoom={this.handleZoom}
+                        onResize={this.handleResize}>
+                            {chartRows}
+                    </EventHandler>
+                </g>
+            );
+        } else {
+            rows = (
+                <g transform={`translate(${leftWidth},${0})`} key="event-rect-group">
+                    {chartRows}
+                </g>
+            );
+        }
 
         //
         // Final render of the ChartContainer is composed of a number of
@@ -356,13 +433,11 @@ export default React.createClass({
         return (
             <svg
                 width={this.props.width}
-                height={yPosition + X_AXIS_HEIGHT}
+                height={yPosition + timeAxisHeight}
                 style={{display: "block"}}>
-                <g>
-                    {chartRows}
-                </g>
-                {timeAxis}
+                {rows}
                 {tracker}
+                {timeAxis}
             </svg>
         );
     }
