@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import _ from "underscore";
+import FlexBox from "react-flexbox";
 import merge from "merge";
 
 /**
@@ -17,9 +17,12 @@ import merge from "merge";
  * it using an array as follows:
  *
  * ```
+ * const audStyle = {backgroundColor: "#1f77b4"};
+ * const usdStyle = {backgroundColor: "#aec7e8"};
+ *
  * const categories = [
- *     {key: "aust", label: "AUD", disabled={true} style: {backgroundColor: "#1f77b4"}},
- *     {key: "usa", label: "USD", disabled={false} style: {backgroundColor: "#aec7e8"}}
+ *     {key: "aust", label: "AUD", value: "1.52", disabled={true} style: audStyle},
+ *     {key: "usa", label: "USD", value: "1.43", disabled={false} style: usdStyle}
  * ];
  * ```
  *
@@ -31,13 +34,15 @@ import merge from "merge";
  *
  * For each category to display you must provide a key, a label and
  * if it should be displayed disabled or not. You may also provide a
- * style which will be merged in with the base style for that type and
- * a disabled boolean if it should be rendered with a disabled appearance.
+ * style which will be merged in with the base style for that type.
+ * Optionally you can also display a value below the label. This is
+ * useful when hovering over another chart on the page, or to display
+ * the current value of live data.
  *
  * The legend can also be supplied with a callback function which will
  * tell you if the user has clicked on one of the legend items to
  * enable/disable that item. The callback will be called with the key and
- * the new enabled/disabled state. You can use this to hide or show the series
+ * the new enabled/disabled state. You can use this to hide or show a series
  * on the chart, for example. Note that you'll want to pass the state back
  * into the legend as that category's disabled value.
  */
@@ -49,7 +54,8 @@ export default React.createClass({
         return {
             style: {},
             labelStyle: {},
-            type: "swatch" // or "line" or "dot"
+            type: "swatch", // or "line" or "dot"
+            align: "left"
         };
     },
 
@@ -63,6 +69,14 @@ export default React.createClass({
             "swatch",
             "line",
             "dot"
+        ]),
+
+        /**
+         * Alignment of the legend within the available space. Either left or right.
+         */
+        align: React.PropTypes.oneOf([
+            "left",
+            "right"
         ]),
 
         /**
@@ -106,17 +120,6 @@ export default React.createClass({
 
     render() {
 
-        const legendStyle = {
-            listStyle: "none",
-            paddingLeft: 0,
-            cursor: "pointer"
-        };
-
-        const legendListStyle = {
-            float: "left",
-            marginRight: 10
-        };
-
         const swatchStyle = {
             float: "left",
             width: 15,
@@ -146,14 +149,21 @@ export default React.createClass({
         };
 
         const baseLabelStyle = {
+            paddingRight: 10
         };
 
-        const items = [];
-        _.each(this.props.categories, (category) => {
+        const baseValueStyle = {
+            fontSize: "1.2rem",
+            color: "#999"
+        };
+
+        const items = this.props.categories.map(category => {
             let style;
             const categoryStyle = category.style || {};
             const categoryLabelStyle = category.labelStyle || {};
+            const categoryValueStyle = category.valueStyle || {};
             const disabled = category.disabled || false;
+
             if (this.props.type === "swatch") {
                 style = disabled ? swatchStyle : merge(true, swatchStyle, categoryStyle);
             } else if (this.props.type === "line") {
@@ -163,20 +173,37 @@ export default React.createClass({
             }
 
             const labelStyle = merge(true, baseLabelStyle, categoryLabelStyle);
+            const valueStyle = merge(true, baseValueStyle, categoryValueStyle);
 
-            items.push(
-                <li
-                    key={`legend-item-${category.key}`}
-                    style={legendListStyle}
+            return (
+                <FlexBox
+                    column
+                    width={0}
+                    key={category.key}
                     onClick={() => this.handleClick(category.key, !disabled)}>
-                    <span style={style}/>
-                    <span style={labelStyle}> {category.label} </span>
-                </li>
+                    <FlexBox row>
+                        <FlexBox column width="25px">
+                            <span style={style} />
+                        </FlexBox>
+                        <FlexBox column>
+                            <FlexBox row style={labelStyle}>
+                                {category.label}
+                            </FlexBox>
+                            <FlexBox row style={valueStyle}>
+                                {category.value}
+                            </FlexBox>
+                        </FlexBox>
+                    </FlexBox>
+                </FlexBox>
             );
         });
 
+        const align = this.props.align === "left" ? "flex-start" : "flex-end";
+
         return (
-            <ul style={legendStyle}>{items}</ul>
+            <FlexBox style={{justifyContent: align}}>
+                {items}
+            </FlexBox>
         );
     }
 });

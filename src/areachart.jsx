@@ -9,106 +9,12 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
-import d3 from "d3";
-import _ from "underscore";
+import d3Shape from "d3-shape";
+
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
-}
-
-/**
- * Build up our data from the series. For each layer in the up (or down)
- * direction, layer, we have layer.values = [points] where each point is
- * in the format {data: .., value, ..}
- */
-function getLayers(columns, series) {
-    const up = columns.up || [];
-    const down = columns.down || [];
-    return {
-        upLayers: up.map(columnName => {
-            const points = [];
-            for (let i = 0; i < series.size(); i++) {
-                const point = series.at(i);
-                points.push({
-                    date: point.timestamp(),
-                    value: point.get(columnName)
-                });
-            }
-            return {values: points};
-        }),
-
-        downLayers: down.map(columnName => {
-            const points = [];
-            for (let i = 0; i < series.size(); i++) {
-                const point = series.at(i);
-                points.push({
-                    date: point.timestamp(),
-                    value: point.get(columnName)
-                });
-            }
-            return {values: points};
-        })
-    };
-}
-
-/**
- * Build a D3 area generator based on the interpolate method and the supplied
- * timeScale and yScale. The result is an SVG area.
- *
- *   y|    |||  +y1   ||||||
- *    |||||||||||||||||||||||||
- *    | |||     +y0      |||||||||<-area
- *    |
- *    +---------|---------------- t
- *              x
- */
-function getAreaGenerators(interpolate, timeScale, yScale) {
-    const upArea = d3.svg.area()
-        .x(d => timeScale(d.date))
-        .y0(d => yScale(d.y0))
-        .y1(d => yScale(d.y0 + d.value))
-        .interpolate(interpolate);
-
-    const downArea = d3.svg.area()
-        .x(d => timeScale(d.date))
-        .y0(d => yScale(d.y0))
-        .y1(d => yScale(d.y0 - d.value))
-        .interpolate(interpolate);
-
-    return {upArea, downArea};
-}
-
-/**
- * Our D3 stack. When this is evoked with data (an array of layers) it builds up
- * the stack of graphs on top of each other (i.e propogates a baseline y
- * position up through the stack).
- */
-function getAreaStackers() {
-    return {
-        stackUp:
-            d3.layout.stack()
-                .values(d => d.values)
-                    .x(d => d.date)
-                    .y(d => d.value),
-
-        stackDown:
-            d3.layout.stack()
-                .values(d => d.values)
-                    .x(d => d.date)
-                    .y(d => -d.value)
-    };
-}
-
-function getCroppedSeries(scale, width, series) {
-    const beginTime = scale.invert(0);
-    const endTime = scale.invert(width);
-    const beginIndex = series.bisect(beginTime);
-    const endIndex = series.bisect(endTime);
-    return series.slice(beginIndex,
-                        endIndex === series.size() - 1 ?
-                            endIndex : endIndex + 1);
 }
 
 /**
@@ -183,6 +89,8 @@ export default React.createClass({
             down: React.PropTypes.arrayOf(React.PropTypes.string)
         }),
 
+        stack: React.PropTypes.bool,
+
         /**
          * The style of the area chart, with format:
          * ```
@@ -199,148 +107,132 @@ export default React.createClass({
             down: React.PropTypes.arrayOf(React.PropTypes.string)
         }),
 
+        fillOpacity: React.PropTypes.number,
+
         /**
-         * The d3 interpolation method
+         * Any of D3's interpolation modes.
          */
-        interpolate: React.PropTypes.string
+        interpolation: React.PropTypes.oneOf([
+            "curveBasis",
+            "curveBasisOpen",
+            "curveBundle",
+            "curveCardinal",
+            "curveCardinalOpen",
+            "curveCatmullRom",
+            "curveCatmullRomOpen",
+            "curveLinear",
+            "curveMonotone",
+            "curveNatural",
+            "curveRadial",
+            "curveStep",
+            "curveStepAfter",
+            "curveStepBefore"
+        ])
     },
 
     getDefaultProps() {
         return {
             transition: 0,
-            interpolate: "step-after",
+            interpolation: "curveLinear",
             style: {
                 up: ["#448FDD", "#75ACE6", "#A9CBEF"],
                 down: ["#FD8D0D", "#FDA949", "#FEC686"]
             },
+            fillOpacity: 0.75,
             columns: {
                 up: ["value"],
                 down: []
-            }
+            },
+            stack: true
         };
     },
 
-    /**
-     * Checks if the passed in point is within the bounds of the drawing area
-     */
-    inBounds(p) {
-        return p[0] > 0 && p[0] < this.props.width;
+    renderPaths(columnList, direction) {
+        const dir = direction === "up" ? 1 : -1;
+        const cursor = this.props.isPanning ? "-webkit-grabbing" : "default";
+        const size = this.props.series.size();
+        const offsets = new Array(size).fill(0);
+
+        return columnList.map((columnName, i) => {
+            const style = {
+                fill: this.props.style[direction][i],
+                opacity: this.props.fillOpacity,
+                pointerEvents: "none",
+                cursor
+            };
+
+            const outlineStyle = {
+                stroke: this.props.style[direction][i],
+                strokeWidth: 1,
+                fill: "none",
+                opacity: 1,
+                pointerEvents: "none",
+                cursor
+            };
+
+            // Stack the series columns to get our data in x0, y0, y1 format
+            const data = [];
+            for (let i = 0; i < this.props.series.size(); i++) {
+                const seriesPoint = this.props.series.at(i);
+                data.push({
+                    x0: this.props.timeScale(seriesPoint.timestamp()),
+                    y0: this.props.yScale(offsets[i]),
+                    y1: this.props.yScale(offsets[i] + dir * seriesPoint.get(columnName))
+                });
+                if (this.props.stack) {
+                    offsets[i] += dir * seriesPoint.get(columnName);
+                }
+            }
+
+            // Use D3 to build an area generation function
+            const area = d3Shape.area()
+                .curve(d3Shape[this.props.interpolation])
+                .x(d => d.x0)
+                .y0(d => d.y0)
+                .y1(d => d.y1);
+
+            // Use the area generation function with our stacked data
+            // to get an SVG path
+            const areaPath = area(data);
+
+            // Outline the top of the curve
+            const lineFunction = d3Shape.line()
+                .curve(d3Shape[this.props.interpolation])
+                .x(d => d.x0)
+                .y(d => d.y1);
+            const outlinePath = lineFunction(data);
+
+            return (
+                <g key={`area-${i}`}>
+                    <path
+                        key={`area-${direction}-${i}`}
+                        clipPath={this.props.clipPathURL}
+                        style={style}
+                        d={areaPath} />
+                     <path
+                        style={outlineStyle}
+                        key={`outline-${direction}-${i}`}
+                        clipPath={this.props.clipPathURL}
+                        d={outlinePath} />
+                </g>
+            );
+        });
     },
 
-    renderAreaChart(series, timeScale, yScale, interpolate,
-                    isPanning, columns, width, style) {
-        if (!yScale) {
-            return null;
-        }
+    renderAreas() {
+        const up = this.props.columns.up || [];
+        const down = this.props.columns.down || [];
 
-        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
-
-        const croppedSeries = getCroppedSeries(timeScale,
-                                               width,
-                                               series);
-
-        const {upArea, downArea} = getAreaGenerators(interpolate,
-                                                     timeScale,
-                                                     yScale);
-        const {upLayers, downLayers} = getLayers(columns,
-                                                 croppedSeries);
-
-        const {stackUp, stackDown} = getAreaStackers();
-
-        // Stack our layers
-        stackUp(upLayers);
-        if (downLayers.length) {
-            stackDown(downLayers);
-        }
-
-        // Cursor
-        const cursor = isPanning ? "-webkit-grabbing" : "default";
-
-        //
-        // Stacked area drawing up
-        //
-
-        // Make a group 'areachart-up-group' for each stacked area
-        const upChart = d3.select(ReactDOM.findDOMNode(this))
-            .selectAll(".areachart-up-group")
-                .data(upLayers)
-            .enter().append("g")
-                .attr("id", () => _.uniqueId("areachart-up-"));
-
-        // Append the area chart path onto the areachart-up-group group
-        this.upChart = upChart
-            .append("path")
-                .style("fill", (d, i) => style.up[i])
-                .style("pointerEvents", "none")
-                .style("cursor", cursor)
-                .attr("d", d => upArea(d.values))
-                .attr("clip-path", this.props.clipPathURL);
-
-        //
-        // Stacked area drawing down
-        //
-
-        // Make a group 'areachart-down-group' for each stacked area
-        const downChart = d3.select(ReactDOM.findDOMNode(this))
-          .selectAll(".areachart-down-group")
-            .data(downLayers)
-          .enter().append("g")
-            .attr("id", () => _.uniqueId("areachart-down-"));
-
-        // Append the area chart path onto the areachart-down-group group
-        this.downChart = downChart
-            .append("path")
-                .style("fill", (d, i) => style.down[i])
-                .style("pointerEvents", "none")
-                .style("cursor", cursor)
-                .attr("d", d => downArea(d.values))
-                .attr("clip-path", this.props.clipPathURL);
-
-    },
-
-    updateAreaChart(series, timeScale, yScale, interpolate, columns, width) {
-        const croppedSeries = getCroppedSeries(timeScale,
-                                               width,
-                                               series);
-        const {upArea, downArea} = getAreaGenerators(interpolate,
-                                                     timeScale,
-                                                     yScale);
-        const {upLayers, downLayers} = getLayers(columns,
-                                                 croppedSeries);
-        const {stackUp, stackDown} = getAreaStackers();
-
-        // Stack our layers
-        stackUp(upLayers);
-        if (downLayers.length) {
-            stackDown(downLayers);
-        }
-
-        this.upChart
-            .transition()
-            .duration(this.props.transition)
-            .ease("sin-in-out")
-            .attr("d", d => upArea(d.values));
-
-        this.downChart
-            .transition()
-            .duration(this.props.transition)
-            .ease("sin-in-out")
-            .attr("d", d => downArea(d.values));
+        return (
+            <g>
+                {this.renderPaths(up, "up")}
+                {this.renderPaths(down, "down")}
+            </g>
+        );
 
     },
 
-    componentDidMount() {
-        this.renderAreaChart(this.props.series,
-                             this.props.timeScale,
-                             this.props.yScale,
-                             this.props.interpolate,
-                             this.props.isPanning,
-                             this.props.columns,
-                             this.props.width,
-                             this.props.style);
-    },
-
-    componentWillReceiveProps(nextProps) {
+    shouldComponentUpdate(nextProps) {
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;
 
@@ -352,7 +244,6 @@ export default React.createClass({
         const columns = nextProps.columns;
         const style = nextProps.style;
 
-        // What changed?
         const widthChanged =
             (this.props.width !== width);
         const timeScaleChanged =
@@ -375,32 +266,16 @@ export default React.createClass({
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
 
-        //
-        // Currently if the series changes we completely rerender it. If the
-        // y axis scale changes then we just update the existing paths using a
-        // transition so that we can get smooth axis transitions.
-        //
-
-        if (seriesChanged || timeScaleChanged || widthChanged ||
+        return (seriesChanged || timeScaleChanged || widthChanged ||
             interpolateChanged || isPanningChanged || columnsChanged ||
-            styleChanged) {
-            this.renderAreaChart(newSeries, timeScale,
-                                 yScale, interpolate,
-                                 isPanning, columns,
-                                 width, style);
-        } else if (yAxisScaleChanged) {
-            this.updateAreaChart(newSeries, timeScale,
-                                 yScale, interpolate, columns, width);
-        }
-    },
-
-    shouldComponentUpdate() {
-        return false;
+            styleChanged || yAxisScaleChanged);
     },
 
     render() {
         return (
-            <g></g>
+            <g >
+                {this.renderAreas()}
+            </g>
         );
     }
 });

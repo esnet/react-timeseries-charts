@@ -11,7 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 import Highlighter from "./highlighter";
 import moment from "moment";
 import "moment-duration-format";
@@ -110,7 +110,7 @@ const hrBaselineStyle = {
     width: 0.25
 };
 
-const speedFormat = d3.format(".1f");
+const speedFormat = format(".1f");
 
 // Max and Avg HR values to show in the LabelAxis
 const hrSummaryValues = [
@@ -394,7 +394,7 @@ export default React.createClass({
         };
 
         const brushStyle = {
-            boxShadow: "inset 0px 2px 5px -2px rgba(189, 189, 189, 0.75);",
+            boxShadow: "inset 0px 2px 5px -2px rgba(189, 189, 189, 0.75)",
             background: "#FEFEFE",
             paddingTop: 10
         };

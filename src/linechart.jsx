@@ -10,8 +10,8 @@
 
 import React from "react";
 import _ from "underscore";
-import Polygon from "paths-js/polygon";
-import Bezier from "paths-js/bezier";
+import d3Shape from "d3-shape";
+
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
@@ -49,7 +49,7 @@ export default React.createClass({
     getDefaultProps() {
         return {
             smooth: true,
-            tension: 0.3,
+            interpolation: "curveLinear",
             style: {
                 color: "#9DA3FF",
                 width: 1
@@ -87,9 +87,24 @@ export default React.createClass({
         }),
 
         /**
-         * Smooth the line (using a bezier curve) or not.
+         * Any of D3's interpolation modes.
          */
-        smooth: React.PropTypes.bool,
+        interpolation: React.PropTypes.oneOf([
+            "curveBasis",
+            "curveBasisOpen",
+            "curveBundle",
+            "curveCardinal",
+            "curveCardinalOpen",
+            "curveCatmullRom",
+            "curveCatmullRomOpen",
+            "curveLinear",
+            "curveMonotone",
+            "curveNatural",
+            "curveRadial",
+            "curveStep",
+            "curveStepAfter",
+            "curveStepBefore"
+        ]),
 
         /**
          * The determines how to handle bad/missing values in the supplied
@@ -112,26 +127,19 @@ export default React.createClass({
             strokeWidth: `${this.props.style.width}px` || "1px"
         };
     },
-
-    /**
-     * Uses paths.js to generate an SVG element for a path passing
-     * through the points passed in. May be smoothed or not, depending
-     * on this.props.smooth.
-     */
-    generatePath(points) {
-        const closed = false;
-        const tension = this.props.tension;
-        const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
-        return fn({points, closed, tension}).path.print();
-    },
-
-    renderPath(points, key) {
+   
+    renderPath(data, key) {
+        const lineFunction = d3Shape.line()
+            .curve(d3Shape[this.props.interpolation])
+            .x((data) => this.props.timeScale(data.x))
+            .y((data) => this.props.yScale(data.y));
+        const path = lineFunction(data);
         return (
             <path
                 key={key}
+                clipPath={this.props.clipPathURL}
                 style={this.pathStyle()}
-                d={this.generatePath(points)}
-                clipPath={this.props.clipPathURL} />
+                d={path} />
         );
     },
 
@@ -145,26 +153,18 @@ export default React.createClass({
                 const value = d[1];
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    if (!currentPoints) {
-                        currentPoints = [];
-                    }
+                    if (!currentPoints) currentPoints = [];
                     currentPoints.push([d[0], d[1]]);
                 } else {
                     if (currentPoints) {
-                        const points = _.map(currentPoints,
-                            d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-                        );
-                        if (points.length > 1) {
-                            pathLines.push(this.renderPath(points, count++));
-                        }
+                        const points = _.map(currentPoints, d => ({x: d[0], y: d[1]}));
+                        if (points.length > 1) pathLines.push(this.renderPath(points, count++));
                         currentPoints = null;
                     }
                 }
             });
             if (currentPoints) {
-                const points = _.map(currentPoints,
-                    d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-                );
+                const points = _.map(currentPoints, d => ({x: d[0], y: d[1]}));
                 if (points.length > 1) {
                     pathLines.push(this.renderPath(points, count));
                 }
@@ -181,9 +181,7 @@ export default React.createClass({
             });
 
             // Map series data to scaled points
-            const points = _.map(cleanedPoints,
-                d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-            );
+            const points = _.map(cleanedPoints, d => ({x: d[0], y: d[1]}));
 
             pathLines.push(this.renderPath(points, count));
         }
@@ -203,7 +201,7 @@ export default React.createClass({
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const isPanning = nextProps.isPanning;
-        const smooth = nextProps.smooth;
+        const interpolation = nextProps.interpolation;
 
         // What changed?
         const widthChanged =
@@ -214,8 +212,8 @@ export default React.createClass({
             (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
         const isPanningChanged =
             (this.props.isPanning !== isPanning);
-        const smoothingChanged =
-            (this.props.smooth !== smooth);
+        const interpolationChanged =
+            (this.props.interpolation !== interpolation);
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -230,7 +228,7 @@ export default React.createClass({
             timeScaleChanged ||
             isPanningChanged ||
             yAxisScaleChanged ||
-            smoothingChanged
+            interpolationChanged
         );
     },
 

@@ -10,7 +10,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3";
+import d3 from "d3"; // TODO: use d3-brush when it becomes available
 import { TimeRange } from "pondjs";
 
 function scaleAsString(scale) {

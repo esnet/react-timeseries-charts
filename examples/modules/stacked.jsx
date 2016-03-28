@@ -108,7 +108,7 @@ export default React.createClass({
         const min = 0;
         const max = 130;
         const axisType = "linear";
-        const interpolationType = "linear";
+        const interpolationType = "curveBasis";
 
         return (
             <div>
@@ -117,6 +117,8 @@ export default React.createClass({
                         <h3>Stacked continents example</h3>
                     </div>
                 </div>
+
+                <hr/>
 
                 <div className="row">
                     <div className="col-md-12">
@@ -143,7 +145,8 @@ export default React.createClass({
                                             style={style}
                                             series={series}
                                             columns={cols}
-                                            interpolate={interpolationType} />
+                                            fillOpacity={0.4}
+                                            interpolation={interpolationType} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

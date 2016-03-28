@@ -197,11 +197,11 @@ export default React.createClass({
 
                                 <ChartRow height="150" debug={false}>
                                     <Charts>
-                                        <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis"/>
+                                        <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis" fillOpacity={0.4}/>
                                         <LineChart axis="total-rain" series={rainAccumSeries} style={{color: scheme.rainAccum, width: 1}} />
                                     </Charts>
                                     <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={5} min={0} max={rainAccumSeries.max()} width="80" type="linear" format=",.2f"/>
-                                    <YAxis id="rain" label="Precipitation (in)" classed="rain" labelOffset={5} style={{labelColor: scheme.rain}}
+                                    <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={{labelColor: scheme.rain}}
                                            min={0} max={rainSeries.max()} width="80" type="linear" format=",.2f"/>
                                 </ChartRow>
 

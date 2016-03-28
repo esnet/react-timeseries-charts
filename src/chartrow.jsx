@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import d3 from "d3";
+import { scaleLinear, scaleLog, scalePow } from "d3-scale";
 import _ from "underscore";
 
 import YAxis from "./yaxis";
@@ -84,19 +84,19 @@ export default React.createClass({
             _.isUndefined(max) || max !== max) {
             scale = null;
         } else if (type === "linear") {
-            scale = d3.scale.linear()
+            scale = scaleLinear()
                 .domain([min, max])
                 .range([y0, y1])
                 .nice();
         } else if (type === "log") {
             const base = yaxis.props.logBase || 10;
-            scale = d3.scale.log()
+            scale = scaleLog()
                 .base(base)
                 .domain([min, max])
                 .range([y0, y1]);
         } else if (type === "power") {
             const power = yaxis.props.powerExponent || 2;
-            scale = d3.scale.pow()
+            scale = scalePow()
                 .exponent(power)
                 .domain([min, max])
                 .range([y0, y1]);

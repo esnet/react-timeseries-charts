@@ -12,7 +12,7 @@
 
 import React from "react";
 import _ from "underscore";
-import d3 from "d3";
+import { format } from "d3-format";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
@@ -80,8 +80,10 @@ const max = _.max([
 ]);
 
 function formatter(value) {
-    const prefix = d3.formatPrefix(value);
-    return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;
+    // const p = precisionPrefix(1e5, 1.3e6);
+    // const f = formatPrefix("." + p, 1.3e6);
+    const f = format(".2s");
+    return `${f(value)}bps`;
 }
 
 

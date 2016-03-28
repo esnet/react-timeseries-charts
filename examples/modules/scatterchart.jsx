@@ -71,6 +71,8 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr/>
+
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>

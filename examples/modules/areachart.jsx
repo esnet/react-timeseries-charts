@@ -90,6 +90,8 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr />
+
                 <div className="row">
                     <div className="col-md-4">
                         <Legend type="swatch" categories={[
@@ -121,6 +123,7 @@ export default React.createClass({
                                     <Charts>
                                         <AreaChart
                                             axis="traffic"
+                                            fillOpacity={0.8}
                                             series={traffic}
                                             columns={{up: ["in"], down: ["out"]}} />
                                     </Charts>

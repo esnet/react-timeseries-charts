@@ -169,6 +169,8 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr/>
+
                 <div className="row">
                     <div className="col-md-12">
                         <Legend type="line" categories={legend} onChange={this.handleActiveChange}/>

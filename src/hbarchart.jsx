@@ -10,39 +10,209 @@
 
 import React from "react";
 import _ from "underscore";
-import d3 from "d3";
 import FlexBox from "react-flexbox";
-import { TimeSeries } from "pondjs";
 
+//d3
+import { scaleLinear } from "d3-scale";
+import { format } from "d3-format";
+
+import { TimeSeries } from "pondjs";
 import Resizable from "./resizable";
 
+/**
+ * Draws a marker and it's value as a label. The currentIndex is passed in
+ * as a prop, along with the series. In addition
+ */
+const Marker = React.createClass({
+
+    displayName: "Marker",
+
+    render() {
+        let marker, markerLabel;
+
+        const {
+            value,
+            scale,
+            style,
+            size,
+            format
+        } = this.props;
+
+        if (value) {
+
+            // Marker position
+            const valueStart = scale(value);
+
+            // Marker
+            marker = (
+                <rect style={style} x={valueStart-2} y={-2} width={4} height={size+4} />
+            );
+
+            // Text
+            let text;
+            if (format && _.isString(format)) {
+                const formatter = format(format);
+                text = formatter(value);
+            } else if (_.isFunction(format)) {
+                text = format(value);
+            }
+            if (text) {
+                markerLabel =(
+                    <text style={{fill: "#666", fontSize: 12}} x={valueStart+4} y={size - 2}>{text}</text>
+                );
+            }
+
+            return (
+                <g>
+                    {marker}
+                    {markerLabel}
+                </g>
+            );
+        } else {
+            return (
+                <g />
+            );
+        }
+    }
+});
+
+function scaleAsString(scale) {
+    return `${scale.domain()}-${scale.range()}`;
+}
+
+const RangeBar = React.createClass({
+
+    displayName: "RangeBar",
+
+    shouldComponentUpdate(nextProps) {
+        const seriesChanged = !TimeSeries.is(this.props.series, nextProps.series);
+        const scaleChanged = scaleAsString(this.props.scale) !== scaleAsString(nextProps.scale);
+        return seriesChanged || scaleChanged;
+    },
+
+    render() {
+        const {
+            series,
+            column,
+            bgstyle,
+            fgstyle,
+            scale,
+            size
+        } = this.props;
+
+        //
+        // Statistics-based range bar
+        //
+
+        const avg = series.avg(column);
+        const stdev = series.stdev(column);
+
+        let seriesMin = series.min(column);
+        if (_.isNull(seriesMin)) seriesMin = 0;
+
+        let seriesMax = series.max(column);
+        if (_.isNull(seriesMax)) seriesMax = 0;
+
+        const start = scale(seriesMin);
+        const end = scale(seriesMax);
+        const centerStart = scale(avg - stdev);
+        const centerEnd = scale(avg + stdev);
+
+        let backgroundWidth = end - start;
+        if (backgroundWidth < 1) backgroundWidth = 1;
+
+        let centerWidth = centerEnd - centerStart;
+        if (centerWidth <= 1) centerWidth = 1;
+
+        const barElementBackground = (
+            <rect style={bgstyle} rx={2} ry={2} x={start} y={1} width={backgroundWidth} height={size-2} />
+        );
+        const barElementCenter = (
+            <rect style={fgstyle} x={centerStart} y={0} width={centerWidth} height={size} />
+        );
+
+        return (
+            <g>
+                {barElementBackground}
+                {barElementCenter}
+            </g>
+        );
+    }
+});
+
+/**
+ * Render just the bars, with each bar being one series in the seriesList
+ */
 const Bars = React.createClass({
 
     displayName: "HorizontalBarChartBars",
 
+    shouldComponentUpdate(nextProps) {
+        const seriesChanged = !TimeSeries.is(this.props.series, nextProps.series);
+        const timestampChanged = this.props.timestamp !== nextProps.timestamp;
+        return seriesChanged || timestampChanged;
+    },
+
     render() {
         const {
-            display, series, max, columns,
-            spacing, padding, size, width,
-            style, format, timestamp } = this.props;
+            display,
+            series,
+            max,
+            columns,
+            spacing,
+            padding,
+            size,
+            width,
+            style,
+            format,
+            timestamp
+        } = this.props;
 
         // Highlighted value
-        const index = timestamp ? series.bisect(timestamp) : null;
+        const currentIndex = timestamp ? series.bisect(timestamp) : null;
         
+        //
+        // Render the RangeBars, one for each column
+        //
+
         const columnElements = columns.map((column, i) => {
 
             // Vertical position of the bar
-            const y = padding + i * (size + spacing);
+            const yPosition = padding + i * (size + spacing);
+            const transform = `translate(0,${yPosition})`;
 
             // Scale
-            const scale = d3.scale.linear()
+            const scale = scaleLinear()
                 .domain([0, max])
                 .range([0, width - 100]);
 
-            // Start and end of the bar
-            let start, end, value, centerStart, centerEnd;
-            let textElement;
+            //
+            // Value and it's style
+            //
+
+            const value = currentIndex ? series.at(currentIndex).get(column) : null;
+
+            //
+            // Styles
+            //
+
+            const rectStyleValue = _.isArray(style) && style.length > i ?
+                _.clone(style[i]) : {fill: "#DDD"};
+
+            const rectStyleBackground = _.isArray(style) && style.length > i ?
+                _.clone(style[i]) : {fill: "#DDD"};
+            rectStyleBackground.opacity = 0.2;
+
+            const rectStyleCenter = _.isArray(style) && style.length > i ?
+                _.clone(style[i]) : {fill: "#DDD"};
+            rectStyleCenter.opacity = 0.2;
+
+            //
+            // Visual display of the bar, depending on the display prop
+            //
+
             switch (display) {
+                /*
                 case "avg":
                 case "max":
 
@@ -51,6 +221,7 @@ const Bars = React.createClass({
                         _.clone(style[i]) : {fill: "#DDD"};
 
                     value = display === "avg" ? series.avg(column) : series.max(column);
+
                     start = scale(0);
                     end = scale(value);
                     let w = end - start;
@@ -64,7 +235,7 @@ const Bars = React.createClass({
                     // Text
                     let text;
                     if (format && _.isString(format)) {
-                        const formatter = d3.format(format);
+                        const formatter = format(format);
                         text = formatter(value);
                     } else if (_.isFunction(format)) {
                         text = format(value);
@@ -79,92 +250,48 @@ const Bars = React.createClass({
                     return (
                         <g key={i}>{barElement}{textElement}</g>
                     );
-
+                */
                 case "range":
-
-                    // Styles
-                    const rectStyleBackground = _.isArray(style) && style.length > i ?
-                        _.clone(style[i]) : {fill: "#DDD"};
-                    rectStyleBackground.opacity = 0.2;
-
-                    const rectStyleCenter = _.isArray(style) && style.length > i ?
-                        _.clone(style[i]) : {fill: "#DDD"};
-                    rectStyleCenter.opacity = 0.2;
-
-                    const rectStyleValue = _.isArray(style) && style.length > i ?
-                        _.clone(style[i]) : {fill: "#DDD"};
-
-                    // Statistics
-                    const avg = series.avg(column);
-                    const stdev = series.stdev(column);
-
-                    let seriesMin = series.min(column);
-                    if (_.isNull(seriesMin)) seriesMin = 0;
-
-                    let seriesMax = series.max(column);
-                    if (_.isNull(seriesMax)) seriesMax = 0;
-
-                    start = scale(seriesMin);
-                    end = scale(seriesMax);
-                    centerStart = scale(avg - stdev);
-                    centerEnd = scale(avg + stdev);
-
-                    // Current value
-                    let barElementValue;
-                    if (index) {
-                        value = series.at(index).get(column);
-                        const valueStart = scale(value);
-                        barElementValue = (
-                            <rect style={rectStyleValue} x={valueStart-2} y={y-2} width={4} height={size+4} />
-                        );
-
-                        // Text
-                        let text;
-                        if (format && _.isString(format)) {
-                            const formatter = d3.format(format);
-                            text = formatter(value);
-                        } else if (_.isFunction(format)) {
-                            text = format(value);
-                        }
-                        
-                        if (text) {
-                            textElement =(
-                                <text style={{fill: "#666", fontSize: 12}} x={end + 2} y={y + size - 1}>{text}</text>
-                            );
-                        }
-                    }
-
-                    let backgroundWidth = end - start;
-                    if (backgroundWidth < 1) backgroundWidth = 1;
-
-                    let centerWidth = centerEnd - centerStart;
-                    if (centerWidth <= 1) centerWidth = 1;
-
-                    const barElementBackground = (
-                        <rect style={rectStyleBackground} rx={2} ry={2} x={start} y={y+1} width={backgroundWidth} height={size-2} />
-                    );
-                    const barElementCenter = (
-                        <rect style={rectStyleCenter} x={centerStart} y={y} width={centerWidth} height={size} />
-                    );
                     return (
-                        <g key={i}>{barElementBackground}{barElementCenter}{barElementValue}{textElement}</g>
+                        <g transform={transform}>
+                            <RangeBar
+                                series={series}
+                                column={column}
+                                bgstyle={rectStyleBackground}
+                                fgstyle={rectStyleCenter}
+                                style={style}
+                                scale={scale}
+                                size={size} />
+                            <Marker
+                                value={value}
+                                scale={scale}
+                                format={format}
+                                size={size}
+                                style={rectStyleValue} />
+                        </g>
                     );
             }
-
         });
 
-        const height = columns.length * size + (columns.length - 1) * spacing + padding * 2;
+        //       | <-- bar --> |       | <-- bar --> |
+        // | pad |    size     | space |    size     | pad |
+        const height = columns.length * size +
+                       (columns.length - 1) * spacing +
+                       padding * 2;
 
         return (
-            <svg
-                width="100%"
-                height={height} >
+            <svg width="100%" height={height} >
                 {columnElements}
             </svg>
         );
     }
 });
 
+/**
+ * Each series in the series list has a list of columns to display. So here
+ * we render the series label, the bars (one for each column) and the child
+ * if there is one for expanded info about the series.
+ */
 const Row = React.createClass({
 
     displayName: "HorizontalBarChartRow",
@@ -220,7 +347,8 @@ const Row = React.createClass({
             size,
             style,
             format,
-            timestamp } = this.props;
+            timestamp
+        } = this.props;
 
         const rowStyle = {
             width: "100%",
@@ -492,7 +620,7 @@ export default React.createClass({
          * A single child which will be rendered when the item is selected. The child will have
          * a couple of additional props injected onto it when rendered:
          *  * `series` - the TimeSeries of the row being rendered
-         *  * `timestamp` - the current timestamp being shown 
+         *  * `timestamp` - the current timestamp being shown
          */
         children: React.PropTypes.element
     },
@@ -532,6 +660,10 @@ export default React.createClass({
             navigateColor
         } = this.props;
 
+        //
+        // Get the max value in the series list, for overall scale
+        //
+
         seriesList.forEach(series => {
             this.props.columns.forEach(column => {
                 const smax = series.max(column);
@@ -539,10 +671,18 @@ export default React.createClass({
             });
         });
 
+        //
+        // Get the 0 or 1 children for the expanded area
+        //
+
         let child;
         if (React.Children.count(this.props.children) === 1) {
             child = React.Children.only(this.props.children);
         }
+
+        //
+        // Render a <Row> for each item in the series
+        //
 
         return seriesList.map((series, i) => (
             <Row
@@ -567,7 +707,12 @@ export default React.createClass({
     },
 
     render() {
-        // Sort the list
+
+        //
+        // Sort the list by the criteria specified in the "sortBy" prop:
+        // name, avg or max.
+        //
+
         const sortedList = _.sortBy(this.props.seriesList, series => {
             switch (this.props.sortBy) {
                 case "name":
@@ -581,7 +726,10 @@ export default React.createClass({
             }
         });
 
-        // Top n
+        //
+        // Keep just the top n, where n is specified by the "top" prop.
+        //
+
         const list = this.props.top ? sortedList.slice(0, this.props.top) : sortedList;
 
         const containerStyle = {

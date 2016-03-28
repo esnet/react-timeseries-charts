@@ -45,6 +45,17 @@
           "computed": false
         }
       },
+      "stack": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "style": {
         "type": {
           "name": "shape",
@@ -72,14 +83,83 @@
           "computed": false
         }
       },
-      "interpolate": {
+      "fillOpacity": {
         "type": {
-          "name": "string"
+          "name": "number"
         },
         "required": false,
-        "description": "The d3 interpolation method",
+        "description": "",
         "defaultValue": {
-          "value": "\"step-after\"",
+          "value": "0.75",
+          "computed": false
+        }
+      },
+      "interpolation": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"curveBasis\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveBasisOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveBundle\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCardinal\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCardinalOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCatmullRom\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCatmullRomOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveLinear\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveMonotone\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveNatural\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveRadial\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStep\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStepAfter\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStepBefore\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Any of D3's interpolation modes.",
+        "defaultValue": {
+          "value": "\"curveLinear\"",
           "computed": false
         }
       },
@@ -133,7 +213,11 @@
           }
         },
         "required": false,
-        "description": "A list of columns within the series that will be stacked on top of each other"
+        "description": "A list of columns within the series that will be stacked on top of each other",
+        "defaultValue": {
+          "value": "[\"value\"]",
+          "computed": false
+        }
       },
       "style": {
         "type": {
@@ -142,7 +226,7 @@
         "required": false,
         "description": "The style provides the coloring, relating each column to styles for normal, highlight (hover) and selected:\n```\nconst style = {\n    \"in\": {\n        normal: {fill: \"#619F3A\"},\n        highlight: {fill: \"rgb(113, 187, 67)\"},\n        selected: {fill: \"#436D28\"}\n    }\n};\n```",
         "defaultValue": {
-          "value": "{\n    value: {fill: \"#619F3A\"}\n}",
+          "value": "{\n    value: {\n        normal: \"steelblue\",\n        highlight: \"green\",\n        selected: \"yellow\",\n        text: \"#333\"\n    }\n}",
           "computed": false
         }
       },
@@ -396,7 +480,7 @@
     "displayName": "Charts"
   },
   "src/eventchart.jsx": {
-    "description": "Renders an event view that shows the supplied set of\nevents along a time axis.\n\nEXPERIMENTAL\n\nTODO: Convert to use Pond Events",
+    "description": "Renders an event view that shows the supplied set of\nevents along a time axis. The events should be supplied as a Pond TimeSeries.\nThat series may contain regular Events, TimeRangeEvents or IndexedEvents.",
     "displayName": "EventChart",
     "props": {
       "series": {
@@ -691,7 +775,7 @@
     }
   },
   "src/legend.jsx": {
-    "description": "Legends are simple to define. First define the items you want in\nit using an array as follows:\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", disabled={true} style: {backgroundColor: \"#1f77b4\"}},\n    {key: \"usa\", label: \"USD\", disabled={false} style: {backgroundColor: \"#aec7e8\"}}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. You may also provide a\nstyle which will be merged in with the base style for that type and\na disabled boolean if it should be rendered with a disabled appearance.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show the series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
+    "description": "Legends are simple to define. First define the items you want in\nit using an array as follows:\n\n```\nconst audStyle = {backgroundColor: \"#1f77b4\"};\nconst usdStyle = {backgroundColor: \"#aec7e8\"};\n\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled={true} style: audStyle},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled={false} style: usdStyle}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. You may also provide a\nstyle which will be merged in with the base style for that type.\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show a series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
     "displayName": "Legend",
     "props": {
       "type": {
@@ -716,6 +800,27 @@
         "description": "The overall style of the legend items, either a color \"swatch\", a\ncolored \"line\", or a \"dot\".",
         "defaultValue": {
           "value": "\"swatch\"",
+          "computed": false
+        }
+      },
+      "align": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"left\"",
+              "computed": false
+            },
+            {
+              "value": "\"right\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Alignment of the legend within the available space. Either left or right.",
+        "defaultValue": {
+          "value": "\"left\"",
           "computed": false
         }
       },
@@ -812,14 +917,72 @@
           "computed": false
         }
       },
-      "smooth": {
+      "interpolation": {
         "type": {
-          "name": "bool"
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"curveBasis\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveBasisOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveBundle\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCardinal\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCardinalOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCatmullRom\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveCatmullRomOpen\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveLinear\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveMonotone\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveNatural\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveRadial\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStep\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStepAfter\"",
+              "computed": false
+            },
+            {
+              "value": "\"curveStepBefore\"",
+              "computed": false
+            }
+          ]
         },
         "required": false,
-        "description": "Smooth the line (using a bezier curve) or not.",
+        "description": "Any of D3's interpolation modes.",
         "defaultValue": {
-          "value": "true",
+          "value": "\"curveLinear\"",
           "computed": false
         }
       },
@@ -829,6 +992,12 @@
         },
         "required": false,
         "description": "The determines how to handle bad/missing values in the supplied\nTimeSeries. A missing value can be null or NaN. If breakLine\nis set to true then the line will be broken on either side of\nthe bad value(s). If breakLine is false (the default) bad values\nare simply removed and the adjoining points are connected.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "smooth": {
         "defaultValue": {
           "value": "true",
           "computed": false

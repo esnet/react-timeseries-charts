@@ -49,25 +49,54 @@ export default React.createClass({
         width: React.PropTypes.number
     },
 
-    render() {
-        const labelStyle = {
-            fontSize: 12,
-            textAnchor: "middle",
-            fill: "#838383"
-        };
-        const detailStyle = {
+    renderAxis() {
+        const valueWidth = (this.props.valWidth) ? this.props.valWidth : 40;
+        const rectWidth = this.props.width - valueWidth;
+
+        const style = {
             fontSize: 11,
             textAnchor: "left",
             fill: "#bdbdbd"
         };
 
-        const valueWidth = (this.props.valWidth) ? this.props.valWidth : 40;
-        const rectWidth = this.props.width - valueWidth;
+        if (this.props.hideScale) {
+            return (
+                <g />
+            );
+        }
         const valXPos = rectWidth + 3; // padding
-
         const format = _.has(this.props, "format") ? this.props.format : ".2f";
         const maxStr = d3.format(format)(this.props.max);
         const minStr = d3.format(format)(this.props.min);
+
+        return (
+            <g>
+                <text
+                    x={valXPos}
+                    y={0}
+                    dy="1.2em"
+                    style={style} >
+                    {maxStr}
+                </text>
+                <text
+                    x={valXPos}
+                    y={this.props.height}
+                    style={style}>
+                    {minStr}
+                </text>
+            </g>
+        );
+    },
+
+    render() {
+        const valueWidth = (this.props.valWidth) ? this.props.valWidth : 40;
+        const rectWidth = this.props.width - valueWidth;
+
+        const labelStyle = {
+            fontSize: 12,
+            textAnchor: "middle",
+            fill: "#838383"
+        };
 
         let valueList = null;
         let labelYPos;
@@ -101,19 +130,8 @@ export default React.createClass({
                     transform={`translate(0,${labelYPos + 2})`} >
                     {valueList}
                 </g>
-                <text
-                    x={valXPos}
-                    y={0}
-                    dy="1.2em"
-                    style={detailStyle} >
-                    {maxStr}
-                </text>
-                <text
-                    x={valXPos}
-                    y={this.props.height}
-                    style={detailStyle}>
-                    {minStr}
-                </text>
+
+                {this.renderAxis()}
             </g>
         );
     }

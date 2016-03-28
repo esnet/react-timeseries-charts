@@ -26,7 +26,6 @@ import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import BarChart from "../../src/barchart";
-import EventChart from "../../src/eventchart";
 import Baseline from "../../src/baseline";
 import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
@@ -270,9 +269,11 @@ export default React.createClass({
 
                <div className="row">
                     <div className="col-md-12">
-                        <h3>BarChart Examples</h3>
+                        <h3>BarCharts</h3>
                     </div>
                 </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -282,6 +283,8 @@ export default React.createClass({
                         </p>
                     </div>
                 </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -304,11 +307,6 @@ export default React.createClass({
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
-                                </ChartRow>
-                                <ChartRow height="35" debug={false}>
-                                    <Charts>
-                                        <EventChart series={octoberTrafficSeries} spacing={2} size={30} />
-                                    </Charts>
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>

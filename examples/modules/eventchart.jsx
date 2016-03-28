@@ -11,7 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react/";
-// import APIDocs from "./docs";
+import APIDocs from "./docs";
 import Highlighter from "./highlighter";
 
 // Pond
@@ -21,7 +21,7 @@ import { TimeSeries, TimeRangeEvent, TimeRange } from "pondjs";
 import ChartContainer from "../../src/chartcontainer";
 import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
-// import YAxis from "../../src/yaxis";
+import LabelAxis from "../../src/labelaxis";
 import EventChart from "../../src/eventchart";
 import Resizable from "../../src/resizable";
 
@@ -116,9 +116,11 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>EventChart Example</h3>
+                        <h3>EventChart</h3>
                     </div>
                 </div>
+
+                <hr/>
 
                 <div className="row">
                     <div className="col-md-12">
@@ -128,16 +130,31 @@ export default React.createClass({
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}>
                                 <ChartRow height="35">
+                                    <LabelAxis
+                                        hideScale={true}
+                                        id="outages"
+                                        label="Outages"
+                                        min={0} max={0}
+                                        width={140}
+                                        type="linear" format=",.1f"/>
                                     <Charts>
                                         <EventChart
                                             series={series}
-                                            size={35}
+                                            size={45}
                                             style={outageEventStyleFunc}
                                             label={outageLabelFunc} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                </div>
+
+                <hr/>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <APIDocs file="src/eventchart.jsx"/>
                     </div>
                 </div>
             </div>

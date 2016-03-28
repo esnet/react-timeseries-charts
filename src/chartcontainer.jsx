@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import d3 from "d3";
+import { scaleTime } from "d3-scale";
 import _ from "underscore";
 import { TimeRange } from "pondjs";
 import invariant from "invariant";
@@ -204,7 +204,6 @@ export default React.createClass({
     },
 
     render() {
-        console.log("ChartContainer", this.props);
         const chartRows = [];
 
         //
@@ -299,7 +298,7 @@ export default React.createClass({
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        const timeScale = d3.time.scale()
+        const timeScale = scaleTime()
             .domain(this.props.timeRange.toJSON())
             .range([0, timeAxisWidth]);
 
@@ -349,7 +348,6 @@ export default React.createClass({
         let tracker;
         if (this.props.trackerPosition &&
             this.props.timeRange.contains(this.props.trackerPosition)) {
-            console.log("container: tracker values", this.props);
             tracker = (
                 <g
                     key="tracker-group"

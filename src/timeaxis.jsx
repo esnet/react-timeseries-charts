@@ -10,9 +10,11 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3";
+import { axisBottom } from "d3-axis";
+import { timeFormat } from "d3-time-format";
+import { timeDay, timeMonth, timeYear } from "d3-time";
+import { select } from "d3-selection";
 import moment from "moment";
-
 import "moment-duration-format";
 import "./timeaxis.css";
 
@@ -33,40 +35,30 @@ export default React.createClass({
         const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
 
         if (this.props.format === "day") {
-            axis = d3.svg.axis()
-                .scale(scale)
-                .orient("bottom")
-                .ticks(d3.time.days, 1)
-                .tickFormat(d3.time.format("%d"));
+            axis = axisBottom(scale)
+                .tickArguments([timeDay, 1])
+                .tickFormat(timeFormat("%d"));
         } else if (this.props.format === "month") {
-            axis = d3.svg.axis()
-                .scale(scale)
-                .orient("bottom")
-                .ticks(d3.time.months, 1)
-                .tickFormat(d3.time.format("%B"));
+            axis = axisBottom(scale)
+                .tickArguments([timeMonth, 1])
+                .tickFormat(timeFormat("%B"));
         } else if (this.props.format === "year") {
-            axis = d3.svg.axis()
-                .scale(scale)
-                .orient("bottom")
-                .ticks(d3.time.years, 1)
-                .tickFormat(d3.time.format("%Y"));
+            axis = axisBottom(scale)
+                .tickArguments([timeYear, 1])
+                .tickFormat(timeFormat("%Y"));
         } else if (this.props.format === "relative") {
-            axis = d3.svg.axis()
-                .scale(scale)
-                .orient("bottom")
+            axis = axisBottom(scale)
                 .tickFormat(d => moment.duration(+d).format());
         } else {
-            axis = d3.svg.axis()
-                .scale(scale)
-                .tickSize(-100, 0, 0)
-                .orient("bottom");
+            axis = axisBottom(scale)
+                .tickSize(-100, 0, 0);
         }
 
         // Remove the old axis from under this DOM node
-        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
+        select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
         // Draw the new axis
-        d3.select(ReactDOM.findDOMNode(this)).append("g")
+        select(ReactDOM.findDOMNode(this)).append("g")
             .attr("class", "x axis")
             .call(axis.tickSize(tickSize));
     },

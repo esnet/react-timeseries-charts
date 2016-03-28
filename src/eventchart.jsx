@@ -15,11 +15,8 @@ import { TimeSeries } from "pondjs";
 
 /**
  * Renders an event view that shows the supplied set of
- * events along a time axis.
- *
- * EXPERIMENTAL
- *
- * TODO: Convert to use Pond Events
+ * events along a time axis. The events should be supplied as a Pond TimeSeries.
+ * That series may contain regular Events, TimeRangeEvents or IndexedEvents.
  */
 export default React.createClass({
 
@@ -96,8 +93,11 @@ export default React.createClass({
         for (const event of series.events()) {
             const begin = event.begin();
             const end = event.end();
-            const beginPos = scale(begin);
-            const endPos = scale(end);
+            const beginPos = scale(begin) >= 0 ?
+                scale(begin) : 0;
+            const endPos = scale(end) <= this.props.width ?
+                scale(end) : this.props.width;
+
             const transform = `translate(${beginPos},0)`;
 
             const isHover = this.state.hover ? event.data() === this.state.hover.data() : false;
@@ -126,7 +126,7 @@ export default React.createClass({
                 }
             }
 
-            const x = this.props.spacing;
+            let x = this.props.spacing;
             const y = 0;
             const width = endPos - beginPos - 2 * this.props.spacing;
             const height = this.props.size;
@@ -135,14 +135,15 @@ export default React.createClass({
             if (isHover) {
                 text = (
                     <g>
-                    <rect
-                        className="eventchart-marker"
-                        x={x} y={y} width={5} height={height+4}
-                        style={merge(true, barNormalStyle, {pointerEvents: "none"})}
-                        clipPath={this.props.clipPathURL}/>
+                        <rect
+                            className="eventchart-marker"
+                            x={x} y={y} width={5} height={height+4}
+                            style={merge(true, barNormalStyle, {pointerEvents: "none"})}
+                            clipPath={this.props.clipPathURL} />
                         <text
                             style={{pointerEvents: "none", fill: "#444"}}
-                            x={8} y={15}>
+                            x={8} y={15}
+                            clipPath={this.props.clipPathURL} >
                             {label}
                         </text>
                     </g>
