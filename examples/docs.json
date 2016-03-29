@@ -1397,7 +1397,7 @@
       },
       "transition": {
         "defaultValue": {
-          "value": "0",
+          "value": "100",
           "computed": false
         }
       },
