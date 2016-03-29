@@ -116,12 +116,17 @@ export default React.createClass({
 
     renderChart() {
         let charts = [];
+        let max = 100;
         if (this.state.active.requests) {
+            const maxRequests = requestsSeries.max();
+            if (maxRequests > max) max = maxRequests;
             charts.push(
                 <LineChart key="requests" axis="axis1" series={requestsSeries} style={requestsStyle}/>
             );
         }
         if (this.state.active.connections) {
+            const maxConnections = connectionsSeries.max();
+            if (maxConnections > max) max = maxConnections;
             charts.push(
                 <LineChart key="connections" axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
             );
@@ -130,12 +135,12 @@ export default React.createClass({
             <ChartContainer timeRange={requestsSeries.range()}>
                 <ChartRow height="300" debug={false}>
                     <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
-                           labelOffset={-10} min={0} max={1000} format=",.0f" width="60" type="linear" />
+                           labelOffset={-10} min={0} max={max} format=",.0f" width="60" type="linear" />
                     <Charts>
                         {charts}
                     </Charts>
                     <YAxis id="axis2" label="Connections" style={{labelColor: scheme.connections}}
-                           labelOffset={12} min={0} format=",.0f" max={10000} width="80" type="linear"/>
+                           labelOffset={12} min={0} format=",.0f" max={max} width="80" type="linear"/>
                 </ChartRow>
             </ChartContainer>
         );

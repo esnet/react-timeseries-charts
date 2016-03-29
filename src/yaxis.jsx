@@ -11,6 +11,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { axisLeft, axisRight } from "d3-axis";
+
+import { transition } from "d3-transition";
+import { easeSinInOut } from "d3-ease";
+
 import { format } from "d3-format";
 import { select } from "d3-selection";
 
@@ -78,7 +82,7 @@ export default React.createClass({
             absolute: false,         // Display scale always positive
             format: ".2s",           // Format string for d3.format
             labelOffset: 0,          // Offset the label position
-            transition: 0,           // Axis transition time
+            transition: 100,           // Axis transition time
             width: 80,
             style: {
                 labelColor: "#8B7E7E", // Default label color
@@ -229,10 +233,14 @@ export default React.createClass({
                 .ticks(10, ".2s");
         }
 
-        select(ReactDOM.findDOMNode(this)).select(".yaxis")
-            .transition()
-            .duration(this.props.transition)
-            .ease("sin-in-out")
+        // 
+        const t = transition()
+            .duration(300)
+            .ease(easeSinInOut);
+
+        select(ReactDOM.findDOMNode(this))
+            .select(".yaxis")
+                .transition(t)
                 .call(axisGenerator);
     },
 
