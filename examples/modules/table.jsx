@@ -59,10 +59,11 @@ const example1bText = `
 
 In addition to simple formats, you can also supply a cell rendering function, for example
 to render a little bar visualization for values in a specific column. The cell rendering function
-takes two args: the event that is being rendered in the row, and the column name of the current
-cell. If this example the column name is used to apply the function to just the 'uptime' column. The
-value is then extracted from the event for the current column, though of course you could use other
-columns too, and then a simple bar is constructed using a div with some styling:
+takes three args: the event that is being rendered in the row, the column name of the current
+cell and the series itself. In this example the column name is used to apply the function to
+just the 'uptime' column. The value is then extracted from the event for the current column,
+though of course you could use other columns too, and then a simple bar is constructed using
+a div with some styling:
 
     function renderPercentAsBar(event, column) {
         if (column === "uptime") {

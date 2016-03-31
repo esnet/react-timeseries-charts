@@ -36,7 +36,7 @@ export default React.createClass({
             _.each(this.props.columns, (column) => {
                 let cell;
                 if (this.props.renderCell) {
-                    cell = this.props.renderCell(event, column.key);
+                    cell = this.props.renderCell(event, column.key, this.props.series);
                 }
 
                 if (cell) {
