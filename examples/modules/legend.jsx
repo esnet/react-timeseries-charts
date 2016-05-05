@@ -62,20 +62,20 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-3">
                         <Legend type="line" categories={[
-                            {key: "aust", label: "AUD", disabled: this.state.disabled["aust"], style: {backgroundColor: "#1f77b4"}},
-                            {key: "usa", label: "USD", disabled: this.state.disabled["usa"], style: {backgroundColor: "#aec7e8"}}]}
+                            {key: "aust", label: "AUD", disabled: this.state.disabled["aust"], style: {stroke: "#1f77b4"}},
+                            {key: "usa", label: "USD", disabled: this.state.disabled["usa"], style: {stroke: "#aec7e8"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="swatch" categories={[
-                            {key: "oscars", label: "Oscars", disabled: this.state.disabled["oscars"], style: {backgroundColor: "#ff7f0e"}},
-                            {key: "total", label: "Total", disabled: this.state.disabled["total"], style: {backgroundColor: "#ffbb78"}}]}
+                            {key: "oscars", label: "Oscars", disabled: this.state.disabled["oscars"], style: {fill: "#ff7f0e"}},
+                            {key: "total", label: "Total", disabled: this.state.disabled["total"], style: {fill: "#ffbb78"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="dot" categories={[
-                            {key: "site", label: "Site", disabled: this.state.disabled["site"], style: {backgroundColor: "#98df8a"}},
-                            {key: "router", label: "Router", disabled: this.state.disabled["router"], style: {backgroundColor: "#d62728"}}]}
+                            {key: "site", label: "Site", disabled: this.state.disabled["site"], style: {fill: "#98df8a"}},
+                            {key: "router", label: "Router", disabled: this.state.disabled["router"], style: {fill: "#d62728"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                 </div>
@@ -97,20 +97,20 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-3">
                         <Legend type="line" categories={[
-                            {key: "aust", label: "AUD", value: "$1.52", disabled: this.state.disabled["aust"], style: {backgroundColor: "#1f77b4"}},
-                            {key: "usa", label: "USD", value: "$1.43", disabled: this.state.disabled["usa"], style: {backgroundColor: "#aec7e8"}}]}
+                            {key: "aust", label: "AUD", value: "$1.52", disabled: this.state.disabled["aust"], style: {stroke: "#1f77b4"}},
+                            {key: "usa", label: "USD", value: "$1.43", disabled: this.state.disabled["usa"], style: {stroke: "#aec7e8"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="swatch" categories={[
-                            {key: "oscars", value: "22 Gbps", label: "Oscars", disabled: this.state.disabled["oscars"], style: {backgroundColor: "#ff7f0e"}},
-                            {key: "total", value: "91 Gbps", label: "Total", disabled: this.state.disabled["total"], style: {backgroundColor: "#ffbb78"}}]}
+                            {key: "oscars", value: "22 Gbps", label: "Oscars", disabled: this.state.disabled["oscars"], style: {fill: "#ff7f0e"}},
+                            {key: "total", value: "91 Gbps", label: "Total", disabled: this.state.disabled["total"], style: {fill: "#ffbb78"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                     <div className="col-md-3">
                         <Legend type="dot" categories={[
-                            {key: "site", value: "Active", label: "Site", disabled: this.state.disabled["site"], style: {backgroundColor: "#98df8a"}},
-                            {key: "router", value: "Disabled", label: "Router", disabled: this.state.disabled["router"], style: {backgroundColor: "#d62728"}}]}
+                            {key: "site", value: "Active", label: "Site", disabled: this.state.disabled["site"], style: {fill: "#98df8a"}},
+                            {key: "router", value: "Disabled", label: "Router", disabled: this.state.disabled["router"], style: {fill: "#d62728"}}]}
                             onChange={this.handleLegendChange} />
                     </div>
                 </div>

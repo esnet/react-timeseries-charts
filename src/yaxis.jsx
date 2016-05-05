@@ -120,11 +120,11 @@ export default React.createClass({
         ]),
 
         /**
-         * The scale type: linear, log, or exp.
+         * The scale type: linear, power, or exp.
          */
         type: React.PropTypes.oneOf([
             "linear",
-            "log",
+            "power",
             "exp"
         ]),
 

@@ -226,7 +226,7 @@
         "required": false,
         "description": "The style provides the coloring, relating each column to styles for normal, highlight (hover) and selected:\n```\nconst style = {\n    \"in\": {\n        normal: {fill: \"#619F3A\"},\n        highlight: {fill: \"rgb(113, 187, 67)\"},\n        selected: {fill: \"#436D28\"}\n    }\n};\n```",
         "defaultValue": {
-          "value": "{\n    value: {\n        normal: \"steelblue\",\n        highlight: \"green\",\n        selected: \"yellow\",\n        text: \"#333\"\n    }\n}",
+          "value": "{value: defaultStyle}",
           "computed": false
         }
       },
@@ -775,7 +775,7 @@
     }
   },
   "src/legend.jsx": {
-    "description": "Legends are simple to define. First define the items you want in\nit using an array as follows:\n\n```\nconst audStyle = {backgroundColor: \"#1f77b4\"};\nconst usdStyle = {backgroundColor: \"#aec7e8\"};\n\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled={true} style: audStyle},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled={false} style: usdStyle}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. You may also provide a\nstyle which will be merged in with the base style for that type.\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show a series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
+    "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is the CSS that should\nbe appied to rendered symbol.\n\nNext build a list of categories you want in it\n\nFor example:\n\n```\nconst audStyle = {stroke: \"#1f77b4\"};\nconst usdStyle = {stroke: \"#aec7e8\"};\n\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled={true} style: audStyle},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled={false} style: usdStyle}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. As mentioned above, you also\nprovide a style.\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show a series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
     "displayName": "Legend",
     "props": {
       "type": {
@@ -874,6 +874,18 @@
           "value": "{}",
           "computed": false
         }
+      },
+      "width": {
+        "defaultValue": {
+          "value": "16",
+          "computed": false
+        }
+      },
+      "height": {
+        "defaultValue": {
+          "value": "16",
+          "computed": false
+        }
       }
     }
   },
@@ -898,22 +910,12 @@
       },
       "style": {
         "type": {
-          "name": "shape",
-          "value": {
-            "color": {
-              "name": "string",
-              "required": false
-            },
-            "width": {
-              "name": "number",
-              "required": false
-            }
-          }
+          "name": "object"
         },
         "required": false,
-        "description": "The style of the line chart, with format:\n```\n\"style\": {\n    color: \"#448FDD\",\n    width: 2\n}\n```",
+        "description": "The style of the line chart, with format:\n```\n const dashedBlueStyle = {\n     stroke: \"steelblue\",\n     strokeWidth: 1,\n     strokeDasharray: \"4,2\"\n };\n\n <LineChart style={dashedBlueStyle} ... />\n ```",
         "defaultValue": {
-          "value": "{\n    color: \"#9DA3FF\",\n    width: 1\n}",
+          "value": "{\n    stroke: \"steelblue\",\n    strokeWidth: 1\n}",
           "computed": false
         }
       },
@@ -1345,7 +1347,7 @@
               "computed": false
             },
             {
-              "value": "\"log\"",
+              "value": "\"power\"",
               "computed": false
             },
             {
@@ -1355,7 +1357,7 @@
           ]
         },
         "required": false,
-        "description": "The scale type: linear, log, or exp.",
+        "description": "The scale type: linear, power, or exp.",
         "defaultValue": {
           "value": "\"linear\"",
           "computed": false

@@ -13,12 +13,18 @@ import FlexBox from "react-flexbox";
 import merge from "merge";
 
 /**
- * Legends are simple to define. First define the items you want in
- * it using an array as follows:
+ * Legends are simple to define.
+ *
+ * First specify the styles you want each item to have. This is the CSS that should
+ * be appied to rendered symbol.
+ *
+ * Next build a list of categories you want in it
+ *
+ * For example:
  *
  * ```
- * const audStyle = {backgroundColor: "#1f77b4"};
- * const usdStyle = {backgroundColor: "#aec7e8"};
+ * const audStyle = {stroke: "#1f77b4"};
+ * const usdStyle = {stroke: "#aec7e8"};
  *
  * const categories = [
  *     {key: "aust", label: "AUD", value: "1.52", disabled={true} style: audStyle},
@@ -33,8 +39,9 @@ import merge from "merge";
  * ```
  *
  * For each category to display you must provide a key, a label and
- * if it should be displayed disabled or not. You may also provide a
- * style which will be merged in with the base style for that type.
+ * if it should be displayed disabled or not. As mentioned above, you also
+ * provide a style.
+ *
  * Optionally you can also display a value below the label. This is
  * useful when hovering over another chart on the page, or to display
  * the current value of live data.
@@ -55,7 +62,9 @@ export default React.createClass({
             style: {},
             labelStyle: {},
             type: "swatch", // or "line" or "dot"
-            align: "left"
+            align: "left",
+            width: 16,
+            height: 16
         };
     },
 
@@ -118,38 +127,50 @@ export default React.createClass({
         }
     },
 
+    renderLine(style) {
+        const { width, height } = this.props;
+        return (
+            <svg style={{float: "left"}} height={height} width={width} >
+                <line
+                    style={style}
+                    x1={0} y1={parseInt(width / 2)}
+                    x2={width} y2={parseInt(width / 2)}
+                    stroke="black"
+                    strokeWidth="2"/>
+            </svg>
+        );
+    },
+
+    renderSwatch(style) {
+        const { width, height } = this.props;
+        return (
+            <svg style={{float: "left"}} height={height} width={width} >
+                <rect
+                    style={style}
+                    x={2} y={2}
+                    width={width-4} height={height-4}
+                    rx={2} ry={2} />
+
+            </svg>
+        );
+    },
+
+    renderDot(style) {
+        const { width, height } = this.props;
+        return (
+            <svg style={{float: "left"}} height={height} width={width} >
+                <ellipse
+                    style={style}
+                    cx={parseInt(width/2) + 2} cy={parseInt(height/2) + 1}
+                    rx={parseInt(width/2) - 2} ry={parseInt(height/2) - 2} />
+            </svg>
+        );
+    },
+
     render() {
 
-        const swatchStyle = {
-            float: "left",
-            width: 15,
-            height: 15,
-            margin: 2,
-            borderRadius: 2,
-            backgroundColor: "#EFEFEF"
-        };
-
-        const lineStyle = {
-            float: "left",
-            width: 15,
-            height: 3,
-            margin: 2,
-            marginTop: 8,
-            backgroundColor: "#EFEFEF"
-        };
-
-        const dotStyle = {
-            float: "left",
-            width: 8,
-            height: 8,
-            margin: 2,
-            marginTop: 6,
-            borderRadius: 4,
-            backgroundColor: "#EFEFEF"
-        };
-
         const baseLabelStyle = {
-            paddingRight: 10
+            paddingRight: 15
         };
 
         const baseValueStyle = {
@@ -158,18 +179,23 @@ export default React.createClass({
         };
 
         const items = this.props.categories.map(category => {
-            let style;
             const categoryStyle = category.style || {};
+
             const categoryLabelStyle = category.labelStyle || {};
             const categoryValueStyle = category.valueStyle || {};
             const disabled = category.disabled || false;
 
+            if (disabled) {
+                categoryStyle.opacity = 0.25;
+            }
+
+            let symbol;
             if (this.props.type === "swatch") {
-                style = disabled ? swatchStyle : merge(true, swatchStyle, categoryStyle);
+                symbol = this.renderSwatch(categoryStyle);
             } else if (this.props.type === "line") {
-                style = disabled ? lineStyle : merge(true, lineStyle, categoryStyle);
+                symbol = this.renderLine(categoryStyle);
             } else if (this.props.type === "dot") {
-                style = disabled ? dotStyle : merge(true, dotStyle, categoryStyle);
+                symbol = this.renderDot(categoryStyle);
             }
 
             const labelStyle = merge(true, baseLabelStyle, categoryLabelStyle);
@@ -182,8 +208,8 @@ export default React.createClass({
                     key={category.key}
                     onClick={() => this.handleClick(category.key, !disabled)}>
                     <FlexBox row>
-                        <FlexBox column width="25px">
-                            <span style={style} />
+                        <FlexBox column style={{marginTop: 2}} width="20px">
+                            {symbol}
                         </FlexBox>
                         <FlexBox column>
                             <FlexBox row style={labelStyle}>

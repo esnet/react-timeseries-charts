@@ -11,7 +11,16 @@
 import React from "react";
 import { format } from "d3-format";
 import _ from "underscore";
+import merge from "merge";
+
 import { TimeSeries } from "pondjs";
+
+const defaultStyle = {
+    normal: {fill: "steelblue"},
+    highlight: {fill: "#5a98cb"},
+    selected: {fill: "yellow"},
+    text: {fill: "#333", stroke: "none"}
+};
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.
@@ -29,14 +38,7 @@ export default React.createClass({
         return {
             spacing: 1,
             offset: 0,
-            style: {
-                value: {
-                    normal: "steelblue",
-                    highlight: "green",
-                    selected: "yellow",
-                    text: "#333"
-                }
-            },
+            style: {value: defaultStyle},
             columns: ["value"]
         };
     },
@@ -189,24 +191,18 @@ export default React.createClass({
 
                     let barStyle;
                     let hoverText = null;
+
+                    const providedColumnStyle = _.has(this.props.style, column) ?
+                        this.props.style[column] : {};
+
+                    const columnStyle = merge(true, defaultStyle, providedColumnStyle);
+
                     if (key === this.props.selection) {
-                        if (this.props.style && this.props.style[column].selected) {
-                            barStyle = this.props.style[column].selected;
-                        } else {
-                            barStyle = {fill: "rgb(0, 144, 199)"};
-                        }
+                        barStyle = columnStyle.selected;
                     } else if (key === this.state.hover) {
-                        if (this.props.style &&
-                            this.props.style[column].highlight) {
-                            barStyle = this.props.style[column].highlight;
-                        } else {
-                            barStyle = {fill: "rgb(78, 144, 199)"};
-                        }
-                    } else if (this.props.style &&
-                        this.props.style[column].normal) {
-                        barStyle = this.props.style[column].normal;
+                        barStyle = columnStyle.highlight;
                     } else {
-                        barStyle = {fill: "steelblue"};
+                        barStyle = columnStyle.normal;
                     }
 
                     // Hover text
@@ -237,6 +233,7 @@ export default React.createClass({
                     if (hoverText) {
                         hover.push(hoverText);
                     }
+
                     rects.push(
                         <rect
                             key={key}

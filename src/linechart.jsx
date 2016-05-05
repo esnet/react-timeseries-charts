@@ -11,6 +11,7 @@
 import React from "react";
 import _ from "underscore";
 import d3Shape from "d3-shape";
+import merge from "merge";
 
 import { TimeSeries } from "pondjs";
 
@@ -51,8 +52,8 @@ export default React.createClass({
             smooth: true,
             interpolation: "curveLinear",
             style: {
-                color: "#9DA3FF",
-                width: 1
+                stroke: "steelblue",
+                strokeWidth: 1
             },
             breakLine: true
         };
@@ -75,16 +76,16 @@ export default React.createClass({
         /**
          * The style of the line chart, with format:
          * ```
-         * "style": {
-         *     color: "#448FDD",
-         *     width: 2
-         * }
-         * ```
+         *  const dashedBlueStyle = {
+         *      stroke: "steelblue",
+         *      strokeWidth: 1,
+         *      strokeDasharray: "4,2"
+         *  };
+         *
+         *  <LineChart style={dashedBlueStyle} ... />
+         *  ```
          */
-        style: React.PropTypes.shape({
-            color: React.PropTypes.string,
-            width: React.PropTypes.number
-        }),
+        style: React.PropTypes.object,
 
         /**
          * Any of D3's interpolation modes.
@@ -120,12 +121,13 @@ export default React.createClass({
      * Returns the style used for drawing the path
      */
     pathStyle() {
-        return {
+        const baseStyle = {
             fill: "none",
             pointerEvents: "none",
             stroke: this.props.style.color || "#9DA3FF",
             strokeWidth: `${this.props.style.width}px` || "1px"
         };
+        return merge(true, baseStyle, this.props.style);
     },
    
     renderPath(data, key) {

@@ -158,12 +158,12 @@ export default React.createClass({
                 key: "requests",
                 label: "Requests",
                 disabled: !this.state.active.requests,
-                style: {backgroundColor: "#9467bd"}
+                style: {stroke: "#9467bd"}
             },{
                 key: "connections",
                 label: "Connections",
                 disabled: !this.state.active.connections,
-                style: {backgroundColor: "#2ca02c"}
+                style: {stroke: "#2ca02c"}
             }
         ];
         return (

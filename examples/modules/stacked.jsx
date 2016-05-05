@@ -86,10 +86,10 @@ const colorsList = [
     "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"
 ];
 
-const legendCategories = _.map(countriesList, (d, i) => ({
+const legendCategories = countriesList.map((d, i) => ({
     key: d,
     label: d,
-    style: {backgroundColor: colorsList[i]}
+    style: {fill: colorsList[i], opacity: 0.9, stroke: colorsList[i]}
 }));
 
 export default React.createClass({

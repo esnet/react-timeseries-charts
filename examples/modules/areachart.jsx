@@ -95,8 +95,8 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-4">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Into Site", style: {backgroundColor: "#448FDD"}},
-                            {key: "out", label: "Out of site", style: {backgroundColor: "#FD8D0D"}}
+                            {key: "in", label: "Into Site", style: {fill: "#448FDD"}},
+                            {key: "out", label: "Out of site", style: {fill: "#FD8D0D"}}
                         ]} />
                     </div>
                     <div className="col-md-8">

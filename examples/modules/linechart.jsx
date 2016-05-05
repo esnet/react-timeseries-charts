@@ -45,11 +45,14 @@ const euroSeries = new TimeSeries({
 });
 
 const audStyle = {
-    color: "#2ca02c"
+    stroke: "steelblue",
+    strokeWidth: 1,
+    strokeDasharray: "4,2"
 };
 
 const euroStyle = {
-    color: "#a02c2c"
+    stroke: "#a02c2c",
+    strokeWidth: 2
 };
 
 export default React.createClass({
@@ -103,8 +106,8 @@ export default React.createClass({
                     </div>
                     <div className="col-md-6">
                         <Legend type="line" align="right" categories={[
-                            {key: "aust", label: "AUD", value: audValue, style: {backgroundColor: "#2ca02c"}},
-                            {key: "euro", label: "Euro", value: euroValue, style: {backgroundColor: "#a02c2c"}}
+                            {key: "aust", label: "AUD", value: audValue, style: audStyle},
+                            {key: "euro", label: "Euro", value: euroValue, style: euroStyle}
                         ]} />
                     </div>
                 </div>
