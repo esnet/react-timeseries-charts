@@ -34,15 +34,26 @@ example also shows basic styling using an array of colors:
 
     const style = {up: ["#1f77b4", "#aec7e8", "#ff7f0e", ... ]}
 
-Area charts default to a step style interpolation. This example also shows how to set the interpolation
-to any of d3's interpolate functions, in this case 'linear'.
+This example also shows how to set the interpolation to any of d3's interpolate functions,
+in this case 'curveBasis'.
 
-    <ChartContainer timeRange={range}>
+    <ChartContainer timeRange={series.range()}>
         <ChartRow height="350">
+            <YAxis
+                id="y"
+                min={min}
+                max={max}
+                width="60"
+                type="linear"/>
             <Charts>
-                <AreaChart axis="value" style={style} series={[series,[]]} interpolate="linear"/>
+                <AreaChart
+                    axis="y"
+                    style={style}
+                    series={series}
+                    columns={columns}
+                    fillOpacity={0.4}
+                    interpolation="curveBasis" />
             </Charts>
-            <YAxis id="value" label="" labelOffset={0} max={max} width="60" type="linear"/>
         </ChartRow>
     </ChartContainer>
 `;

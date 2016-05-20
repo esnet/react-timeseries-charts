@@ -467,6 +467,12 @@
           "computed": false
         }
       },
+      "trackerTimeFormat": {
+        "defaultValue": {
+          "value": "\"%b %d %Y %X\"",
+          "computed": false
+        }
+      },
       "enablePanZoom": {
         "defaultValue": {
           "value": "false",
@@ -1060,6 +1066,54 @@
           "value": "{\n    color: \"steelblue\",\n    opacity: 1\n}",
           "computed": false
         }
+      },
+      "hintWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover hint box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "hintHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover hint box",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "hintValues": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "string",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "The values to show in the hint box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the hint box."
+      },
+      "hintStyle": {
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#AAA\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#AAA\"\n    }\n}",
+          "computed": false
+        }
       }
     }
   },
@@ -1135,7 +1189,7 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#AAA\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"#FFF\",\n        opacity: 0.85,\n        stroke: \"#AAA\"\n    }\n}",
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"#FFF\",\n        opacity: 0.85,\n        stroke: \"#AAA\"\n    }\n}",
           "computed": false
         }
       },
@@ -1157,6 +1211,35 @@
       "width": {
         "type": {
           "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "showHint": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "showLine": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "timeFormat": {
+        "type": {
+          "name": "string"
         },
         "required": false,
         "description": ""

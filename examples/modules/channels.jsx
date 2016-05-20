@@ -53,7 +53,6 @@ for (let i = 0; i < data.time.length; i++) {
         const speed = (data.distance[i] - data.distance[i - 1]) /
                       (data.time[i] - data.time[i - 1]);  // meters/sec
         const speedMph = 2.236941 * speed;  // convert m/s to miles/hr
-        // const pace = speedMph > 0.1 ? 60 / speedMph : null; // convert miles/hr to mins/mile
         const hr = data.heartrate[i];
         const altitude = data.altitude[i] * 3.28084; // convert m to ft
 
@@ -147,17 +146,25 @@ export default React.createClass({
     renderDescription() {
         return (
             <div>
-                <h3>Brushing example</h3>
+                <h3>Cycling example</h3>
+
+                <p>
                 This example shows a 112 mile bike ride as two channels of data: speed and heart rate.
-                We can display this as two overlaid lines, with multiple axes. Or as a channel display.
+                </p>
+
+                <p>
+                In this example we display this data in two ways: 1) as two overlaid line charts
+                using two separate axes, or 2) as a channel display where the user instead scrubs
+                the data to see the value.
+                </p>
 
                 It demonstrates:
                 <ul>
                     <li>Broken lines for missing data</li>
-                    <li>Pan and zoom: Drag to pan, scrollwheel to zoom</li>
+                    <li>Pan and zoom over the dataset: Drag to pan, scrollwheel to zoom</li>
                     <li>Brushing over an elevation chart: drag and resize the blue rectangle to pan and zoom</li>
-                    <li>Multiple axis</li>
-                    <li>Channel LabelAxis and ValueAxis</li>
+                    <li>Hover tooltips, in the multi-axis mode</li>
+                    <li>Channel display using LabelAxis and ValueAxis</li>
                 </ul>
             </div>
         );
@@ -285,9 +292,6 @@ export default React.createClass({
         const hrEnd = speed.bisect(tr.end());
         const hrCropped = hr.slice(hrBegin, hrEnd);
 
-        // Max and Avg Speed values to show in the LabelAxis
-
-
         // Get the speed at the current tracker position
         let speedValue = "--";
         if (this.state.tracker) {
@@ -318,15 +322,16 @@ export default React.createClass({
                 format="relative"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
-                trackerValues={trackerValues}
-                trackerHintHeight={50}
                 enablePanZoom={true}
                 maxTime={pace.range().end()}
                 minTime={pace.range().begin()}
                 minDuration={10 * 60 * 1000}
                 onTimeRangeChanged={this.handleTimeRangeChange}
                 showGrid={true} >
-                <ChartRow height="200" debug={false}>
+                <ChartRow
+                    height="200"
+                    trackerValues={trackerValues}
+                    trackerHintHeight={50}>
                     <YAxis
                         id="axis1"
                         label="Speed (mph)"

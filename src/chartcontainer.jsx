@@ -111,12 +111,12 @@ export default React.createClass({
          * In general the time axis will generate an appropriate time scale based
          * on the timeRange prop and there is no need to set this.
          *
-         * However, four special options exist: setting format to day, month or
-         * year will show only ticks on those, and every one of those intervals.
+         * However, four special options exist: setting format to "day", "month" or
+         * "year" will show only ticks on those, and every one of those intervals.
          * For example maybe you are showing a bar chart for October 2014 then setting
-         * the format to day will insure that a label is placed for each and every day.
+         * the format to "day" will insure that a label is placed for each and every day.
          *
-         * The last option is relative. This interprets the time as a duration. This
+         * The last option is "relative". This interprets the time as a duration. This
          * is good for data that is specified relative to its start time, rather than
          * as an actual date/time.
          */
@@ -315,6 +315,7 @@ export default React.createClass({
                 const chartRow = child;
                 const rowKey = child.props.key ?
                     child.props.key : `chart-row-row-${i}`;
+                const firstRow = (i === 0);
                 const props = {
                     timeScale,
                     leftAxisWidths,
@@ -326,7 +327,10 @@ export default React.createClass({
                     transition: this.props.transition,
                     enablePanZoom: this.props.enablePanZoom,
                     minDuration: this.props.minDuration,
+                    timeFormat: this.props.format,
+                    trackerShowTime: firstRow,
                     trackerPosition: this.props.trackerPosition,
+                    trackerTimeFormat: this.props.trackerTimeFormat,
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
@@ -354,6 +358,7 @@ export default React.createClass({
                     style={{pointerEvents: "none"}}
                     transform={`translate(${leftWidth},0)`}>
                     <Tracker
+                        showHint={false}
                         height={chartsHeight}
                         timeScale={timeScale}
                         position={this.props.trackerPosition}
