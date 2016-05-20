@@ -15,6 +15,7 @@ import _ from "underscore";
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
+import Tracker from "./tracker";
 
 /**
  * A ChartRow is a container for a set of Y axes and multiple charts
@@ -52,6 +53,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
+            trackerTimeFormat: "%b %d %Y %X",
             enablePanZoom: false,
             height: 100
         };
@@ -313,12 +315,12 @@ export default React.createClass({
                 React.Children.forEach(charts.props.children, chart => {
                     // Additional props for charts
                     const chartProps = {
-                        key: chart.props.key ?
-                                chart.props.key : `chart-${keyCount}`,
+                        key: chart.props.key ? chart.props.key : `chart-${keyCount}`,
                         width: chartWidth,
                         height: innerHeight,
                         clipPathURL: this.state.clipPathURL,
                         timeScale: this.props.timeScale,
+                        timeFormat: this.props.timeFormat,
                         yScale: yAxisScaleMap[chart.props.axis],
                         transition: this.props.transition
                     };
@@ -390,6 +392,29 @@ export default React.createClass({
             </g>
         );
 
+        // Row tracker
+        let tracker;
+        if (this.props.trackerPosition) {
+            const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
+            tracker = (
+                <g
+                    key="tracker-group"
+                    style={{pointerEvents: "none"}}
+                    transform={`translate(${leftWidth},0)`}>
+                    <Tracker
+                        showLine={false}
+                        showTime={this.props.trackerShowTime}
+                        timeScale={this.props.timeScale}
+                        position={this.props.trackerPosition}
+                        timeFormat={timeFormat}
+                        width={chartWidth}
+                        trackerHintWidth={this.props.trackerHintWidth}
+                        trackerHintHeight={this.props.trackerHintHeight}
+                        trackerValues={this.props.trackerValues} />
+                </g>
+            );
+        }
+
         return (
             <g>
                 {clipper}
@@ -397,6 +422,7 @@ export default React.createClass({
                 {charts}
                 {chartDebug}
                 {brushes}
+                {tracker}
             </g>
         );
     }

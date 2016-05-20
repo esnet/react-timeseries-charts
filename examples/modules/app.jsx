@@ -30,9 +30,9 @@ export default React.createClass({
 
                     <ul className="nav nav-sidebar">
                         <li><Link to="weather">Weather example</Link></li>
+                        <li><Link to="channels">Cycling example</Link></li>
                         <li><Link to="ddos">DDoS example</Link></li>
                         <li><Link to="stacked">Continents</Link></li>
-                        <li><Link to="channels">Brushing example</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>

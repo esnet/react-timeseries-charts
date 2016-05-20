@@ -22,8 +22,8 @@
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run docs && rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
-    "start-website": "webpack-dev-server  --config webpack.examples.config.js",
-    "build-website": "webpack --config webpack.examples.config.js"
+    "start-website": "webpack-dev-server  --config webpack.config.js",
+    "build-website": "webpack --config webpack.config.js"
   },
   "pre-commit": [
     "lint",

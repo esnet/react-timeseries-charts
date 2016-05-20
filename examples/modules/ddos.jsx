@@ -38,7 +38,7 @@ This example uses inline styles:
     }
 
     const requestsStyle = {
-        "color": #9467bd,
+        "color": "#9467bd",
         "width": 2
     }
 
@@ -49,7 +49,7 @@ Which are then specified for each LineChart:
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
             <Charts>
-                <LineChart axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
+                <LineChart axis="axis2" series={connectionsSeries} style={connectionsStyle} />
                 <LineChart axis="axis1" series={requestsSeries} style={requestsStyle}/>
             </Charts>
             <YAxis id="axis2" label="Connections" style={{labelColor: scheme.connections}}
@@ -121,14 +121,24 @@ export default React.createClass({
             const maxRequests = requestsSeries.max();
             if (maxRequests > max) max = maxRequests;
             charts.push(
-                <LineChart key="requests" axis="axis1" series={requestsSeries} style={requestsStyle}/>
+                <LineChart
+                    key="requests"
+                    axis="axis1"
+                    series={requestsSeries}
+                    style={requestsStyle}
+                    interpolation="curveBasis" />
             );
         }
         if (this.state.active.connections) {
             const maxConnections = connectionsSeries.max();
             if (maxConnections > max) max = maxConnections;
             charts.push(
-                <LineChart key="connections" axis="axis2" series={connectionsSeries} style={connectionsStyle}/>
+                <LineChart
+                    key="connections"
+                    axis="axis2"
+                    series={connectionsSeries}
+                    style={connectionsStyle}
+                    interpolation="curveBasis" />
             );
         }
         return (
