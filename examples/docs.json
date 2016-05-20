@@ -412,7 +412,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to day, month or\nyear will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to day will insure that a label is placed for each and every day.\n\nThe last option is relative. This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
+        "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to \"day\", \"month\" or\n\"year\" will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to \"day\" will insure that a label is placed for each and every day.\n\nThe last option is \"relative\". This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
       },
       "trackerPosition": {
         "type": {
@@ -1022,11 +1022,24 @@
     "props": {
       "series": {
         "type": {
-          "name": "instanceOf",
-          "value": "TimeSeries"
+          "name": "object"
         },
         "required": true,
         "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+      },
+      "columns": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "Which columns of the series to render",
+        "defaultValue": {
+          "value": "[\"value\"]",
+          "computed": false
+        }
       },
       "axis": {
         "type": {
@@ -1037,7 +1050,15 @@
       },
       "radius": {
         "type": {
-          "name": "number"
+          "name": "union",
+          "value": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
         "description": "The radius of each point if a radius is not present in the series.",
@@ -1048,17 +1069,25 @@
       },
       "style": {
         "type": {
-          "name": "shape",
-          "value": {
-            "color": {
-              "name": "string",
-              "required": false
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "color": {
+                  "name": "string",
+                  "required": false
+                },
+                "opacity": {
+                  "name": "number",
+                  "required": false
+                }
+              }
             },
-            "opacity": {
-              "name": "number",
-              "required": false
+            {
+              "name": "func"
             }
-          }
+          ]
         },
         "required": false,
         "description": "The style of the scatter chart drawing (using SVG CSS properties). For example:\n```\nstyle = {\n    color: \"steelblue\",\n    opacity: 0.5\n}\n```",
@@ -1111,7 +1140,7 @@
       },
       "hintStyle": {
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#AAA\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#AAA\"\n    }\n}",
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\"\n    }\n}",
           "computed": false
         }
       }
