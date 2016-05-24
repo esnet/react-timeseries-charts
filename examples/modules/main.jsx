@@ -33,6 +33,7 @@ import DDoS from "./ddos";
 import Table from "./table";
 import Channels from "./channels";
 import Horizontal from "./horizontal";
+import Realtime from "./realtime";
 
 import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
@@ -60,6 +61,7 @@ render((
             <Route path="table" component={Table} />
             <Route path="channels" component={Channels} />
             <Route path="horizontal" component={Horizontal} />
+            <Route path="realtime" component={Realtime} />
         </Route>
     </Router>
 ), document.getElementById("content"));

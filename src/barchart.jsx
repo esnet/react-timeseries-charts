@@ -218,7 +218,7 @@ export default React.createClass({
                         const barTextStyle = this.props.style[column].text || {stroke: "steelblue"};
                         hoverText = (
                             <text
-                                key={key}
+                                key={`${key}-text`}
                                 style={barTextStyle}
                                 x={x + width / 2}
                                 y={y - 2}

@@ -42,7 +42,7 @@ const trafficNEWYtoBNLSeries = new TimeSeries({
     points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])
 });
 
-const traffic = TimeSeries.merge(
+const traffic = TimeSeries.timeSeriesListMerge(
     {name: "traffic"},
     [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
 );
