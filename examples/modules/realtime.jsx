@@ -20,7 +20,8 @@ import {
     Pipeline,
     UnboundedIn,
     EventOut,
-    avg, max
+    avg,
+    max
 } from "pondjs";
 
 import ChartContainer from "../../src/chartcontainer";
@@ -80,7 +81,7 @@ export default React.createClass({
 
         Pipeline()
             .from(this.eventSource)
-            .windowBy("20m")
+            .windowBy("5m")
             .emitOn("discard")
             .aggregate({value: avg})
             .to(EventOut, event => {
