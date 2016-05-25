@@ -383,7 +383,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "The transition time to move scales. Typically you might set this to\n300 (ms) to allow the axes to animate to the new scale. Experimental.",
+        "description": "The transition time to move scales. Typically you might set this to\n300 (ms) to allow the axes to animate to the new scale.",
         "defaultValue": {
           "value": "0",
           "computed": false

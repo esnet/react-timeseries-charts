@@ -12,9 +12,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { axisLeft, axisRight } from "d3-axis";
 
-import { transition } from "d3-transition";
-import { easeSinInOut } from "d3-ease";
-
 import { format } from "d3-format";
 import { select } from "d3-selection";
 
@@ -233,14 +230,8 @@ export default React.createClass({
                 .ticks(10, ".2s");
         }
 
-        // 
-        const t = transition()
-            .duration(300)
-            .ease(easeSinInOut);
-
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
-                .transition(t)
                 .call(axisGenerator);
     },
 
@@ -271,3 +262,40 @@ export default React.createClass({
         );
     }
 });
+
+    /*
+    updateAnimation(pos, scale, align, width, absolute, format) {
+        const stepSize = 0.025;
+        const duration = 250;
+        const p = Math.min(pos, 1.0);
+        if (p <= 1.0) {
+            const s = this.scaleInterpolator(pos);
+            this.updateAxis(align, scale.domain(s), width, absolute, format);
+            if (this.props.onScaleChanged) {
+                this.props.onScaleChanged(this.props.id, scale.domain(s));
+            }
+            if (p < 1.0) {
+                setTimeout(() =>
+                    this.updateAnimation(p + stepSize, scale, align, width, absolute, format),
+                    duration * stepSize
+                );
+            }
+        }
+    },
+
+
+    componentWillReceiveProps(nextProps) {
+        const scale = nextProps.scale;
+        const align = nextProps.align;
+        const width = nextProps.width;
+        const absolute = nextProps.absolute;
+        const format = nextProps.format;
+
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+            // Scale changing
+            console.log(scaleAsString(this.props.scale), scaleAsString(scale));
+            this.scaleInterpolator = interpolate(this.props.scale.domain(), scale.domain());
+            setTimeout(() => this.updateAnimation(0, scale, align, width, absolute, format), 0);
+        }
+    },
+    */

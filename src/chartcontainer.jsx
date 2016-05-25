@@ -90,7 +90,7 @@ export default React.createClass({
 
         /**
          * The transition time to move scales. Typically you might set this to
-         * 300 (ms) to allow the axes to animate to the new scale. Experimental.
+         * 300 (ms) to allow the axes to animate to the new scale.
          */
         transition: React.PropTypes.number,
 
