@@ -164,7 +164,7 @@ export default React.createClass({
      * axis scales.
      */
     componentWillReceiveProps(nextProps) {
-        const oldYAxisScaleMap = this.state ? this.state.yAxisScaleMap : null;
+        const oldYAxisScaleMap = this.state.yAxisScaleMap;
 
         // Dimensions
         const innerHeight = +nextProps.height - AXIS_MARGIN * 2;
@@ -174,20 +174,24 @@ export default React.createClass({
         React.Children.forEach(nextProps.children, child => {
             if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
                 const { id, max, min, type = "linear" } = child.props;
-                if (oldYAxisScaleMap && (oldYAxisScaleMap[id].domain()[0] !== max &&
-                                         oldYAxisScaleMap[id].domain()[1] !== max)) {
+                if (_.has(oldYAxisScaleMap, id)) {
+                    if (oldYAxisScaleMap[id].domain()[0] !== max &&
+                        oldYAxisScaleMap[id].domain()[1] !== max) {
 
-                    const targetScale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                        const targetScale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
 
-                    this.scaleInterpolator[id] =
-                        interpolate(oldYAxisScaleMap[id].domain(), targetScale.domain());
-                    
-                    let pos = 1.0;
-                    if (this.props.transition && this.props.transition > 0) {
-                        pos = 0.0;
+                        this.scaleInterpolator[id] =
+                            interpolate(oldYAxisScaleMap[id].domain(), targetScale.domain());
+                        
+                        let pos = 1.0;
+                        if (this.props.transition && this.props.transition > 0) {
+                            pos = 0.0;
+                        }
+
+                        setTimeout(() => this.updateAnimation(id, pos, oldYAxisScaleMap[id]), 0);
                     }
-
-                    setTimeout(() => this.updateAnimation(id, pos, oldYAxisScaleMap[id]), 0);
+                } else {
+                    oldYAxisScaleMap[id] = this.createScale(child, type, min, max, rangeBottom, rangeTop);
                 }
             }
         });

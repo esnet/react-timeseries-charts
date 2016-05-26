@@ -31,10 +31,10 @@ import Legend from "../../src/legend";
 // Docs
 const text = `
 
-### LineChart styling
+### Styling
 
 This example uses inline styles to control the appearance of the line charts. The styles themselves
-are defined line this:
+are defined like this:
 
     const styles = {
         connections: {
@@ -47,11 +47,11 @@ are defined line this:
         }
     };
 
-And then applied to each LineChart with the style prop. e.g.
+And then applied to each LineChart with the style prop:
 
-    <LineChart axis="axis2" series={connectionsSeries} style={connectionsStyle} />
+    <LineChart axis="axis2" series={connectionsSeries} style={styles.connections} />
 
-### Legend events
+### Legend
 
 This example allows you to use the legend to control the display of the charts themselves.
 Click the legend items to hide and show each of the two channels of data.
@@ -98,7 +98,7 @@ LineCharts to display.
 Eventually we implement the render() method of our component like this:
 
     <ChartContainer timeRange={requestsSeries.range()}>
-        <ChartRow height="300" debug={false}>
+        <ChartRow height="300">
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />
             <Charts>
