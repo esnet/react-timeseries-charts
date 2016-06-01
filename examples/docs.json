@@ -2,6 +2,31 @@
   "src/areachart.jsx": {
     "description": "The AreaChart widget is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe AreaChart should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an AreaChart with an up and down\ntraffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}/>\n                 </Charts>\n                 <YAxis id=\"traffic\" label=\"Traffic (bps)\" min={-max} max={max} absolute={true} width=\"60\" type=\"linear\"/>\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>`` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.",
     "displayName": "AreaChart",
+    "methods": [
+      {
+        "name": "renderPaths",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnList",
+            "type": null
+          },
+          {
+            "name": "direction",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderAreas",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -174,6 +199,57 @@
   "src/barchart.jsx": {
     "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different in that it will render\nonto a time axis, rather than rendering to specific values. As a result,\nan Aug 2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.",
     "displayName": "BarChart",
+    "methods": [
+      {
+        "name": "handleMouseMove",
+        "docblock": "Continues a hover event on a specific bar of the bar chart.",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e"
+          },
+          {
+            "name": "key"
+          }
+        ],
+        "returns": null,
+        "description": "Continues a hover event on a specific bar of the bar chart."
+      },
+      {
+        "name": "handleClick",
+        "docblock": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the key, which is\n$series.name-$index-$column, the value of that event, along with the\ncontext. The context provides the series (a TimeSeries), the column (a\nstring) and the index (an Index).",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e"
+          },
+          {
+            "name": "key"
+          },
+          {
+            "name": "value"
+          },
+          {
+            "name": "series"
+          },
+          {
+            "name": "column"
+          },
+          {
+            "name": "index"
+          }
+        ],
+        "returns": null,
+        "description": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the key, which is\n$series.name-$index-$column, the value of that event, along with the\ncontext. The context provides the series (a TimeSeries), the column (a\nstring) and the index (an Index)."
+      },
+      {
+        "name": "renderBars",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -264,6 +340,7 @@
   "src/baseline.jsx": {
     "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis id=\"price\" label=\"Price ($)\" min={series.min()} max={series.max()} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style}/>\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\"/>\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()}/>\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()}/>\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "Baseline",
+    "methods": [],
     "props": {
       "axis": {
         "type": {
@@ -319,11 +396,114 @@
   },
   "src/brush.jsx": {
     "description": "",
-    "displayName": "Brush"
+    "displayName": "Brush",
+    "methods": [
+      {
+        "name": "handleBrushed",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "brush",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderBrush",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timeScale",
+            "type": null
+          },
+          {
+            "name": "timeRange",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ]
   },
   "src/chartcontainer.jsx": {
     "description": "The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.\n\n![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png \"ChartContainer\")\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "ChartContainer",
+    "methods": [
+      {
+        "name": "handleTrackerChanged",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "t",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleTimeRangeChanged",
+        "docblock": "Within the charts library the time range of the x axis is kept as a begin\nand end time (Javascript Date objects). But the interface is Pond based,\nso this callback returns a Pond TimeRange.",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timerange"
+          }
+        ],
+        "returns": null,
+        "description": "Within the charts library the time range of the x axis is kept as a begin\nand end time (Javascript Date objects). But the interface is Pond based,\nso this callback returns a Pond TimeRange."
+      },
+      {
+        "name": "handleMouseMove",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "t",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseOut",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleZoom",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timerange",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleResize",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "width",
+            "type": null
+          },
+          {
+            "name": "height",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "timeRange": {
         "type": {
@@ -447,6 +627,72 @@
   "src/chartrow.jsx": {
     "description": "A ChartRow is a container for a set of Y axes and multiple charts\nwhich are overlaid on each other in a central canvas.\n\n![ChartRow](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartrows.png \"ChartRow\")\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "ChartRow",
+    "methods": [
+      {
+        "name": "createScale",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "yaxis",
+            "type": null
+          },
+          {
+            "name": "type",
+            "type": null
+          },
+          {
+            "name": "min",
+            "type": null
+          },
+          {
+            "name": "max",
+            "type": null
+          },
+          {
+            "name": "y0",
+            "type": null
+          },
+          {
+            "name": "y1",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "updateAnimation",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "id",
+            "type": null
+          },
+          {
+            "name": "pos",
+            "type": null
+          },
+          {
+            "name": "scale",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getYAxisScaleMap",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "props",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "height": {
         "type": {
@@ -483,11 +729,44 @@
   },
   "src/charts.jsx": {
     "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### clipPathURL\n\nA URL for the clip path applied around this chart area\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
-    "displayName": "Charts"
+    "displayName": "Charts",
+    "methods": []
   },
   "src/eventchart.jsx": {
     "description": "Renders an event view that shows the supplied set of\nevents along a time axis. The events should be supplied as a Pond TimeSeries.\nThat series may contain regular Events, TimeRangeEvents or IndexedEvents.",
     "displayName": "EventChart",
+    "methods": [
+      {
+        "name": "handleMouseMove",
+        "docblock": "Continues a hover event on a specific bar of the bar chart.",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e"
+          },
+          {
+            "name": "event"
+          }
+        ],
+        "returns": null,
+        "description": "Continues a hover event on a specific bar of the bar chart."
+      },
+      {
+        "name": "handleClick",
+        "docblock": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the event selected.",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e"
+          },
+          {
+            "name": "event"
+          }
+        ],
+        "returns": null,
+        "description": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the event selected."
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -530,11 +809,99 @@
   },
   "src/eventhandler.jsx": {
     "description": "",
-    "displayName": "EventHandler"
+    "displayName": "EventHandler",
+    "methods": [
+      {
+        "name": "getOffsetMousePosition",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleScrollWheel",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseUp",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseOut",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseMove",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ]
   },
   "src/hbarchart.jsx": {
     "description": "The HorizontalBarChart takes a list of `TimeSeries` objects and displays a bar chart\nvisualization summarizing those. As an example, let's say we have a set of interfaces, which\ntogether carry the entire network traffic to a particular location. We want to see which\ninterfaces contribute the most to the total traffic.\n\nTo display this we render the HorizontalBarChart in our page:\n \n    <HorizontalBarChart\n        display=\"range\"\n        seriesList={interfaces}\n        columns={[\"out\", \"in\"]}\n        top={5} sortBy=\"max\"\n        timestamp={this.state.tracker}\n        format={formatter}\n        selected={this.state.selected}\n        onSelectionChanged={this.handleSelectionChange}\n        selectionColor=\"#37B6D3\"\n        style={[{fill: \"#1F78B4\"}, {fill: \"#FF7F00\"}]} >\n\n        <SeriesSummary />\n\n    </HorizontalBarChart>\n\nOur first prop `display` tells the component how to draw the bars. In this case we use the\n\"range\", which will draw from min to max (with additional drawing to show 1 stdev away from\nthe center).\n\nNext we specify the `seriesList` itself. This should be an array of Pond TimeSeries objects.\n\nThe `columns` prop tells us which columns within the TimeSeries should be displayed as a bar.\nIn this case we have `in` and `out` traffic columns, so we'll get two bars for each series.\n\n`top` and `sortBy` are used to order and trim the list of TimeSeries. Here we order by the max\nvalues in the specified columns, then just display the top 5.\n\nThe `timestamp` lets the component know the current value. You could display the last timestamp\nin the series, or perhaps a time being interacted with in the UI.\n\nThe `format` can either be a d3 format string of a function. In this case we have our own\nformatter function to display values:\n\n    function formatter(value) {\n        const prefix = d3.formatPrefix(value);\n        return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;\n    }\n\nSelection is handled with `selected`, which gives the name of the TimeSeries currently selected.\nIf the user selects a different row the callback passed to `onSelectionChanged` will be called\nwith the name of the TimeSeries represented in the newly selected row. We also specify a color\nto mark the selected item with the `selectionColor` prop.\n\nNext we specify the `style`. This is the css style of each column's bars. Typically you would\njust want to specify the fill color. Each bar is a svg rect.\n\nFinally, you can specify a child component, in this case `<SeriesSummary>`. This can be any\ncomponent and will be rendered under the bars when the row is selected. The component can render\nanything it wants. In our case we render some text for the averages of the series:\n\n    const SeriesSummary = ({series}) => (\n        <table><tbody><tr>\n            <td><b>Avg:</b></td>\n            <td style={{paddingLeft: 5}}>{formatter(series.avg(\"in\"))} to site</td>\n            <td style={{paddingLeft: 15}}>{formatter(series.avg(\"out\"))} from site</td>\n        </tr> </tbody></table>\n    );\n\nNote that the component will have the `series` it is rendering, as well as the `timestamp` injected\ninto its props so you can use those when rendering.",
     "displayName": "HorizontalBarChart",
+    "methods": [
+      {
+        "name": "renderRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "seriesList",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "display": {
         "type": {
@@ -742,6 +1109,15 @@
   "src/labelaxis.jsx": {
     "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
     "displayName": "LabelAxis",
+    "methods": [
+      {
+        "name": "renderAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "values": {
         "type": {
@@ -783,6 +1159,60 @@
   "src/legend.jsx": {
     "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is the CSS that should\nbe appied to rendered symbol.\n\nNext build a list of categories you want in it\n\nFor example:\n\n```\nconst audStyle = {stroke: \"#1f77b4\"};\nconst usdStyle = {stroke: \"#aec7e8\"};\n\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled={true} style: audStyle},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled={false} style: usdStyle}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. As mentioned above, you also\nprovide a style.\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show a series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
     "displayName": "Legend",
+    "methods": [
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "key",
+            "type": null
+          },
+          {
+            "name": "disabled",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderLine",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderSwatch",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderDot",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "type": {
         "type": {
@@ -898,6 +1328,59 @@
   "src/linechart.jsx": {
     "description": "The LineChart widget is able to display a single line chart.\n\nThe LineChart should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\nHere is an example of two LineCharts overlaid on top of each other, along\nwith a BaseLine:\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"axis1\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"axis1\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"axis2\" series={euroSeries} style={euroStyle}/>\n            <Baseline  axis=\"axis1\" value={1.0} label=\"USD Baseline\" position=\"right\"/>\n        </Charts>\n        <YAxis id=\"axis2\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\nNote: Currently the line chart will take the first column for rendering.",
     "displayName": "LineChart",
+    "methods": [
+      {
+        "name": "pathStyle",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
+        "name": "renderPath",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "data",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          },
+          {
+            "name": "key",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderLines",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderLine",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -914,12 +1397,23 @@
         "required": true,
         "description": "Reference to the axis which provides the vertical scale for drawing.\ne.g. specifying `axis=\"trafficRate\"` would refer the y-scale of the YAxis\nwith id=\"trafficRate\"."
       },
+      "columns": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": "Which columns from the series to draw.",
+        "defaultValue": {
+          "value": "[\"value\"]",
+          "computed": false
+        }
+      },
       "style": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "The style of the line chart, with format:\n```\n const dashedBlueStyle = {\n     stroke: \"steelblue\",\n     strokeWidth: 1,\n     strokeDasharray: \"4,2\"\n };\n\n <LineChart style={dashedBlueStyle} ... />\n ```",
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const lineStyles = {\n     value: {\n         stroke: \"steelblue\",\n         strokeWidth: 1,\n         strokeDasharray: \"4,2\"\n     }\n };\n\n <LineChart style={lineStyles} ... />\n ```",
         "defaultValue": {
           "value": "{\n    stroke: \"steelblue\",\n    strokeWidth: 1\n}",
           "computed": false
@@ -1014,11 +1508,116 @@
     }
   },
   "src/resizable.jsx": {
-    "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width."
+    "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width.",
+    "methods": [
+      {
+        "name": "handleResize",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ]
   },
   "src/scatterchart.jsx": {
     "description": "The `<ScatterChart >` widget is able to display a single series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements.\n\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "ScatterChart",
+    "methods": [
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getOffsetMousePosition",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderTrackerTime",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "d",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderHint",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "time",
+            "type": null
+          },
+          {
+            "name": "posx",
+            "type": null
+          },
+          {
+            "name": "posy",
+            "type": null
+          },
+          {
+            "name": "valueList",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderScatter",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -1149,6 +1748,34 @@
   "src/table.jsx": {
     "description": "",
     "displayName": "Table",
+    "methods": [
+      {
+        "name": "renderCells",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderHeader",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "series": {
         "type": {
@@ -1168,11 +1795,34 @@
   },
   "src/timeaxis.jsx": {
     "description": "Renders a horizontal time axis",
-    "displayName": "TimeAxis"
+    "displayName": "TimeAxis",
+    "methods": [
+      {
+        "name": "renderTimeAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "scale",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ]
   },
   "src/timerangemarker.jsx": {
     "description": "Renders a band with extents defined by the supplied TimeRange.",
     "displayName": "TimeRangeMarker",
+    "methods": [
+      {
+        "name": "renderBand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
       "timerange": {
         "type": {
@@ -1210,6 +1860,44 @@
   "src/tracker.jsx": {
     "description": "",
     "displayName": "Tracker",
+    "methods": [
+      {
+        "name": "renderLine",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "posx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderTrackerTime",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "d",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderHint",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "posx",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "style": {
         "type": {
@@ -1302,11 +1990,13 @@
   },
   "src/valueaxis.jsx": {
     "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n\n EXPERIMENTAL",
-    "displayName": "ValueAxis"
+    "displayName": "ValueAxis",
+    "methods": []
   },
   "src/valuelist.jsx": {
     "description": "Renders a list of values in svg\n\n     +----------------+\n     | Max 100 Gbps   |\n     | Avg 26 Gbps    |\n     +----------------+",
     "displayName": "ValueList",
+    "methods": [],
     "props": {
       "align": {
         "type": {
@@ -1390,6 +2080,64 @@
   "src/yaxis.jsx": {
     "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\n![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png \"YAxis\")\n\nHere's a simple YAxis example:\n\n```js\n<YAxis id=\"price-axis\" label=\"Price (USD)\" min={0} max={100} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
     "displayName": "YAxis",
+    "methods": [
+      {
+        "name": "renderAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "align",
+            "type": null
+          },
+          {
+            "name": "scale",
+            "type": null
+          },
+          {
+            "name": "width",
+            "type": null
+          },
+          {
+            "name": "absolute",
+            "type": null
+          },
+          {
+            "name": "fmt",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "updateAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "align",
+            "type": null
+          },
+          {
+            "name": "scale",
+            "type": null
+          },
+          {
+            "name": "width",
+            "type": null
+          },
+          {
+            "name": "absolute",
+            "type": null
+          },
+          {
+            "name": "fmt",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
     "props": {
       "id": {
         "type": {
