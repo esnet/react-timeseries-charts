@@ -12,9 +12,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { axisLeft, axisRight } from "d3-axis";
 
-import { transition } from "d3-transition";
-import { easeSinInOut } from "d3-ease";
-
 import { format } from "d3-format";
 import { select } from "d3-selection";
 
@@ -233,14 +230,8 @@ export default React.createClass({
                 .ticks(10, ".2s");
         }
 
-        // 
-        const t = transition()
-            .duration(300)
-            .ease(easeSinInOut);
-
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
-                .transition(t)
                 .call(axisGenerator);
     },
 

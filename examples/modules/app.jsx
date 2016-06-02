@@ -30,10 +30,10 @@ export default React.createClass({
 
                     <ul className="nav nav-sidebar">
                         <li><Link to="weather">Weather example</Link></li>
+                        <li><Link to="realtime">Realtime example</Link></li>
                         <li><Link to="channels">Cycling example</Link></li>
                         <li><Link to="ddos">DDoS example</Link></li>
                         <li><Link to="stacked">Continents</Link></li>
-                        <li><Link to="realtime">Realtime stream</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>
@@ -47,7 +47,6 @@ export default React.createClass({
                         <li><Link to="areacharts">AreaChart</Link></li>
                         <li><Link to="barcharts">BarChart</Link></li>
                         <li><Link to="scattercharts">ScatterChart</Link></li>
-                        <li><Link to="eventcharts">EventChart [alpha]</Link></li>
                         <li><Link to="baseline">Baseline</Link></li>
                     </ul>
                         

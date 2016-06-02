@@ -170,7 +170,8 @@ export default React.createClass({
     render() {
 
         const baseLabelStyle = {
-            paddingRight: 15
+            paddingRight: 15,
+            cursor: this.props.onChange ? "pointer" : "hand"
         };
 
         const baseValueStyle = {
@@ -179,7 +180,7 @@ export default React.createClass({
         };
 
         const items = this.props.categories.map(category => {
-            const categoryStyle = category.style || {};
+            const categoryStyle = merge(true, {}, category.style);
 
             const categoryLabelStyle = category.labelStyle || {};
             const categoryValueStyle = category.valueStyle || {};
@@ -206,6 +207,7 @@ export default React.createClass({
                     column
                     width={0}
                     key={category.key}
+                    style={this.props.onChange ? {cursor: "pointer"} : {}}
                     onClick={() => this.handleClick(category.key, !disabled)}>
                     <FlexBox row>
                         <FlexBox column style={{marginTop: 2}} width="20px">
