@@ -116,6 +116,10 @@ export default React.createClass({
 
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
+
+        document.addEventListener("mouseover", this.handleMouseMove);
+        document.addEventListener("mouseup", this.handleMouseUp);
+
         this.setState({
             isPanning: true,
             initialPanBegin: begin,
@@ -126,6 +130,9 @@ export default React.createClass({
 
     handleMouseUp(e) {
         e.preventDefault();
+
+        document.removeEventListener("mouseover", this.handleMouseMove);
+        document.removeEventListener("mouseup", this.handleMouseUp);
 
         this.setState({
             isPanning: false,
@@ -151,6 +158,7 @@ export default React.createClass({
         const xy = [Math.round(x), Math.round(y)];
 
         if (this.state.isPanning) {
+
             const xy0 = this.state.initialPanPosition;
             const timeOffset = this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();

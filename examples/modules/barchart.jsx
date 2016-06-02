@@ -94,9 +94,9 @@ selected:
 
     const style = {
         "in": {
-            normal: {fill: "#619F3A"},
-            highlight: {fill: "rgb(113, 187, 67)"},
-            selected: {fill: "#436D28"}
+            normal: {fill: "#A5C8E1"},
+            highlight: {fill: "#bfdff6"},
+            selected: {fill: "#5aa2d5"}
         }
     };
 
@@ -149,7 +149,7 @@ _.each(days, (value, day) => {
 const octoberTrafficSeries = new TimeSeries({
     name: "October Traffic",
     utc: false,
-    columns: ["time", "in", "out"],
+    columns: ["index", "in", "out"],
     points: trafficPoints
 });
 
@@ -193,17 +193,19 @@ function formatter(value) {
 
 const monthlyAcceptedSeries = new TimeSeries({
     name: "Monthly Accepted",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].accepted
 });
 
 const monthlyDeliveredSeries = new TimeSeries({
     name: "Monthly Delivered",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].delivered
 });
 
 export default React.createClass({
+
+    displayName: "BarChartExample",
 
     mixins: [Highlighter],
 
@@ -233,34 +235,34 @@ export default React.createClass({
 
         const style = {
             in: {
-                normal: {fill: "#619F3A"},
-                highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"},
-                text: {fill: "#619F3A", stroke: "none"}
+                normal: {fill: "#A5C8E1"},
+                highlight: {fill: "#bfdff6"},
+                selected: {fill: "#5aa2d5"},
+                text: {fill: "#A5C8E1", stroke: "none"}
             },
             out: {
-                normal: {fill: "#E37E23"},
+                normal: {fill: "#FFCC9E"},
                 highlight: {fill: "rgb(255, 141, 39)"},
                 selected: {fill: "#A55D1C"},
-                text: {fill: "#E37E23", stroke: "none"}
+                text: {fill: "#FFCC9E", stroke: "none"}
             }
         };
 
         const leftStyle = {
             in: {
-                normal: {fill: "#619F3A"},
-                highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"},
-                text: {fill: "#619F3A", stroke: "none"}
+                normal: {fill: "#A5C8E1"},
+                highlight: {fill: "#bfdff6"},
+                selected: {fill: "#5aa2d5"},
+                text: {fill: "#A5C8E1", stroke: "none"}
             }
         };
 
         const rightStyle = {
             out: {
-                normal: {fill: "#E37E23"},
+                normal: {fill: "#FFCC9E"},
                 highlight: {fill: "rgb(255, 141, 39)"},
                 selected: {fill: "#B3621A"},
-                text: {fill: "#E37E23", stroke: "none"}
+                text: {fill: "#FFCC9E", stroke: "none"}
             }
         };
 
@@ -269,9 +271,11 @@ export default React.createClass({
 
                <div className="row">
                     <div className="col-md-12">
-                        <h3>BarChart Examples</h3>
+                        <h3>BarCharts</h3>
                     </div>
                 </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -281,6 +285,8 @@ export default React.createClass({
                         </p>
                     </div>
                 </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -304,7 +310,6 @@ export default React.createClass({
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
                                 </ChartRow>
-
                             </ChartContainer>
                         </Resizable>
                     </div>
@@ -331,8 +336,8 @@ export default React.createClass({
                     </div>
                     <div className="col-md-11">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Traffic In", style: {backgroundColor: "#619F3A"}},
-                            {key: "out", label: "Traffic Out", style: {backgroundColor: "#E37E23"}}]} />
+                            {key: "in", label: "Traffic In", style: {fill: "#A5C8E1"}},
+                            {key: "out", label: "Traffic Out", style: {fill: "#FFCC9E"}}]} />
                     </div>
                 </div>
                 <div className="row">
@@ -374,14 +379,14 @@ export default React.createClass({
                     </div>
                 </div>
 
-
+                
                 <div className="row">
                     <div className="col-md-1">
                     </div>
                     <div className="col-md-11">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Traffic In", style: {backgroundColor: "#619F3A"}},
-                            {key: "out", label: "Traffic Out", style: {backgroundColor: "#E37E23"}}]} />
+                            {key: "in", label: "Traffic In", style: {fill: "#A5C8E1"}},
+                            {key: "out", label: "Traffic Out", style: {fill: "#FFCC9E"}}]} />
                     </div>
                 </div>
                 <div className="row">
@@ -396,6 +401,7 @@ export default React.createClass({
                                             axis="traffic-volume"
                                             style={style}
                                             spacing={3}
+                                            columns={["in", "out"]}
                                             series={octoberTrafficSeries}
                                             format={formatter}/>
                                     </Charts>
@@ -407,7 +413,7 @@ export default React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
+                {/*}
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
@@ -422,7 +428,7 @@ export default React.createClass({
                         <b>Router: bnl-mr2</b>
                     </div>
                 </div>
-
+            
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
@@ -460,7 +466,7 @@ export default React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
+                */}
                 <hr />
 
                 <div className="row">

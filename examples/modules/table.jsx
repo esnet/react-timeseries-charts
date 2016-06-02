@@ -11,7 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 
@@ -29,7 +29,7 @@ In the above example, the points in the TimeSeries are indexed based on the mont
 
     const availabilityData = {
         "name": "availability",
-        "columns": ["time", "uptime", "notes", "outages"],
+        "columns": ["index", "uptime", "notes", "outages"],
         "points": [
             ["2015-06", 100, "", 0],
             ["2015-05", 92, "Router failure June 12", 26],
@@ -59,10 +59,11 @@ const example1bText = `
 
 In addition to simple formats, you can also supply a cell rendering function, for example
 to render a little bar visualization for values in a specific column. The cell rendering function
-takes two args: the event that is being rendered in the row, and the column name of the current
-cell. If this example the column name is used to apply the function to just the 'uptime' column. The
-value is then extracted from the event for the current column, though of course you could use other
-columns too, and then a simple bar is constructed using a div with some styling:
+takes three args: the event that is being rendered in the row, the column name of the current
+cell and the series itself. In this example the column name is used to apply the function to
+just the 'uptime' column. The value is then extracted from the event for the current column,
+though of course you could use other columns too, and then a simple bar is constructed using
+a div with some styling:
 
     function renderPercentAsBar(event, column) {
         if (column === "uptime") {
@@ -112,12 +113,12 @@ in the TimeSeries is a timestamp rather than an Index:
     <TimeSeriesTable series={measurements} timeFormat="h:mm:ss a" columns={measurementColumns}/>
 `;
 
-const percentFormat = d3.format(".1%");
-const paddedCounterFormat = d3.format("04d");
+const percentFormat = format(".1%");
+const paddedCounterFormat = format("04d");
 
 const availabilityData = {
     name: "availability",
-    columns: ["time", "uptime", "notes", "outages"],
+    columns: ["index", "uptime", "notes", "outages"],
     points: [
         ["2015-06", 100, "", 0],
         ["2015-05", 92, "Router failure June 12", 26],
@@ -211,11 +212,13 @@ export default React.createClass({
     render() {
         const availability = new TimeSeries(availabilityData);
         const measurements = new TimeSeries(measurementData);
+
         const availabilityDataSummary = {
             time: "Past year",
             uptime: `${percentFormat(availability.avg("uptime") / 100)}`,
             outages: `${paddedCounterFormat(availability.sum("outages"))}`
         };
+
         const roundedCornerStyle = {
             borderRadius: 5,
             borderStyle: "solid",
@@ -246,10 +249,11 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-8">
                         <div style={roundedCornerStyle}>
-                            <TimeSeriesTable series={availability}
-                                             timeFormat="MMMM, YYYY"
-                                             columns={columns}
-                                             summary={availabilityDataSummary} />
+                            <TimeSeriesTable
+                                series={availability}
+                                timeFormat="MMMM, YYYY"
+                                columns={columns}
+                                summary={availabilityDataSummary} />
                         </div>
                     </div>
                 </div>
@@ -267,11 +271,12 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-8">
                         <div style={roundedCornerStyle}>
-                            <TimeSeriesTable series={availability}
-                                             timeFormat="MMMM, YYYY"
-                                             columns={columns}
-                                             summary={availabilityDataSummary}
-                                             renderCell={renderPercentAsBar}/>
+                            <TimeSeriesTable
+                                series={availability}
+                                timeFormat="MMMM, YYYY"
+                                columns={columns}
+                                summary={availabilityDataSummary}
+                                renderCell={renderPercentAsBar} />
                         </div>
                     </div>
                 </div>
@@ -292,11 +297,12 @@ numbers are controlled based on the values:`} />
                 <div className="row">
                     <div className="col-md-6">
                         <div style={roundedCornerStyle}>
-                            <TimeSeriesTable series={availability}
-                                             timeFormat="MMMM, YYYY"
-                                             columns={columns}
-                                             summary={availabilityDataSummary}
-                                             renderCell={renderPercentAsColor}/>
+                            <TimeSeriesTable
+                                series={availability}
+                                timeFormat="MMMM, YYYY"
+                                columns={columns}
+                                summary={availabilityDataSummary}
+                                renderCell={renderPercentAsColor} />
                         </div>
                     </div>
                 </div>
@@ -312,7 +318,10 @@ numbers are controlled based on the values:`} />
                 <div className="row">
                     <div className="col-md-6">
                         <div style={roundedCornerStyle}>
-                            <TimeSeriesTable series={measurements} timeFormat="h:mm:ss a" columns={measurementColumns}/>
+                            <TimeSeriesTable
+                                series={measurements}
+                                timeFormat="h:mm:ss a"
+                                columns={measurementColumns} />
                         </div>
                     </div>
                 </div>

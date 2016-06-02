@@ -23,7 +23,6 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <hr />
                         <APIDocs file="src/chartrow.jsx"/>
                     </div>
                 </div>

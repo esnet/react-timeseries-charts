@@ -27,9 +27,9 @@ export default React.createClass({
 
     render() {
         const labelStyle = {
-            fontSize: 14,
-            textAnchor: "middle",
-            fill: "#838383"
+            fill: "#666",
+            fontSize: 20,
+            textAnchor: "middle"
         };
         const detailStyle = {
             fontSize: 12,
@@ -38,18 +38,24 @@ export default React.createClass({
         };
         return (
             <g>
-                <rect x="0" y="0"
-                      width={this.props.width}
-                      height={this.props.height}
-                      style={{fill: "#E4E4E4", fillOpacity: 0.65}}/>
-                <text x={parseInt(this.props.width / 2, 10)}
-                      y={this.props.height / 2}
-                      style={labelStyle}>
+                <rect
+                    key="background"
+                    x="0" y="0"
+                    width={this.props.width}
+                    height={this.props.height}
+                    style={{fill: "none", stroke: "none"}}/>
+                <text
+                    key="value"
+                    x={parseInt(this.props.width / 2, 10)}
+                    y={this.props.height / 2}
+                    style={labelStyle}>
                     {this.props.value}
                 </text>
-                <text x={parseInt(this.props.width / 2, 10)}
-                      y={this.props.height / 2} dy="1.2em"
-                      style={detailStyle}>
+                <text
+                    key="detail"
+                    x={parseInt(this.props.width / 2, 10)}
+                    y={this.props.height / 2} dy="1.2em"
+                    style={detailStyle}>
                     {this.props.detail}
                 </text>
             </g>

@@ -39,7 +39,7 @@ export default React.createClass({
         const childElement = this.state.width ?
             React.cloneElement(child, props) : null;
         return (
-            <div ref="container">
+            <div ref="container" style={this.props.style} className={this.props.className}>
                 {childElement}
             </div>
         );

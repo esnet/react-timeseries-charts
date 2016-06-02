@@ -22,11 +22,13 @@
 
 .x.axis > path.domain {
     fill: none;
+    pointer-events: none;
 }
 
 .x.axis > .tick > text {
     font-size: 11px;
     opacity: 0.5;
+    pointer-events: none;
 }
 
 .x.axis > .tick > line {
@@ -34,4 +36,5 @@
     stroke-opacity: 0.5;
     stroke-width: 1px;
     shape-rendering: crispEdges;
+    pointer-events: none;
 }

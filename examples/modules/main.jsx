@@ -25,12 +25,15 @@ import StackedAreaCharts from "./stacked";
 import LineCharts from "./linechart";
 import BarCharts from "./barchart";
 import ScatterCharts from "./scatterchart";
+import EventCharts from "./eventchart";
 import Baseline from "./baseline";
 import Legends from "./legend";
 import Weather from "./weather";
 import DDoS from "./ddos";
 import Table from "./table";
 import Channels from "./channels";
+import Horizontal from "./horizontal";
+import Realtime from "./realtime";
 
 import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
@@ -50,12 +53,15 @@ render((
             <Route path="linecharts" component={LineCharts} />
             <Route path="barcharts" component={BarCharts} />
             <Route path="scattercharts" component={ScatterCharts} />
+            <Route path="eventcharts" component={EventCharts} />
             <Route path="baseline" component={Baseline} />
             <Route path="legends" component={Legends} />
             <Route path="weather" component={Weather} />
             <Route path="ddos" component={DDoS} />
             <Route path="table" component={Table} />
             <Route path="channels" component={Channels} />
+            <Route path="horizontal" component={Horizontal} />
+            <Route path="realtime" component={Realtime} />
         </Route>
     </Router>
 ), document.getElementById("content"));

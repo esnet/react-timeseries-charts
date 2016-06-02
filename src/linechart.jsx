@@ -10,8 +10,9 @@
 
 import React from "react";
 import _ from "underscore";
-import Polygon from "paths-js/polygon";
-import Bezier from "paths-js/bezier";
+import d3Shape from "d3-shape";
+import merge from "merge";
+
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
@@ -48,10 +49,12 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
+            columns: ["value"],
             smooth: true,
+            interpolation: "curveLinear",
             style: {
-                color: "#9DA3FF",
-                width: 1
+                stroke: "steelblue",
+                strokeWidth: 1
             },
             breakLine: true
         };
@@ -72,23 +75,48 @@ export default React.createClass({
         axis: React.PropTypes.string.isRequired,
 
         /**
-         * The style of the line chart, with format:
-         * ```
-         * "style": {
-         *     color: "#448FDD",
-         *     width: 2
-         * }
-         * ```
+         * Which columns from the series to draw.
          */
-        style: React.PropTypes.shape({
-            color: React.PropTypes.string,
-            width: React.PropTypes.number
-        }),
+        columns: React.PropTypes.array,
 
         /**
-         * Smooth the line (using a bezier curve) or not.
+         * The styles to apply to the underlying SVG lines. This is a mapping
+         * of column names to objects with style attributes, in the following
+         * format:
+         *
+         * ```
+         *  const lineStyles = {
+         *      value: {
+         *          stroke: "steelblue",
+         *          strokeWidth: 1,
+         *          strokeDasharray: "4,2"
+         *      }
+         *  };
+         *
+         *  <LineChart style={lineStyles} ... />
+         *  ```
          */
-        smooth: React.PropTypes.bool,
+        style: React.PropTypes.object,
+
+        /**
+         * Any of D3's interpolation modes.
+         */
+        interpolation: React.PropTypes.oneOf([
+            "curveBasis",
+            "curveBasisOpen",
+            "curveBundle",
+            "curveCardinal",
+            "curveCardinalOpen",
+            "curveCatmullRom",
+            "curveCatmullRomOpen",
+            "curveLinear",
+            "curveMonotone",
+            "curveNatural",
+            "curveRadial",
+            "curveStep",
+            "curveStepAfter",
+            "curveStepBefore"
+        ]),
 
         /**
          * The determines how to handle bad/missing values in the supplied
@@ -103,90 +131,75 @@ export default React.createClass({
     /**
      * Returns the style used for drawing the path
      */
-    pathStyle() {
-        return {
+    pathStyle(column) {
+        const baseStyle = {
             fill: "none",
             pointerEvents: "none",
-            stroke: this.props.style.color || "#9DA3FF",
-            strokeWidth: `${this.props.style.width}px` || "1px"
+            stroke: "#9DA3FF",
+            strokeWidth: "1px"
         };
+        return merge(true, baseStyle, this.props.style[column] || {});
     },
 
-    /**
-     * Uses paths.js to generate an SVG element for a path passing
-     * through the points passed in. May be smoothed or not, depending
-     * on this.props.smooth.
-     */
-    generatePath(points) {
-        const fn = !this.props.smooth || points.length < 3 ? Polygon : Bezier;
-        return fn({points, closed: false}).path.print();
-    },
-
-    renderPath(points, key) {
+    renderPath(data, column, key) {
+        const lineFunction = d3Shape.line()
+            .curve(d3Shape[this.props.interpolation])
+            .x((data) => this.props.timeScale(data.x))
+            .y((data) => this.props.yScale(data.y));
+        const path = lineFunction(data);
         return (
             <path
                 key={key}
-                style={this.pathStyle()}
-                d={this.generatePath(points)}
-                clipPath={this.props.clipPathURL} />
+                clipPath={this.props.clipPathURL}
+                style={this.pathStyle(column)}
+                d={path} />
         );
     },
 
     renderLines() {
+        return _.map(this.props.columns, column => this.renderLine(column));
+    },
+
+    renderLine(column) {
         const pathLines = [];
         let count = 1;
         if (this.props.breakLine) {
-            // Remove nulls and NaNs from the line
+            // Remove nulls and NaNs from the line by generating a break in the line
             let currentPoints = null;
-            _.each(this.props.series.toJSON().points, d => {
-                const value = d[1];
+            for(let d of this.props.series.collection().events()) {
+                const timestamp = d.timestamp();
+                const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    if (!currentPoints) {
-                        currentPoints = [];
-                    }
-                    currentPoints.push([d[0], d[1]]);
+                    if (!currentPoints) currentPoints = [];
+                    currentPoints.push({x: timestamp, y: value});
                 } else {
                     if (currentPoints) {
-                        const points = _.map(currentPoints,
-                            d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-                        );
-                        if (points.length > 1) {
-                            pathLines.push(this.renderPath(points, count++));
-                        }
+                        if (currentPoints.length > 1) pathLines.push(this.renderPath(currentPoints, column, count++));
                         currentPoints = null;
                     }
                 }
-            });
-            if (currentPoints) {
-                const points = _.map(currentPoints,
-                    d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-                );
-                if (points.length > 1) {
-                    pathLines.push(this.renderPath(points, count));
-                }
+            }
+            if (currentPoints && currentPoints.length > 1) {
+                pathLines.push(this.renderPath(currentPoints, column, count));
             }
         } else {
-            // Remove nulls and NaNs from the line
+            // Ignore nulls and NaNs in the line
             const cleanedPoints = [];
-            _.each(this.props.series.toJSON().points, d => {
-                const value = d[1];
+            _.each(this.props.series.collection().events(), d => {
+                const timestamp = d.timestamp();
+                const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    cleanedPoints.push([d[0], d[1]]);
+                    cleanedPoints.push({x: timestamp, y: value});
                 }
             });
 
-            // Map series data to scaled points
-            const points = _.map(cleanedPoints,
-                d => [this.props.timeScale(d[0]), this.props.yScale(d[1])]
-            );
-
-            pathLines.push(this.renderPath(points, count));
+            pathLines.push(this.renderPath(cleanedPoints, column, count));
         }
 
         return (
-            <g>
+            <g key={column}>
                 {pathLines}
             </g>
         );
@@ -200,7 +213,7 @@ export default React.createClass({
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
         const isPanning = nextProps.isPanning;
-        const smooth = nextProps.smooth;
+        const interpolation = nextProps.interpolation;
 
         // What changed?
         const widthChanged =
@@ -211,8 +224,8 @@ export default React.createClass({
             (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
         const isPanningChanged =
             (this.props.isPanning !== isPanning);
-        const smoothingChanged =
-            (this.props.smooth !== smooth);
+        const interpolationChanged =
+            (this.props.interpolation !== interpolation);
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -227,13 +240,13 @@ export default React.createClass({
             timeScaleChanged ||
             isPanningChanged ||
             yAxisScaleChanged ||
-            smoothingChanged
+            interpolationChanged
         );
     },
 
     render() {
         return (
-            <g >
+            <g>
                 {this.renderLines()}
             </g>
         );

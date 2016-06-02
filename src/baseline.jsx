@@ -9,6 +9,8 @@
  */
 
 import React from "react";
+import merge from "merge";
+
 import "./baseline.css";
 
 /**
@@ -100,9 +102,12 @@ export default React.createClass({
         pts.push(`${this.props.width} 0`);
         points = pts.join(" ");
 
+        const baseStyle = {pointerEvents: "none"};
+        const style = merge(true, baseStyle, this.props.style);
+
         return (
             <g className="baseline" transform={transform}>
-                <polyline points={points} style={{pointerEvents: "none"}}/>
+                <polyline points={points} style={style}/>
                 <text className="baseline-label"
                       x={textPositionX}
                       y={textPositionY} textAnchor={textAnchor}>
