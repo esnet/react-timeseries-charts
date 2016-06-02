@@ -32,27 +32,33 @@ import Resizable from "../../src/resizable";
 const aud = require("../data/usd_vs_aud.json");
 const euro = require("../data/usd_vs_euro.json");
 
-const audSeries = new TimeSeries({
-    name: "AUD",
-    columns: ["time", "value"],
-    points: aud.widget[0].data.reverse()
+function buildPoints() {
+    const audPoints = aud.widget[0].data.reverse();
+    const euroPoints = euro.widget[0].data.reverse();
+    let points = [];
+    for (let i=0; i < audPoints.length; i++) {
+        points.push([audPoints[i][0], audPoints[i][1], euroPoints[i][1]]);
+    }
+
+    return points;
+}
+
+const currencySeries = new TimeSeries({
+    name: "Currency",
+    columns: ["time", "aud", "euro"],
+    points: buildPoints()
 });
 
-const euroSeries = new TimeSeries({
-    name: "EURO",
-    columns: ["time", "value"],
-    points: euro.widget[0].data.reverse()
-});
-
-const audStyle = {
-    stroke: "steelblue",
-    strokeWidth: 1,
-    strokeDasharray: "4,2"
-};
-
-const euroStyle = {
-    stroke: "#a02c2c",
-    strokeWidth: 2
+const lineStyles = {
+    aud: {
+        stroke: "steelblue",
+        strokeWidth: 1,
+        strokeDasharray: "4,2"
+    },
+    euro: {
+        stroke: "#a02c2c",
+        strokeWidth: 2
+    }
 };
 
 export default React.createClass({
@@ -62,7 +68,7 @@ export default React.createClass({
     getInitialState() {
         return {
             tracker: null,
-            timerange: audSeries.range()
+            timerange: currencySeries.range()
         };
     },
 
@@ -75,7 +81,6 @@ export default React.createClass({
     },
 
     render() {
-
         const f = d3.format("$,.2f");
         const df = d3.time.format("%b %d %Y %X");
 
@@ -86,10 +91,10 @@ export default React.createClass({
 
         let euroValue, audValue;
         if (this.state.tracker) {
-            const audIndex = audSeries.bisect(this.state.tracker);
-            audValue = `${f(audSeries.at(audIndex).get())}`;
-            const euroIndex = euroSeries.bisect(this.state.tracker);
-            euroValue = `${f(euroSeries.at(euroIndex).get())}`;
+            const index = currencySeries.bisect(this.state.tracker);
+            const trackerEvent = currencySeries.at(index);
+            audValue = `${f(trackerEvent.get("aud"))}`;
+            euroValue = `${f(trackerEvent.get("euro"))}`;
         }
 
         return (
@@ -102,12 +107,12 @@ export default React.createClass({
                 <hr />
                 <div className="row" style={{height: 28}}>
                     <div className="col-md-6" style={timeStyle}>
-                        {this.state.tracker ? `${df(this.state.tracker)}` : ``}
+                        {this.state.tracker ? `${df(this.state.tracker)}` : ""}
                     </div>
                     <div className="col-md-6">
                         <Legend type="line" align="right" categories={[
-                            {key: "aust", label: "AUD", value: audValue, style: audStyle},
-                            {key: "euro", label: "Euro", value: euroValue, style: euroStyle}
+                            {key: "aud", label: "AUD", value: audValue, style: lineStyles.aud},
+                            {key: "euro", label: "Euro", value: euroValue, style: lineStyles.euro}
                         ]} />
                     </div>
                 </div>
@@ -125,8 +130,8 @@ export default React.createClass({
                                 <ChartRow height="200" debug={false}>
                                     <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f" />
                                     <Charts>
-                                        <LineChart axis="axis1" series={audSeries} style={audStyle} interpolation="curveBasis" />
-                                        <LineChart axis="axis2" series={euroSeries} style={euroStyle} interpolation="curveBasis" />
+                                        <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" />
+                                        <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
                                         <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
                                     </Charts>
                                     <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f" />

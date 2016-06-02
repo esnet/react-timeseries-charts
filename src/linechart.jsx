@@ -49,6 +49,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
+            columns: ["value"],
             smooth: true,
             interpolation: "curveLinear",
             style: {
@@ -74,15 +75,25 @@ export default React.createClass({
         axis: React.PropTypes.string.isRequired,
 
         /**
-         * The style of the line chart, with format:
+         * Which columns from the series to draw.
+         */
+        columns: React.PropTypes.array,
+
+        /**
+         * The styles to apply to the underlying SVG lines. This is a mapping
+         * of column names to objects with style attributes, in the following
+         * format:
+         *
          * ```
-         *  const dashedBlueStyle = {
-         *      stroke: "steelblue",
-         *      strokeWidth: 1,
-         *      strokeDasharray: "4,2"
+         *  const lineStyles = {
+         *      value: {
+         *          stroke: "steelblue",
+         *          strokeWidth: 1,
+         *          strokeDasharray: "4,2"
+         *      }
          *  };
          *
-         *  <LineChart style={dashedBlueStyle} ... />
+         *  <LineChart style={lineStyles} ... />
          *  ```
          */
         style: React.PropTypes.object,
@@ -120,17 +131,17 @@ export default React.createClass({
     /**
      * Returns the style used for drawing the path
      */
-    pathStyle() {
+    pathStyle(column) {
         const baseStyle = {
             fill: "none",
             pointerEvents: "none",
-            stroke: this.props.style.color || "#9DA3FF",
-            strokeWidth: `${this.props.style.width}px` || "1px"
+            stroke: "#9DA3FF",
+            strokeWidth: "1px"
         };
-        return merge(true, baseStyle, this.props.style);
+        return merge(true, baseStyle, this.props.style[column] || {});
     },
-   
-    renderPath(data, key) {
+
+    renderPath(data, column, key) {
         const lineFunction = d3Shape.line()
             .curve(d3Shape[this.props.interpolation])
             .x((data) => this.props.timeScale(data.x))
@@ -140,56 +151,55 @@ export default React.createClass({
             <path
                 key={key}
                 clipPath={this.props.clipPathURL}
-                style={this.pathStyle()}
+                style={this.pathStyle(column)}
                 d={path} />
         );
     },
 
     renderLines() {
+        return _.map(this.props.columns, column => this.renderLine(column));
+    },
+
+    renderLine(column) {
         const pathLines = [];
         let count = 1;
         if (this.props.breakLine) {
-            // Remove nulls and NaNs from the line
+            // Remove nulls and NaNs from the line by generating a break in the line
             let currentPoints = null;
-            _.each(this.props.series.toJSON().points, d => {
-                const value = d[1];
+            for(let d of this.props.series.collection().events()) {
+                const timestamp = d.timestamp();
+                const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
                     if (!currentPoints) currentPoints = [];
-                    currentPoints.push([d[0], d[1]]);
+                    currentPoints.push({x: timestamp, y: value});
                 } else {
                     if (currentPoints) {
-                        const points = _.map(currentPoints, d => ({x: d[0], y: d[1]}));
-                        if (points.length > 1) pathLines.push(this.renderPath(points, count++));
+                        if (currentPoints.length > 1) pathLines.push(this.renderPath(currentPoints, column, count++));
                         currentPoints = null;
                     }
                 }
-            });
-            if (currentPoints) {
-                const points = _.map(currentPoints, d => ({x: d[0], y: d[1]}));
-                if (points.length > 1) {
-                    pathLines.push(this.renderPath(points, count));
-                }
+            }
+            if (currentPoints && currentPoints.length > 1) {
+                pathLines.push(this.renderPath(currentPoints, column, count));
             }
         } else {
-            // Remove nulls and NaNs from the line
+            // Ignore nulls and NaNs in the line
             const cleanedPoints = [];
-            _.each(this.props.series.toJSON().points, d => {
-                const value = d[1];
+            _.each(this.props.series.collection().events(), d => {
+                const timestamp = d.timestamp();
+                const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    cleanedPoints.push([d[0], d[1]]);
+                    cleanedPoints.push({x: timestamp, y: value});
                 }
             });
 
-            // Map series data to scaled points
-            const points = _.map(cleanedPoints, d => ({x: d[0], y: d[1]}));
-
-            pathLines.push(this.renderPath(points, count));
+            pathLines.push(this.renderPath(cleanedPoints, column, count));
         }
 
         return (
-            <g>
+            <g key={column}>
                 {pathLines}
             </g>
         );
@@ -236,7 +246,7 @@ export default React.createClass({
 
     render() {
         return (
-            <g >
+            <g>
                 {this.renderLines()}
             </g>
         );
