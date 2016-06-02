@@ -15,7 +15,6 @@ export Brush from "./brush";
 export ChartContainer from "./chartcontainer";
 export Charts from "./charts";
 export ChartRow from "./chartrow";
-export EventChart from "./eventchart";
 export HorizontalBarChart from "./hbarchart";
 export LabelAxis from "./labelaxis";
 export Legend from "./legend";

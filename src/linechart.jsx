@@ -20,28 +20,28 @@ function scaleAsString(scale) {
 }
 
 /**
- * The LineChart widget is able to display a single line chart.
+ * The `<LineChart>` component is able to display multiple columns of a TimeSeries
+ * as separate line charts.
  *
- * The LineChart should be used within `<ChartContainer>` etc., as this will
+ * The `<LineChart>` should be used within `<ChartContainer>` etc., as this will
  * construct the horizontal and vertical axis, and manage other elements.
- * Here is an example of two LineCharts overlaid on top of each other, along
- * with a BaseLine:
+ *
+ * Here is an example of two `<LineChart>`s overlaid on top of each other, along
+ * with a `<BaseLine>`:
  *
  * ```
- * <ChartContainer timeRange={audSeries.timerange()}>
- *     <ChartRow height="200">
- *         <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
- *         <Charts>
- *             <LineChart axis="axis1" series={audSeries} style={audStyle}/>
- *             <LineChart axis="axis2" series={euroSeries} style={euroStyle}/>
- *             <Baseline  axis="axis1" value={1.0} label="USD Baseline" position="right"/>
- *         </Charts>
- *         <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
- *     </ChartRow>
- * </ChartContainer>
+    <ChartContainer timeRange={timerange} >
+        <ChartRow height="200">
+            <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f" />
+            <Charts>
+                <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" />
+                <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
+                <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
+            </Charts>
+            <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f" />
+        </ChartRow>
+    </ChartContainer>
  * ```
- *
- * Note: Currently the line chart will take the first column for rendering.
  */
 export default React.createClass({
 

@@ -21,6 +21,7 @@
 }
 
 .x.axis > path.domain {
+    stroke: none;
     fill: none;
     pointer-events: none;
 }

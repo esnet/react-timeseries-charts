@@ -18,14 +18,14 @@ function scaleAsString(scale) {
 }
 
 /**
- * The AreaChart widget is able to display single or multiple stacked
+ * The `<AreaChart>` component is able to display single or multiple stacked
  * areas above or below the axis. It used throughout the
  * [My ESnet Portal](http://my.es.net).
 
- * The AreaChart should be used within a `<ChartContainer>` structure,
+ * The `<AreaChart>` should be used within a `<ChartContainer>` structure,
  * as this will construct the horizontal and vertical axis, and manage
- * other elements. Here is an example of an AreaChart with an up and down
- * traffic visualization:
+ * other elements. Here is an example of an `<AreaChart>` with an up and down
+ * network traffic visualization:
  *
  *  ```
  *   render() {
@@ -39,14 +39,20 @@ function scaleAsString(scale) {
  *                          series={trafficSeries}
  *                          columns={{up: ["in"], down: ["out"]}}/>
  *                  </Charts>
- *                  <YAxis id="traffic" label="Traffic (bps)" min={-max} max={max} absolute={true} width="60" type="linear"/>
+ *                  <YAxis
+ *                      id="traffic"
+ *                      label="Traffic (bps)"
+ *                      min={-max} max={max}
+ *                      absolute={true}
+ *                      width="60"
+ *                      type="linear"/>
  *              </ChartRow>
  *          </ChartContainer>
  *          ...
  *      );
  *  }
  *  ```
- * The `<AreaChart>`` takes a single `TimeSeries` object into its `series` prop. This
+ * The `<AreaChart>` takes a single `TimeSeries` object into its `series` prop. This
  * series can contain multiple columns and those columns can be referenced using the `columns`
  * prop. The `columns` props allows you to map columns in the series to the chart,
  * letting you specify the stacking and orientation of the data. In the above example
@@ -99,8 +105,10 @@ export default React.createClass({
          *     down: ["#FD8D0D", "#FDA949", "#FEC686", ...]
          * }
          * ```
-         * Where each color in the array corresponds to each area stacked
-         * either up or down.
+         *
+         * Currenly it is only possible to set the color for each area.
+         * This may change in the future. You can, however, set the fill
+         * opacity (see `fillOpacity`), but this will apply to all areas.
          */
         style: React.PropTypes.shape({
             up: React.PropTypes.arrayOf(React.PropTypes.string),
