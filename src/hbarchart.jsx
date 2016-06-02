@@ -10,7 +10,7 @@
 
 import React from "react";
 import _ from "underscore";
-import FlexBox from "react-flexbox";
+import { Flexbox, FlexItem } from "flexbox-react";
 
 //d3
 import { scaleLinear } from "d3-scale";
@@ -80,17 +80,17 @@ function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
-const RangeBar = React.createClass({
+class RangeBar extends React.Component {
 
-    displayName: "RangeBar",
-
-    shouldComponentUpdate(nextProps) {
-        const seriesChanged = !TimeSeries.is(this.props.series, nextProps.series);
-        const scaleChanged = scaleAsString(this.props.scale) !== scaleAsString(nextProps.scale);
+    shouldComponentUpdate({ series, scale }) {
+        const seriesChanged = !TimeSeries.is(this.props.series, series);
+        const scaleChanged = scaleAsString(this.props.scale) !== scaleAsString(scale);
+        console.log("Update?", seriesChanged, scaleChanged);
         return seriesChanged || scaleChanged;
-    },
+    }
 
     render() {
+
         const {
             series,
             column,
@@ -108,10 +108,10 @@ const RangeBar = React.createClass({
         const stdev = series.stdev(column);
 
         let seriesMin = series.min(column);
-        if (_.isNull(seriesMin)) seriesMin = 0;
+        if (_.isUndefined(seriesMin)) seriesMin = 0;
 
         let seriesMax = series.max(column);
-        if (_.isNull(seriesMax)) seriesMax = 0;
+        if (_.isUndefined(seriesMax)) seriesMax = 0;
 
         const start = scale(seriesMin);
         const end = scale(seriesMax);
@@ -125,10 +125,20 @@ const RangeBar = React.createClass({
         if (centerWidth <= 1) centerWidth = 1;
 
         const barElementBackground = (
-            <rect style={bgstyle} rx={2} ry={2} x={start} y={1} width={backgroundWidth} height={size-2} />
+            <rect
+                style={bgstyle}
+                rx={2} ry={2}
+                x={start} y={1}
+                width={backgroundWidth}
+                height={size-2} />
         );
         const barElementCenter = (
-            <rect style={fgstyle} x={centerStart} y={0} width={centerWidth} height={size} />
+            <rect
+                style={fgstyle}
+                x={centerStart}
+                y={0}
+                width={centerWidth}
+                height={size} />
         );
 
         return (
@@ -138,7 +148,7 @@ const RangeBar = React.createClass({
             </g>
         );
     }
-});
+}
 
 /**
  * Render just the bars, with each bar being one series in the seriesList
@@ -253,7 +263,7 @@ const Bars = React.createClass({
                 */
                 case "range":
                     return (
-                        <g transform={transform}>
+                        <g transform={transform} key={i}>
                             <RangeBar
                                 series={series}
                                 column={column}
@@ -351,12 +361,10 @@ const Row = React.createClass({
         } = this.props;
 
         const rowStyle = {
-            width: "100%",
-            boxShadow: "inset 11px 0px 7px -9px rgba(0,0,0,0.28)"
+            width: "100%"
         };
 
         const resizableStyle = {
-            margin: 3
         };
 
         return (
@@ -364,6 +372,7 @@ const Row = React.createClass({
                 style={rowStyle}
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})} >
+
                 <Resizable style={resizableStyle}>
                     <Bars
                         display={display}
@@ -436,22 +445,22 @@ const Row = React.createClass({
         }
 
         return (
-            <FlexBox column
+            <Flexbox
+                key={this.props.rowNumber}
+                style={rowStyle}
+                flexDirection="row"
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})}
                 onClick={this.handleClick} >
-                <FlexBox key={series.name()} row style={rowStyle}>
-                    <FlexBox
-                        column width="220px"
-                        style={labelStyle} >
+
+                    <FlexItem minWidth="220px" style={labelStyle} >
                         {this.renderLabel(series)}
-                    </FlexBox>
-                    <FlexBox column>
+                    </FlexItem>
+                    <FlexItem flexGrow={1}>
                         {this.renderBars()}
-                        {this.renderChild()}
-                     </FlexBox>
-                </FlexBox>
-            </FlexBox>
+                        {/*this.renderChild()*/}
+                    </FlexItem>
+            </Flexbox>
         );
     }
 });
@@ -475,11 +484,7 @@ To display this we render the HorizontalBarChart in our page:
         selected={this.state.selected}
         onSelectionChanged={this.handleSelectionChange}
         selectionColor="#37B6D3"
-        style={[{fill: "#1F78B4"}, {fill: "#FF7F00"}]} >
-
-        <SeriesSummary />
-
-    </HorizontalBarChart>
+        style={[{fill: "#1F78B4"}, {fill: "#FF7F00"}]} />
 
 Our first prop `display` tells the component how to draw the bars. In this case we use the
 "range", which will draw from min to max (with additional drawing to show 1 stdev away from
@@ -511,21 +516,6 @@ to mark the selected item with the `selectionColor` prop.
 
 Next we specify the `style`. This is the css style of each column's bars. Typically you would
 just want to specify the fill color. Each bar is a svg rect.
-
-Finally, you can specify a child component, in this case `<SeriesSummary>`. This can be any
-component and will be rendered under the bars when the row is selected. The component can render
-anything it wants. In our case we render some text for the averages of the series:
-
-    const SeriesSummary = ({series}) => (
-        <table><tbody><tr>
-            <td><b>Avg:</b></td>
-            <td style={{paddingLeft: 5}}>{formatter(series.avg("in"))} to site</td>
-            <td style={{paddingLeft: 15}}>{formatter(series.avg("out"))} from site</td>
-        </tr> </tbody></table>
-    );
-
-Note that the component will have the `series` it is rendering, as well as the `timestamp` injected
-into its props so you can use those when rendering.
 
 */
 export default React.createClass({
@@ -687,6 +677,7 @@ export default React.createClass({
         return seriesList.map((series, i) => (
             <Row
                 key={i}
+                rowNumber={i}
                 series={series}
                 display={display}
                 max={max}
