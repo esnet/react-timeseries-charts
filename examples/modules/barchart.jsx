@@ -12,7 +12,6 @@
 
 import React from "react";
 import _ from "underscore";
-import d3 from "d3";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";

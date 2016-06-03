@@ -10,7 +10,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3"; // TODO: use d3-brush when it becomes available
+import { brushX, brushSelection } from "d3-brush";
+import { select, event } from "d3-selection";
 import { TimeRange } from "pondjs";
 
 function scaleAsString(scale) {
@@ -21,43 +22,39 @@ export default React.createClass({
 
     displayName: "Brush",
 
-    handleBrushed(brush) {
-        const extent = brush.extent();
+    componentWillMount() {
+        this.brush = brushX()
+            .on("brush", this.handleBrushed);
+    },
+
+    handleBrushed() {
+        const [x1, x2] = event.selection;
+
+        const d1 = this.props.timeScale.invert(x1);
+        const d2 = this.props.timeScale.invert(x2);
+
+        this.currentBegin = d1.getTime();
+        this.currentEnd = d2.getTime();
+
         if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(new TimeRange(extent[0], extent[1]));
+            this.props.onTimeRangeChanged(new TimeRange(d1, d2));
         }
     },
 
     renderBrush(timeScale, timeRange) {
-        if (!this.brush) {
-            this.brush = d3.svg.brush()
-                .x(timeScale)
-                .on("brush", () => {
-                    this.handleBrushed(this.brush);
-                });
-            this.brush.extent([timeRange.begin(), timeRange.end()]);
-        } else {
-            const currentExtent = this.brush.extent();
-            const currentBegin = currentExtent[0];
-            const currentEnd = currentExtent[1];
+        if (timeRange.begin().getTime() !== this.currentBegin ||
+            timeRange.end().getTime() !== this.currentEnd) {
 
-            // Break feedback cycles
-            if (currentBegin.getTime() !== timeRange.begin().getTime() ||
-                currentEnd.getTime() !== timeRange.end().getTime()) {
-                this.brush.extent([timeRange.begin(), timeRange.end()]);
-            } else {
-                return;
-            }
+            const x1 = this.props.timeScale(timeRange.begin());
+            const x2 = this.props.timeScale(timeRange.end());
+
+            select(this.refs.group).selectAll("*").remove();
+            select(this.refs.group)
+                .append("g")
+                    .attr("class", "brush")
+                    .call(this.brush)
+                    .call(this.brush.move, [x1, x2]);
         }
-        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
-
-        d3.select(ReactDOM.findDOMNode(this))
-            .append("g")
-                .attr("class", "x brush")
-                .call(this.brush)
-                .selectAll("rect")
-                .attr("y", -6)
-                .attr("height", this.props.height + 7);
     },
 
     componentDidMount() {
@@ -78,6 +75,6 @@ export default React.createClass({
     },
 
     render() {
-        return <g/>;
+        return <g ref="group"/>;
     }
 });

@@ -9,7 +9,8 @@
  */
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 import moment from "moment";
 import "moment-duration-format";
 
@@ -71,19 +72,19 @@ export default React.createClass({
 
         let dateStr = `${d}`;
         if (this.props.timeFormat === "day") {
-            const format = d3.time.format("%d");
-            dateStr = format(d);
+            const formatter = timeFormat("%d");
+            dateStr = formatter(d);
         } else if (this.props.timeFormat === "month") {
-            const format = d3.time.format("%B");
-            dateStr = format(d);
+            const formatter = timeFormat("%B");
+            dateStr = formatter(d);
         } else if (this.props.timeFormat === "year") {
-            const format = d3.time.format("%Y");
-            dateStr = format(d);
+            const formatter = timeFormat("%Y");
+            dateStr = formatter(d);
         } else if (this.props.timeFormat === "relative") {
-            dateStr = moment.duration(+d).format();
+            dateStr = moment.duration(+d).formatter();
         } else {
-            const format = d3.time.format(this.props.timeFormat);
-            dateStr = format(d);
+            const formatter = timeFormat(this.props.timeFormat);
+            dateStr = formatter(d);
         }
 
         return (

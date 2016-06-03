@@ -8,10 +8,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
-import d3 from "d3";
 import _ from "underscore";
-
+import React from "react";
+import { format } from "d3-format";
 import ValueList from "./valuelist";
 
 /**
@@ -65,9 +64,9 @@ export default React.createClass({
             );
         }
         const valXPos = rectWidth + 3; // padding
-        const format = _.has(this.props, "format") ? this.props.format : ".2f";
-        const maxStr = d3.format(format)(this.props.max);
-        const minStr = d3.format(format)(this.props.min);
+        const fmt = _.has(this.props, "format") ? this.props.format : ".2f";
+        const maxStr = format(fmt)(this.props.max);
+        const minStr = format(fmt)(this.props.min);
 
         return (
             <g>
