@@ -125,10 +125,14 @@ export default React.createClass({
                 selected: {fill: "619F3A", opacity: 0.5}
             }
         };
-       
+
         const scatterStyle = {
-            color: "steelblue",
-            opacity: 0.5
+            value: {
+                normal: {
+                    fill: "steelblue",
+                    opacity: 0.5
+                }
+            }
         };
 
         //
@@ -140,7 +144,7 @@ export default React.createClass({
                 name: "raw",
                 events: this.state.events.toArray()
             });
-        
+
         const avgSeries =
             new TimeSeries({
                 name: "five minute avg",

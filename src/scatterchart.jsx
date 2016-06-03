@@ -64,10 +64,7 @@ export default React.createClass({
 
             radius: 2.0,
 
-            style: {
-                color: "steelblue",
-                opacity: 1
-            },
+            style: {},
 
             hintStyle: {
                 line: {
@@ -106,7 +103,19 @@ export default React.createClass({
         axis: React.PropTypes.string.isRequired,
 
         /**
-         * The radius of each point if a radius is not present in the series.
+         * The radius of the points in the scatter chart.
+         *
+         * If this is a number it will be used as the radius for every point.
+         * If this is a function it will be called for each event.
+         *
+         * The function is called with the event and the column name and must return a number.
+         *
+         * For example this function will use the radius column of the event:
+         * ```
+         * const radius = (event, column) => {
+         *    return event.get("radius");
+         * }
+         * ```
          */
         radius: React.PropTypes.oneOfType([
             React.PropTypes.number,
@@ -114,19 +123,34 @@ export default React.createClass({
         ]),
 
         /**
-         * The style of the scatter chart drawing (using SVG CSS properties). For example:
+         * The style of the scatter chart drawing (using SVG CSS properties).
+         * This is an object with a key for each column which is being plotted,
+         * per the `columns` argument. Each of those keys has an object as it's
+         * value which has keys which are style properties for an SVG Circle and
+         * the value to use.
+         *
+         * For example:
          * ```
          * style = {
-         *     color: "steelblue",
-         *     opacity: 0.5
+         *     columnName: {
+         *         normal: {
+         *             fill: "steelblue",
+         *             opacity: 0.5,
+         *         },
+         *         highlight: {
+         *             fill: "red",
+         *             opacity: 1.0,
+         *         },
+         *         selected: {
+         *             fill: "orange",
+         *             opacity: 1.0,
+         *         }
+         *     }
          * }
          * ```
          */
         style: React.PropTypes.oneOfType([
-            React.PropTypes.shape({
-                color: React.PropTypes.string,
-                opacity: React.PropTypes.number
-            }),
+            React.PropTypes.object,
             React.PropTypes.func
         ]),
 
@@ -316,7 +340,7 @@ export default React.createClass({
             for (const event of series.events()) {
                 const t = event.timestamp();
                 const value = event.get(column);
-                
+
                 const x = timeScale(t);
                 const y = yScale(value);
 
@@ -336,7 +360,7 @@ export default React.createClass({
                         column === this.props.selection.column);
 
                 const providedStyle = this.props.style ?
-                    this.props.style : {};
+                    this.props.style[column] : {};
                 const styleMap = _.isFunction(this.props.style) ?
                     this.props.style(event, column) :
                     merge(true, defaultStyle, providedStyle);
@@ -348,12 +372,12 @@ export default React.createClass({
                 } else if (isHighlighted) {
                     style = styleMap.hover;
                 }
-                
+
                 // Hover hint
                 if (isHighlighted && this.props.hintValues) {
                     hover = this.renderHint(t, x, y, this.props.hintValues);
                 }
-                       
+
                 points.push(
                     <circle
                         key={`${column}-${key}`}

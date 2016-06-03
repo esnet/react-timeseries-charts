@@ -1660,7 +1660,7 @@
           ]
         },
         "required": false,
-        "description": "The radius of each point if a radius is not present in the series.",
+        "description": "The radius of the points in the scatter chart.\n\nIf this is a number it will be used as the radius for every point.\nIf this is a function it will be called for each event.\n\nThe function is called with the event and the column name and must return a number.\n\nFor example this function will use the radius column of the event:\n```\nconst radius = (event, column) => {\n   return event.get(\"radius\");\n}\n```",
         "defaultValue": {
           "value": "2.0",
           "computed": false
@@ -1671,17 +1671,7 @@
           "name": "union",
           "value": [
             {
-              "name": "shape",
-              "value": {
-                "color": {
-                  "name": "string",
-                  "required": false
-                },
-                "opacity": {
-                  "name": "number",
-                  "required": false
-                }
-              }
+              "name": "object"
             },
             {
               "name": "func"
@@ -1689,9 +1679,9 @@
           ]
         },
         "required": false,
-        "description": "The style of the scatter chart drawing (using SVG CSS properties). For example:\n```\nstyle = {\n    color: \"steelblue\",\n    opacity: 0.5\n}\n```",
+        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` argument. Each of those keys has an object as it's\nvalue which has keys which are style properties for an SVG Circle and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.5,\n        },\n        highlight: {\n            fill: \"red\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        }\n    }\n}\n```",
         "defaultValue": {
-          "value": "{\n    color: \"steelblue\",\n    opacity: 1\n}",
+          "value": "{}",
           "computed": false
         }
       },

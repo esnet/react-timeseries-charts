@@ -118,7 +118,7 @@ const tempSeries = new TimeSeries({
     points: temperaturePoints});
 const pressureSeries = new TimeSeries({name: "Pressure", columns: ["time", "pressure"], points: pressurePoints});
 const windSeries = new TimeSeries({name: "Wind", columns: ["time", "wind"], points: windPoints});
-const gustSeries = new TimeSeries({name: "Gust", columns: ["time", "value", "radius"], points: gustPoints});
+const gustSeries = new TimeSeries({name: "Gust", columns: ["time", "gust", "radius"], points: gustPoints});
 const rainSeries = new TimeSeries({name: "Rain", columns: ["time", "value"], points: rainPoints});
 const rainAccumSeries = new TimeSeries({name: "Rain Accum", columns: ["time", "rainAccum"], points: rainAccumPoints});
 
@@ -151,6 +151,15 @@ const lineStyles = {
     rainAccum: {
         stroke: scheme.rainAccum,
         "stroke-width": 1
+    }
+};
+
+const scatterStyles = {
+    gust: {
+        normal: {
+            fill: scheme.gust,
+            opacity: 0.5
+        }
     }
 };
 
@@ -215,7 +224,8 @@ export default React.createClass({
                                         <LineChart axis="wind" series={windSeries} columns={["wind"]} style={lineStyles}/>
                                         <ScatterChart axis="wind-gust"
                                                       series={gustSeries}
-                                                      style={{normal: {fill: scheme.gust, opacity: 0.5}}}
+                                                      columns={["gust"]}
+                                                      style={scatterStyles}
                                                       radius={(event, column) => { return event.get("radius"); }}/>
                                     </Charts>
 
