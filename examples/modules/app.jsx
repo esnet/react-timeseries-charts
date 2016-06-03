@@ -49,7 +49,7 @@ export default React.createClass({
                         <li><Link to="scattercharts">ScatterChart</Link></li>
                         <li><Link to="baseline">Baseline</Link></li>
                     </ul>
-                        
+
                     <div className="sidebar-heading">Extras</div>
 
                     <ul className="nav nav-sidebar">

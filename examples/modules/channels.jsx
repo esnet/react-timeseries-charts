@@ -87,26 +87,28 @@ const speed = new TimeSeries({
     points: speedPoints
 });
 
-const paceStyle = {
-    color: "steelblue",
-    width: 1
+const lineStyles = {
+    speed: {
+        stroke: "steelblue",
+        width: 1
+    },
+    hr: {
+        stroke: "red",
+        width: 1
+    }
 };
 
-const paceBaselineStyle = {
-    stroke: "steelblue",
-    opacity: 0.5,
-    width: 0.25
-};
-
-const hrStyle = {
-    color: "red",
-    width: 1
-};
-
-const hrBaselineStyle = {
-    stroke: "red",
-    opacity: 0.5,
-    width: 0.25
+const baselineStyles = {
+    speed: {
+        stroke: "steelblue",
+        opacity: 0.5,
+        width: 0.25
+    },
+    hr: {
+        stroke: "red",
+        opacity: 0.5,
+        width: 0.25
+    }
 };
 
 const speedFormat = format(".1f");
@@ -236,11 +238,12 @@ export default React.createClass({
                         <LineChart
                             axis="speedaxis"
                             series={speedCropped}
-                            style={paceStyle}
+                            columns={["speed"]}
+                            style={lineStyles}
                             breakLine={true}
                             tension={0.1} />
                         <Baseline
-                            style={paceBaselineStyle}
+                            style={baselineStyles.speed}
                             axis="speedaxis"
                             value={speed.avg("speed")}/>
                     </Charts>
@@ -263,12 +266,13 @@ export default React.createClass({
                         <LineChart
                             axis="hraxis"
                             series={hrCropped}
-                            style={hrStyle}
+                            columns={["hr"]}
+                            style={lineStyles}
                             breakLine={true}
                             tension={0.1} />
                         <Baseline
                             axis="hraxis"
-                            style={hrBaselineStyle}
+                            style={baselineStyles.hr}
                             value={hr.avg("hr")}/>
                     </Charts>
                     <ValueAxis
@@ -348,12 +352,14 @@ export default React.createClass({
                         <LineChart
                             axis="axis1"
                             series={speedCropped}
-                            style={paceStyle}
+                            columns={["speed"]}
+                            style={lineStyles}
                             breakLine={true}/>
                         <LineChart
                             axis="axis2"
                             series={hrCropped}
-                            style={hrStyle}
+                            columns={["hr"]}
+                            style={lineStyles}
                             breakLine={true}/>
                     </Charts>
                 </ChartRow>

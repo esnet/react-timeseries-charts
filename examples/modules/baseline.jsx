@@ -36,7 +36,9 @@ const series = new TimeSeries({
 });
 
 const style = {
-    color: "#a02c2c"
+    value: {
+        stroke: "#a02c2c"
+    }
 };
 
 export default React.createClass({

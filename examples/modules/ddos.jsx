@@ -126,13 +126,13 @@ _.each(ddosData, val => {
 
 const connectionsSeries = new TimeSeries({
     name: "connections",
-    columns: ["time", "value"],
+    columns: ["time", "connections"],
     points: connections
 });
 
 const requestsSeries = new TimeSeries({
     name: "requests",
-    columns: ["time", "value"],
+    columns: ["time", "requests"],
     points: requests
 });
 
@@ -142,12 +142,10 @@ const requestsSeries = new TimeSeries({
 
 const styles = {
     connections: {
-        color: "#2ca02c",
         stroke: "#2ca02c",
         width: 1
     },
     requests: {
-        color: "#9467bd",
         stroke: "#9467bd",
         width: 2
     }
@@ -171,26 +169,28 @@ export default React.createClass({
         let charts = [];
         let max = 100;
         if (this.state.active.requests) {
-            const maxRequests = requestsSeries.max();
+            const maxRequests = requestsSeries.max("requests");
             if (maxRequests > max) max = maxRequests;
             charts.push(
                 <LineChart
                     key="requests"
                     axis="axis1"
                     series={requestsSeries}
-                    style={styles.requests}
+                    columns={["requests"]}
+                    style={styles}
                     interpolation="curveBasis" />
             );
         }
         if (this.state.active.connections) {
-            const maxConnections = connectionsSeries.max();
+            const maxConnections = connectionsSeries.max("connections");
             if (maxConnections > max) max = maxConnections;
             charts.push(
                 <LineChart
                     key="connections"
                     axis="axis2"
                     series={connectionsSeries}
-                    style={styles.connections}
+                    columns={["connections"]}
+                    style={styles}
                     interpolation="curveBasis" />
             );
         }
