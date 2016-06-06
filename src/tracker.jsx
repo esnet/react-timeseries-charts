@@ -9,7 +9,6 @@
  */
 
 import React from "react";
-import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import moment from "moment";
 import "moment-duration-format";
@@ -81,7 +80,7 @@ export default React.createClass({
             const formatter = timeFormat("%Y");
             dateStr = formatter(d);
         } else if (this.props.timeFormat === "relative") {
-            dateStr = moment.duration(+d).formatter();
+            dateStr = moment.duration(+d).format();
         } else {
             const formatter = timeFormat(this.props.timeFormat);
             dateStr = formatter(d);
