@@ -10,7 +10,7 @@
 
 import React from "react";
 import _ from "underscore";
-import d3 from "d3";
+import { format } from "d3-format";
 import Moment from "moment";
 
 import { TimeSeries, IndexedEvent } from "pondjs";
@@ -49,7 +49,7 @@ export default React.createClass({
                         if (_.isFunction(column.format)) {
                             formatter = column.format;
                         } else if (_.isString(column.format)) {
-                            formatter = d3.format(column.format);
+                            formatter = format(column.format);
                         }
                     }
 

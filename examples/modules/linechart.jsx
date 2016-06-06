@@ -11,7 +11,8 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
@@ -81,8 +82,8 @@ export default React.createClass({
     },
 
     render() {
-        const f = d3.format("$,.2f");
-        const df = d3.time.format("%b %d %Y %X");
+        const f = format("$,.2f");
+        const df = timeFormat("%b %d %Y %X");
 
         const timeStyle = {
             fontSize: "1.2rem",

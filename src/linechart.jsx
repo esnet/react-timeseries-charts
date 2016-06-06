@@ -12,7 +12,6 @@ import React from "react";
 import _ from "underscore";
 import d3Shape from "d3-shape";
 import merge from "merge";
-
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {

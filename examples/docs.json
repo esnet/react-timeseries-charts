@@ -395,38 +395,156 @@
     }
   },
   "src/brush.jsx": {
-    "description": "",
+    "description": "Renders a brush with the range defined in the prop `timeRange`.",
     "displayName": "Brush",
     "methods": [
       {
-        "name": "handleBrushed",
+        "name": "viewport",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleBrushMouseDown",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "brush",
+            "name": "e",
             "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "renderBrush",
+        "name": "handleOverlayMouseDown",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "timeScale",
-            "type": null
-          },
-          {
-            "name": "timeRange",
+            "name": "e",
             "type": null
           }
         ],
         "returns": null
+      },
+      {
+        "name": "handleHandleMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "handle",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseUp",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": "Handles clearing the TimeRange if the user clicks on the overlay (but\ndoesn't drag to create a new brush). This will send a null as the\nnew TimeRange. The user of this code can react to that however they\nsee fit, but the most logical response is to reset the timerange to\nsome initial value. This behavior is optional.",
+        "modifiers": [],
+        "params": [],
+        "returns": null,
+        "description": "Handles clearing the TimeRange if the user clicks on the overlay (but\ndoesn't drag to create a new brush). This will send a null as the\nnew TimeRange. The user of this code can react to that however they\nsee fit, but the most logical response is to reset the timerange to\nsome initial value. This behavior is optional."
+      },
+      {
+        "name": "handleMouseMove",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderOverlay",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderBrush",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderHandles",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       }
-    ]
+    ],
+    "props": {
+      "timeRange": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeRange"
+        },
+        "required": false,
+        "description": "The timerange for the brush. Typically you would maintain this\nas state on the surrounding page, since it would likely control\nanother page element, such as the range of the main chart. See\nalso `onTimeRangeChanged()` for receiving notification of the\nbrush range being changed by the user.\n\nTakes a Pond TimeRange object."
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The brush is rendered as an SVG rect. You can specify the style\nof this rect using this prop."
+      },
+      "handleSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The size of the invisible side handles. Defaults to 6 pixels.",
+        "defaultValue": {
+          "value": "6",
+          "computed": false
+        }
+      },
+      "allowSelectionClear": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "onTimeRangeChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback which will be called if the brush range is changed by\nthe user. It is called with a Pond TimeRange object. Note that if\n`allowSelectionClear` is set to true, then this can also be called\nwhen the user performs a simple click outside the brush area. In\nthis case it will be called with null as the TimeRange. You can\nuse this to reset the selection, perhaps to some initial range."
+      }
+    }
   },
   "src/chartcontainer.jsx": {
     "description": "The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.\n\n![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png \"ChartContainer\")\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",

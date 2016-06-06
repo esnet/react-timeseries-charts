@@ -138,19 +138,19 @@ const scheme = {
 const lineStyles = {
     temp: {
         stroke: scheme.temp,
-        "stroke-width": 2
+        strokeWidth: 2
     },
     pressure: {
         stroke: scheme.pressure,
-        "stroke-width": 2
+        strokeWidth: 2
     },
     wind: {
         stroke: scheme.wind,
-        "stroke-width": 2
+        strokeWidth: 2
     },
     rainAccum: {
         stroke: scheme.rainAccum,
-        "stroke-width": 1
+        strokeWidth: 1
     }
 };
 
