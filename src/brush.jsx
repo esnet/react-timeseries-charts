@@ -205,10 +205,24 @@ export default React.createClass({
 
     renderOverlay() {
         const { width, height } = this.props;
+
+        let cursor;
+        switch (this.state.brushingInitializationSite) {
+            case "handle-right":
+            case "handle-left":
+                cursor = "ew-resize";
+                break;
+            case "brush":
+                cursor = "move";
+                break;
+            default:
+                cursor = "crosshair";
+        }
+
         const overlayStyle = {
             fill: "white",
             opacity: 0,
-            cursor: "crosshair"
+            cursor
         };
         return (
             <rect
@@ -225,13 +239,26 @@ export default React.createClass({
     renderBrush() {
         const { timeRange, timeScale, height, style } = this.props;
 
+        let cursor;
+        switch (this.state.brushingInitializationSite) {
+            case "handle-right":
+            case "handle-left":
+                cursor = "ew-resize";
+                break;
+            case "overlay":
+                cursor = "crosshair";
+                break;
+            default:
+                cursor = "move";
+        }
+
         // Style of the brush area
         const brushDefaultStyle = {
             fill: "#777",
             fillOpacity: 0.3,
             stroke: "#fff",
             shapeRendering: "crispEdges",
-            cursor: "move"
+            cursor
         };
         const brushStyle = merge(true, brushDefaultStyle, style);
 
@@ -284,9 +311,9 @@ export default React.createClass({
             const handleSize = this.props.handleSize;
 
             const leftHandleBounds =
-                {x, y, width: handleSize, height};
+                {x: x - 1, y, width: handleSize, height};
             const rightHandleBounds =
-                {x: x + width - handleSize, y, width: handleSize, height};
+                {x: x + width - handleSize, y, width: handleSize + 1, height};
 
             return (
                 <g>
