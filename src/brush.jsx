@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import merge from "merge";
 import { TimeRange } from "pondjs";
 
 // http://stackoverflow.com/a/28857255
@@ -21,11 +22,11 @@ function getElementOffset(element) {
 }
 
 /**
- * Renders a band with extents defined by the supplied TimeRange.
+ * Renders a brush with the range defined in the prop `timeRange`.
  */
 export default React.createClass({
 
-    displayName: "TimeRangeMarker",
+    displayName: "Brush",
 
     propTypes: {
         timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
@@ -34,11 +35,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
-            spacing: 1,
-            offset: 0,
-            style: {
-                fill: "rgba(70, 130, 180, 0.25)"
-            }
+            handleSize: 6
         };
     },
 
@@ -175,8 +172,8 @@ export default React.createClass({
     renderOverlay() {
         const { width, height } = this.props;
         const overlayStyle = {
-            fill: "red",
-            opacity: 0.1,
+            fill: "white",
+            opacity: 0,
             cursor: "crosshair"
         };
         return (
@@ -200,8 +197,14 @@ export default React.createClass({
         const viewport = new TimeRange(viewBeginTime, viewEndTime);
 
         // Style of the brush area
-        let brushStyle = style ? style : {fill: "steelblue"};
-        brushStyle.cursor = "move";
+        const brushDefaultStyle = {
+            fill: "#777",
+            fillOpacity: 0.3,
+            stroke: "#fff",
+            shapeRendering: "crispEdges",
+            cursor: "move"
+        };
+        const brushStyle = merge(true, brushDefaultStyle, style);
 
         if (!viewport.disjoint(timeRange)) {
             const range = timeRange.intersection(viewport);
@@ -236,8 +239,12 @@ export default React.createClass({
         const viewEndTime = timeScale.invert(width);
         const viewport = new TimeRange(viewBeginTime, viewEndTime);
 
-        // Style of the brush area
-        let handleStyle = {fill: "green", opacity: 0.1, cursor: "ew-resize"};
+        // Style of the handles
+        const handleStyle = {
+            fill: "white",
+            opacity: 0,
+            cursor: "ew-resize"
+        };
 
         if (!viewport.disjoint(timeRange)) {
             const range = timeRange.intersection(viewport);
@@ -250,10 +257,10 @@ export default React.createClass({
                 width = 1;
             }
 
-            const handleWidth = 6;
+            const handleSize = this.props.handleSize;
 
-            const boundsHandleLeft = {x: x - handleWidth/2, y, width: handleWidth, height};
-            const boundsHandleRight = {x: x + width - handleWidth/2, y, width: handleWidth, height};
+            const boundsHandleLeft = {x: x, y, width: handleSize, height};
+            const boundsHandleRight = {x: x + width - handleSize, y, width: handleSize, height};
 
             return (
                 <g>
