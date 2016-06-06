@@ -130,10 +130,12 @@ export default React.createClass({
     mixins: [Highlighter],
 
     getInitialState() {
+        const initialRange = new TimeRange([75 * 60 * 1000, 125 * 60 * 1000]);
         return {
             mode: "channels",
             tracker: null,
-            timerange: new TimeRange([75 * 60 * 1000, 125 * 60 * 1000])
+            timerange: initialRange,
+            brushrange: initialRange
         };
     },
 
@@ -141,8 +143,13 @@ export default React.createClass({
         this.setState({tracker: t});
     },
 
+    // Handles when the brush changes the timerange
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        if (timerange) {
+            this.setState({timerange, brushrange: timerange});
+        } else {
+            this.setState({timerange: altitude.range(), brushrange: null});
+        }
     },
 
     renderDescription() {
@@ -375,7 +382,8 @@ export default React.createClass({
                 trackerPosition={this.state.tracker}>
                 <ChartRow height="100" debug={false}>
                     <Brush
-                        timeRange={this.state.timerange}
+                        timeRange={this.state.brushrange}
+                        allowSelectionClear={true}
                         onTimeRangeChanged={this.handleTimeRangeChange} />
                     <YAxis
                         id="axis1"

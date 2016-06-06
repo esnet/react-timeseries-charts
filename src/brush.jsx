@@ -29,13 +29,46 @@ export default React.createClass({
     displayName: "Brush",
 
     propTypes: {
-        timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
-        style: React.PropTypes.object
+
+        /**
+         * The timerange for the brush. Typically you would maintain this
+         * as state on the surrounding page, since it would likely control
+         * another page element, such as the range of the main chart. See
+         * also `onTimeRangeChanged()` for receiving notification of the
+         * brush range being changed by the user.
+         *
+         * Takes a Pond TimeRange object.
+         */
+        timeRange: React.PropTypes.instanceOf(TimeRange),
+
+        /**
+         * The brush is rendered as an SVG rect. You can specify the style
+         * of this rect using this prop.
+         */
+        style: React.PropTypes.object,
+
+        /**
+         * The size of the invisible side handles. Defaults to 6 pixels.
+         */
+        handleSize: React.PropTypes.number,
+
+        allowSelectionClear: React.PropTypes.bool,
+
+        /**
+         * A callback which will be called if the brush range is changed by
+         * the user. It is called with a Pond TimeRange object. Note that if
+         * `allowSelectionClear` is set to true, then this can also be called
+         * when the user performs a simple click outside the brush area. In
+         * this case it will be called with null as the TimeRange. You can
+         * use this to reset the selection, perhaps to some initial range.
+         */
+        onTimeRangeChanged: React.PropTypes.func
     },
 
     getDefaultProps() {
         return {
-            handleSize: 6
+            handleSize: 6,
+            allowSelectionClear: false
         };
     },
 
@@ -142,6 +175,12 @@ export default React.createClass({
         });
     },
 
+    handleClick() {
+        if (this.props.allowSelectionClear && this.props.onTimeRangeChanged) {
+            this.props.onTimeRangeChanged(null);
+        }
+    },
+
     handleMouseMove(e) {
         e.preventDefault();
 
@@ -196,7 +235,6 @@ export default React.createClass({
                 if (newBegin > newEnd) [newBegin, newEnd] = [newEnd, newBegin];
             }
 
-
             if (this.props.onTimeRangeChanged) {
                 this.props.onTimeRangeChanged(new TimeRange(newBegin, newEnd));
             }
@@ -232,12 +270,19 @@ export default React.createClass({
                 style={overlayStyle}
                 onMouseDown={this.handleOverlayMouseDown}
                 onMouseUp={this.handleMouseUp}
+                onClick={this.handleClick}
                 clipPath={this.props.clipPathURL} />
         );
     },
 
     renderBrush() {
         const { timeRange, timeScale, height, style } = this.props;
+
+        if (!timeRange) {
+            return (
+                <g />
+            );
+        }
 
         let cursor;
         switch (this.state.brushingInitializationSite) {
@@ -289,6 +334,12 @@ export default React.createClass({
 
     renderHandles() {
         const { timeRange, timeScale, height } = this.props;
+
+        if (!timeRange) {
+            return (
+                <g />
+            );
+        }
 
         // Style of the handles
         const handleStyle = {
