@@ -11,6 +11,15 @@
 import React from "react";
 import { TimeRange } from "pondjs";
 
+// http://stackoverflow.com/a/28857255
+function getElementOffset(element) {
+    const de = document.documentElement;
+    const box = element.getBoundingClientRect();
+    const top = box.top + window.pageYOffset - de.clientTop;
+    const left = box.left + window.pageXOffset - de.clientLeft;
+    return {top, left};
+}
+
 /**
  * Renders a band with extents defined by the supplied TimeRange.
  */
@@ -54,6 +63,21 @@ export default React.createClass({
             initialBrushBeginTime: begin,
             initialBrushEndTime: end,
             initialBrushXYPosition: xy0
+        });
+    },
+
+    handleOverlayMouseDown(e) {
+        e.preventDefault();
+
+        const offset = getElementOffset(this.refs.overlay);
+        const x = e.pageX - offset.left;
+        const t = this.props.timeScale.invert(x).getTime();
+        this.setState({
+            isBrushing: true,
+            brushingInitializationSite: "overlay",
+            initialBrushBeginTime: t,
+            initialBrushEndTime: t,
+            initialBrushXYPosition: null
         });
     },
 
@@ -113,22 +137,34 @@ export default React.createClass({
 
         if (this.state.isBrushing) {
             const xy0 = this.state.initialBrushXYPosition;
+            let newBegin, newEnd;
+            if (this.state.brushingInitializationSite === "overlay") {
+                const offset = getElementOffset(this.refs.overlay);
+                const xx = e.pageX - offset.left;
+                const t = this.props.timeScale.invert(xx).getTime();
+                if (t < this.state.initialBrushBeginTime) {
+                    newBegin = t;
+                    newEnd = this.state.initialBrushBeginTime;
+                } else {
+                    newBegin = this.state.initialBrushBeginTime;
+                    newEnd = t;
+                }
+            } else {
+                const timeOffset =
+                    this.props.timeScale.invert(xy0[0]).getTime() -
+                    this.props.timeScale.invert(xy[0]).getTime();
+                newBegin =
+                    this.state.brushingInitializationSite === "brush" ||
+                    this.state.brushingInitializationSite === "handle-left" ?
+                        parseInt(this.state.initialBrushBeginTime - timeOffset, 10) :
+                        this.state.initialBrushBeginTime;
+                newEnd =
+                    this.state.brushingInitializationSite === "brush" ||
+                    this.state.brushingInitializationSite === "handle-right" ?
+                        parseInt(this.state.initialBrushEndTime - timeOffset, 10) :
+                        this.state.initialBrushEndTime;
+            }
 
-            const timeOffset =
-                this.props.timeScale.invert(xy0[0]).getTime() -
-                this.props.timeScale.invert(xy[0]).getTime();
-
-            let newBegin =
-                this.state.brushingInitializationSite === "brush" ||
-                this.state.brushingInitializationSite === "handle-left" ?
-                    parseInt(this.state.initialBrushBeginTime - timeOffset, 10) :
-                    this.state.initialBrushBeginTime;
-
-            let newEnd =
-                this.state.brushingInitializationSite === "brush" ||
-                this.state.brushingInitializationSite === "handle-right" ?
-                    parseInt(this.state.initialBrushEndTime - timeOffset, 10) :
-                    this.state.initialBrushEndTime;
 
             if (this.props.onTimeRangeChanged) {
                 this.props.onTimeRangeChanged(new TimeRange(newBegin, newEnd));
@@ -138,12 +174,19 @@ export default React.createClass({
 
     renderOverlay() {
         const { width, height } = this.props;
-        const overlayStyle = {fill: "red", opacity: 0.1};
+        const overlayStyle = {
+            fill: "red",
+            opacity: 0.1,
+            cursor: "crosshair"
+        };
         return (
             <rect
+                ref="overlay"
                 x={0} y={0}
                 width={width} height={height}
                 style={overlayStyle}
+                onMouseDown={this.handleOverlayMouseDown}
+                onMouseUp={this.handleMouseUp}
                 clipPath={this.props.clipPathURL} />
         );
     },
