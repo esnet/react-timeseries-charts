@@ -426,6 +426,7 @@ export default React.createClass({
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
+                    clipPathURL: this.state.clipPathURL,
                     timeScale: this.props.timeScale,
                     yScale: this.state.yAxisScaleMap[child.props.axis]
                 };
