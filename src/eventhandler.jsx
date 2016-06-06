@@ -215,7 +215,8 @@ export default React.createClass({
                     ref="eventrect"
                     style={{opacity: 0.0, cursor}}
                     x={0} y={0}
-                    width={this.props.width} height={this.props.height} />
+                    width={this.props.width}
+                    height={this.props.height} />
                 {children}
             </g>
         );

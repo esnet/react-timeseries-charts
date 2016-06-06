@@ -88,11 +88,10 @@ export default React.createClass({
     handleBrushMouseDown(e) {
         e.preventDefault();
 
-        const x = e.pageX;
-        const y = e.pageY;
+        const {pageX: x, pageY: y} = e;
         const xy0 = [Math.round(x), Math.round(y)];
-        const begin = this.props.timeRange.begin().getTime();
-        const end = this.props.timeRange.end().getTime();
+        const begin = +this.props.timeRange.begin();
+        const end = +this.props.timeRange.end();
 
         this.setState({
             isBrushing: true,
@@ -118,11 +117,10 @@ export default React.createClass({
         });
     },
 
-    handleLeftHandleMouseDown(e) {
+    handleHandleMouseDown(e, handle) {
         e.preventDefault();
 
-        const x = e.pageX;
-        const y = e.pageY;
+        const {pageX: x, pageY: y} = e;
         const xy0 = [Math.round(x), Math.round(y)];
         const begin = this.props.timeRange.begin().getTime();
         const end = this.props.timeRange.end().getTime();
@@ -132,28 +130,7 @@ export default React.createClass({
 
         this.setState({
             isBrushing: true,
-            brushingInitializationSite: "handle-left",
-            initialBrushBeginTime: begin,
-            initialBrushEndTime: end,
-            initialBrushXYPosition: xy0
-        });
-    },
-
-    handleRightHandleMouseDown(e) {
-        e.preventDefault();
-
-        const x = e.pageX;
-        const y = e.pageY;
-        const xy0 = [Math.round(x), Math.round(y)];
-        const begin = this.props.timeRange.begin().getTime();
-        const end = this.props.timeRange.end().getTime();
-
-        document.addEventListener("mouseover", this.handleMouseMove);
-        document.addEventListener("mouseup", this.handleMouseUp);
-
-        this.setState({
-            isBrushing: true,
-            brushingInitializationSite: "handle-right",
+            brushingInitializationSite: `handle-${handle}`,
             initialBrushBeginTime: begin,
             initialBrushEndTime: end,
             initialBrushXYPosition: xy0
@@ -175,6 +152,13 @@ export default React.createClass({
         });
     },
 
+    /**
+     * Handles clearing the TimeRange if the user clicks on the overlay (but
+     * doesn't drag to create a new brush). This will send a null as the
+     * new TimeRange. The user of this code can react to that however they
+     * see fit, but the most logical response is to reset the timerange to
+     * some initial value. This behavior is optional.
+     */
     handleClick() {
         if (this.props.allowSelectionClear && this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(null);
@@ -190,17 +174,15 @@ export default React.createClass({
         const viewport = this.viewport();
 
         if (this.state.isBrushing) {
-            const xy0 = this.state.initialBrushXYPosition;
+            let newBegin, newEnd;
+
             const tb = this.state.initialBrushBeginTime;
             const te = this.state.initialBrushEndTime;
 
-            let newBegin, newEnd;
             if (this.state.brushingInitializationSite === "overlay") {
-                
                 const offset = getElementOffset(this.refs.overlay);
                 const xx = e.pageX - offset.left;
                 const t = this.props.timeScale.invert(xx).getTime();
-
                 if (t < tb) {
                     newBegin = t < viewport.begin().getTime() ? viewport.begin() : t;
                     newEnd = tb > viewport.end().getTime() ? viewport.end() : tb;
@@ -208,17 +190,16 @@ export default React.createClass({
                     newBegin = tb < viewport.begin().getTime() ? viewport.begin() : tb;
                     newEnd = t > viewport.end().getTime() ? viewport.end() : t;
                 }
-
             } else {
-
+                const xy0 = this.state.initialBrushXYPosition;
                 let timeOffset =
                     this.props.timeScale.invert(xy0[0]).getTime() -
                     this.props.timeScale.invert(xy[0]).getTime();
 
+                // Constrain
                 if (tb - timeOffset < viewport.begin()) {
                     timeOffset = tb - viewport.begin().getTime();
                 }
-
                 if (te - timeOffset > viewport.end()) {
                     timeOffset = te - viewport.end().getTime();
                 }
@@ -232,6 +213,7 @@ export default React.createClass({
                     this.state.brushingInitializationSite === "handle-right" ?
                         parseInt(te - timeOffset, 10) : te;
 
+                // Swap if needed
                 if (newBegin > newEnd) [newBegin, newEnd] = [newEnd, newBegin];
             }
 
@@ -372,13 +354,13 @@ export default React.createClass({
                         {...leftHandleBounds}
                         style={handleStyle}
                         pointerEvents="all"
-                        onMouseDown={this.handleLeftHandleMouseDown}
+                        onMouseDown={(e) => this.handleHandleMouseDown(e, "left")}
                         onMouseUp={this.handleMouseUp} />
                     <rect
                         {...rightHandleBounds}
                         style={handleStyle}
                         pointerEvents="all"
-                        onMouseDown={this.handleRightHandleMouseDown}
+                        onMouseDown={(e) => this.handleHandleMouseDown(e, "right")}
                         onMouseUp={this.handleMouseUp} />
                 </g>
             );
