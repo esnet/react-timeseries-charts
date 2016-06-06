@@ -222,18 +222,19 @@ export default React.createClass({
 
                                     <Charts>
                                         <LineChart axis="wind" series={windSeries} columns={["wind"]} style={lineStyles}/>
-                                        <ScatterChart axis="wind-gust"
-                                                      series={gustSeries}
-                                                      columns={["gust"]}
-                                                      style={scatterStyles}
-                                                      radius={(event, column) => { return event.get("radius"); }}/>
+                                        <ScatterChart
+                                            axis="wind-gust"
+                                            series={gustSeries}
+                                            columns={["gust"]}
+                                            style={scatterStyles}
+                                            radius={event => { return event.get("radius"); }}/>
                                     </Charts>
 
                                     <YAxis id="wind" label="Wind (mph)" labelOffset={5} style={{labelColor: scheme.wind}}
                                            min={0} max={50} width="80" type="linear" format=",.1f"/>
                                 </ChartRow>
 
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow height="150">
                                     <Charts>
                                         <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis" fillOpacity={0.4}/>
                                         <LineChart axis="total-rain" series={rainAccumSeries} columns={["rainAccum"]} style={lineStyles}/>

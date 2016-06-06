@@ -69,12 +69,14 @@ export default React.createClass({
             hintStyle: {
                 line: {
                     stroke: "#999",
-                    cursor: "crosshair"
+                    cursor: "crosshair",
+                    pointerEvents: "none"
                 },
                 box: {
                     fill: "white",
                     opacity: 0.90,
-                    stroke: "#999"
+                    stroke: "#999",
+                    pointerEvents: "none"
                 }
             },
 
@@ -137,7 +139,7 @@ export default React.createClass({
          *             fill: "steelblue",
          *             opacity: 0.5,
          *         },
-         *         highlight: {
+         *         highlighted: {
          *             fill: "red",
          *             opacity: 1.0,
          *         },
@@ -193,6 +195,12 @@ export default React.createClass({
         }
     },
 
+    handleBackgroundClick() {
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(null);
+        }
+    },
+
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
         const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
@@ -240,7 +248,8 @@ export default React.createClass({
         const textStyle = {
             fontSize: 11,
             textAnchor: "left",
-            fill: "#bdbdbd"
+            fill: "#bdbdbd",
+            pointerEvents: "none"
         };
 
         // Use the hintTimeFormat if supplied, otherwise the timeline format
@@ -328,12 +337,9 @@ export default React.createClass({
     },
 
     renderScatter() {
-        const series = this.props.series;
-        const timeScale = this.props.timeScale;
-        const yScale = this.props.yScale;
-
+        const { series, timeScale, yScale } = this.props;
         const points = [];
-        let hover;
+        let hoverOverlay;
 
         this.props.columns.forEach(column => {
             let key = 1;
@@ -361,21 +367,30 @@ export default React.createClass({
 
                 const providedStyle = this.props.style ?
                     this.props.style[column] : {};
+
                 const styleMap = _.isFunction(this.props.style) ?
                     this.props.style(event, column) :
                     merge(true, defaultStyle, providedStyle);
 
-                let style = styleMap.normal;
-                style.cursor = "crosshair";
-                if (isSelected) {
-                    style = styleMap.selected;
+                let style;
+                if (this.props.selection) {
+                    if (isSelected) {
+                        style = styleMap.selected;
+                    } else if (isHighlighted) {
+                        style = styleMap.highlighted;
+                    } else {
+                        style = styleMap.muted;
+                    }
                 } else if (isHighlighted) {
-                    style = styleMap.hover;
+                    style = styleMap.highlighted;
+                } else {
+                    style = styleMap.normal;
                 }
+                style.cursor = "crosshair";
 
                 // Hover hint
                 if (isHighlighted && this.props.hintValues) {
-                    hover = this.renderHint(t, x, y, this.props.hintValues);
+                    hoverOverlay = this.renderHint(t, x, y, this.props.hintValues);
                 }
 
                 points.push(
@@ -398,7 +413,7 @@ export default React.createClass({
         return (
             <g>
                 {points}
-                {hover}
+                {hoverOverlay}
             </g>
         );
     },
@@ -413,6 +428,7 @@ export default React.createClass({
                     x={0} y={0}
                     width={this.props.width}
                     height={this.props.height}
+                    onClick={this.handleBackgroundClick}
                     onMouseMove={this.handleHover}
                     onMouseLeave={this.handleHoverLeave} />
                 {this.renderScatter()}
