@@ -1638,7 +1638,7 @@
     ]
   },
   "src/scatterchart.jsx": {
-    "description": "The `<ScatterChart >` widget is able to display a single series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements.\n\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
+    "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom hint overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover hint for each point is also able to be styled using the hint style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `hintWidth` and `hintHeight` props you can control the size of the box, which\nis fixed.",
     "displayName": "ScatterChart",
     "methods": [
       {
@@ -1659,6 +1659,13 @@
             "type": null
           }
         ],
+        "returns": null
+      },
+      {
+        "name": "handleBackgroundClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
         "returns": null
       },
       {
@@ -1778,7 +1785,7 @@
           ]
         },
         "required": false,
-        "description": "The radius of the points in the scatter chart.\n\nIf this is a number it will be used as the radius for every point.\nIf this is a function it will be called for each event.\n\nThe function is called with the event and the column name and must return a number.\n\nFor example this function will use the radius column of the event:\n```\nconst radius = (event, column) => {\n   return event.get(\"radius\");\n}\n```",
+        "description": "The radius of the points in the scatter chart.\n\nIf this is a number it will be used as the radius for every point.\nIf this is a function it will be called for each event.\n\nThe function is called with the event and the column name and must return a number.\n\nFor example this function will use the radius column of the event:\n\n```\nconst radius = (event, column) => {\n   return event.get(\"radius\");\n}\n```",
         "defaultValue": {
           "value": "2.0",
           "computed": false
@@ -1797,9 +1804,20 @@
           ]
         },
         "required": false,
-        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` argument. Each of those keys has an object as it's\nvalue which has keys which are style properties for an SVG Circle and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.5,\n        },\n        highlight: {\n            fill: \"red\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        }\n    }\n}\n```",
+        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` argument. Each of those keys has an object as it's\nvalue which has keys which are style properties for an SVG <Circle> and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\n4 states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
         "defaultValue": {
           "value": "{}",
+          "computed": false
+        }
+      },
+      "hintStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the hint box and connecting lines",
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    }\n}",
           "computed": false
         }
       },
@@ -1844,12 +1862,6 @@
         },
         "required": false,
         "description": "The values to show in the hint box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the hint box."
-      },
-      "hintStyle": {
-        "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\"\n    }\n}",
-          "computed": false
-        }
       }
     }
   },
@@ -2174,6 +2186,12 @@
         "description": "The height of the rectangle to render into",
         "defaultValue": {
           "value": "100",
+          "computed": false
+        }
+      },
+      "pointerEvents": {
+        "defaultValue": {
+          "value": "\"none\"",
           "computed": false
         }
       },

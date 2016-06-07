@@ -18,9 +18,10 @@ import { Event } from "pondjs";
 import ValueList from "./valuelist";
 
 const defaultStyle = {
-    normal: {fill: "steelblue"},
-    highlight: {fill: "#5a98cb"},
-    selected: {fill: "yellow"},
+    normal: {fill: "steelblue", opacity: 0.8},
+    highlighted: {fill: "#5a98cb", opacity: 1.0},
+    selected: {fill: "orange", opacity: 1.0},
+    muted: {fill: "steelblue", opacity: 0.4},
     text: {fill: "#333", stroke: "none"}
 };
 
@@ -34,13 +35,16 @@ function getElementOffset(element) {
 }
 
 /**
- * The `<ScatterChart >` widget is able to display a single series
+ * The `<ScatterChart >` widget is able to display multiple columns of a series
  * scattered across a time axis.
  *
  * The ScatterChart should be used within `<ChartContainer>` etc.,
  * as this will construct the horizontal and vertical axis, and
- * manage other elements.
+ * manage other elements. As with other charts, this lets them be stacked or
+ * overlaid on top of each other.
  *
+ * A custom hint overlay lets you hover over the data and examine points. Points
+ * can be selected or highlighted.
  *
  * ```
  * <ChartContainer timeRange={series.timerange()}>
@@ -53,6 +57,23 @@ function getElementOffset(element) {
  *     </ChartRow>
  * </ChartContainer>
  * ```
+ *
+ * ### Styling
+ *
+ * A scatter chart supports per-column or per-event styling. Styles can be set for
+ * each of the four states that are possible for each event: normal, highlighted,
+ * selected or muted. To style per-column, supply an object. For per-event styling
+ * supply a function: `(event, column) => {}` The functon will return a style object.
+ * See the `style` prop in the API documentation for more information.
+ *
+ * Separately the size of the dots can be controlled with the `radius` prop. This
+ * can either be a fixed value (e.g. 2.0), or a function. If a function is supplied
+ * it will be called as `(event, column) => {}` and should return the size.
+ *
+ * The hover hint for each point is also able to be styled using the hint style.
+ * This enables you to control the drawing of the box and connecting lines. Using
+ * the `hintWidth` and `hintHeight` props you can control the size of the box, which
+ * is fixed.
  */
 export default React.createClass({
 
@@ -113,6 +134,7 @@ export default React.createClass({
          * The function is called with the event and the column name and must return a number.
          *
          * For example this function will use the radius column of the event:
+         *
          * ```
          * const radius = (event, column) => {
          *    return event.get("radius");
@@ -128,7 +150,7 @@ export default React.createClass({
          * The style of the scatter chart drawing (using SVG CSS properties).
          * This is an object with a key for each column which is being plotted,
          * per the `columns` argument. Each of those keys has an object as it's
-         * value which has keys which are style properties for an SVG Circle and
+         * value which has keys which are style properties for an SVG <Circle> and
          * the value to use.
          *
          * For example:
@@ -137,24 +159,38 @@ export default React.createClass({
          *     columnName: {
          *         normal: {
          *             fill: "steelblue",
-         *             opacity: 0.5,
+         *             opacity: 0.8,
          *         },
          *         highlighted: {
-         *             fill: "red",
+         *             fill: "#a7c4dd",
          *             opacity: 1.0,
          *         },
          *         selected: {
          *             fill: "orange",
          *             opacity: 1.0,
+         *         },
+         *         muted: {
+         *             fill: "grey",
+         *             opacity: 0.5
          *         }
          *     }
          * }
          * ```
+         *
+         * You can also supply a function, which will be called with an event
+         * and column. The function should return an object containing the
+         * 4 states (normal, highlighted, selected and muted) and the corresponding
+         * CSS properties.
          */
         style: React.PropTypes.oneOfType([
             React.PropTypes.object,
             React.PropTypes.func
         ]),
+
+        /**
+         * The style of the hint box and connecting lines
+         */
+        hintStyle: React.PropTypes.object,
 
         /**
          * The width of the hover hint box
@@ -371,6 +407,8 @@ export default React.createClass({
                 const styleMap = _.isFunction(this.props.style) ?
                     this.props.style(event, column) :
                     merge(true, defaultStyle, providedStyle);
+
+                console.log(styleMap);
 
                 let style;
                 if (this.props.selection) {

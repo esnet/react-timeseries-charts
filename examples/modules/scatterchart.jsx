@@ -13,11 +13,9 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
+import { format } from "d3-format";
 import APIDocs from "./docs";
 import Highlighter from "./highlighter";
-import color from "color";
-
-import { format } from "d3-format";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -32,9 +30,6 @@ import Resizable from "../../src/resizable";
 
 // Weather data
 import weatherJSON from "../data/weather.json";
-
-const orange = color("orange");
-const green = color("green");
 
 //
 // Read in the weather data and add some randomness and intensity for fun
@@ -153,9 +148,9 @@ export default React.createClass({
                                                     opacity: 1.0
                                                 },
                                                 selected: {
-                                                    fill: "#2db3d1",
+                                                    fill: "none",
                                                     stroke: "#2db3d1",
-                                                    strokeWidth: 5,
+                                                    strokeWidth: 3,
                                                     opacity: 1.0
                                                 },
                                                 muted: {
