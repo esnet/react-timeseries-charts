@@ -33,7 +33,8 @@ export default React.createClass({
                         <li><Link to="realtime">Realtime example</Link></li>
                         <li><Link to="channels">Cycling example</Link></li>
                         <li><Link to="ddos">DDoS example</Link></li>
-                        <li><Link to="stacked">Continents</Link></li>
+                        <li><Link to="stacked">Stacked continents</Link></li>
+                        <li><Link to="apple">Share price</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>

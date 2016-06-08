@@ -14,13 +14,19 @@ import { axisLeft, axisRight } from "d3-axis";
 
 import { format } from "d3-format";
 import { select } from "d3-selection";
+import { transition } from "d3-transition";
+import { easeSinOut } from "d3-ease";
 
 import "./yaxis.css";
 
 const MARGIN = 0;
 
 function scaleAsString(scale) {
-    return `${scale.domain().toString()}-${scale.range().toString()}`;
+    if (scale.domain && scale.range) {
+        return `${scale.domain().toString()}-${scale.range().toString()}`;
+    } else {
+        return `scale-${Math.random}`;
+    }
 }
 
 /**
@@ -102,6 +108,15 @@ export default React.createClass({
         label: React.PropTypes.string,
 
         /**
+         * The scale type: linear, power, or log.
+         */
+        type: React.PropTypes.oneOf([
+            "linear",
+            "power",
+            "log"
+        ]),
+
+        /**
          * Minium value, which combined with "max", define the scale of the axis.
          */
         min: React.PropTypes.number.isRequired,
@@ -111,18 +126,17 @@ export default React.createClass({
          */
         max: React.PropTypes.number.isRequired,
 
+        /**
+         * The transition time for moving from one scale to another
+         */
+        transition: React.PropTypes.number,
+
+        /**
+         * The width of the axis
+         */
         width: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.number
-        ]),
-
-        /**
-         * The scale type: linear, power, or exp.
-         */
-        type: React.PropTypes.oneOf([
-            "linear",
-            "power",
-            "exp"
         ]),
 
         /**
@@ -199,12 +213,11 @@ export default React.createClass({
                 .style("font-size", this.props.style.labelSize ? `${this.props.style.width}px` : "12px");
     },
 
-    updateAxis(align, scale, width, absolute, fmt) {
+    updateAxis(align, scale, width, absolute, type, fmt) {
         const yformat = format(fmt);
         let axis = align === "left" ? axisLeft : axisRight;
-
         let axisGenerator;
-        if (this.props.type === "linear" || this.props.type === "power") {
+        if (type === "linear" || type === "power") {
             if (this.props.height <= 200) {
                 axisGenerator = axis(scale)
                     .ticks(5)
@@ -225,13 +238,18 @@ export default React.createClass({
                         }
                     });
             }
-        } else if (this.props.type === "log") {
+        } else if (type === "log") {
             axisGenerator = axis(scale)
                 .ticks(10, ".2s");
         }
 
+        const t = transition()
+            .duration(this.props.transition)
+            .ease(easeSinOut);
+
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
+                .transition(t)
                 .call(axisGenerator);
     },
 
@@ -246,9 +264,11 @@ export default React.createClass({
         const width = nextProps.width;
         const absolute = nextProps.absolute;
         const format = nextProps.format;
+        const type = nextProps.type;
 
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.updateAxis(align, scale, width, absolute, format);
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+            this.props.type !== nextProps.type) {
+            this.updateAxis(align, scale, width, absolute, type, format);
         }
     },
 

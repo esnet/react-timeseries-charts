@@ -53,11 +53,13 @@ eventSource.addEvent(event);
 
 ### Visualization
 
-The first thing we need to do is turn our three event lists (the original events along with the two aggregated event streams) into TimeSeries objects which can then be passed to our charting code. Since we can construct a pond.js TimeSeries object from a list of events, this is simply a matter of pulling the list from the circle buffer and giving it to the TimeSeries constructor. For example, our 5 min averages:
+The first thing we need to do is turn our three event lists (the original events along with the two aggregated event streams) into TimeSeries objects which can then be passed to our charting code. Since we can construct a pond.js TimeSeries object from a list of events, this is simply a matter of pulling the list from the circle buffer and giving it to the TimeSeries constructor.
+
+For example, our 5 min averages:
 
 ```js
 const name = "5m-avg";
-const events = this.state.avgOut.toArray(); // from circuit buffer
+const events = this.state.avgOut.toArray(); // from circle buffer
 const avgSeries = new TimeSeries({name, events});
 ```
 

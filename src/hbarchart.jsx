@@ -85,7 +85,6 @@ class RangeBar extends React.Component {
     shouldComponentUpdate({ series, scale }) {
         const seriesChanged = !TimeSeries.is(this.props.series, series);
         const scaleChanged = scaleAsString(this.props.scale) !== scaleAsString(scale);
-        console.log("Update?", seriesChanged, scaleChanged);
         return seriesChanged || scaleChanged;
     }
 

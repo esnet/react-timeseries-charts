@@ -165,7 +165,7 @@ export default React.createClass({
         if (this.props.breakLine) {
             // Remove nulls and NaNs from the line by generating a break in the line
             let currentPoints = null;
-            for(let d of this.props.series.collection().events()) {
+            for (let d of this.props.series.collection().events()) {
                 const timestamp = d.timestamp();
                 const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
@@ -220,7 +220,7 @@ export default React.createClass({
         const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         const yAxisScaleChanged =
-            (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
+            (this.props.yScale != yScale);
         const isPanningChanged =
             (this.props.isPanning !== isPanning);
         const interpolationChanged =

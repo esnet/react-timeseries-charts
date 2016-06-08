@@ -257,7 +257,7 @@ export default React.createClass({
         const timeScaleChanged =
             (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
         const yAxisScaleChanged =
-            (scaleAsString(this.props.yScale) !== scaleAsString(yScale));
+            (this.props.yScale != yScale);
         const interpolateChanged =
             (this.props.interpolate !== interpolate);
         const isPanningChanged =
