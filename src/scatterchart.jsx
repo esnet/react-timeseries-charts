@@ -408,8 +408,6 @@ export default React.createClass({
                     this.props.style(event, column) :
                     merge(true, defaultStyle, providedStyle);
 
-                console.log(styleMap);
-
                 let style;
                 if (this.props.selection) {
                     if (isSelected) {

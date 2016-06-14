@@ -37,8 +37,21 @@ const series = new TimeSeries({
 
 const style = {
     value: {
-        stroke: "#a02c2c"
+        stroke: "#a02c2c",
+        opacity: 0.2
     }
+};
+
+const baselineStyle = {
+    stroke: "steelblue",
+    opacity: 1.0,
+    width: 1
+};
+
+const baselineStyleLite = {
+    stroke: "steelblue",
+    opacity: 0.5,
+    width: 1
 };
 
 export default React.createClass({
@@ -65,7 +78,7 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>Baseline Example</h3>
+                        <h3>Baselines</h3>
                     </div>
                 </div>
                 <div className="row">
@@ -73,12 +86,18 @@ export default React.createClass({
                         <Resizable>
                             <ChartContainer timeRange={series.range()} >
                                 <ChartRow height="150">
-                                    <YAxis id="price" label="Price ($)" min={series.min()} max={series.max()} width="60" format="$,.2f"/>
+                                    <YAxis
+                                        id="price"
+                                        label="Price ($)"
+                                        min={series.min()} max={series.max()}
+                                        width="60" format="$,.2f"/>
                                     <Charts>
                                         <LineChart axis="price" series={series} style={style}/>
-                                        <Baseline axis="price" value={series.avg()} label="Avg" position="right"/>
-                                        <Baseline axis="price" value={series.avg() - series.stdev()}/>
-                                        <Baseline axis="price" value={series.avg() + series.stdev()}/>
+                                        <Baseline axis="price" style={baselineStyleLite} value={series.max()} label="Max" position="right"/>
+                                        <Baseline axis="price" style={baselineStyleLite} value={series.min()} label="Min" position="right"/>
+                                        <Baseline axis="price" style={baselineStyleLite} value={series.avg() - series.stdev()}/>
+                                        <Baseline axis="price" style={baselineStyleLite} value={series.avg() + series.stdev()}/>
+                                        <Baseline axis="price" style={baselineStyle} value={series.avg()} label="Avg"/>
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

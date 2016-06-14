@@ -47,7 +47,6 @@ export default React.createClass({
         return {
             width: 800,
             padding: 0,
-            transition: 0,
             enablePanZoom: false
         };
     },
@@ -87,12 +86,6 @@ export default React.createClass({
          * of a fixed set of data.
          */
         maxTime: React.PropTypes.instanceOf(Date),
-
-        /**
-         * The transition time to move scales. Typically you might set this to
-         * 300 (ms) to allow the axes to animate to the new scale.
-         */
-        transition: React.PropTypes.number,
 
         /**
          * Boolean to turn on interactive pan and zoom behavior for the chart.

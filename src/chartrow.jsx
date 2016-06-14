@@ -10,14 +10,14 @@
 
 import React from "react";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
-import { interpolate } from "d3-interpolate";
-
+import { easeSinOut } from "d3-ease";
 import _ from "underscore";
 
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
 import Tracker from "./tracker";
+import { ScaleInterpolator } from "./interpolators";
 
 const AXIS_MARGIN = 5;
 
@@ -80,14 +80,40 @@ export default React.createClass({
         // each render.
         const clipId = _.uniqueId("clip_");
         const clipPathURL = `url(#${clipId})`;
-
-        const yAxisScaleMap = this.getYAxisScaleMap(this.props);
-
-        return {yAxisScaleMap, clipId, clipPathURL};
+        return {clipId, clipPathURL};
     },
 
     componentWillMount() {
-        this.scaleInterpolator = {};
+        // Our chart scales are driven off a mapping between id of the axis
+        // and the scale that axis represents. Depending on the transition time,
+        // this scale will animate over time. The controller of this animation is
+        // the ScaleInterpolator. We create new Scale Interpolators here for each
+        // axis id.
+        this.scaleMap = {};
+
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
+        const rangeTop = AXIS_MARGIN;
+        const rangeBottom = innerHeight - AXIS_MARGIN;
+        React.Children.forEach(this.props.children, child => {
+            if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
+                const initialScale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                    const yAxisScalerMap = this.state.yAxisScalerMap;
+                    yAxisScalerMap[id] = s;
+                    this.setState(yAxisScalerMap);
+                });
+                const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
+                this.scaleMap[id].setScale(cacheKey, initialScale);
+            }
+        });
+
+        const scalerMap = {};
+        _.forEach(this.scaleMap, (interpolator, id) => {
+            scalerMap[id] = interpolator.scaler();
+        });
+
+        this.setState({yAxisScalerMap: scalerMap});
     },
 
     createScale(yaxis, type, min, max, y0, y1) {
@@ -116,85 +142,42 @@ export default React.createClass({
         return scale;
     },
 
-    updateAnimation(id, pos, scale) {
-        const stepSize = 0.1;
-        const duration = this.props.transition || 0;
-        const p = Math.min(pos, 1.0);
-        if (p <= 1.0) {
-            const s = this.scaleInterpolator[id](p);
-
-            // New scale
-            const newScale = scale.copy();
-            newScale.domain(s);
-
-            const yAxisScaleMap = this.state.yAxisScaleMap;
-            yAxisScaleMap[id] = newScale;
-            this.setState({yAxisScaleMap});
-
-            if (p < 1.0) {
-                setTimeout(() =>
-                    this.updateAnimation(id, p + stepSize, newScale),
-                    duration * stepSize
-                );
-            }
-        }
-    },
-
-    getYAxisScaleMap(props) {
-        const yAxisScaleMap = {};
-
-        // Dimensions
-        const innerHeight = +props.height - AXIS_MARGIN * 2;
-        const rangeTop = AXIS_MARGIN;
-        const rangeBottom = innerHeight - AXIS_MARGIN;
-
-        React.Children.forEach(props.children, child => {
-            if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
-                const { id, max, min, type = "linear" } = child.props;
-                yAxisScaleMap[id] =
-                    this.createScale(child, type, min, max, rangeBottom, rangeTop);
-            }
-        });
-
-        return yAxisScaleMap;
-    },
-
     /**
      * When we get changes to the row's props we update our map of
      * axis scales.
      */
     componentWillReceiveProps(nextProps) {
-        const oldYAxisScaleMap = this.state.yAxisScaleMap;
-
         // Dimensions
         const innerHeight = +nextProps.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
 
+        // Loop over all the children who are YAxis. If this is our first time here, we'll
+        // populate the scaleMap with new ScaleInterpolators. If we already have a ScaleInterpolator
+        // then we can set a new scale target on it.
         React.Children.forEach(nextProps.children, child => {
             if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
-                const { id, max, min, type = "linear" } = child.props;
-                if (_.has(oldYAxisScaleMap, id)) {
-                    if (oldYAxisScaleMap[id].domain()[0] !== max &&
-                        oldYAxisScaleMap[id].domain()[1] !== max) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
 
-                        const targetScale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
-
-                        this.scaleInterpolator[id] =
-                            interpolate(oldYAxisScaleMap[id].domain(), targetScale.domain());
-                        
-                        let pos = 1.0;
-                        if (this.props.transition && this.props.transition > 0) {
-                            pos = 0.0;
-                        }
-
-                        setTimeout(() => this.updateAnimation(id, pos, oldYAxisScaleMap[id]), 0);
-                    }
-                } else {
-                    oldYAxisScaleMap[id] = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                const scale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                if (!_.has(this.scaleMap, id)) {
+                    this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                        const yAxisScalerMap = this.state.yAxisScalerMap;
+                        yAxisScalerMap[id] = s;
+                        this.setState(yAxisScalerMap);
+                    });
                 }
+                const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
+                this.scaleMap[id].setScale(cacheKey, scale);
             }
         });
+
+        const scalerMap = {};
+        _.forEach(this.scaleMap, (interpolator, id) => {
+            scalerMap[id] = interpolator.scaler();
+        });
+
+        this.setState({yAxisScalerMap: scalerMap});
     },
 
     render() {
@@ -290,11 +273,8 @@ export default React.createClass({
                     width: colWidth,
                     height: innerHeight,
                     align: "left",
-                    transition: this.props.transition
+                    scale: this.scaleMap[id].latestScale()
                 };
-                if (_.has(this.state.yAxisScaleMap, id)) {
-                    props.scale = this.state.yAxisScaleMap[id];
-                }
 
                 // Cloned left axis
                 axis = React.cloneElement(yAxisMap[id], props);
@@ -339,11 +319,8 @@ export default React.createClass({
                     width: colWidth,
                     height: innerHeight,
                     align: "right",
-                    transition: this.props.transition
+                    scale: this.scaleMap[id].latestScale()
                 };
-                if (_.has(this.state.yAxisScaleMap, id)) {
-                    props.scale = this.state.yAxisScaleMap[id];
-                }
 
                 // Cloned right axis
                 axis = React.cloneElement(yAxisMap[id], props);
@@ -377,7 +354,7 @@ export default React.createClass({
         //
         // Push each chart onto the chartList, transforming each to the right
         // of the left axis slots and specifying its width. Each chart is passed
-        // its time and y-scale. The y-scale is looked up in yAxisScaleMap, whose
+        // its time and y-scale. The y-scale is looked up in scaleMap, whose
         // current value is stored in the component state.
         //
 
@@ -390,6 +367,7 @@ export default React.createClass({
             if (child.type === Charts) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
+
                     // Additional props for charts
                     const chartProps = {
                         key: chart.props.key ? chart.props.key : `chart-${keyCount}`,
@@ -398,8 +376,8 @@ export default React.createClass({
                         clipPathURL: this.state.clipPathURL,
                         timeScale: this.props.timeScale,
                         timeFormat: this.props.timeFormat,
-                        yScale: this.state.yAxisScaleMap[chart.props.axis],
-                        transition: this.props.transition
+                        yScale: this.state.yAxisScalerMap[chart.props.axis],
+                        transition: this.scaleMap[chart.props.axis].transition()
                     };
 
                     chartList.push(
@@ -427,8 +405,7 @@ export default React.createClass({
                     width: chartWidth,
                     height: innerHeight,
                     clipPathURL: this.state.clipPathURL,
-                    timeScale: this.props.timeScale,
-                    yScale: this.state.yAxisScaleMap[child.props.axis]
+                    timeScale: this.props.timeScale
                 };
                 brushList.push(React.cloneElement(child, brushProps));
             }

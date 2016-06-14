@@ -171,7 +171,7 @@ export default React.createClass({
 
         const baseLabelStyle = {
             paddingRight: 15,
-            cursor: "pointer"
+            cursor: this.props.onChange ? "pointer" : "hand"
         };
 
         const baseValueStyle = {
@@ -181,7 +181,7 @@ export default React.createClass({
         };
 
         const items = this.props.categories.map(category => {
-            const categoryStyle = category.style || {};
+            const categoryStyle = merge(true, {}, category.style);
 
             const categoryLabelStyle = category.labelStyle || {};
             const categoryValueStyle = category.valueStyle || {};

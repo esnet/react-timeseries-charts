@@ -195,15 +195,32 @@ export default React.createClass({
             );
         }
         return (
-            <ChartContainer timeRange={requestsSeries.range()} transition={200}>
-                <ChartRow height="300" debug={false}>
-                    <YAxis id="axis1" label="Requests" style={{labelColor: styles.requests.stroke}}
-                           labelOffset={-10} min={0} max={max} format=",.0f" width="60" type="linear" />
+            <ChartContainer timeRange={requestsSeries.range()}>
+                <ChartRow height="300">
+                    <YAxis
+                        id="axis1"
+                        label="Requests"
+                        transition={300}
+                        style={{labelColor: styles.requests.stroke}}
+                        labelOffset={-10}
+                        min={0} max={max}
+                        format=",.0f"
+                        width="60"
+                        type="linear" />
                     <Charts>
                         {charts}
                     </Charts>
-                    <YAxis id="axis2" label="Connections" style={{labelColor: styles.connections.stroke}}
-                           labelOffset={12} min={0} format=",.0f" max={max} width="80" type="linear"/>
+                    <YAxis
+                        id="axis2"
+                        label="Connections"
+                        transition={300}
+                        style={{labelColor: styles.connections.stroke}}
+                        labelOffset={12}
+                        min={0}
+                        format=",.0f"
+                        max={max}
+                        width="80"
+                        type="linear" />
                 </ChartRow>
             </ChartContainer>
         );
