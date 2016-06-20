@@ -13,9 +13,9 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
+import { format } from "d3-format";
 import APIDocs from "./docs";
 import Highlighter from "./highlighter";
-import { format } from "d3-format";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -135,19 +135,29 @@ export default React.createClass({
                                             columns={["station1", "station2"]}
                                             style={(event, column) => ({
                                                 normal: {
-                                                    fill: column === "station1" ? "green" : "orange",
-                                                    opacity: 0.7
+                                                    fill: column === "station1" ?
+                                                        "green" :
+                                                        "orange",
+                                                    opacity: 0.8
                                                 },
-                                                hover: {
-                                                    fill: column === "station1" ? "green" : "orange",
-                                                    stroke: column === "station1" ? "#2db3d1" : "#2db3d1",
+                                                highlighted: {
+                                                    fill: column === "station1" ?
+                                                        "green" :
+                                                        "orange",
+                                                    stroke: "none",
                                                     opacity: 1.0
                                                 },
                                                 selected: {
-                                                    fill: "#2db3d1",
+                                                    fill: "none",
                                                     stroke: "#2db3d1",
                                                     strokeWidth: 3,
                                                     opacity: 1.0
+                                                },
+                                                muted: {
+                                                    stroke: "none",
+                                                    opacity: 0.4,
+                                                    fill: column === "station1" ?
+                                                        "green" : "orange"
                                                 }
                                             })}
                                             hintValues={hintValues}

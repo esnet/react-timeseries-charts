@@ -13,6 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
+import { formatPrefix } from "d3-format";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
@@ -186,10 +187,10 @@ _.each(monthlyJSON, (router) => {
 });
 
 function formatter(value) {
-    const prefix = d3.formatPrefix(value);
-    return `${prefix.scale(value).toFixed()} ${prefix.symbol}B`;
+    return formatPrefix(",.0B", value);
 }
 
+/*
 const monthlyAcceptedSeries = new TimeSeries({
     name: "Monthly Accepted",
     columns: ["index", "value"],
@@ -201,6 +202,7 @@ const monthlyDeliveredSeries = new TimeSeries({
     columns: ["index", "value"],
     points: routerData[routerKey].delivered
 });
+*/
 
 export default React.createClass({
 

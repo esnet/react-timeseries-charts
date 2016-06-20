@@ -34,6 +34,7 @@ import Table from "./table";
 import Channels from "./channels";
 import Horizontal from "./horizontal";
 import Realtime from "./realtime";
+import Apple from "./apple";
 
 import createHistory from "history/lib/createHashHistory";
 import useScroll from "scroll-behavior/lib/useStandardScroll";
@@ -62,6 +63,7 @@ render((
             <Route path="channels" component={Channels} />
             <Route path="horizontal" component={Horizontal} />
             <Route path="realtime" component={Realtime} />
+            <Route path="apple" component={Apple} />
         </Route>
     </Router>
 ), document.getElementById("content"));

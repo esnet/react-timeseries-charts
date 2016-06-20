@@ -28,6 +28,7 @@ export default React.createClass({
             align: "center",
             width: 100,
             height: 100,
+            pointerEvents: "none",
             style: {fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8}
         };
     },
@@ -64,12 +65,14 @@ export default React.createClass({
         const textStyle = {
             fontSize: 11,
             textAnchor: "left",
-            fill: "#b0b0b0"
+            fill: "#b0b0b0",
+            pointerEvents: "none"
         };
         const textStyleCentered = {
             fontSize: 11,
             textAnchor: "middle",
-            fill: "#bdbdbd"
+            fill: "#bdbdbd",
+            pointerEvents: "none"
         };
 
         const values = this.props.values.map((item, i) => {

@@ -17,7 +17,7 @@
   },
   "scripts": {
     "docs": "react-docgen src/ -x jsx -o examples/docs.json --pretty",
-    "lint": "eslint src/*.jsx",
+    "lint": "eslint src/*.jsx src/*.js",
     "test": "npm run lint",
     "test-only": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run docs && rm -rf lib/* && cp src/*.css lib/ && babel src --optional runtime --stage 0 --out-dir lib",
@@ -62,7 +62,9 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "bundle-loader": "^0.5.4",
+    "color": "^0.11.1",
     "css-loader": "^0.23.1",
+    "dsv-loader": "^1.0.3",
     "eslint": "^1.10.0",
     "eslint-config-esnet": "^0.1.0",
     "eslint-plugin-babel": "^3.1.0",
