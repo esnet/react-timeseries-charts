@@ -292,11 +292,14 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} format="day"
-                                            enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
-                                            maxTime={new Date(1414827330868)}
-                                            minTime={new Date(1412143472795)}
-                                            minDuration={1000 * 60 * 60 * 24 * 5} >
+                            <ChartContainer
+                                timeRange={this.state.timerange}
+                                format="day"
+                                enablePanZoom={true}
+                                onTimeRangeChanged={this.handleTimeRangeChange}
+                                maxTime={new Date(1414827330868)}
+                                minTime={new Date(1412143472795)}
+                                minDuration={1000 * 60 * 60 * 24 * 5} >
                                 <ChartRow height="150">
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>

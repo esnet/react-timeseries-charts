@@ -27,15 +27,15 @@ import Resizable from "../../src/resizable";
 
 const outageEvents = [
     {
-        startTime: "2015-04-22T03:30:00Z",
-        endTime: "2015-04-22T13:00:00Z",
-        description: "At 13:33 pacific circuit 06519 went down.",
-        title: "STAR-CR5 < 100 ge 06519 > ANL  - Outage",
+        startTime: "2015-03-08T09:00:00Z",
+        endTime: "2015-03-22T14:00:00Z",
+        title: "ANL Scheduled Maintenance",
+        description: "ANL will be switching border routers...",
         completed: true,
         external_ticket: "",
-        esnet_ticket: "ESNET-20150421-013",
-        organization: "Internet2 / Level 3",
-        type: "Unplanned"
+        esnet_ticket: "ESNET-20150302-002",
+        organization: "ANL",
+        type: "Planned"
     }, {
         startTime: "2015-04-01T03:30:00Z",
         endTime: "2015-04-02T16:50:00Z",
@@ -47,15 +47,15 @@ const outageEvents = [
         organization: "Internet2 / Level 3",
         type: "Unplanned"
     }, {
-        startTime: "2015-03-08T09:00:00Z",
-        endTime: "2015-03-22T14:00:00Z",
-        title: "ANL Scheduled Maintenance",
-        description: "ANL will be switching border routers...",
+        startTime: "2015-04-22T03:30:00Z",
+        endTime: "2015-04-22T13:00:00Z",
+        description: "At 13:33 pacific circuit 06519 went down.",
+        title: "STAR-CR5 < 100 ge 06519 > ANL  - Outage",
         completed: true,
         external_ticket: "",
-        esnet_ticket: "ESNET-20150302-002",
-        organization: "ANL",
-        type: "Planned"
+        esnet_ticket: "ESNET-20150421-013",
+        organization: "Internet2 / Level 3",
+        type: "Unplanned"
     }
 ];
 

@@ -14,7 +14,7 @@ import React from "react";
 import moment from "moment";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { Collection, TimeSeries, Event, IndexedEvent, TimeRange } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../src/chartcontainer";
@@ -22,50 +22,100 @@ import ChartRow from "../../src/chartrow";
 import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import LineChart from "../../src/linechart";
+import BarChart from "../../src/barchart";
 import Resizable from "../../src/resizable";
 
-const data = require("dsv?delimiter=\t!../data/apple_share_price.tsv");
+const aapl = require("dsv?delimiter=,!../data/aapl_historical.csv");
 
-const name = "AAPL";
-const columns = ["time", "close"];
-const points = data.map(item => {
+//
+// Price: High, low, open, close
+//
+
+const name = "AAPL-price";
+const columns = ["time", "open", "close", "low", "high"];
+const events = aapl.map(item => {
     const timestamp = new moment(new Date(item.date));
-    const close = item.close;
-    return [timestamp.toDate().getTime(), +close];
+    const { open, close, low, high } = item;
+    return new Event(timestamp.toDate(), {open: +open, close: +close, low: +low, high: +high});
 });
+const collection = new Collection(events);
+const sortedCollection = collection.sortByTime();
+const series = new TimeSeries({name, columns, collection: sortedCollection});
 
-const series = new TimeSeries({name, columns, points});
+//
+// Volume
+//
+
+const volumeEvents = aapl.map(item => {
+    const index = item.date.replace(/\//g, "-");
+    const { volume } = item;
+    return new IndexedEvent(index, {volume: +volume});
+});
+const volumeCollection = new Collection(volumeEvents);
+const sortedVolumeCollection = volumeCollection.sortByTime();
+
+const seriesVolume = new TimeSeries({
+    name: "AAPL-volume",
+    utc: false,
+    collection: sortedVolumeCollection
+});
 
 export default React.createClass({
 
     getInitialState() {
         return {
-            mode: "log"
+            mode: "log",
+            timerange: new TimeRange([1236985288649,1326654398343])
         };
     },
 
+    handleTimeRangeChange(timerange) {
+        this.setState({timerange});
+    },
+
     renderChart() {
+        const { timerange } = this.state;
+        const croppedSeries = series.crop(timerange);
+        const croppedVolumeSeries = seriesVolume.crop(timerange);
         return (
-            <ChartContainer timeRange={series.range()}>
+            <ChartContainer
+                timeRange={timerange}
+                enablePanZoom={true}
+                onTimeRangeChanged={this.handleTimeRangeChange} >
                 <ChartRow height="300">
-                    <YAxis
-                        id="y"
-                        transition={200}
-                        label="Price ($)"
-                        labelOffset={-10}
-                        min={series.min("close")}
-                        max={series.max("close")}
-                        format=",.0f"
-                        width="60"
-                        type={this.state.mode} />
                     <Charts>
                         <LineChart
                             axis="y"
                             style={{close: {stroke: "steelblue"}}}
                             columns={["close"]}
-                            series={series}
+                            series={croppedSeries}
                             interpolation="curveBasis" />
                     </Charts>
+                    <YAxis
+                        id="y"
+                        transition={100}
+                        label="Price ($)"
+                        min={croppedSeries.min("close")}
+                        max={croppedSeries.max("close")}
+                        format=",.0f"
+                        width="60"
+                        type={this.state.mode} />
+                </ChartRow>
+                <ChartRow height="200">
+                    <Charts>
+                        <BarChart
+                            axis="y"
+                            style={{close: {stroke: "steelblue"}}}
+                            columns={["volume"]}
+                            series={croppedVolumeSeries}  />
+                    </Charts>
+                    <YAxis
+                        id="y"
+                        transition={100}
+                        label="Volume"
+                        min={croppedVolumeSeries.min("volume")}
+                        max={croppedVolumeSeries.max("volume")}
+                        width="60" />
                 </ChartRow>
             </ChartContainer>
         );
