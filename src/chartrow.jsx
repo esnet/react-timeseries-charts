@@ -9,13 +9,17 @@
  */
 
 import React from "react";
-import d3 from "d3";
+import { scaleLinear, scaleLog, scalePow } from "d3-scale";
+import { easeSinOut } from "d3-ease";
 import _ from "underscore";
 
 import YAxis from "./yaxis";
 import Charts from "./charts";
 import Brush from "./brush";
-import EventHandler from "./eventhandler";
+import Tracker from "./tracker";
+import { ScaleInterpolator } from "./interpolators";
+
+const AXIS_MARGIN = 5;
 
 /**
  * A ChartRow is a container for a set of Y axes and multiple charts
@@ -53,6 +57,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
+            trackerTimeFormat: "%b %d %Y %X",
             enablePanZoom: false,
             height: 100
         };
@@ -75,32 +80,40 @@ export default React.createClass({
         // each render.
         const clipId = _.uniqueId("clip_");
         const clipPathURL = `url(#${clipId})`;
-
         return {clipId, clipPathURL};
     },
 
-    handleMouseMove(t) {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(t);
-        }
-    },
+    componentWillMount() {
+        // Our chart scales are driven off a mapping between id of the axis
+        // and the scale that axis represents. Depending on the transition time,
+        // this scale will animate over time. The controller of this animation is
+        // the ScaleInterpolator. We create new Scale Interpolators here for each
+        // axis id.
+        this.scaleMap = {};
 
-    handleMouseOut() {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(null);
-        }
-    },
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
+        const rangeTop = AXIS_MARGIN;
+        const rangeBottom = innerHeight - AXIS_MARGIN;
+        React.Children.forEach(this.props.children, child => {
+            if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
+                const initialScale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                    const yAxisScalerMap = this.state.yAxisScalerMap;
+                    yAxisScalerMap[id] = s;
+                    this.setState(yAxisScalerMap);
+                });
+                const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
+                this.scaleMap[id].setScale(cacheKey, initialScale);
+            }
+        });
 
-    handleZoom(timerange) {
-        if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(timerange);
-        }
-    },
+        const scalerMap = {};
+        _.forEach(this.scaleMap, (interpolator, id) => {
+            scalerMap[id] = interpolator.scaler();
+        });
 
-    handleResize(width, height) {
-        if (this.props.onChartResize) {
-            this.props.onChartResize(width, height);
-        }
+        this.setState({yAxisScalerMap: scalerMap});
     },
 
     createScale(yaxis, type, min, max, y0, y1) {
@@ -109,19 +122,19 @@ export default React.createClass({
             _.isUndefined(max) || max !== max) {
             scale = null;
         } else if (type === "linear") {
-            scale = d3.scale.linear()
+            scale = scaleLinear()
                 .domain([min, max])
                 .range([y0, y1])
                 .nice();
         } else if (type === "log") {
             const base = yaxis.props.logBase || 10;
-            scale = d3.scale.log()
+            scale = scaleLog()
                 .base(base)
                 .domain([min, max])
                 .range([y0, y1]);
         } else if (type === "power") {
             const power = yaxis.props.powerExponent || 2;
-            scale = d3.scale.pow()
+            scale = scalePow()
                 .exponent(power)
                 .domain([min, max])
                 .range([y0, y1]);
@@ -129,18 +142,50 @@ export default React.createClass({
         return scale;
     },
 
-    render() {
-        const axes = []; // Contains all the yAxis elements used in the render
-        const chartList = []; // Contains all the chart elements used
-                            // in the render
-
-        // Extra padding above and below the axis since numbers need to be
-        // displayed there
-        const AXIS_MARGIN = 5;
-
-        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
+    /**
+     * When we get changes to the row's props we update our map of
+     * axis scales.
+     */
+    componentWillReceiveProps(nextProps) {
+        // Dimensions
+        const innerHeight = +nextProps.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
+
+        // Loop over all the children who are YAxis. If this is our first time here, we'll
+        // populate the scaleMap with new ScaleInterpolators. If we already have a ScaleInterpolator
+        // then we can set a new scale target on it.
+        React.Children.forEach(nextProps.children, child => {
+            if (child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"))) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
+
+                const scale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+                if (!_.has(this.scaleMap, id)) {
+                    this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                        const yAxisScalerMap = this.state.yAxisScalerMap;
+                        yAxisScalerMap[id] = s;
+                        this.setState(yAxisScalerMap);
+                    });
+                }
+                const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
+                this.scaleMap[id].setScale(cacheKey, scale);
+            }
+        });
+
+        const scalerMap = {};
+        _.forEach(this.scaleMap, (interpolator, id) => {
+            scalerMap[id] = interpolator.scaler();
+        });
+
+        this.setState({yAxisScalerMap: scalerMap});
+    },
+
+    render() {
+        const axes = [];      // Contains all the yAxis elements used in the render
+        const chartList = []; // Contains all the Chart elements used in the render
+
+        // Dimensions
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
 
         //
         // Build a map of elements that occupy left or right slots next to the
@@ -151,28 +196,17 @@ export default React.createClass({
         // reference by a chart. That scale will also be available to the axis
         // when it renders.
         //
-        // For this row, we will need to know how many axis slots we are using
-        // and the scales associated with them. We store the scales in a map
-        // from attr name to the d3 scale.
+        // For this row, we will need to know how many axis slots we are using.
         //
 
         const yAxisMap = {};          // Maps axis id -> axis element
-        const yAxisScaleMap = {};     // Maps axis id -> axis scale
         const leftAxisList = [];      // Ordered list of left axes ids
         const rightAxisList = [];     // Ordered list of right axes ids
-        let align = "left";
 
+        let alignLeft = true;
         React.Children.forEach(this.props.children, child => {
-
-            //
-            // TODO:
-            // This code currently assumes each child (except in Charts) has an
-            // id, but this is just because leftAxisList and rightAxisList
-            // below pushes an id. Perhaps it could put the element itself?
-            //
-
             if (child.type === Charts) {
-                align = "right";
+                alignLeft = false;
             } else {
                 const id = child.props.id;
                 // Check to see if we think this 'axis' is actually an axis
@@ -180,22 +214,16 @@ export default React.createClass({
                     (_.has(child.props, "min") &&
                     _.has(child.props, "max"))) {
                     const yaxis = child;
-                    const {max, min} = yaxis.props;
-                    const type = yaxis.props.type || "linear";
 
                     if (yaxis.props.id) {
                         // Relate id to the axis
                         yAxisMap[yaxis.props.id] = yaxis;
                     }
 
-                    // Relate id to a d3 scale generated from the max, min
-                    // and scaleType props
-                    yAxisScaleMap[id] = this.createScale(yaxis, type, min, max,
-                                                         rangeBottom, rangeTop);
                     // Columns counts
-                    if (align === "left") {
+                    if (alignLeft) {
                         leftAxisList.push(id);
-                    } else if (align === "right") {
+                    } else {
                         rightAxisList.push(id);
                     }
                 }
@@ -241,13 +269,12 @@ export default React.createClass({
                 transform = `translate(${posx},0)`;
 
                 // Additional props for left aligned axes
-                props = {width: colWidth,
-                         height: innerHeight,
-                         align: "left",
-                         transition: this.props.transition};
-                if (_.has(yAxisScaleMap, id)) {
-                    props.scale = yAxisScaleMap[id];
-                }
+                props = {
+                    width: colWidth,
+                    height: innerHeight,
+                    align: "left",
+                    scale: this.scaleMap[id].latestScale()
+                };
 
                 // Cloned left axis
                 axis = React.cloneElement(yAxisMap[id], props);
@@ -255,10 +282,12 @@ export default React.createClass({
                 // Debug rect
                 if (this.props.debug) {
                     debug = (
-                        <rect className="yaxis-debug"
-                              x="0" y="0"
-                              width={colWidth}
-                              height={innerHeight} />
+                        <rect
+                            className="yaxis-debug"
+                            x="0"
+                            y="0"
+                            width={colWidth}
+                            height={innerHeight} />
                     );
                 } else {
                     debug = null;
@@ -286,13 +315,12 @@ export default React.createClass({
                 transform = `translate(${posx},0)`;
 
                 // Additional props for right aligned axes
-                props = {width: colWidth,
-                         height: innerHeight,
-                         align: "right",
-                         transition: this.props.transition};
-                if (_.has(yAxisScaleMap, id)) {
-                    props.scale = yAxisScaleMap[id];
-                }
+                props = {
+                    width: colWidth,
+                    height: innerHeight,
+                    align: "right",
+                    scale: this.scaleMap[id].latestScale()
+                };
 
                 // Cloned right axis
                 axis = React.cloneElement(yAxisMap[id], props);
@@ -300,10 +328,12 @@ export default React.createClass({
                 // Debug rect
                 if (this.props.debug) {
                     debug = (
-                        <rect className="yaxis-debug"
-                              x="0" y="0"
-                              width={colWidth}
-                              height={innerHeight} />
+                        <rect
+                            className="yaxis-debug"
+                            x="0"
+                            y="0"
+                            width={colWidth}
+                            height={innerHeight} />
                     );
                 } else {
                     debug = null;
@@ -324,7 +354,8 @@ export default React.createClass({
         //
         // Push each chart onto the chartList, transforming each to the right
         // of the left axis slots and specifying its width. Each chart is passed
-        // its time and y scale. The yscale is looked up in yAxisScaleMap.
+        // its time and y-scale. The y-scale is looked up in scaleMap, whose
+        // current value is stored in the component state.
         //
 
         const chartWidth = this.props.width - leftWidth - rightWidth;
@@ -336,16 +367,17 @@ export default React.createClass({
             if (child.type === Charts) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
+
                     // Additional props for charts
                     const chartProps = {
-                        key: chart.props.key ?
-                                chart.props.key : `chart-${keyCount}`,
+                        key: chart.props.key ? chart.props.key : `chart-${keyCount}`,
                         width: chartWidth,
                         height: innerHeight,
                         clipPathURL: this.state.clipPathURL,
                         timeScale: this.props.timeScale,
-                        yScale: yAxisScaleMap[chart.props.axis],
-                        transition: this.props.transition
+                        timeFormat: this.props.timeFormat,
+                        yScale: this.state.yAxisScalerMap[chart.props.axis],
+                        transition: this.scaleMap[chart.props.axis].transition()
                     };
 
                     chartList.push(
@@ -372,8 +404,8 @@ export default React.createClass({
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
-                    timeScale: this.props.timeScale,
-                    yScale: yAxisScaleMap[child.props.axis]
+                    clipPathURL: this.state.clipPathURL,
+                    timeScale: this.props.timeScale
                 };
                 brushList.push(React.cloneElement(child, brushProps));
             }
@@ -381,35 +413,13 @@ export default React.createClass({
 
         });
 
-        // Charts with or without pan and zoom event handling
-        let charts;
-        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
-            charts = (
-                <g transform={chartTransform} key="event-rect-group">
-                    <EventHandler key="event-handler"
-                                  width={chartWidth} height={innerHeight}
-                                  scale={this.props.timeScale}
-                                  enablePanZoom={this.props.enablePanZoom}
-                                  minDuration={this.props.minDuration}
-                                  minTime={this.props.minTime}
-                                  maxTime={this.props.maxTime}
-                                  onMouseOut={this.handleMouseOut}
-                                  onMouseMove={this.handleMouseMove}
-                                  onZoom={this.handleZoom}
-                                  onResize={this.handleResize}>
-                        {chartList}
-                    </EventHandler>
+        const charts = (
+            <g transform={chartTransform} key="event-rect-group">
+                <g key="charts">
+                    {chartList}
                 </g>
-            );
-        } else {
-            charts = (
-                <g transform={chartTransform} key="event-rect-group">
-                    <g key="charts">
-                        {chartList}
-                    </g>
-                </g>
-            );
-        }
+            </g>
+        );
 
         // Debug outlining
         let chartDebug = null;
@@ -437,6 +447,29 @@ export default React.createClass({
             </g>
         );
 
+        // Row tracker
+        let tracker;
+        if (this.props.trackerPosition) {
+            const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
+            tracker = (
+                <g
+                    key="tracker-group"
+                    style={{pointerEvents: "none"}}
+                    transform={`translate(${leftWidth},0)`}>
+                    <Tracker
+                        showLine={false}
+                        showTime={this.props.trackerShowTime}
+                        timeScale={this.props.timeScale}
+                        position={this.props.trackerPosition}
+                        timeFormat={timeFormat}
+                        width={chartWidth}
+                        trackerHintWidth={this.props.trackerHintWidth}
+                        trackerHintHeight={this.props.trackerHintHeight}
+                        trackerValues={this.props.trackerValues} />
+                </g>
+            );
+        }
+
         return (
             <g>
                 {clipper}
@@ -444,6 +477,7 @@ export default React.createClass({
                 {charts}
                 {chartDebug}
                 {brushes}
+                {tracker}
             </g>
         );
     }

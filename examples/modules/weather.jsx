@@ -114,13 +114,13 @@ _.each(weatherJSON, readings => {
 
 const tempSeries = new TimeSeries({
     name: "Temperature",
-    columns: ["time", "value"],
+    columns: ["time", "temp"],
     points: temperaturePoints});
-const pressureSeries = new TimeSeries({name: "Pressure", columns: ["time", "value"], points: pressurePoints});
-const windSeries = new TimeSeries({name: "Wind", columns: ["time", "value"], points: windPoints});
-const gustSeries = new TimeSeries({name: "Gust", columns: ["time", "value", "radius"], points: gustPoints});
+const pressureSeries = new TimeSeries({name: "Pressure", columns: ["time", "pressure"], points: pressurePoints});
+const windSeries = new TimeSeries({name: "Wind", columns: ["time", "wind"], points: windPoints});
+const gustSeries = new TimeSeries({name: "Gust", columns: ["time", "gust", "radius"], points: gustPoints});
 const rainSeries = new TimeSeries({name: "Rain", columns: ["time", "value"], points: rainPoints});
-const rainAccumSeries = new TimeSeries({name: "Rain Accum", columns: ["time", "value"], points: rainAccumPoints});
+const rainAccumSeries = new TimeSeries({name: "Rain Accum", columns: ["time", "rainAccum"], points: rainAccumPoints});
 
 //
 // Color scheme
@@ -133,6 +133,34 @@ const scheme = {
     gust: "#CC862A",
     rain: "#849AB1",
     rainAccum: "#000"
+};
+
+const lineStyles = {
+    temp: {
+        stroke: scheme.temp,
+        strokeWidth: 2
+    },
+    pressure: {
+        stroke: scheme.pressure,
+        strokeWidth: 2
+    },
+    wind: {
+        stroke: scheme.wind,
+        strokeWidth: 2
+    },
+    rainAccum: {
+        stroke: scheme.rainAccum,
+        strokeWidth: 1
+    }
+};
+
+const scatterStyles = {
+    gust: {
+        normal: {
+            fill: scheme.gust,
+            opacity: 0.5
+        }
+    }
 };
 
 //
@@ -150,13 +178,19 @@ export default React.createClass({
     },
 
     render() {
+        /*
+        const trackerValues = [
+            {label: "Temp", value: 33.2},
+            {label: "Pressure", value: 123}
+        ];
+        */
         return (
-
             <div>
 
                 <div className="row">
                     <div className="col-md-12">
                         <h3>Weather example</h3>
+                        <hr />
                     </div>
                 </div>
 
@@ -165,41 +199,48 @@ export default React.createClass({
                         <Resizable>
                             <ChartContainer
                                 timeRange={tempSeries.timerange()}
+                                showGrid={true}
                                 trackerPosition={this.state.tracker}
+                                trackerTimeFormat="%X"
                                 onTrackerChanged={(tracker) => this.setState({tracker})} >
 
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow height="150" >
                                     <YAxis id="temp" label="Temperature (°F)" labelOffset={-5} style={{labelColor: scheme.temp}}
                                            min={50} max={70} width="80" type="linear" format=",.1f"/>
                                     <YAxis id="pressure" label="Pressure (in)" labelOffset={-5} style={{labelColor: scheme.pressure}}
                                            min={29.5} max={30.0} width="80" type="linear" format=",.1f"/>
                                     <Charts>
-                                        <LineChart axis="temp" series={tempSeries} style={{color: scheme.temp, width: 2}}/>
-                                        <LineChart axis="pressure" series={pressureSeries} style={{color: scheme.pressure, width: 2}}/>
+                                        <LineChart axis="temp" series={tempSeries} columns={["temp"]} style={lineStyles}/>
+                                        <LineChart axis="pressure" series={pressureSeries} columns={["pressure"]} style={lineStyles}/>
                                     </Charts>
 
                                 </ChartRow>
 
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow height="150" >
                                     <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5} style={{labelColor: scheme.gust}}
                                            min={0} max={50} width="80" type="linear" format=",.1f"/>
 
                                     <Charts>
-                                        <LineChart axis="wind" series={windSeries} style={{color: scheme.wind, width: 2}}/>
-                                        <ScatterChart axis="wind-gust" series={gustSeries} style={{color: scheme.gust, opacity: 0.5}} />
+                                        <LineChart axis="wind" series={windSeries} columns={["wind"]} style={lineStyles}/>
+                                        <ScatterChart
+                                            axis="wind-gust"
+                                            series={gustSeries}
+                                            columns={["gust"]}
+                                            style={scatterStyles}
+                                            radius={event => { return event.get("radius"); }}/>
                                     </Charts>
 
                                     <YAxis id="wind" label="Wind (mph)" labelOffset={5} style={{labelColor: scheme.wind}}
                                            min={0} max={50} width="80" type="linear" format=",.1f"/>
                                 </ChartRow>
 
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow height="150">
                                     <Charts>
-                                        <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis"/>
-                                        <LineChart axis="total-rain" series={rainAccumSeries} style={{color: scheme.rainAccum, width: 1}} />
+                                        <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis" fillOpacity={0.4}/>
+                                        <LineChart axis="total-rain" series={rainAccumSeries} columns={["rainAccum"]} style={lineStyles}/>
                                     </Charts>
-                                    <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={5} min={0} max={rainAccumSeries.max()} width="80" type="linear" format=",.2f"/>
-                                    <YAxis id="rain" label="Precipitation (in)" classed="rain" labelOffset={5} style={{labelColor: scheme.rain}}
+                                    <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
+                                    <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={{labelColor: scheme.rain}}
                                            min={0} max={rainSeries.max()} width="80" type="linear" format=",.2f"/>
                                 </ChartRow>
 

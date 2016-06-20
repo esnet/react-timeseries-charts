@@ -10,13 +10,23 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3";
+import { axisLeft, axisRight } from "d3-axis";
+
+import { format } from "d3-format";
+import { select } from "d3-selection";
+import { transition } from "d3-transition";
+import { easeSinOut } from "d3-ease";
+
 import "./yaxis.css";
 
 const MARGIN = 0;
 
 function scaleAsString(scale) {
-    return `${scale.domain().toString()}-${scale.range().toString()}`;
+    if (scale.domain && scale.range) {
+        return `${scale.domain().toString()}-${scale.range().toString()}`;
+    } else {
+        return `scale-${Math.random}`;
+    }
 }
 
 /**
@@ -75,7 +85,7 @@ export default React.createClass({
             absolute: false,         // Display scale always positive
             format: ".2s",           // Format string for d3.format
             labelOffset: 0,          // Offset the label position
-            transition: 0,           // Axis transition time
+            transition: 100,           // Axis transition time
             width: 80,
             style: {
                 labelColor: "#8B7E7E", // Default label color
@@ -98,6 +108,15 @@ export default React.createClass({
         label: React.PropTypes.string,
 
         /**
+         * The scale type: linear, power, or log.
+         */
+        type: React.PropTypes.oneOf([
+            "linear",
+            "power",
+            "log"
+        ]),
+
+        /**
          * Minium value, which combined with "max", define the scale of the axis.
          */
         min: React.PropTypes.number.isRequired,
@@ -107,18 +126,17 @@ export default React.createClass({
          */
         max: React.PropTypes.number.isRequired,
 
+        /**
+         * The transition time for moving from one scale to another
+         */
+        transition: React.PropTypes.number,
+
+        /**
+         * The width of the axis
+         */
         width: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.number
-        ]),
-
-        /**
-         * The scale type: linear, log, or exp.
-         */
-        type: React.PropTypes.oneOf([
-            "linear",
-            "log",
-            "exp"
         ]),
 
         /**
@@ -134,14 +152,13 @@ export default React.createClass({
 
     },
 
-    renderAxis(align, scale, width, absolute, format) {
-        const yformat = d3.format(format);
-
+    renderAxis(align, scale, width, absolute, fmt) {
+        const yformat = format(fmt);
         let axisGenerator;
+        let axis = align === "left" ? axisLeft : axisRight;
         if (this.props.type === "linear" || this.props.type === "power") {
             if (this.props.height <= 200) {
-                axisGenerator = d3.svg.axis()
-                    .scale(scale)
+                axisGenerator = axis(scale)
                     .ticks(5)
                     .tickFormat(d => {
                         if (absolute) {
@@ -149,34 +166,25 @@ export default React.createClass({
                         } else {
                             return yformat(d);
                         }
-                    }).orient(align);
+                    });
             } else {
-                axisGenerator = d3.svg.axis()
-                    .scale(scale)
+                axisGenerator = axis(scale)
                     .tickFormat(d => {
                         if (absolute) {
                             return yformat(Math.abs(d));
                         } else {
                             return yformat(d);
                         }
-                    }).orient(align);
+                    });
             }
         } else if (this.props.type === "log") {
-            axisGenerator = d3.svg.axis()
+            axisGenerator = axis()
                 .scale(scale)
-                .ticks(10, ".2s")
-                .orient(align);
+                .ticks(10, ".2s");
         }
 
-        const style = {
-            fill: this.props.style.labelColor || "#8B7E7E",
-            "font-weight": this.props.style.labelWeight || 100,
-            "font-size": this.props.style.labelSize ?
-                `${this.props.style.width}px` : "12px"
-        };
-
         // Remove the old axis from under this DOM node
-        d3.select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
+        select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
         // Add the new axis
         const x = align === "left" ? width - MARGIN : 0;
@@ -186,27 +194,32 @@ export default React.createClass({
             this.props.classed : "";
         const axisClass = `yaxis ${classed}`;
         const axisLabelClass = `yaxis-label ${classed}`;
-        this.axis = d3.select(ReactDOM.findDOMNode(this)).append("g")
-            .attr("transform", `translate(${x},0)`)
-            .attr("class", axisClass)
-            .call(axisGenerator)
-        .append("text")
-            .style(style)
-            .attr("transform", "rotate(-90)")
-            .attr("class", axisLabelClass)
-            .attr("y", labelOffset)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text(this.props.label);
+
+        this.axis = select(ReactDOM.findDOMNode(this))
+            .append("g")
+                .attr("transform", `translate(${x},0)`)
+                .attr("class", axisClass)
+                .call(axisGenerator)
+            .append("text")
+                .text(this.props.label)
+                .attr("transform", "rotate(-90)")
+                .attr("class", axisLabelClass)
+                .attr("y", labelOffset)
+                .attr("dy", ".71em")
+                .attr("text-anchor", "end")
+                .style("fill", this.props.style.labelColor)
+                .style("font-family", this.props.style.labelFont || "\"Goudy Bookletter 1911\", sans-serif\"")
+                .style("font-weight", this.props.style.labelWeight || 100)
+                .style("font-size", this.props.style.labelSize ? `${this.props.style.width}px` : "12px");
     },
 
-    updateAxis(align, scale, width, absolute, format) {
-        const yformat = d3.format(format);
+    updateAxis(align, scale, width, absolute, type, fmt) {
+        const yformat = format(fmt);
+        let axis = align === "left" ? axisLeft : axisRight;
         let axisGenerator;
-        if (this.props.type === "linear" || this.props.type === "power") {
+        if (type === "linear" || type === "power") {
             if (this.props.height <= 200) {
-                axisGenerator = d3.svg.axis()
-                    .scale(scale)
+                axisGenerator = axis(scale)
                     .ticks(5)
                     .tickFormat(d => {
                         if (absolute) {
@@ -214,29 +227,29 @@ export default React.createClass({
                         } else {
                             return yformat(d);
                         }
-                    }).orient(align);
+                    });
             } else {
-                axisGenerator = d3.svg.axis()
-                    .scale(scale)
+                axisGenerator = axis(scale)
                     .tickFormat(d => {
                         if (absolute) {
                             return yformat(Math.abs(d));
                         } else {
                             return yformat(d);
                         }
-                    }).orient(align);
+                    });
             }
-        } else if (this.props.type === "log") {
-            axisGenerator = d3.svg.axis()
-                .scale(scale)
-                .ticks(10, ".2s")
-                .orient(align);
+        } else if (type === "log") {
+            axisGenerator = axis(scale)
+                .ticks(10, ".2s");
         }
 
-        d3.select(ReactDOM.findDOMNode(this)).select(".yaxis")
-            .transition()
+        const t = transition()
             .duration(this.props.transition)
-            .ease("sin-in-out")
+            .ease(easeSinOut);
+
+        select(ReactDOM.findDOMNode(this))
+            .select(".yaxis")
+                .transition(t)
                 .call(axisGenerator);
     },
 
@@ -251,9 +264,11 @@ export default React.createClass({
         const width = nextProps.width;
         const absolute = nextProps.absolute;
         const format = nextProps.format;
+        const type = nextProps.type;
 
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
-            this.updateAxis(align, scale, width, absolute, format);
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+            this.props.type !== nextProps.type) {
+            this.updateAxis(align, scale, width, absolute, type, format);
         }
     },
 

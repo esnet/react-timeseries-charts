@@ -16,7 +16,7 @@ import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
 // Pond
-import {TimeSeries} from "pondjs";
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import Legend from "../../src/legend";
@@ -42,7 +42,7 @@ const trafficNEWYtoBNLSeries = new TimeSeries({
     points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])
 });
 
-const traffic = TimeSeries.merge(
+const traffic = TimeSeries.timeSeriesListMerge(
     {name: "traffic"},
     [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
 );
@@ -90,11 +90,13 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr />
+
                 <div className="row">
                     <div className="col-md-4">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Into Site", style: {backgroundColor: "#448FDD"}},
-                            {key: "out", label: "Out of site", style: {backgroundColor: "#FD8D0D"}}
+                            {key: "in", label: "Into Site", style: {fill: "#448FDD"}},
+                            {key: "out", label: "Out of site", style: {fill: "#FD8D0D"}}
                         ]} />
                     </div>
                     <div className="col-md-8">
@@ -121,6 +123,7 @@ export default React.createClass({
                                     <Charts>
                                         <AreaChart
                                             axis="traffic"
+                                            fillOpacity={0.8}
                                             series={traffic}
                                             columns={{up: ["in"], down: ["out"]}} />
                                     </Charts>

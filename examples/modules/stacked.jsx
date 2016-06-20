@@ -34,15 +34,26 @@ example also shows basic styling using an array of colors:
 
     const style = {up: ["#1f77b4", "#aec7e8", "#ff7f0e", ... ]}
 
-Area charts default to a step style interpolation. This example also shows how to set the interpolation
-to any of d3's interpolate functions, in this case 'linear'.
+This example also shows how to set the interpolation to any of d3's interpolate functions,
+in this case 'curveBasis'.
 
-    <ChartContainer timeRange={range}>
+    <ChartContainer timeRange={series.range()}>
         <ChartRow height="350">
+            <YAxis
+                id="y"
+                min={min}
+                max={max}
+                width="60"
+                type="linear"/>
             <Charts>
-                <AreaChart axis="value" style={style} series={[series,[]]} interpolate="linear"/>
+                <AreaChart
+                    axis="y"
+                    style={style}
+                    series={series}
+                    columns={columns}
+                    fillOpacity={0.4}
+                    interpolation="curveBasis" />
             </Charts>
-            <YAxis id="value" label="" labelOffset={0} max={max} width="60" type="linear"/>
         </ChartRow>
     </ChartContainer>
 `;
@@ -86,10 +97,10 @@ const colorsList = [
     "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"
 ];
 
-const legendCategories = _.map(countriesList, (d, i) => ({
+const legendCategories = countriesList.map((d, i) => ({
     key: d,
     label: d,
-    style: {backgroundColor: colorsList[i]}
+    style: {fill: colorsList[i], opacity: 0.9, stroke: colorsList[i]}
 }));
 
 export default React.createClass({
@@ -108,7 +119,7 @@ export default React.createClass({
         const min = 0;
         const max = 130;
         const axisType = "linear";
-        const interpolationType = "linear";
+        const interpolationType = "curveBasis";
 
         return (
             <div>
@@ -117,6 +128,8 @@ export default React.createClass({
                         <h3>Stacked continents example</h3>
                     </div>
                 </div>
+
+                <hr/>
 
                 <div className="row">
                     <div className="col-md-12">
@@ -143,7 +156,8 @@ export default React.createClass({
                                             style={style}
                                             series={series}
                                             columns={cols}
-                                            interpolate={interpolationType} />
+                                            fillOpacity={0.4}
+                                            interpolation={interpolationType} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

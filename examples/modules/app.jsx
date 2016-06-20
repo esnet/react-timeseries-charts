@@ -30,9 +30,11 @@ export default React.createClass({
 
                     <ul className="nav nav-sidebar">
                         <li><Link to="weather">Weather example</Link></li>
+                        <li><Link to="realtime">Realtime example</Link></li>
+                        <li><Link to="channels">Cycling example</Link></li>
                         <li><Link to="ddos">DDoS example</Link></li>
-                        <li><Link to="stacked">Continents</Link></li>
-                        <li><Link to="channels">Brushing example</Link></li>
+                        <li><Link to="stacked">Stacked continents</Link></li>
+                        <li><Link to="apple">Share price</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>
@@ -47,8 +49,14 @@ export default React.createClass({
                         <li><Link to="barcharts">BarChart</Link></li>
                         <li><Link to="scattercharts">ScatterChart</Link></li>
                         <li><Link to="baseline">Baseline</Link></li>
+                    </ul>
+
+                    <div className="sidebar-heading">Extras</div>
+
+                    <ul className="nav nav-sidebar">
                         <li><Link to="legends">Legend</Link></li>
-                        <li><Link to="table">Table</Link></li>
+                        <li><Link to="horizontal">Horizontal BarChart</Link></li>
+                        <li><Link to="table">Timeseries Tables</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">Links</div>

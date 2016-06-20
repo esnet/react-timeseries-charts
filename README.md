@@ -15,6 +15,7 @@ Current features of the library include:
  * Line, area, scatter charts
  * Brushing
  * Timeseries tables
+ * Bar charts to compare multiple TimeSeries
  * Legends
  * Baseline and TimeRange markers
 
@@ -23,9 +24,9 @@ Please browse the examples for a feel for the library, or read on to get started
 Getting started
 ---------------
 
-This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/).
+This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/). It expects React to be present, as well as our TimeSeries abstraction library, [pond.js](http://software.es.net/pond). More on this below. To install:
 
-    npm install react-timeseries-charts --save
+    npm install react-timeseries-charts pondjs --save
 
 Once installed, you can import the necessary components from the library:
 
@@ -44,16 +45,16 @@ Then we construct our chart in the `render()` function of our component. For a s
         </ChartRow>
     </ChartContainer>
 
-At the outer most layer, we add a `<ChartContainer>` which contains our timerange for the x-axis. In this case we get the timerange from the timeseries itself, but you could specify one yourself. You also need to provide a width for the chart, or wrap the chart in a `<Resizable>` component and that will inject a width for you.
+At the outer most layer, we add a `<ChartContainer>` which contains our time range for the x-axis. All charts within a ChartContainer share the same x-axis. In this case we get the TimeRange from the TimeSeries itself, but you could specify one yourself. You also need to provide a width for the chart, or wrap the chart in a `<Resizable>` component and that will inject a width for you.
 
 For the next layer of the layout we make a `<ChartRow>`. We can have multiple charts stacked on top of each other by using more than one row. In this case we just have one row. Each row has a specific height in the layout, so we specify that as 200px high here.
 
 Next up we want to put something in our row. Rows contain two parts:
 1. a central flexible sized area in which charts can be added and 2. axes on either the left or right of the central area.
 
-This central area is surrounded in the JSX by the `<Charts>` tag. Each chart in this area is composited on top of each other. In this case we are adding two `<LineChart>`s, one for each of our timeseries. As a result they will be drawn on top of each other. For scaling each chart will reference an axis that will define the scale as well as display that scale visually as the y-axis.
+This central area is surrounded in the JSX by the `<Charts>` tag. Each chart in this area is composited on top of each other. In this case we are adding two `<LineChart>`s, one for each of our timeseries. As a result they will be drawn on top of each other. (Note that as of v0.9, it is also possible to draw multiple channels of a TimeSeries as multiple line charts). For scaling each chart will reference an axis that will define the scale as well as display that scale visually as the y-axis.
 
-Finally, we specify the axes that the charts reference. These go either before or after the `<Charts>` group, depending on if you want the axis before (to the left) or after the charts (to the right). You can specify any number of axes on either side. For each `<YAxis>` you specify a `width`, the `id` so that a chart can reference it, the `label` you want displayed alongside the axis and, importantly, the scale using `min` and `max`. You can also specify the `type` of the axis (`linear`, `log`, etc) and the `format`.
+Finally, we specify the axes that the charts reference. These go either before or after the `<Charts>` group, depending on if you want the axis before (to the left) or after the charts (to the right). You can specify any number of axes on either side. For each `<YAxis>` you specify the `id` so that a chart can reference it, the `label` you want displayed alongside the axis and, importantly, the scale using `min` and `max`. You can also specify the `type` of the axis (`linear`, `log`, etc), a non-default `width` and the `format`.
 
 For more details, please see the API docs.
 
@@ -62,32 +63,44 @@ Data format
 
 This charting library is built on the ESnet timeseries library called [pond.js](http://software.es.net/pond). Pond.js was created to provide a common representation for things like time series, time ranges, events and other structures as well as to implement common operations on those structures.
 
-For the purpose of using the charting library, you need to create a TimeSeries() object as your series, which will be rendered by the chart code.
+For the purpose of using the charting library, you need to create a `TimeSeries` object as your time series, which will be rendered by the chart code. Constructing a TimeSeries is pretty simple. You just need to pass it an object that contains, at a minimum, the column names as an array, and a list of points.
 
 For example:
 
     import { TimeSeries, TimeRange } from "pondjs";
 
-    const timeseries = new TimeSeries({
-        "name": "my series",
-        "labels": ["Time", "Currency"],
-        "columns": ["time", "value"],
-        "points": points
-    });
+    const data = {
+        name: "traffic",
+        columns: ["time", "in", "out"],
+        points: [
+            [1400425947000, 52, 41],
+            [1400425948000, 18, 45],
+            [1400425949000, 26, 49],
+            [1400425950000, 93, 81],
+            ...
+        ]
+    };
 
-Where `columns` must be 'time' and 'value' to work with much of the charts library (the exception being the AreaChart), and `points` is of the format:
+    const timeseries = new TimeSeries(data);
+
+
+Generally `columns` must have 'time' as the first column (see the Pond.js docs for other options), and `points` is of the format:
 
     [[time, value], [time, value], ...]
 
-To specify a chart you also need to tell the chart code what time range to plot on. This is done with a TimeRange. You could either get the timerange from the timeseries:
+Note that there are several ways to construct a TimeSeries. The above is what we call our wire format.
 
-    var range = timeseries.timerange()
+To specify a ChartContainer you also need to provide the time range to plot on the x-axis. This is done with a pond.js `TimeRange`. You could either get the TimeRange from the TimeSeries directly:
+
+    var timerange = timeseries.timerange()
 
 Or construct a new one:
 
-    var range = new TimeRange([begin, end]);
+    var timerange = new TimeRange([begin, end]);
 
-where `begin` and `end` are times (Javascript Dates usually). We often have pages where the current time range begin shown is kept in the state of the component.
+where `begin` and `end` are times (Javascript Dates, usually).
+
+How you manage this is application specific. We often have pages where the current time range being shown is kept in the `this.state` of the component and is updated during pan and zoom, both via interaction with the charts or via other controls on the page.
 
 Developing
 ----------
@@ -114,7 +127,7 @@ This code is distributed under a BSD style license, see the LICENSE file for com
 Copyright
 ---------
 
-ESnet's React Timeseries Charts, Copyright (c) 2015, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ESnet's React Timeseries Charts, Copyright (c) 2015-2016, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights reserved.
 
 If you have questions about your rights to use or distribute this software, please contact Berkeley Lab's Technology Transfer Department at TTD@lbl.gov.
 

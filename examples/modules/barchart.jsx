@@ -12,8 +12,8 @@
 
 import React from "react";
 import _ from "underscore";
-import d3 from "d3";
 import Markdown from "react-markdown";
+import { formatPrefix } from "d3-format";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
@@ -76,7 +76,8 @@ other chart types, the vertical scale is provided by referencing the \`<YAxis>\`
                     columns={["in"]}
                     series={octoberTrafficSeries}
                     selection={this.state.selection}
-                    onSelectionChange={this.handleSelectionChanged} />
+                    onSelectionChange={this.handleSelectionChanged}
+                    format={formatter} />
                 <Baseline
                     axis="traffic"
                     value={avgIn}
@@ -93,11 +94,20 @@ selected:
 
     const style = {
         "in": {
-            normal: {fill: "#619F3A"},
-            highlight: {fill: "rgb(113, 187, 67)"},
-            selected: {fill: "#436D28"}
+            normal: {fill: "#A5C8E1"},
+            highlight: {fill: "#bfdff6"},
+            selected: {fill: "#5aa2d5"}
         }
     };
+
+The format prop provides the text that is displayed when bars are hovered over. This can either 
+be a d3 format string or a function. In this case we use a function to return the value:
+
+    // Return the value as the number of bytes e.g. "36 TB"
+    function formatter(value) {
+        const prefix = d3.formatPrefix(value);
+        return prefix.scale(value).toFixed() + " " + prefix.symbol + "B";
+    }
 
 As a side note, this chart can also be zoomed in and then panned with constraints. This is controlled
 using the \`<ChartContainer>\` props.
@@ -139,7 +149,7 @@ _.each(days, (value, day) => {
 const octoberTrafficSeries = new TimeSeries({
     name: "October Traffic",
     utc: false,
-    columns: ["time", "in", "out"],
+    columns: ["index", "in", "out"],
     points: trafficPoints
 });
 
@@ -176,19 +186,27 @@ _.each(monthlyJSON, (router) => {
     }
 });
 
+function formatter(value) {
+    return formatPrefix(",.0B", value);
+}
+
+/*
 const monthlyAcceptedSeries = new TimeSeries({
     name: "Monthly Accepted",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].accepted
 });
 
 const monthlyDeliveredSeries = new TimeSeries({
     name: "Monthly Delivered",
-    columns: ["time", "value"],
+    columns: ["index", "value"],
     points: routerData[routerKey].delivered
 });
+*/
 
 export default React.createClass({
+
+    displayName: "BarChartExample",
 
     mixins: [Highlighter],
 
@@ -215,34 +233,37 @@ export default React.createClass({
     },
 
     render() {
-        const formatter = d3.format(".2s");
 
         const style = {
             in: {
-                normal: {fill: "#619F3A"},
-                highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"}
+                normal: {fill: "#A5C8E1"},
+                highlight: {fill: "#bfdff6"},
+                selected: {fill: "#5aa2d5"},
+                text: {fill: "#A5C8E1", stroke: "none"}
             },
             out: {
-                normal: {fill: "#E37E23"},
+                normal: {fill: "#FFCC9E"},
                 highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#A55D1C"}
+                selected: {fill: "#A55D1C"},
+                text: {fill: "#FFCC9E", stroke: "none"}
             }
         };
 
         const leftStyle = {
             in: {
-                normal: {fill: "#619F3A"},
-                highlight: {fill: "rgb(113, 187, 67)"},
-                selected: {fill: "#436D28"}
+                normal: {fill: "#A5C8E1"},
+                highlight: {fill: "#bfdff6"},
+                selected: {fill: "#5aa2d5"},
+                text: {fill: "#A5C8E1", stroke: "none"}
             }
         };
 
         const rightStyle = {
             out: {
-                normal: {fill: "#E37E23"},
+                normal: {fill: "#FFCC9E"},
                 highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#B3621A"}
+                selected: {fill: "#B3621A"},
+                text: {fill: "#FFCC9E", stroke: "none"}
             }
         };
 
@@ -251,9 +272,11 @@ export default React.createClass({
 
                <div className="row">
                     <div className="col-md-12">
-                        <h3>BarChart Examples</h3>
+                        <h3>BarCharts</h3>
                     </div>
                 </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -264,14 +287,19 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr />
+
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={this.state.timerange} format="day"
-                                            enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
-                                            maxTime={new Date(1414827330868)}
-                                            minTime={new Date(1412143472795)}
-                                            minDuration={1000 * 60 * 60 * 24 * 5} >
+                            <ChartContainer
+                                timeRange={this.state.timerange}
+                                format="day"
+                                enablePanZoom={true}
+                                onTimeRangeChanged={this.handleTimeRangeChange}
+                                maxTime={new Date(1414827330868)}
+                                minTime={new Date(1412143472795)}
+                                minDuration={1000 * 60 * 60 * 24 * 5} >
                                 <ChartRow height="150">
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
@@ -279,13 +307,13 @@ export default React.createClass({
                                         <BarChart axis="traffic" style={leftStyle} columns={["in"]}
                                                   series={octoberTrafficSeries}
                                                   selection={this.state.selection}
-                                                  onSelectionChange={this.handleSelectionChanged}/>
+                                                  onSelectionChange={this.handleSelectionChanged}
+                                                  format={formatter} />
                                         <Baseline axis="traffic" value={avgIn} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
                                 </ChartRow>
-
                             </ChartContainer>
                         </Resizable>
                     </div>
@@ -312,8 +340,8 @@ export default React.createClass({
                     </div>
                     <div className="col-md-11">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Traffic In", style: {backgroundColor: "#619F3A"}},
-                            {key: "out", label: "Traffic Out", style: {backgroundColor: "#E37E23"}}]} />
+                            {key: "in", label: "Traffic In", style: {fill: "#A5C8E1"}},
+                            {key: "out", label: "Traffic Out", style: {fill: "#FFCC9E"}}]} />
                     </div>
                 </div>
                 <div className="row">
@@ -324,8 +352,20 @@ export default React.createClass({
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic-volume" style={leftStyle} size={10} offset={5.5} columns={["in"]} series={octoberTrafficSeries} />
-                                        <BarChart axis="traffic-volume" style={rightStyle} size={10} offset={-5.5} columns={["out"]} series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={leftStyle}
+                                            size={10}
+                                            offset={5.5}
+                                            columns={["in"]}
+                                            series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={rightStyle}
+                                            size={10}
+                                            offset={-5.5}
+                                            columns={["out"]}
+                                            series={octoberTrafficSeries} />
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -343,14 +383,14 @@ export default React.createClass({
                     </div>
                 </div>
 
-
+                
                 <div className="row">
                     <div className="col-md-1">
                     </div>
                     <div className="col-md-11">
                         <Legend type="swatch" categories={[
-                            {key: "in", label: "Traffic In", style: {backgroundColor: "#619F3A"}},
-                            {key: "out", label: "Traffic Out", style: {backgroundColor: "#E37E23"}}]} />
+                            {key: "in", label: "Traffic In", style: {fill: "#A5C8E1"}},
+                            {key: "out", label: "Traffic Out", style: {fill: "#FFCC9E"}}]} />
                     </div>
                 </div>
                 <div className="row">
@@ -361,7 +401,13 @@ export default React.createClass({
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic-volume" style={style} spacing={3} series={octoberTrafficSeries} />
+                                        <BarChart
+                                            axis="traffic-volume"
+                                            style={style}
+                                            spacing={3}
+                                            columns={["in", "out"]}
+                                            series={octoberTrafficSeries}
+                                            format={formatter}/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -371,7 +417,7 @@ export default React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
+                {/*}
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
@@ -386,7 +432,7 @@ export default React.createClass({
                         <b>Router: bnl-mr2</b>
                     </div>
                 </div>
-
+            
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
@@ -396,7 +442,10 @@ export default React.createClass({
                                     <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
                                            min={0} max={1500000000000000} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic" series={monthlyAcceptedSeries} />
+                                        <BarChart
+                                            axis="traffic"
+                                            series={monthlyAcceptedSeries}
+                                            format={formatter}/>
                                         <Baseline axis="traffic" value={monthlyAcceptedSeries.avg()} label="Avg "position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
@@ -407,7 +456,10 @@ export default React.createClass({
                                     <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
                                            min={0} max={1500000000000000} width="70" type="linear"/>
                                     <Charts>
-                                        <BarChart axis="traffic" series={monthlyDeliveredSeries} />
+                                        <BarChart
+                                            axis="traffic"
+                                            series={monthlyDeliveredSeries}
+                                            format={formatter}/>
                                         <Baseline axis="traffic" value={monthlyDeliveredSeries.avg()} label="Avg" position="right"/>
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
@@ -418,7 +470,7 @@ export default React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
+                */}
                 <hr />
 
                 <div className="row">

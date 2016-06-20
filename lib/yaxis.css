@@ -11,8 +11,8 @@
 .yaxis > line,
 .yaxis > path {
     fill: none;
-    stroke: #000;
-    stroke-opacity: .5;
+    stroke: #C0C0C0;
+    stroke-opacity: 1;
 }
 
 .yaxis > .tick > text {
@@ -21,14 +21,14 @@
 }
 
 .yaxis > text {
-    fill: #8B7E7E;
+    fill: #C0C0C0;
     font-weight: 100;
     font-size: 12px;
 }
 
 .yaxis > .tick > line {
-    stroke: #888686;
-    stroke-opacity: 0.5;
+    stroke: #C0C0C0;
+    stroke-opacity: 1;
     stroke-width: 1px;
     shape-rendering: crispEdges;
 }

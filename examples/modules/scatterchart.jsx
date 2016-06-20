@@ -10,9 +10,10 @@
 
 /* eslint max-len:0 */
 
-import React from "react/";
+import React from "react";
 import _ from "underscore";
 import Moment from "moment";
+import { format } from "d3-format";
 import APIDocs from "./docs";
 import Highlighter from "./highlighter";
 
@@ -39,7 +40,11 @@ _.each(weatherJSON, readings => {
     const time = new Moment(readings.Time).toDate().getTime();
     const reading = readings["WindSpeedGustMPH"];
     if (reading !== "-" && reading !== 0) {
-        points.push([time, reading * 5 + Math.random() * 2.5 - 2.5, reading / 2]);
+        points.push([
+            time,
+            reading * 5 + Math.random() * 2.5 - 2.5,
+            reading * 3 + Math.random() * 4 - 2
+        ]);
     }
 });
 
@@ -49,7 +54,7 @@ _.each(weatherJSON, readings => {
 
 const series = new TimeSeries({
     name: "Gust",
-    columns: ["time", "value", "radius"],
+    columns: ["time", "station1", "station2"],
     points
 });
 
@@ -62,7 +67,40 @@ export default React.createClass({
 
     mixins: [Highlighter],
 
+    getInitialState() {
+        return {
+            hover: null,
+            highlight: null,
+            selection: null
+        };
+    },
+
+    handleSelectionChanged(point) {
+        this.setState({
+            selection: point
+        });
+    },
+
+    handleMouseNear(point) {
+        this.setState({
+            highlight: point
+        });
+    },
+
     render() {
+        const highlight = this.state.highlight;
+        const formatter = format(".2f");
+        let text = `Speed: - mph, time: -:--`;
+        let hintValues = [];
+        if (highlight) {
+            const speedText = `${formatter(highlight.event.get(highlight.column))} mph`;
+            text = `
+                Speed: ${speedText},
+                time: ${this.state.highlight.event.timestamp().toLocaleTimeString()}
+            `;
+            hintValues = [{label: "Speed", value: speedText}];
+        }
+
         return (
             <div>
                 <div className="row">
@@ -71,15 +109,65 @@ export default React.createClass({
                     </div>
                 </div>
 
+                <hr/>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        {text}
+                    </div>
+                </div>
+
+                <hr />
+
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={series.range()}>
+                            <ChartContainer
+                                timeRange={series.range()}
+                                onTrackerChanged={this.handleTrackerChanged}>
                                 <ChartRow height="150" debug={false}>
                                     <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5}
-                                           min={0} max={series.max()} width="70" type="linear" format=",.1f"/>
+                                           min={0} max={series.max("station1")} width="70" type="linear" format=",.1f"/>
                                     <Charts>
-                                        <ScatterChart axis="wind-gust" series={series} style={{color: "steelblue", opacity: 0.5}} />
+                                        <ScatterChart
+                                            axis="wind-gust"
+                                            series={series}
+                                            columns={["station1", "station2"]}
+                                            style={(event, column) => ({
+                                                normal: {
+                                                    fill: column === "station1" ?
+                                                        "green" :
+                                                        "orange",
+                                                    opacity: 0.8
+                                                },
+                                                highlighted: {
+                                                    fill: column === "station1" ?
+                                                        "green" :
+                                                        "orange",
+                                                    stroke: "none",
+                                                    opacity: 1.0
+                                                },
+                                                selected: {
+                                                    fill: "none",
+                                                    stroke: "#2db3d1",
+                                                    strokeWidth: 3,
+                                                    opacity: 1.0
+                                                },
+                                                muted: {
+                                                    stroke: "none",
+                                                    opacity: 0.4,
+                                                    fill: column === "station1" ?
+                                                        "green" : "orange"
+                                                }
+                                            })}
+                                            hintValues={hintValues}
+                                            hintHeight={28} hintWidth={110}
+                                            format=".1f"
+                                            selection={this.state.selection}
+                                            onSelectionChange={this.handleSelectionChanged}
+                                            onMouseNear={this.handleMouseNear}
+                                            highlight={this.state.highlight}
+                                            radius={(event, column) => column === "station1" ? 3 : 2}/>
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

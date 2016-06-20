@@ -9,7 +9,18 @@
  */
 
 import React from "react";
+import { format } from "d3-format";
+import _ from "underscore";
+import merge from "merge";
+
 import { TimeSeries } from "pondjs";
+
+const defaultStyle = {
+    normal: {fill: "steelblue"},
+    highlight: {fill: "#5a98cb"},
+    selected: {fill: "yellow"},
+    text: {fill: "#333", stroke: "none"}
+};
 
 /**
  * Renders a barchart based on IndexedEvents within a TimeSeries.
@@ -27,9 +38,8 @@ export default React.createClass({
         return {
             spacing: 1,
             offset: 0,
-            style: {
-                value: {fill: "#619F3A"}
-            }
+            style: {value: defaultStyle},
+            columns: ["value"]
         };
     },
 
@@ -72,6 +82,16 @@ export default React.createClass({
          */
         style: React.PropTypes.object,
         
+        /**
+         * The format is used to format the hover text for the bar. It can be specified as a d3
+         * format string (such as ".2f") or a function. The function will be called with the value
+         * and should return a string.
+         */
+        format: React.PropTypes.oneOfType([
+            React.PropTypes.func,
+            React.PropTypes.string
+        ]),
+
         /**
          * If size is specified, then the bar will be this number of pixels wide. This
          * prop takes priority of "spacing".
@@ -127,6 +147,8 @@ export default React.createClass({
         const columns = this.props.columns || series._columns;
 
         const rects = [];
+        const hover = [];
+
         for (const event of series.events()) {
             const begin = event.begin();
             const end = event.end();
@@ -154,62 +176,90 @@ export default React.createClass({
             }
 
             let ypos = yScale(0);
-            for (const column of columns) {
+            if (columns) {
+                for (const column of columns) {
+                    const index = event.index();
+                    const key = `${series.name()}-${index}-${column}`;
+                    const value = event.get(column);
 
-                const index = event.index();
-                const key = `${series.name()}-${index}-${column}`;
-                const value = event.get(column);
-
-                let height = yScale(0) - yScale(value);
-                if (height < 1) {
-                    height = 1;
-                }
-
-                const y = ypos - height;
-
-                let barStyle;
-                if (key === this.props.selection) {
-                    if (this.props.style && this.props.style[column].selected) {
-                        barStyle = this.props.style[column].selected;
-                    } else {
-                        barStyle = {fill: "rgb(0, 144, 199)"};
+                    let height = yScale(0) - yScale(value);
+                    if (height < 1) {
+                        height = 1;
                     }
-                } else if (key === this.state.hover) {
-                    if (this.props.style &&
-                        this.props.style[column].highlight) {
-                        barStyle = this.props.style[column].highlight;
+
+                    const y = ypos - height;
+
+                    let barStyle;
+                    let hoverText = null;
+
+                    const providedColumnStyle = _.has(this.props.style, column) ?
+                        this.props.style[column] : {};
+
+                    const columnStyle = merge(true, defaultStyle, providedColumnStyle);
+
+                    if (key === this.props.selection) {
+                        barStyle = columnStyle.selected;
+                    } else if (key === this.state.hover) {
+                        barStyle = columnStyle.highlight;
                     } else {
-                        barStyle = {fill: "rgb(78, 144, 199)"};
+                        barStyle = columnStyle.normal;
                     }
-                } else if (this.props.style &&
-                    this.props.style[column].normal) {
-                    barStyle = this.props.style[column].normal;
-                } else {
-                    barStyle = {fill: "steelblue"};
+
+                    // Hover text
+                    let text = `${value}`;
+                    if (this.props.format && (key === this.state.hover || key === this.props.selection)) {
+                        if (this.props.format && _.isString(this.props.format)) {
+                            const formatter = format(this.props.format);
+                            text = formatter(value);
+                        } else if (_.isFunction(this.props.format)) {
+                            text = this.props.format(value);
+                        }
+                        
+                        const barTextStyle = this.props.style[column].text || {stroke: "steelblue"};
+                        hoverText = (
+                            <text
+                                key={`${key}-text`}
+                                style={barTextStyle}
+                                x={x + width / 2}
+                                y={y - 2}
+                                fontFamily="Verdana"
+                                textAnchor="middle"
+                                fontSize="12">
+                                {text}
+                            </text>
+                        );
+                    }
+
+                    if (hoverText) {
+                        hover.push(hoverText);
+                    }
+
+                    rects.push(
+                        <rect
+                            key={key}
+                            x={x}
+                            y={y}
+                            width={width}
+                            height={height}
+                            pointerEvents="none"
+                            style={barStyle}
+                            clipPath={this.props.clipPathURL}
+                            onClick={e => this.handleClick(e, key, value, series, column, index)}
+                            onMouseLeave={() => this.setState({hover: null})}
+                            onMouseMove={e => this.handleMouseMove(e, key)}/>
+                    );
+
+                    ypos -= height;
                 }
-
-                rects.push(
-                    <rect key={key}
-                          x={x} y={y} width={width} height={height}
-                          pointerEvents="none"
-                          style={barStyle}
-                          clipPath={this.props.clipPathURL}
-                          onClick={e => {
-                              this.handleClick(e, key, value, series,
-                                               column, index);
-                          }}
-                          onMouseLeave={() => {
-                              this.setState({hover: null});
-                          }}
-                          onMouseMove={e => {
-                              this.handleMouseMove(e, key);
-                          }}/>
-                );
-
-                ypos -= height;
             }
         }
-        return rects;
+
+        return (
+            <g>
+                {rects}
+                {hover}
+            </g>
+        );
     },
 
     render() {
