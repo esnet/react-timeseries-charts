@@ -185,7 +185,6 @@ export default React.createClass({
     },
 
     handleBackgroundClick() {
-        console.log("BACKGROUND CLICK");
         if (this.props.onBackgroundClick) {
             this.props.onBackgroundClick();
         }

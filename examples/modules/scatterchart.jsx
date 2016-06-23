@@ -71,7 +71,8 @@ export default React.createClass({
         return {
             hover: null,
             highlight: null,
-            selection: null
+            selection: null,
+            timerange: series.range()
         };
     },
 
@@ -123,8 +124,10 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
-                                timeRange={series.range()}
-                                onTrackerChanged={this.handleTrackerChanged}>
+                                timeRange={this.state.timerange}
+                                enablePanZoom={true}
+                                onBackgroundClick={() => this.setState({selection: null})}
+                                onTimeRangeChanged={(timerange) => this.setState({timerange})}>
                                 <ChartRow height="150" debug={false}>
                                     <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5}
                                            min={0} max={series.max("station1")} width="70" type="linear" format=",.1f"/>

@@ -246,12 +246,6 @@ export default React.createClass({
         }
     },
 
-    handleBackgroundClick() {
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(null);
-        }
-    },
-
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
         const trackerRect = ReactDOM.findDOMNode(this.refs.eventrect);
@@ -392,7 +386,6 @@ export default React.createClass({
                     x={0} y={0}
                     width={this.props.width}
                     height={this.props.height}
-                    onClick={this.handleBackgroundClick}
                     onMouseMove={this.handleHover}
                     onMouseLeave={this.handleHoverLeave} />
                 {this.renderScatter()}

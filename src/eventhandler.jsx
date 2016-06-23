@@ -126,14 +126,22 @@ export default React.createClass({
             initialPanEnd: end,
             initialPanPosition: xy0
         });
+
+        return false;
     },
 
     handleMouseUp(e) {
-        e.preventDefault();
+        e.stopPropagation();
 
         document.removeEventListener("mouseover", this.handleMouseMove);
         document.removeEventListener("mouseup", this.handleMouseUp);
 
+        const x = e.pageX;
+        if (this.props.onMouseClick &&
+            Math.abs(x - this.state.initialPanPosition[0]) < 2) {
+            this.props.onMouseClick();
+        }
+        
         this.setState({
             isPanning: false,
             initialPanBegin: null,
@@ -147,13 +155,6 @@ export default React.createClass({
 
         if (this.props.onMouseOut) {
             this.props.onMouseOut();
-        }
-    },
-
-    handleMouseClick(e) {
-        e.preventDefault();
-        if (this.props.onMouseClick) {
-            this.props.onMouseClick();
         }
     },
 
@@ -216,8 +217,7 @@ export default React.createClass({
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}
                 onMouseOut={this.handleMouseOut}
-                onMouseUp={this.handleMouseUp}
-                onClick={this.handleMouseClick}>
+                onMouseUp={this.handleMouseUp}>
                 <rect
                     key="handler-hit-rect"
                     ref="eventrect"

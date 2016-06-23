@@ -244,7 +244,6 @@ export default React.createClass({
     },
 
     handleHover(e, event, column) {
-        console.log("handleHover (barchart)", this.props.series.name(), column);
         const bar = {event, column};
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(bar);
@@ -258,9 +257,6 @@ export default React.createClass({
     },
 
     handleClick(e, event, column) {
-        console.log("handleClick (barchart)", this.props.series.name(), column);
-
-        
         const bar = {event, column};
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(bar);

@@ -695,6 +695,13 @@
         "returns": null
       },
       {
+        "name": "handleBackgroundClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "handleZoom",
         "docblock": null,
         "modifiers": [],
@@ -1231,6 +1238,18 @@
       "markerRadius": {
         "defaultValue": {
           "value": "2",
+          "computed": false
+        }
+      },
+      "offsetX": {
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "offsetY": {
+        "defaultValue": {
+          "value": "0",
           "computed": false
         }
       }
@@ -1961,13 +1980,6 @@
             "type": null
           }
         ],
-        "returns": null
-      },
-      {
-        "name": "handleBackgroundClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
         "returns": null
       },
       {
