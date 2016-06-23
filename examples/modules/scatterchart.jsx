@@ -91,14 +91,14 @@ export default React.createClass({
         const highlight = this.state.highlight;
         const formatter = format(".2f");
         let text = `Speed: - mph, time: -:--`;
-        let hintValues = [];
+        let infoValues = [];
         if (highlight) {
             const speedText = `${formatter(highlight.event.get(highlight.column))} mph`;
             text = `
                 Speed: ${speedText},
                 time: ${this.state.highlight.event.timestamp().toLocaleTimeString()}
             `;
-            hintValues = [{label: "Speed", value: speedText}];
+            infoValues = [{label: "Speed", value: speedText}];
         }
 
         return (
@@ -160,8 +160,8 @@ export default React.createClass({
                                                         "green" : "orange"
                                                 }
                                             })}
-                                            hintValues={hintValues}
-                                            hintHeight={28} hintWidth={110}
+                                            info={infoValues}
+                                            infoHeight={28} infoWidth={110}
                                             format=".1f"
                                             selection={this.state.selection}
                                             onSelectionChange={this.handleSelectionChanged}

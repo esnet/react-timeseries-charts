@@ -13,7 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
-import { formatPrefix } from "d3-format";
+import { format } from "d3-format";
 import Highlighter from "./highlighter";
 import APIDocs from "./docs";
 
@@ -72,12 +72,14 @@ other chart types, the vertical scale is provided by referencing the \`<YAxis>\`
             <Charts>
                 <BarChart
                     axis="traffic"
-                    style={chartStyle}
+                    style={style}
                     columns={["in"]}
                     series={octoberTrafficSeries}
+                    info={infoValues}
+                    highlight={this.state.highlight}
+                    onHighlightChange={highlight => this.setState({highlight})}
                     selection={this.state.selection}
-                    onSelectionChange={this.handleSelectionChanged}
-                    format={formatter} />
+                    onSelectionChange={selection => this.setState({selection})} />
                 <Baseline
                     axis="traffic"
                     value={avgIn}
@@ -93,21 +95,13 @@ The style provides the coloring, relating each channel to styles for normal, hig
 selected:
 
     const style = {
-        "in": {
+        in: {
             normal: {fill: "#A5C8E1"},
-            highlight: {fill: "#bfdff6"},
-            selected: {fill: "#5aa2d5"}
+            highlighted: {fill: "#bfdff6"},
+            selected: {fill: "#5aa2d5"},
+            muted: {fill: "#A5C8E1", opacity: 0.4}
         }
     };
-
-The format prop provides the text that is displayed when bars are hovered over. This can either 
-be a d3 format string or a function. In this case we use a function to return the value:
-
-    // Return the value as the number of bytes e.g. "36 TB"
-    function formatter(value) {
-        const prefix = d3.formatPrefix(value);
-        return prefix.scale(value).toFixed() + " " + prefix.symbol + "B";
-    }
 
 As a side note, this chart can also be zoomed in and then panned with constraints. This is controlled
 using the \`<ChartContainer>\` props.
@@ -156,13 +150,10 @@ const octoberTrafficSeries = new TimeSeries({
 max /= 100;
 
 const avgIn = totalIn / count;
-// const avgOut = totalOut / count;
 
 //
 // ESnet wide monthy traffic summary (part of 2014)
 //
-
-const routerKey = "bnl-mr2";
 
 const routerData = {};
 _.each(monthlyJSON, (router) => {
@@ -186,24 +177,6 @@ _.each(monthlyJSON, (router) => {
     }
 });
 
-function formatter(value) {
-    return formatPrefix(",.0B", value);
-}
-
-/*
-const monthlyAcceptedSeries = new TimeSeries({
-    name: "Monthly Accepted",
-    columns: ["index", "value"],
-    points: routerData[routerKey].accepted
-});
-
-const monthlyDeliveredSeries = new TimeSeries({
-    name: "Monthly Delivered",
-    columns: ["index", "value"],
-    points: routerData[routerKey].delivered
-});
-*/
-
 export default React.createClass({
 
     displayName: "BarChartExample",
@@ -214,7 +187,7 @@ export default React.createClass({
         return {
             markdown: text,
             timerange: octoberTrafficSeries.range(),
-            selection: "October Traffic-2014-10-10-in"
+            selection: null
         };
     },
 
@@ -222,50 +195,65 @@ export default React.createClass({
         this.setState({timerange});
     },
 
-    handleSelectionChanged(key, value, context) {
+    handleSelectionChanged(bar) {
         this.setState({
-            selection: key,
-            value,
-            series: context.series,
-            index: context.index,
-            column: context.column
+            selection: bar
+        });
+    },
+
+    handleHighlightChanged(bar) {
+        this.setState({
+            highlight: bar
         });
     },
 
     render() {
-
         const style = {
             in: {
                 normal: {fill: "#A5C8E1"},
-                highlight: {fill: "#bfdff6"},
-                selected: {fill: "#5aa2d5"},
-                text: {fill: "#A5C8E1", stroke: "none"}
+                highlighted: {fill: "#BFDFF6"},
+                selected: {fill: "#5AA2D5"},
+                muted: {fill: "#A5C8E1", opacity: 0.4}
+            }
+        };
+
+        const altStyle = {
+            out: {
+                normal: {fill: "#FFCC9E"},
+                highlighted: {fill: "#DDDAB9"},
+                selected: {fill: "#FFCC9E"},
+                muted: {fill: "#FFCC9E", opacity: 0.4}
+            }
+        };
+       
+        const combinedStyle = {
+            in: {
+                normal: {fill: "#A5C8E1"},
+                highlighted: {fill: "#BFDFF6"},
+                selected: {fill: "#5AA2D5"},
+                muted: {fill: "#A5C8E1", opacity: 0.4}
             },
             out: {
                 normal: {fill: "#FFCC9E"},
-                highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#A55D1C"},
-                text: {fill: "#FFCC9E", stroke: "none"}
+                highlighted: {fill: "#DDDAB9"},
+                selected: {fill: "#FFCC9E"},
+                muted: {fill: "#FFCC9E", opacity: 0.4}
             }
         };
 
-        const leftStyle = {
-            in: {
-                normal: {fill: "#A5C8E1"},
-                highlight: {fill: "#bfdff6"},
-                selected: {fill: "#5aa2d5"},
-                text: {fill: "#A5C8E1", stroke: "none"}
-            }
-        };
+        const formatter = format(".2s");
+        const selectedDate = this.state.selection ?
+            this.state.selection.event.index().toNiceString() : "--";
+        const selectedValue = this.state.selection ?
+            `${formatter(+this.state.selection.event.value(this.state.selection.column))}b` : "--";
 
-        const rightStyle = {
-            out: {
-                normal: {fill: "#FFCC9E"},
-                highlight: {fill: "rgb(255, 141, 39)"},
-                selected: {fill: "#B3621A"},
-                text: {fill: "#FFCC9E", stroke: "none"}
-            }
-        };
+
+        const highlight = this.state.highlight;
+        let infoValues = [];
+        if (highlight) {
+            const trafficText = `${formatter(highlight.event.get(highlight.column))}`;
+            infoValues = [{label: "Traffic", value: trafficText}];
+        }
 
         return (
             <div>
@@ -280,9 +268,9 @@ export default React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <b>October 2014: ornl-cr5::to_ornl_ip-a</b>
+                        <b>October 2014 Total Traffic</b>
                         <p style={{color: "#808080"}}>
-                            Selected: {this.state.index ? this.state.index.toNiceString() : "--"} ({this.state.column ? this.state.column : "--"}) | {this.state.value ? `${formatter(this.state.value)}B` : "--"}
+                            Selected: {selectedDate} - {selectedValue}
                         </p>
                     </div>
                 </div>
@@ -297,28 +285,43 @@ export default React.createClass({
                                 format="day"
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
+                                onBackgroundClick={() => this.setState({selection: null})}
                                 maxTime={new Date(1414827330868)}
                                 minTime={new Date(1412143472795)}
                                 minDuration={1000 * 60 * 60 * 24 * 5} >
                                 <ChartRow height="150">
-                                    <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
-                                           min={0} max={max} width="70" type="linear"/>
+                                    <YAxis
+                                        id="traffic"
+                                        label="Traffic In (B)"
+                                        min={0} max={max}
+                                        width="70" />
                                     <Charts>
-                                        <BarChart axis="traffic" style={leftStyle} columns={["in"]}
-                                                  series={octoberTrafficSeries}
-                                                  selection={this.state.selection}
-                                                  onSelectionChange={this.handleSelectionChanged}
-                                                  format={formatter} />
-                                        <Baseline axis="traffic" value={avgIn} label="Avg" position="right"/>
+                                        <BarChart
+                                            axis="traffic"
+                                            style={style}
+                                            columns={["in"]}
+                                            series={octoberTrafficSeries}
+                                            info={infoValues}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
+                                        <Baseline
+                                            axis="traffic"
+                                            value={avgIn}
+                                            label="Avg"
+                                            position="right" />
                                     </Charts>
-                                    <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
-                                            min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
+                                    <YAxis
+                                        id="traffic-rate"
+                                        label="Avg Traffic Rate In (bps)"
+                                        min={0} max={max / (24 * 60 * 60) * 8}
+                                        width="70" />
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
                     </div>
                 </div>
-
 
                 <div className="row">
                     <div className="col-md-12">
@@ -347,34 +350,43 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
+                            <ChartContainer
+                                timeRange={octoberTrafficSeries.range()}
+                                format="day"
+                                onBackgroundClick={() => this.setState({selection: null})}>
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
                                         <BarChart
                                             axis="traffic-volume"
-                                            style={leftStyle}
+                                            style={style}
                                             size={10}
                                             offset={5.5}
                                             columns={["in"]}
-                                            series={octoberTrafficSeries} />
+                                            series={octoberTrafficSeries}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
                                         <BarChart
                                             axis="traffic-volume"
-                                            style={rightStyle}
+                                            style={altStyle}
                                             size={10}
                                             offset={-5.5}
                                             columns={["out"]}
-                                            series={octoberTrafficSeries} />
+                                            series={octoberTrafficSeries}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
+
                                     </Charts>
-                                    <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
-                                            min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
@@ -396,18 +408,25 @@ export default React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
+                            <ChartContainer
+                                timeRange={octoberTrafficSeries.range()}
+                                format="day"
+                                onBackgroundClick={() => this.setState({selection: null})}>
                                 <ChartRow height="150">
                                     <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
                                            min={0} max={max} width="70" type="linear"/>
                                     <Charts>
                                         <BarChart
                                             axis="traffic-volume"
-                                            style={style}
+                                            style={combinedStyle}
                                             spacing={3}
                                             columns={["in", "out"]}
                                             series={octoberTrafficSeries}
-                                            format={formatter}/>
+                                            info={infoValues}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
                                     </Charts>
                                     <YAxis id="traffic-rate" label="Avg Traffic Rate (bps)" classed="traffic-in"
                                             min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
@@ -417,60 +436,7 @@ export default React.createClass({
                         </Resizable>
                     </div>
                 </div>
-                {/*}
-                <div className="row">
-                    <div className="col-md-12">
-                        <hr />
-                        Another example, this time with monthly data:
-                        <hr />
-                    </div>
-                </div>
 
-                <div className="row">
-                    <div className="col-md-12">
-                        <h3>Monthly traffic - 6 months</h3>
-                        <b>Router: bnl-mr2</b>
-                    </div>
-                </div>
-            
-                <div className="row">
-                    <div className="col-md-12">
-                        <Resizable>
-                            <ChartContainer timeRange={monthlyAcceptedSeries.range()} format="month">
-
-                                <ChartRow height="150">
-                                    <YAxis id="traffic" label="Traffic In (B)" classed="traffic-in"
-                                           min={0} max={1500000000000000} width="70" type="linear"/>
-                                    <Charts>
-                                        <BarChart
-                                            axis="traffic"
-                                            series={monthlyAcceptedSeries}
-                                            format={formatter}/>
-                                        <Baseline axis="traffic" value={monthlyAcceptedSeries.avg()} label="Avg "position="right"/>
-                                    </Charts>
-                                    <YAxis id="traffic-rate" label="Avg Traffic Rate In (bps)" classed="traffic-in"
-                                            min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
-                                </ChartRow>
-
-                                <ChartRow height="150">
-                                    <YAxis id="traffic" label="Traffic Out (B)" classed="traffic-out"
-                                           min={0} max={1500000000000000} width="70" type="linear"/>
-                                    <Charts>
-                                        <BarChart
-                                            axis="traffic"
-                                            series={monthlyDeliveredSeries}
-                                            format={formatter}/>
-                                        <Baseline axis="traffic" value={monthlyDeliveredSeries.avg()} label="Avg" position="right"/>
-                                    </Charts>
-                                    <YAxis id="traffic-rate" label="Avg Traffic Rate Out (bps)" classed="traffic-in"
-                                           min={0} max={ max / (24 * 60 * 60) * 8} width="70" type="linear"/>
-                                </ChartRow>
-
-                            </ChartContainer>
-                        </Resizable>
-                    </div>
-                </div>
-                */}
                 <hr />
 
                 <div className="row">

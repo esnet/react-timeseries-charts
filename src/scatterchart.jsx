@@ -11,11 +11,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import _ from "underscore";
-import { timeFormat } from "d3-time-format";
 import merge from "merge";
-import { Event } from "pondjs";
-
-import ValueList from "./valuelist";
+import { TimeSeries, Event } from "pondjs";
+import EventMarker from "./eventmarker";
 
 const defaultStyle = {
     normal: {fill: "steelblue", opacity: 0.8},
@@ -43,7 +41,7 @@ function getElementOffset(element) {
  * manage other elements. As with other charts, this lets them be stacked or
  * overlaid on top of each other.
  *
- * A custom hint overlay lets you hover over the data and examine points. Points
+ * A custom info overlay lets you hover over the data and examine points. Points
  * can be selected or highlighted.
  *
  * ```
@@ -70,9 +68,9 @@ function getElementOffset(element) {
  * can either be a fixed value (e.g. 2.0), or a function. If a function is supplied
  * it will be called as `(event, column) => {}` and should return the size.
  *
- * The hover hint for each point is also able to be styled using the hint style.
+ * The hover info for each point is also able to be styled using the info style.
  * This enables you to control the drawing of the box and connecting lines. Using
- * the `hintWidth` and `hintHeight` props you can control the size of the box, which
+ * the `infoWidth` and `infoHeight` props you can control the size of the box, which
  * is fixed.
  */
 export default React.createClass({
@@ -82,12 +80,9 @@ export default React.createClass({
     getDefaultProps() {
         return {
             columns: ["value"],
-
             radius: 2.0,
-
             style: {},
-
-            hintStyle: {
+            infoStyle: {
                 line: {
                     stroke: "#999",
                     cursor: "crosshair",
@@ -100,9 +95,8 @@ export default React.createClass({
                     pointerEvents: "none"
                 }
             },
-
-            hintWidth: 90,
-            hintHeight: 30
+            infoWidth: 90,
+            infoHeight: 30
         };
     },
 
@@ -111,13 +105,15 @@ export default React.createClass({
         /**
          * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
          */
-        series: React.PropTypes.object.isRequired,
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
 
 
         /**
          * Which columns of the series to render
          */
-        columns: React.PropTypes.arrayOf(React.PropTypes.string),
+        columns: React.PropTypes.arrayOf(
+            React.PropTypes.string
+        ),
 
         /**
          * Reference to the axis which provides the vertical scale for drawing. e.g.
@@ -149,7 +145,7 @@ export default React.createClass({
         /**
          * The style of the scatter chart drawing (using SVG CSS properties).
          * This is an object with a key for each column which is being plotted,
-         * per the `columns` argument. Each of those keys has an object as it's
+         * per the `columns` prop. Each of those keys has an object as its
          * value which has keys which are style properties for an SVG <Circle> and
          * the value to use.
          *
@@ -188,40 +184,59 @@ export default React.createClass({
         ]),
 
         /**
-         * The style of the hint box and connecting lines
+         * The style of the info box and connecting lines
          */
-        hintStyle: React.PropTypes.object,
+        infoStyle: React.PropTypes.object,
 
         /**
-         * The width of the hover hint box
+         * The width of the hover info box
          */
-        hintWidth: React.PropTypes.number,
+        infoWidth: React.PropTypes.number,
 
         /**
-         * The height of the hover hint box
+         * The height of the hover info box
          */
-        hintHeight: React.PropTypes.number,
+        infoHeight: React.PropTypes.number,
 
         /**
-         * The values to show in the hint box. This is an array of
+         * The values to show in the info box. This is an array of
          * objects, with each object specifying the label and value
-         * to be shown in the hint box.
+         * to be shown in the info box.
          */
-        hintValues: React.PropTypes.arrayOf(
+        info: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 label: React.PropTypes.string,
                 value: React.PropTypes.string
             })
-        )
-    },
+        ),
 
-    /**
-     * hover state is tracked internally and a highlight shown as a result
-     */
-    getInitialState() {
-        return {
-            hover: null
-        };
+        /**
+         * The selected dot, which will be rendered in the "selected" style.
+         * If a dot is selected, all other dots will be rendered in the "muted" style.
+         *
+         * See also `onSelectionChange`
+         */
+        selected: React.PropTypes.object,
+        
+        /**
+         * A callback that will be called when the selection changes. It will be called
+         * with an object containing the event and column.
+         */
+        onSelectionChange: React.PropTypes.func,
+
+        /**
+         * The highlighted dot, as an object containing the event and
+         * column, which will be rendered in the "highlighted" style.
+         *
+         * See also `onHighlightChanged`
+         */
+        highlighted: React.PropTypes.object,
+
+        /**
+         * A callback that will be called when the hovered over dot changes.
+         * It will be called with an object containing the event and column.
+         */
+        onHighlightChanged: React.PropTypes.func
     },
 
     handleClick(e, event, column) {
@@ -280,98 +295,6 @@ export default React.createClass({
         }
     },
 
-    renderTrackerTime(d) {
-        const textStyle = {
-            fontSize: 11,
-            textAnchor: "left",
-            fill: "#bdbdbd",
-            pointerEvents: "none"
-        };
-
-        // Use the hintTimeFormat if supplied, otherwise the timeline format
-        const fmt = this.props.hintTimeFormat || "%m/%d/%y %X";
-        const format = timeFormat(fmt);
-        let dateStr = format(d);
-
-        return (
-            <text x={0} y={0} dy="1.2em" style={textStyle}>
-                {dateStr}
-            </text>
-        );
-    },
-
-    renderHint(time, posx, posy, valueList) {
-        const w = this.props.hintWidth;
-
-        if (valueList) {
-            if (posx + 10 + w < this.props.width * 3 / 4) {
-                const horizontalConnector = (
-                    <line
-                        pointerEvents="none"
-                        style={this.props.hintStyle.line}
-                        x1={-10} y1={posy - 10}
-                        x2={0} y2={posy - 10} />
-                );
-                const verticalConnector = (
-                    <line
-                        pointerEvents="none"
-                        style={this.props.hintStyle.line}
-                        x1={0} y1={posy - 10}
-                        x2={0} y2={20} />
-                );
-                return (
-                    <g transform={`translate(${posx + 10},${10})`} >
-                        {horizontalConnector}
-                        {verticalConnector}
-                        {this.renderTrackerTime(time)}
-                        <g transform={`translate(0,${20})`}>
-                            <ValueList
-                                align="left"
-                                values={valueList}
-                                style={this.props.hintStyle.box}
-                                width={this.props.hintWidth}
-                                height={this.props.hintHeight} />
-                        </g>
-                    </g>
-                );
-            } else {
-                const verticalConnector = (
-                    <line
-                        pointerEvents="none"
-                        style={this.props.hintStyle.line}
-                        x1={w} y1={posy - 10}
-                        x2={w} y2={20} />
-                );
-                const horizontalConnector = (
-                    <line
-                        pointerEvents="none"
-                        style={this.props.hintStyle.line}
-                        x1={w} y1={posy - 10}
-                        x2={w + 10} y2={posy - 10} />
-                );
-                return (
-                    <g transform={`translate(${posx - w - 10},${10})`} >
-                        {horizontalConnector}
-                        {verticalConnector}
-                        {this.renderTrackerTime(time)}
-                        <g transform={`translate(0,${20})`}>
-                            <ValueList
-                                align="left"
-                                values={valueList}
-                                style={this.props.hintStyle.box}
-                                width={this.props.hintWidth}
-                                height={this.props.hintHeight} />
-                        </g>
-                    </g>
-                );
-            }
-        } else {
-            return (
-                <g />
-            );
-        }
-    },
-
     renderScatter() {
         const { series, timeScale, yScale } = this.props;
         const points = [];
@@ -390,11 +313,9 @@ export default React.createClass({
                     this.props.radius(event, column) : this.props.radius;
 
                 const isHighlighted =
-                    (this.state.hover &&
-                        Event.is(this.state.hover, event)) ||
-                    (this.props.highlight &&
-                        Event.is(this.props.highlight.event, event) &&
-                        column === this.props.highlight.column);
+                    this.props.highlight &&
+                    Event.is(this.props.highlight.event, event) &&
+                    column === this.props.highlight.column;
 
                 const isSelected =
                     (this.props.selection &&
@@ -424,9 +345,16 @@ export default React.createClass({
                 }
                 style.cursor = "crosshair";
 
-                // Hover hint
-                if (isHighlighted && this.props.hintValues) {
-                    hoverOverlay = this.renderHint(t, x, y, this.props.hintValues);
+                // Hover info
+                if (isHighlighted && this.props.info) {
+                    hoverOverlay = (
+                        <EventMarker
+                            {...this.props}
+                            event={event}
+                            column={column}
+                            marker="circle"
+                            markerRadius="0" />
+                    );
                 }
 
                 points.push(

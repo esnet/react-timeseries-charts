@@ -184,6 +184,13 @@ export default React.createClass({
         }
     },
 
+    handleBackgroundClick() {
+        console.log("BACKGROUND CLICK");
+        if (this.props.onBackgroundClick) {
+            this.props.onBackgroundClick();
+        }
+    },
+
     handleZoom(timerange) {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
@@ -392,34 +399,26 @@ export default React.createClass({
         // Event handler
         //
 
-        let rows;
-        if (this.props.enablePanZoom || this.props.onTrackerChanged) {
-            rows = (
-                <g transform={`translate(${leftWidth},${0})`}>
-                    <EventHandler
-                        key="event-handler"
-                        width={chartsWidth}
-                        height={chartsHeight + timeAxisHeight}
-                        scale={timeScale}
-                        enablePanZoom={this.props.enablePanZoom}
-                        minDuration={this.props.minDuration}
-                        minTime={this.props.minTime}
-                        maxTime={this.props.maxTime}
-                        onMouseOut={this.handleMouseOut}
-                        onMouseMove={this.handleMouseMove}
-                        onZoom={this.handleZoom}
-                        onResize={this.handleResize}>
-                            {chartRows}
-                    </EventHandler>
-                </g>
-            );
-        } else {
-            rows = (
-                <g transform={`translate(${leftWidth},${0})`} key="event-rect-group">
-                    {chartRows}
-                </g>
-            );
-        }
+        const rows = (
+            <g transform={`translate(${leftWidth},${0})`}>
+                <EventHandler
+                    key="event-handler"
+                    width={chartsWidth}
+                    height={chartsHeight + timeAxisHeight}
+                    scale={timeScale}
+                    enablePanZoom={this.props.enablePanZoom}
+                    minDuration={this.props.minDuration}
+                    minTime={this.props.minTime}
+                    maxTime={this.props.maxTime}
+                    onMouseOut={this.handleMouseOut}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseClick={this.handleBackgroundClick}
+                    onZoom={this.handleZoom}
+                    onResize={this.handleResize}>
+                        {chartRows}
+                </EventHandler>
+            </g>
+        );
 
         //
         // Final render of the ChartContainer is composed of a number of

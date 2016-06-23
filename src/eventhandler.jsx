@@ -150,6 +150,13 @@ export default React.createClass({
         }
     },
 
+    handleMouseClick(e) {
+        e.preventDefault();
+        if (this.props.onMouseClick) {
+            this.props.onMouseClick();
+        }
+    },
+
     handleMouseMove(e) {
         e.preventDefault();
 
@@ -209,7 +216,8 @@ export default React.createClass({
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}
                 onMouseOut={this.handleMouseOut}
-                onMouseUp={this.handleMouseUp}>
+                onMouseUp={this.handleMouseUp}
+                onClick={this.handleMouseClick}>
                 <rect
                     key="handler-hit-rect"
                     ref="eventrect"

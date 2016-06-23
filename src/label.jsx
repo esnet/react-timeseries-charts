@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2016, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -11,17 +11,17 @@
 import React from "react";
 
 /**
- * Renders a list of values in svg
+ * Renders a simple label surrounded by a box within in svg
  *
  *      +----------------+
- *      | Max 100 Gbps   |
- *      | Avg 26 Gbps    |
+ *      | My label       |
+ *      |                |
  *      +----------------+
  */
 
 export default React.createClass({
 
-    displayName: "ValueList",
+    displayName: "Label",
 
     getDefaultProps() {
         return {
@@ -38,17 +38,9 @@ export default React.createClass({
         align: React.PropTypes.oneOf(["center", "left"]),
 
         /**
-         * An array of label value pairs to render
+         * The label to render
          */
-        values: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                label: React.PropTypes.string,
-                value: React.PropTypes.oneOfType([
-                    React.PropTypes.number,
-                    React.PropTypes.string
-                ])
-            }),
-        ).isRequired,
+        label: React.PropTypes.string.isRequired,
 
         /**
          * The width of the rectangle to render into
@@ -68,7 +60,7 @@ export default React.createClass({
             fill: "#b0b0b0",
             pointerEvents: "none"
         };
-        
+
         const textStyleCentered = {
             fontSize: 11,
             textAnchor: "middle",
@@ -76,28 +68,17 @@ export default React.createClass({
             pointerEvents: "none"
         };
 
-        const values = this.props.values.map((item, i) => {
-            if (this.props.align === "left") {
-                return (
-                    <g key={i}>
-                        <text x={10} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyle}>
-                            <tspan style={{fontWeight: 700}}>{`${item.label}: `}</tspan>
-                            <tspan>{`${item.value}`}</tspan>
-                        </text>
-                    </g>
-                );
-            } else {
-                const posx = parseInt(this.props.width / 2, 10);
-                return (
-                    <g key={i}>
-                        <text x={posx} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyleCentered}>
-                            <tspan style={{fontWeight: 700}}>{`${item.label}: `}</tspan>
-                            <tspan>{`${item.value}`}</tspan>
-                        </text>
-                    </g>
-                );
-            }
-        });
+        const style = this.props.align === "center" ?
+            textStyleCentered : textStyle;
+
+        const posx = this.props.align === "center" ?
+            parseInt(this.props.width / 2, 10) : 10;
+
+        const label = (
+            <text x={posx} y={5} dy="1.2em" style={style}>
+                {this.props.label}
+            </text>
+        );
 
         const box = (
             <rect
@@ -109,7 +90,7 @@ export default React.createClass({
         return (
             <g>
                 {box}
-                {values}
+                {label}
             </g>
         );
     }

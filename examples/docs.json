@@ -197,50 +197,62 @@
     }
   },
   "src/barchart.jsx": {
-    "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different in that it will render\nonto a time axis, rather than rendering to specific values. As a result,\nan Aug 2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.",
+    "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different that other time axis\nbar charts in that it will render across a the time range of the event\nrather than rendering to specific categories. As a result,\na Aug-2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.\n\nThe BarChart will render a single TimeSeries. You can specify the columns\nyou want to render with the `columns` prop. Each column will be stacked on\nthe other, in the order specified in the `columns` array.\n\nThe BarChart supports selection of individual bars. To control this use\n`onSelectionChange` to get a callback of selection changed. Your callback\nwill be called with with the selection (and object containing the event\nand column). You can pass this back into the BarChart as `selection`. For\nexample:\n\n```\n <BarChart\n     ...\n     selection={this.state.selection}\n     onSelectionChange={selection => this.setState({selection})} />\n```\n\nSimilarly you can monitor which bar is being hovered over with the\n`onHighlightChanged` callback. This can be used to determine the info text\nto display. Info text will display a box (like a tooltip) with a line\nconnecting it to the bar. You use the `info` prop to evoke this and to\nsupply the text for the info box. See the styling notes below for more\ninformation on this.\n\n### Styling\n\nA BarChart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected and muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\n\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the bars can be controlled with the `spacing` and\n`offset` props. Spacing controls the gap between the bars. Offset moves the\nbars left or right by the given number of pixels. You can use this to place\nbars along side each other. Alternatively, you can give each column a fixed width\nusing the `size` prop. In this case this size will be used over the size\ndetermined from the timerange of the event and the `spacing`.\n\nThe highlight info for each bar is also able to be styled using the `infoStyle`.\nThis enables you to control the drawing of the box, connecting lines and dot.\nUsing the `infoWidth` and `infoHeight` props you can control the size of the\nbox, which is fixed. For the info inside the box, it's up to you: it can either\nbe a simple string or an array of {label, value} pairs.",
     "displayName": "BarChart",
     "methods": [
       {
-        "name": "handleMouseMove",
-        "docblock": "Continues a hover event on a specific bar of the bar chart.",
+        "name": "handleHover",
+        "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "e"
+            "name": "e",
+            "type": null
           },
           {
-            "name": "key"
+            "name": "event",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
           }
         ],
-        "returns": null,
-        "description": "Continues a hover event on a specific bar of the bar chart."
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       },
       {
         "name": "handleClick",
-        "docblock": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the key, which is\n$series.name-$index-$column, the value of that event, along with the\ncontext. The context provides the series (a TimeSeries), the column (a\nstring) and the index (an Index).",
+        "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "e"
+            "name": "e",
+            "type": null
           },
           {
-            "name": "key"
+            "name": "event",
+            "type": null
           },
           {
-            "name": "value"
-          },
-          {
-            "name": "series"
-          },
-          {
-            "name": "column"
-          },
-          {
-            "name": "index"
+            "name": "column",
+            "type": null
           }
         ],
-        "returns": null,
-        "description": "Handle click will call the onSelectionChange callback if one is provided\nas a prop. It will be called with the key, which is\n$series.name-$index-$column, the value of that event, along with the\ncontext. The context provides the series (a TimeSeries), the column (a\nstring) and the index (an Index)."
+        "returns": null
+      },
+      {
+        "name": "handleBackgroundClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       },
       {
         "name": "renderBars",
@@ -257,7 +269,7 @@
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize"
       },
       "spacing": {
         "type": {
@@ -266,7 +278,7 @@
         "required": false,
         "description": "The distance in pixels to inset the bar chart from its actual timerange",
         "defaultValue": {
-          "value": "1",
+          "value": "1.0",
           "computed": false
         }
       },
@@ -297,43 +309,132 @@
       },
       "style": {
         "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": "The style provides the coloring, relating each column to styles for normal, highlight (hover) and selected:\n```\nconst style = {\n    \"in\": {\n        normal: {fill: \"#619F3A\"},\n        highlight: {fill: \"rgb(113, 187, 67)\"},\n        selected: {fill: \"#436D28\"}\n    }\n};\n```",
-        "defaultValue": {
-          "value": "{value: defaultStyle}",
-          "computed": false
-        }
-      },
-      "format": {
-        "type": {
           "name": "union",
           "value": [
             {
-              "name": "func"
+              "name": "object"
             },
             {
-              "name": "string"
+              "name": "func"
             }
           ]
         },
         "required": false,
-        "description": "The format is used to format the hover text for the bar. It can be specified as a d3\nformat string (such as \".2f\") or a function. The function will be called with the value\nand should return a string."
+        "description": "The style of the bar chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being drawn,\nper the `columns` prop. For each column a style is defined for\neach state the bar may be in. This style is the CSS properties for\nthe underlying SVG <Rect>, so most likely you'll define fill and\nopacity.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\nfour states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "info": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "string",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
       },
       "size": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "If size is specified, then the bar will be this number of pixels wide. This\nprop takes priority of \"spacing\"."
+        "description": "If size is specified, then the bar will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "selected": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "event": {
+              "name": "instanceOf",
+              "value": "IndexedEvent",
+              "required": false
+            },
+            "column": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The selected item, which will be rendered in the \"selected\" style.\nIf a bar is selected, all other bars will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
       },
       "onSelectionChange": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": "A callback that will be called when the selection changes. It will be called\nwith the key, which is $series.name-$index-$column, the value of that event,\nalong with the context. The context provides the series (a Pond TimeSeries),\nthe column (a string) and the index (a Pond Index)."
+        "description": "A callback that will be called when the selection changes. It will be called\nwith an object containing the event and column."
+      },
+      "highlighted": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "event": {
+              "name": "instanceOf",
+              "value": "IndexedEvent",
+              "required": false
+            },
+            "column": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+      },
+      "onHighlightChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over bar changes.\nIt will be called with an object containing the event and column."
       }
     }
   },
@@ -960,6 +1061,181 @@
       }
     ]
   },
+  "src/eventmarker.jsx": {
+    "description": "Renders a marker at a specific event on the chart. You can also\noverride either the x or y position, so this allows you to position\na timestamped label or timestamped list of label/value pairs anywhere\non a chart.",
+    "displayName": "EventMarker",
+    "methods": [
+      {
+        "name": "renderTime",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderEventTime",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "d",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderEventIndex",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "index",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderEventTimeRange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timerange",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderMarker",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "event",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          },
+          {
+            "name": "info",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "event": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "instanceOf",
+              "value": "Event"
+            },
+            {
+              "name": "instanceOf",
+              "value": "IndexedEvent"
+            },
+            {
+              "name": "instanceOf",
+              "value": "TimeRangeEvent"
+            }
+          ]
+        },
+        "required": true,
+        "description": "What [Pond Event](http://software.es.net/pond#event) to mark"
+      },
+      "column": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Which column in the Event to use",
+        "defaultValue": {
+          "value": "\"value\"",
+          "computed": false
+        }
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "25",
+          "computed": false
+        }
+      },
+      "info": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "shape",
+                "value": {
+                  "label": {
+                    "name": "string",
+                    "required": false
+                  },
+                  "value": {
+                    "name": "string",
+                    "required": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is either an array of\nobjects, with each object specifying the label and value\nto be shown in the info box, or a simple string label"
+      },
+      "markerRadius": {
+        "defaultValue": {
+          "value": "2",
+          "computed": false
+        }
+      }
+    }
+  },
   "src/hbarchart.jsx": {
     "description": "The HorizontalBarChart takes a list of `TimeSeries` objects and displays a bar chart\nvisualization summarizing those. As an example, let's say we have a set of interfaces, which\ntogether carry the entire network traffic to a particular location. We want to see which\ninterfaces contribute the most to the total traffic.\n\nTo display this we render the HorizontalBarChart in our page:\n \n    <HorizontalBarChart\n        display=\"range\"\n        seriesList={interfaces}\n        columns={[\"out\", \"in\"]}\n        top={5} sortBy=\"max\"\n        timestamp={this.state.tracker}\n        format={formatter}\n        selected={this.state.selected}\n        onSelectionChanged={this.handleSelectionChange}\n        selectionColor=\"#37B6D3\"\n        style={[{fill: \"#1F78B4\"}, {fill: \"#FF7F00\"}]} />\n\nOur first prop `display` tells the component how to draw the bars. In this case we use the\n\"range\", which will draw from min to max (with additional drawing to show 1 stdev away from\nthe center).\n\nNext we specify the `seriesList` itself. This should be an array of Pond TimeSeries objects.\n\nThe `columns` prop tells us which columns within the TimeSeries should be displayed as a bar.\nIn this case we have `in` and `out` traffic columns, so we'll get two bars for each series.\n\n`top` and `sortBy` are used to order and trim the list of TimeSeries. Here we order by the max\nvalues in the specified columns, then just display the top 5.\n\nThe `timestamp` lets the component know the current value. You could display the last timestamp\nin the series, or perhaps a time being interacted with in the UI.\n\nThe `format` can either be a d3 format string of a function. In this case we have our own\nformatter function to display values:\n\n    function formatter(value) {\n        const prefix = d3.formatPrefix(value);\n        return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;\n    }\n\nSelection is handled with `selected`, which gives the name of the TimeSeries currently selected.\nIf the user selects a different row the callback passed to `onSelectionChanged` will be called\nwith the name of the TimeSeries represented in the newly selected row. We also specify a color\nto mark the selected item with the `selectionColor` prop.\n\nNext we specify the `style`. This is the css style of each column's bars. Typically you would\njust want to specify the fill color. Each bar is a svg rect.",
     "displayName": "HorizontalBarChart",
@@ -1176,6 +1452,75 @@
       "style": {
         "defaultValue": {
           "value": "[{fill: \"steelblue\"}]",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/label.jsx": {
+    "description": "Renders a simple label surrounded by a box within in svg\n\n     +----------------+\n     | My label       |\n     |                |\n     +----------------+",
+    "displayName": "Label",
+    "methods": [],
+    "props": {
+      "align": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "\"center\"",
+              "computed": false
+            },
+            {
+              "value": "\"left\"",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"center\"",
+          "computed": false
+        }
+      },
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "The label to render"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the rectangle to render into",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the rectangle to render into",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "pointerEvents": {
+        "defaultValue": {
+          "value": "\"none\"",
+          "computed": false
+        }
+      },
+      "style": {
+        "defaultValue": {
+          "value": "{fill: \"#FEFEFE\", stroke: \"#DDD\", opacity: 0.8}",
           "computed": false
         }
       }
@@ -1595,7 +1940,7 @@
     ]
   },
   "src/scatterchart.jsx": {
-    "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom hint overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover hint for each point is also able to be styled using the hint style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `hintWidth` and `hintHeight` props you can control the size of the box, which\nis fixed.",
+    "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom info overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover info for each point is also able to be styled using the info style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `infoWidth` and `infoHeight` props you can control the size of the box, which\nis fixed.",
     "displayName": "ScatterChart",
     "methods": [
       {
@@ -1657,42 +2002,6 @@
         "returns": null
       },
       {
-        "name": "renderTrackerTime",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "d",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderHint",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "time",
-            "type": null
-          },
-          {
-            "name": "posx",
-            "type": null
-          },
-          {
-            "name": "posy",
-            "type": null
-          },
-          {
-            "name": "valueList",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
         "name": "renderScatter",
         "docblock": null,
         "modifiers": [],
@@ -1703,7 +2012,8 @@
     "props": {
       "series": {
         "type": {
-          "name": "object"
+          "name": "instanceOf",
+          "value": "TimeSeries"
         },
         "required": true,
         "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
@@ -1761,46 +2071,46 @@
           ]
         },
         "required": false,
-        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` argument. Each of those keys has an object as it's\nvalue which has keys which are style properties for an SVG <Circle> and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\n4 states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
+        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` prop. Each of those keys has an object as its\nvalue which has keys which are style properties for an SVG <Circle> and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\n4 states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
         "defaultValue": {
           "value": "{}",
           "computed": false
         }
       },
-      "hintStyle": {
+      "infoStyle": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "The style of the hint box and connecting lines",
+        "description": "The style of the info box and connecting lines",
         "defaultValue": {
           "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    }\n}",
           "computed": false
         }
       },
-      "hintWidth": {
+      "infoWidth": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "The width of the hover hint box",
+        "description": "The width of the hover info box",
         "defaultValue": {
           "value": "90",
           "computed": false
         }
       },
-      "hintHeight": {
+      "infoHeight": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "The height of the hover hint box",
+        "description": "The height of the hover info box",
         "defaultValue": {
           "value": "30",
           "computed": false
         }
       },
-      "hintValues": {
+      "info": {
         "type": {
           "name": "arrayOf",
           "value": {
@@ -1818,7 +2128,35 @@
           }
         },
         "required": false,
-        "description": "The values to show in the hint box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the hint box."
+        "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
+      },
+      "selected": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The selected dot, which will be rendered in the \"selected\" style.\nIf a dot is selected, all other dots will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith an object containing the event and column."
+      },
+      "highlighted": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The highlighted dot, as an object containing the event and\ncolumn, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+      },
+      "onHighlightChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over dot changes.\nIt will be called with an object containing the event and column."
       }
     }
   },

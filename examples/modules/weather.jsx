@@ -178,12 +178,6 @@ export default React.createClass({
     },
 
     render() {
-        /*
-        const trackerValues = [
-            {label: "Temp", value: 33.2},
-            {label: "Pressure", value: 123}
-        ];
-        */
         return (
             <div>
 
@@ -207,12 +201,12 @@ export default React.createClass({
                                 <ChartRow height="150" >
                                     <YAxis id="temp" label="Temperature (°F)" labelOffset={-5} style={{labelColor: scheme.temp}}
                                            min={50} max={70} width="80" type="linear" format=",.1f"/>
-                                    <YAxis id="pressure" label="Pressure (in)" labelOffset={-5} style={{labelColor: scheme.pressure}}
-                                           min={29.5} max={30.0} width="80" type="linear" format=",.1f"/>
                                     <Charts>
                                         <LineChart axis="temp" series={tempSeries} columns={["temp"]} style={lineStyles}/>
                                         <LineChart axis="pressure" series={pressureSeries} columns={["pressure"]} style={lineStyles}/>
                                     </Charts>
+                                    <YAxis id="pressure" label="Pressure (in)" labelOffset={5} style={{labelColor: scheme.pressure}}
+                                           min={29.5} max={30.0} width="80" type="linear" format=",.1f"/>
 
                                 </ChartRow>
 
@@ -221,7 +215,11 @@ export default React.createClass({
                                            min={0} max={50} width="80" type="linear" format=",.1f"/>
 
                                     <Charts>
-                                        <LineChart axis="wind" series={windSeries} columns={["wind"]} style={lineStyles}/>
+                                        <LineChart
+                                            axis="wind"
+                                            series={windSeries}
+                                            columns={["wind"]}
+                                            style={lineStyles}/>
                                         <ScatterChart
                                             axis="wind-gust"
                                             series={gustSeries}
@@ -235,11 +233,11 @@ export default React.createClass({
                                 </ChartRow>
 
                                 <ChartRow height="150">
+                                    <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={-5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
                                     <Charts>
                                         <AreaChart axis="rain" series={rainSeries} style={{up: [scheme.rain]}} interpolate="basis" fillOpacity={0.4}/>
                                         <LineChart axis="total-rain" series={rainAccumSeries} columns={["rainAccum"]} style={lineStyles}/>
                                     </Charts>
-                                    <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
                                     <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={{labelColor: scheme.rain}}
                                            min={0} max={rainSeries.max()} width="80" type="linear" format=",.2f"/>
                                 </ChartRow>
