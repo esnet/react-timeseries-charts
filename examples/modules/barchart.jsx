@@ -281,6 +281,7 @@ export default React.createClass({
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
+                                utc={false}
                                 timeRange={this.state.timerange}
                                 format="day"
                                 enablePanZoom={true}

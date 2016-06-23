@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import { scaleTime } from "d3-scale";
+import { scaleTime, scaleUtc } from "d3-scale";
 import _ from "underscore";
 import { TimeRange } from "pondjs";
 import invariant from "invariant";
@@ -47,7 +47,8 @@ export default React.createClass({
         return {
             width: 800,
             padding: 0,
-            enablePanZoom: false
+            enablePanZoom: false,
+            utc: false
         };
     },
 
@@ -57,6 +58,11 @@ export default React.createClass({
          * A Pond TimeRange representing the begin and end time of the chart.
          */
         timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
+
+        /**
+         * Should the time axis use a UTC scale or local
+         */
+        utc: React.PropTypes.bool,
 
         /**
          * Children of the ChartContainer should be ChartRows.
@@ -204,7 +210,6 @@ export default React.createClass({
 
     render() {
         const chartRows = [];
-
         //
         // How much room does the axes of all the charts take up on the right
         // and left. The result is an array for left and right axis which
@@ -297,9 +302,13 @@ export default React.createClass({
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        const timeScale = scaleTime()
-            .domain(this.props.timeRange.toJSON())
-            .range([0, timeAxisWidth]);
+        const timeScale = this.props.utc ?
+            scaleUtc()
+                .domain(this.props.timeRange.toJSON())
+                .range([0, timeAxisWidth]) :
+            scaleTime()
+                .domain(this.props.timeRange.toJSON())
+                .range([0, timeAxisWidth]);
 
         //
         // For valid children (those children which are ChartRows), we actually
@@ -388,6 +397,7 @@ export default React.createClass({
                     style={timeAxisStyle} />
                 <TimeAxis
                     scale={timeScale}
+                    utc={this.props.utc}
                     format={this.props.format}
                     showGrid={this.props.showGrid}
                     gridHeight={chartsHeight} />

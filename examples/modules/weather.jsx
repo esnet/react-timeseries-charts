@@ -173,25 +173,58 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            tracker: null
+            tracker: null,
+            mode: "local"
         };
     },
 
     render() {
+
+        const linkStyle = {
+            fontWeight: 600,
+            color: "grey",
+            cursor: "default"
+        };
+
+        const linkStyleActive = {
+            color: "steelblue",
+            cursor: "pointer"
+        };
+
         return (
             <div>
 
                 <div className="row">
                     <div className="col-md-12">
                         <h3>Weather example</h3>
-                        <hr />
                     </div>
                 </div>
+
+                <hr/>
+                
+                <div className="row">
+                    <div className="col-md-12" style={{fontSize: 14, color: "#777"}}>
+                        <span
+                            style={this.state.mode === "local" ? linkStyleActive : linkStyle}
+                            onClick={() => this.setState({mode: "utc"})}>
+                                UTC
+                        </span>
+                        <span> | </span>
+                        <span
+                            style={this.state.mode === "utc" ? linkStyleActive : linkStyle}
+                            onClick={() => this.setState({mode: "local"})}>
+                                Local
+                        </span>
+                    </div>
+                </div>
+
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
+                                utc={this.state.mode === "utc"}
                                 timeRange={tempSeries.timerange()}
                                 showGrid={true}
                                 trackerPosition={this.state.tracker}

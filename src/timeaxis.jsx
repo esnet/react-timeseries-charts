@@ -12,7 +12,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { axisBottom } from "d3-axis";
 import { timeFormat } from "d3-time-format";
-import { timeDay, timeMonth, timeYear } from "d3-time";
+import { timeDay, utcDay, timeMonth, utcMonth, timeYear, utcYear } from "d3-time";
 import { select } from "d3-selection";
 import moment from "moment";
 import "moment-duration-format";
@@ -33,18 +33,19 @@ export default React.createClass({
         let axis;
 
         const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
+        const utc = this.props.utc;
 
         if (this.props.format === "day") {
             axis = axisBottom(scale)
-                .tickArguments([timeDay, 1])
+                .tickArguments([utc ? utcDay : timeDay, 1])
                 .tickFormat(timeFormat("%d"));
         } else if (this.props.format === "month") {
             axis = axisBottom(scale)
-                .tickArguments([timeMonth, 1])
+                .tickArguments([utc ? utcMonth : timeMonth, 1])
                 .tickFormat(timeFormat("%B"));
         } else if (this.props.format === "year") {
             axis = axisBottom(scale)
-                .tickArguments([timeYear, 1])
+                .tickArguments([utc ? utcYear : timeYear, 1])
                 .tickFormat(timeFormat("%Y"));
         } else if (this.props.format === "relative") {
             axis = axisBottom(scale)
@@ -68,8 +69,9 @@ export default React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        const scale = nextProps.scale;
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
+        const { scale, utc } = nextProps;
+        if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+            this.props.utc !== utc) {
             this.renderTimeAxis(scale);
         }
     },
