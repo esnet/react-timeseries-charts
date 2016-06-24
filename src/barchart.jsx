@@ -361,6 +361,7 @@ export default React.createClass({
                         hoverOverlay = (
                             <EventMarker
                                 {...this.props}
+                                offsetX={offset}
                                 offsetY={yBase - ypos}
                                 event={event}
                                 column={column} />

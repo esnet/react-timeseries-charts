@@ -739,6 +739,17 @@
         "required": true,
         "description": "A Pond TimeRange representing the begin and end time of the chart."
       },
+      "utc": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Should the time axis use a UTC scale or local",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "children": {
         "type": {
           "name": "union",
