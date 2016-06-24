@@ -213,6 +213,7 @@ export default React.createClass({
         const yScale = nextProps.yScale;
         const isPanning = nextProps.isPanning;
         const interpolation = nextProps.interpolation;
+        const columns = nextProps.columns;
 
         // What changed?
         const widthChanged =
@@ -225,6 +226,8 @@ export default React.createClass({
             (this.props.isPanning !== isPanning);
         const interpolationChanged =
             (this.props.interpolation !== interpolation);
+        const columnsChanged =
+            (this.props.columns !== columns);
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -239,7 +242,8 @@ export default React.createClass({
             timeScaleChanged ||
             isPanningChanged ||
             yAxisScaleChanged ||
-            interpolationChanged
+            interpolationChanged ||
+            columnsChanged
         );
     },
 
