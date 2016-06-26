@@ -52,13 +52,46 @@ const currencySeries = new TimeSeries({
 
 const lineStyles = {
     aud: {
-        stroke: "steelblue",
-        strokeWidth: 1,
-        strokeDasharray: "4,2"
+        normal: {
+            stroke: "steelblue",
+            strokeWidth: 1,
+            strokeDasharray: "4,2"
+        },
+        selected: {
+            stroke: "steelblue",
+            strokeWidth: 2,
+            strokeDasharray: "4,2"
+        },
+        highlighted: {
+            stroke: "#5a98cb",
+            strokeWidth: 2,
+            strokeDasharray: "4,2"
+        },
+        muted: {
+            stroke: "steelblue",
+            strokeWidth: 1,
+            strokeOpacity: 0.75,
+            strokeDasharray: "4,2"
+        }
     },
     euro: {
-        stroke: "#a02c2c",
-        strokeWidth: 2
+        normal: {
+            stroke: "#F68B24",
+            strokeWidth: 1
+        },
+        selected: {
+            stroke: "#F68B24",
+            strokeWidth: 2
+        },
+        highlighted: {
+            stroke: "#FF840E",
+            strokeWidth: 2
+        },
+        muted: {
+            stroke: "#F68B24",
+            strokeWidth: 1,
+            strokeOpacity: 0.75
+        }
     }
 };
 
@@ -125,17 +158,36 @@ export default React.createClass({
                                 timeRange={this.state.timerange}
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
+                                onBackgroundClick={() => this.setState({selection: null})}
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                                 minDuration={1000 * 60 * 60 * 24 * 30} >
                                 <ChartRow height="200" debug={false}>
-                                    <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f" />
+                                    <YAxis
+                                        id="y"
+                                        label="Price ($)"
+                                        min={0.5}
+                                        max={1.5}
+                                        width="60"
+                                        type="linear"
+                                        format="$,.2f" />
                                     <Charts>
-                                        <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" />
-                                        <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
-                                        <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
+                                        <LineChart
+                                            axis="y"
+                                            series={currencySeries}
+                                            columns={["aud", "euro"]}
+                                            style={lineStyles}
+                                            interpolation="curveBasis"
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
+                                        <Baseline
+                                            axis="y"
+                                            value={1.0}
+                                            label="USD Baseline"
+                                            position="right" />
                                     </Charts>
-                                    <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f" />
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>

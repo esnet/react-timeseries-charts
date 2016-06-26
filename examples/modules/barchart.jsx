@@ -205,18 +205,6 @@ export default React.createClass({
         this.setState({timerange});
     },
 
-    handleSelectionChanged(bar) {
-        this.setState({
-            selection: bar
-        });
-    },
-
-    handleHighlightChanged(bar) {
-        this.setState({
-            highlight: bar
-        });
-    },
-
     render() {
         const style = {
             in: {

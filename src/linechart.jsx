@@ -18,6 +18,13 @@ function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
+const defaultStyle = {
+    normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+    highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+    selected: {stroke: "steelblue", fill: "none", strokeWidth: 2},
+    muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+};
+
 /**
  * The `<LineChart>` component is able to display multiple columns of a TimeSeries
  * as separate line charts.
@@ -124,20 +131,83 @@ export default React.createClass({
          * the bad value(s). If breakLine is false (the default) bad values
          * are simply removed and the adjoining points are connected.
          */
-        breakLine: React.PropTypes.bool
+        breakLine: React.PropTypes.bool,
+
+        /**
+         * The selected item, which will be rendered in the "selected" style.
+         * If a line is selected, all other lines will be rendered in the "muted" style.
+         *
+         * See also `onSelectionChange`
+         */
+        selected: React.PropTypes.string,
+        
+        /**
+         * A callback that will be called when the selection changes. It will be called
+         * with the column corresponding to the line being clicked.
+         */
+        onSelectionChange: React.PropTypes.func,
+
+        /**
+         * The highlighted column, which will be rendered in the "highlighted" style.
+         *
+         * See also `onHighlightChanged`
+         */
+        highlighted: React.PropTypes.string,
+
+        /**
+         * A callback that will be called when the hovered over line changes.
+         * It will be called with the corresponding column.
+         */
+        onHighlightChanged: React.PropTypes.func
+    },
+
+    handleHover(e, column) {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(column);
+        }
+    },
+
+    handleHoverLeave() {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(null);
+        }
+    },
+
+    handleClick(e, column) {
+        e.stopPropagation();
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(column);
+        }
     },
 
     /**
      * Returns the style used for drawing the path
      */
     pathStyle(column) {
-        const baseStyle = {
-            fill: "none",
-            pointerEvents: "none",
-            stroke: "#9DA3FF",
-            strokeWidth: "1px"
-        };
-        return merge(true, baseStyle, this.props.style[column] || {});
+        let style;
+
+        const isHighlighted = this.props.highlight && column === this.props.highlight;
+        const isSelected = this.props.selection && column === this.props.selection;
+        const providedStyle = this.props.style ? this.props.style[column] : {};
+        const styleMap = _.isFunction(this.props.style) ? this.props.style(column) : providedStyle;
+
+        if (this.props.selection) {
+            if (isSelected) {
+                style = merge(true, defaultStyle.selected, styleMap.selected ? styleMap.selected : {});
+            } else if (isHighlighted) {
+                style = merge(true, defaultStyle.highlighted, styleMap.highlighted ? styleMap.highlighted : {});
+            } else {
+                style = merge(true, defaultStyle.muted, styleMap.muted ? styleMap.muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(true,
+                          defaultStyle.highlighted,
+                          styleMap.highlighted ? styleMap.highlighted : {});
+        } else {
+            style = merge(true, defaultStyle.normal, styleMap.normal);
+        }
+
+        return style;
     },
 
     renderPath(data, column, key) {
@@ -146,12 +216,27 @@ export default React.createClass({
             .x((data) => this.props.timeScale(data.x))
             .y((data) => this.props.yScale(data.y));
         const path = lineFunction(data);
+        const hitStyle = {
+            stroke: "white",
+            fill: "none",
+            opacity: 0.0,
+            strokeWidth: 7,
+            cursor: "crosshair"
+        };
         return (
-            <path
-                key={key}
-                clipPath={this.props.clipPathURL}
-                style={this.pathStyle(column)}
-                d={path} />
+            <g key={key}>
+                <path
+                    d={path}
+                    clipPath={this.props.clipPathURL}
+                    style={this.pathStyle(column)} />
+                <path
+                    d={path}
+                    clipPath={this.props.clipPathURL}
+                    style={hitStyle}
+                    onClick={e => this.handleClick(e, column)}
+                    onMouseLeave={this.handleHoverLeave}
+                    onMouseMove={e => this.handleHover(e, column)} />
+            </g>
         );
     },
 
@@ -213,6 +298,8 @@ export default React.createClass({
         const yScale = nextProps.yScale;
         const isPanning = nextProps.isPanning;
         const interpolation = nextProps.interpolation;
+        const highlight = nextProps.highlight;
+        const selection = nextProps.selection;
 
         // What changed?
         const widthChanged =
@@ -225,6 +312,10 @@ export default React.createClass({
             (this.props.isPanning !== isPanning);
         const interpolationChanged =
             (this.props.interpolation !== interpolation);
+        const highlightChanged =
+            (this.props.highlight !== highlight);
+        const selectionChanged =
+            (this.props.selection !== selection);
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -239,7 +330,9 @@ export default React.createClass({
             timeScaleChanged ||
             isPanningChanged ||
             yAxisScaleChanged ||
-            interpolationChanged
+            interpolationChanged ||
+            highlightChanged ||
+            selectionChanged
         );
     },
 

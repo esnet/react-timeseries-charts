@@ -265,12 +265,6 @@ export default React.createClass({
         e.stopPropagation();
     },
 
-    handleBackgroundClick() {
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(null);
-        }
-    },
-
     renderBars() {
         const spacing = +this.props.spacing;
         const offset = +this.props.offset;
@@ -380,7 +374,7 @@ export default React.createClass({
                             clipPath={this.props.clipPathURL}
                             onClick={e => this.handleClick(e, event, column)}
                             onMouseLeave={this.handleHoverLeave}
-                            onMouseMove={e => this.handleHover(e, event, column)}/>
+                            onMouseMove={e => this.handleHover(e, event, column)} />
                     );
 
                     ypos -= height;

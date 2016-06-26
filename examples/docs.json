@@ -248,13 +248,6 @@
         "returns": null
       },
       {
-        "name": "handleBackgroundClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
         "name": "renderBars",
         "docblock": null,
         "modifiers": [],
@@ -1780,6 +1773,45 @@
     "displayName": "LineChart",
     "methods": [
       {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "pathStyle",
         "docblock": "Returns the style used for drawing the path",
         "modifiers": [],
@@ -1948,6 +1980,34 @@
           "value": "true",
           "computed": false
         }
+      },
+      "selected": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The selected item, which will be rendered in the \"selected\" style.\nIf a line is selected, all other lines will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith the column corresponding to the line being clicked."
+      },
+      "highlighted": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The highlighted column, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+      },
+      "onHighlightChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over line changes.\nIt will be called with the corresponding column."
       },
       "smooth": {
         "defaultValue": {
