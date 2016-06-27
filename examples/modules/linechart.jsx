@@ -28,6 +28,7 @@ import LineChart from "../../src/linechart";
 import Baseline from "../../src/baseline";
 import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
+import styler from "../../src/styler";
 
 // Data
 const aud = require("../data/usd_vs_aud.json");
@@ -40,7 +41,6 @@ function buildPoints() {
     for (let i=0; i < audPoints.length; i++) {
         points.push([audPoints[i][0], audPoints[i][1], euroPoints[i][1]]);
     }
-
     return points;
 }
 
@@ -50,6 +50,13 @@ const currencySeries = new TimeSeries({
     points: buildPoints()
 });
 
+
+const lineStyles = {
+    aud: styler("steelblue", 1, true).lineChartStyle(),
+    euro: styler("#F68B24", 1).lineChartStyle()
+};
+
+/*
 const lineStyles = {
     aud: {
         normal: {
@@ -94,6 +101,7 @@ const lineStyles = {
         }
     }
 };
+*/
 
 export default React.createClass({
 

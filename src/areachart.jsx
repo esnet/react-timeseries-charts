@@ -10,12 +10,28 @@
 
 import React from "react";
 import d3Shape from "d3-shape";
-
+import _ from "underscore";
+import merge from "merge";
 import { TimeSeries } from "pondjs";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
 }
+
+const defaultStyle = {
+    line: {
+        normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+        highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+        selected: {stroke: "steelblue", fill: "none", strokeWidth: 2},
+        muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+    },
+    area: {
+        normal: {fill: "steelblue", stroke: "none", opacity: 0.75},
+        highlighted: {fill: "#5a98cb", stroke: "none", opacity: 0.75},
+        selected: {fill: "steelblue", stroke: "none", opacity: 0.75},
+        muted: {fill: "steelblue", stroke: "none", opacity: 0.25}
+    }
+};
 
 /**
  * The `<AreaChart>` component is able to display single or multiple stacked
@@ -98,24 +114,9 @@ export default React.createClass({
         stack: React.PropTypes.bool,
 
         /**
-         * The style of the area chart, with format:
-         * ```
-         * "style": {
-         *     up: ["#448FDD", "#75ACE6", "#A9CBEF", ...],
-         *     down: ["#FD8D0D", "#FDA949", "#FEC686", ...]
-         * }
-         * ```
-         *
-         * Currenly it is only possible to set the color for each area.
-         * This may change in the future. You can, however, set the fill
-         * opacity (see `fillOpacity`), but this will apply to all areas.
+         * The style of the area chart
          */
-        style: React.PropTypes.shape({
-            up: React.PropTypes.arrayOf(React.PropTypes.string),
-            down: React.PropTypes.arrayOf(React.PropTypes.string)
-        }),
-
-        fillOpacity: React.PropTypes.number,
+        style: React.PropTypes.object,
 
         /**
          * Any of D3's interpolation modes.
@@ -142,11 +143,6 @@ export default React.createClass({
         return {
             transition: 0,
             interpolation: "curveLinear",
-            style: {
-                up: ["#448FDD", "#75ACE6", "#A9CBEF"],
-                down: ["#FD8D0D", "#FDA949", "#FEC686"]
-            },
-            fillOpacity: 0.75,
             columns: {
                 up: ["value"],
                 down: []
@@ -155,28 +151,66 @@ export default React.createClass({
         };
     },
 
+    /**
+     * Returns the style used for drawing the path
+     */
+    style(column, type) {
+        let style;
+
+        const isHighlighted = this.props.highlight && column === this.props.highlight;
+        const isSelected = this.props.selection && column === this.props.selection;
+
+        // Style the user provided us with
+        const providedStyle = this.props.style ? this.props.style[column] : {line: {}, area: {}};
+        console.log("providedStyle", this.props.style, providedStyle);
+        const providedStyleMap = _.isFunction(this.props.style) ?
+            this.props.style[column] : providedStyle;
+
+        if (this.props.selection) {
+            if (isSelected) {
+                style = merge(true,
+                              defaultStyle[type].selected,
+                              providedStyleMap[type].selected ? providedStyleMap[type].selected : {});
+            } else if (isHighlighted) {
+                style = merge(true,
+                              defaultStyle[type].highlighted,
+                              providedStyleMap[type].highlighted ? providedStyleMap[type].highlighted : {});
+            } else {
+                style = merge(true,
+                              defaultStyle[type].muted,
+                              providedStyleMap[type].muted ? providedStyleMap[type].muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(true,
+                          defaultStyle[type].highlighted,
+                          providedStyleMap[type].highlighted ? providedStyleMap[type].highlighted : {});
+        } else {
+            console.log(defaultStyle, providedStyleMap);
+            style = merge(true,
+                          defaultStyle[type].normal,
+                          providedStyleMap[type].normal ? providedStyleMap[type].normal : {});
+        }
+
+        return style;
+    },
+
+    pathStyle(column) {
+        return this.style(column, "line");
+    },
+
+    areaStyle(column) {
+        //const cursor = this.props.isPanning ? "-webkit-grabbing" : "default";
+        return this.style(column, "area");
+    },
+
     renderPaths(columnList, direction) {
         const dir = direction === "up" ? 1 : -1;
-        const cursor = this.props.isPanning ? "-webkit-grabbing" : "default";
         const size = this.props.series.size();
         const offsets = new Array(size).fill(0);
 
-        return columnList.map((columnName, i) => {
-            const style = {
-                fill: this.props.style[direction][i],
-                opacity: this.props.fillOpacity,
-                pointerEvents: "none",
-                cursor
-            };
-
-            const outlineStyle = {
-                stroke: this.props.style[direction][i],
-                strokeWidth: 1,
-                fill: "none",
-                opacity: 1,
-                pointerEvents: "none",
-                cursor
-            };
+        return columnList.map((column, i) => {
+            const style = this.areaStyle(column);
+            const pathStyle = this.pathStyle(column);
 
             // Stack the series columns to get our data in x0, y0, y1 format
             const data = [];
@@ -185,10 +219,10 @@ export default React.createClass({
                 data.push({
                     x0: this.props.timeScale(seriesPoint.timestamp()),
                     y0: this.props.yScale(offsets[i]),
-                    y1: this.props.yScale(offsets[i] + dir * seriesPoint.get(columnName))
+                    y1: this.props.yScale(offsets[i] + dir * seriesPoint.get(column))
                 });
                 if (this.props.stack) {
-                    offsets[i] += dir * seriesPoint.get(columnName);
+                    offsets[i] += dir * seriesPoint.get(column);
                 }
             }
 
@@ -218,7 +252,7 @@ export default React.createClass({
                         style={style}
                         d={areaPath} />
                      <path
-                        style={outlineStyle}
+                        style={pathStyle}
                         key={`outline-${direction}-${i}`}
                         clipPath={this.props.clipPathURL}
                         d={outlinePath} />
