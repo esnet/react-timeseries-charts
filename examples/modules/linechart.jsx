@@ -28,7 +28,7 @@ import LineChart from "../../src/linechart";
 import Baseline from "../../src/baseline";
 import Legend from "../../src/legend";
 import Resizable from "../../src/resizable";
-import styler from "../../src/styler";
+//import styler from "../../src/styler";
 
 // Data
 const aud = require("../data/usd_vs_aud.json");
@@ -52,8 +52,8 @@ const currencySeries = new TimeSeries({
 
 
 const lineStyles = {
-    aud: styler("steelblue", 1, true).lineChartStyle(),
-    euro: styler("#F68B24", 1).lineChartStyle()
+    //aud: styler("steelblue", 1, true).lineChartStyle(),
+    //euro: styler("#F68B24", 1).lineChartStyle()
 };
 
 /*
@@ -182,6 +182,7 @@ export default React.createClass({
                                     <Charts>
                                         <LineChart
                                             axis="y"
+                                            breakLine={false}
                                             series={currencySeries}
                                             columns={["aud", "euro"]}
                                             style={lineStyles}

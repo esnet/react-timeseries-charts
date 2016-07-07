@@ -26,7 +26,7 @@ import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import AreaChart from "../../src/areachart";
 import Resizable from "../../src/resizable";
-import styler from "../../src/styler";
+//import styler from "../../src/styler";
 
 // Data
 const rawTrafficData = require("../data/link-traffic.json");
@@ -49,8 +49,8 @@ const traffic = TimeSeries.timeSeriesListMerge(
 );
 
 const style = {
-    in: styler("#C8D5B8").areaChartStyle(),
-    out: styler("#9BB8D7").areaChartStyle()
+    //in: styler("#C8D5B8").areaChartStyle(),
+    //out: styler("#9BB8D7").areaChartStyle()
 };
 
 export default React.createClass({
@@ -131,7 +131,11 @@ export default React.createClass({
                                             axis="traffic"
                                             series={traffic}
                                             columns={{up: ["in"], down: ["out"]}}
-                                            style={style} />
+                                            style={style}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
                                     </Charts>
                                     <YAxis id="traffic" label="Traffic (bps)" labelOffset={0} min={-max} max={max} absolute={true} width="60" type={axistype}/>
                                 </ChartRow>

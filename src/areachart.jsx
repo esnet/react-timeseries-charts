@@ -151,6 +151,25 @@ export default React.createClass({
         };
     },
 
+    handleHover(e, column) {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(column);
+        }
+    },
+
+    handleHoverLeave() {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(null);
+        }
+    },
+
+    handleClick(e, column) {
+        e.stopPropagation();
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(column);
+        }
+    },
+
     /**
      * Returns the style used for drawing the path
      */
@@ -162,9 +181,24 @@ export default React.createClass({
 
         // Style the user provided us with
         const providedStyle = this.props.style ? this.props.style[column] : {line: {}, area: {}};
-        console.log("providedStyle", this.props.style, providedStyle);
-        const providedStyleMap = _.isFunction(this.props.style) ?
-            this.props.style[column] : providedStyle;
+        let providedStyleMap;
+        if (_.isFunction(this.props.style)) {
+            providedStyleMap = providedStyle;
+        } else {
+            if (_.has(this.props.style, column)) {
+                providedStyleMap = this.props.style[column];
+            } else {
+                console.error("Provided style for AreaChart does not have a style defined for column:", column);
+            }
+        }
+
+        if (!_.has(providedStyleMap, "line")) {
+            console.error("Provided style for AreaChart does not default a style for the outline:", providedStyleMap);
+        }
+
+        if (!_.has(providedStyleMap, "area")) {
+            console.error("Provided style for AreaChart does not default a style for the area:", providedStyleMap);
+        }
 
         if (this.props.selection) {
             if (isSelected) {
@@ -185,7 +219,6 @@ export default React.createClass({
                           defaultStyle[type].highlighted,
                           providedStyleMap[type].highlighted ? providedStyleMap[type].highlighted : {});
         } else {
-            console.log(defaultStyle, providedStyleMap);
             style = merge(true,
                           defaultStyle[type].normal,
                           providedStyleMap[type].normal ? providedStyleMap[type].normal : {});
@@ -247,15 +280,18 @@ export default React.createClass({
             return (
                 <g key={`area-${i}`}>
                     <path
-                        key={`area-${direction}-${i}`}
-                        clipPath={this.props.clipPathURL}
+                        d={areaPath}
                         style={style}
-                        d={areaPath} />
-                     <path
-                        style={pathStyle}
-                        key={`outline-${direction}-${i}`}
                         clipPath={this.props.clipPathURL}
-                        d={outlinePath} />
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={this.handleHoverLeave}
+                        onMouseMove={e => this.handleHover(e, column)} />
+                     <path
+                        d={outlinePath}
+                        style={pathStyle}
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={this.handleHoverLeave}
+                        onMouseMove={e => this.handleHover(e, column)} />
                 </g>
             );
         });
@@ -285,6 +321,8 @@ export default React.createClass({
         const isPanning = nextProps.isPanning;
         const columns = nextProps.columns;
         const style = nextProps.style;
+        const highlight = nextProps.highlight;
+        const selection = nextProps.selection;
 
         const widthChanged =
             (this.props.width !== width);
@@ -300,6 +338,10 @@ export default React.createClass({
             (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
         const styleChanged =
             (JSON.stringify(this.props.style) !== JSON.stringify(style));
+        const highlightChanged =
+            (this.props.highlight !== highlight);
+        const selectionChanged =
+            (this.props.selection !== selection);
 
         let seriesChanged = false;
         if (oldSeries.length !== newSeries.length) {
@@ -308,9 +350,17 @@ export default React.createClass({
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
 
-        return (seriesChanged || timeScaleChanged || widthChanged ||
-            interpolateChanged || isPanningChanged || columnsChanged ||
-            styleChanged || yAxisScaleChanged);
+        return (
+            seriesChanged ||
+            timeScaleChanged ||
+            widthChanged ||
+            interpolateChanged ||
+            isPanningChanged ||
+            columnsChanged ||
+            styleChanged ||
+            yAxisScaleChanged ||
+            highlightChanged ||
+            selectionChanged);
     },
 
     render() {

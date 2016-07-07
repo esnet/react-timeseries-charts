@@ -31,11 +31,13 @@
   "license": "BSD-3-Clause-LBNL",
   "dependencies": {
     "babel-runtime": "^6.5.0",
+    "colorbrewer": "^1.0.0",
     "d3-axis": "^0.3.0",
     "d3-ease": "^0.7.0",
     "d3-format": "^0.5.1",
     "d3-interpolate": "^0.7.0",
     "d3-scale": "^0.7.2",
+    "d3-scale-chromatic": "^0.3.0",
     "d3-selection": "^0.7.3",
     "d3-shape": "^0.6.0",
     "d3-time": "^0.2.5",

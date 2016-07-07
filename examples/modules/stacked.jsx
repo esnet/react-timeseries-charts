@@ -12,8 +12,17 @@
 
 import React from "react";
 import _ from "underscore";
+//import { scaleOrdinal } from "d3-scale";
 import Markdown from "react-markdown";
 import Highlighter from "./highlighter";
+//import { schemeAccent } from "d3-scale-chromatic";
+
+import colorbrewer from "colorbrewer";
+
+//const colorScale = scaleOrdinal(schemeAccent);
+//console.log(colorScale.domain());
+
+console.log(colorbrewer);
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -26,6 +35,7 @@ import Charts from "../../src/charts";
 import YAxis from "../../src/yaxis";
 import AreaChart from "../../src/areachart";
 import Resizable from "../../src/resizable";
+import Style from "../../src/style";
 
 const text = `
 
@@ -64,11 +74,15 @@ const rawData = require("../data/stacked.json");
 const numPoints = rawData[0].values.length;
 
 const columns = ["time"];
-const displayColumns = [];
+const columnNames = [];
 _.each(rawData, d => {
     columns.push(d.key);
-    displayColumns.push(d.key);
+    columnNames.push(d.key);
 });
+
+//
+// Process out data into a TimeSeries
+//
 
 const points = [];
 for (let i = 0; i < numPoints; i++) {
@@ -79,29 +93,35 @@ for (let i = 0; i < numPoints; i++) {
     });
     points.push(point);
 }
+const series = new TimeSeries({name: "Continents", columns, points});
 
-const series = new TimeSeries({
-    name: "Stacked",
-    columns,
-    points
-});
+//
+// Build a list of continents
+//
 
-const countriesList = _.map(rawData, d => {
-    return d.key;
-});
+const continentList = _.map(rawData, d => d.key);
 
-const colorsList = [
-    "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
-    "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5",
-    "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f",
-    "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"
-];
+//
+// Styling for the AreaChart
+//
 
-const legendCategories = countriesList.map((d, i) => ({
+const style = Style()
+    .columns(columnNames)
+    .usingColorScheme("YlGn");
+
+//
+// Build out legend
+//
+
+/*
+const legendCategories = continentList.map((d, i) => ({
     key: d,
     label: d,
-    style: {fill: colorsList[i], opacity: 0.9, stroke: colorsList[i]}
+    style: style.legendStyle(d, "swatch")
 }));
+*/
+
+const areaChartStyle = style.areaChartStyle();
 
 export default React.createClass({
 
@@ -114,8 +134,7 @@ export default React.createClass({
     },
 
     render() {
-        const style = {up: colorsList, down: []};
-        const cols = {up: displayColumns, down: []};
+        const cols = {up: columnNames, down: []};
         const min = 0;
         const max = 130;
         const axisType = "linear";
@@ -130,20 +149,22 @@ export default React.createClass({
                 </div>
 
                 <hr/>
-
+                {/*}
                 <div className="row">
                     <div className="col-md-12">
                         <Legend categories={legendCategories} type="swatch"/>
                     </div>
                 </div>
-
+                */}
                 <hr />
 
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
 
-                            <ChartContainer timeRange={series.range()}>
+                            <ChartContainer
+                                timeRange={series.range()}
+                                onBackgroundClick={() => this.setState({selection: null})} >
                                 <ChartRow height="350">
                                     <YAxis
                                         id="value"
@@ -153,11 +174,15 @@ export default React.createClass({
                                     <Charts>
                                         <AreaChart
                                             axis="value"
-                                            style={style}
+                                            style={areaChartStyle}
                                             series={series}
                                             columns={cols}
                                             fillOpacity={0.4}
-                                            interpolation={interpolationType} />
+                                            interpolation={interpolationType}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
