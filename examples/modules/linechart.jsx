@@ -131,7 +131,7 @@ export default React.createClass({
                                 <ChartRow height="200" debug={false}>
                                     <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f" />
                                     <Charts>
-                                        <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" />
+                                        <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" breakLine={false}/>
                                         <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
                                         <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
                                     </Charts>

@@ -165,7 +165,7 @@ export default React.createClass({
         if (this.props.breakLine) {
             // Remove nulls and NaNs from the line by generating a break in the line
             let currentPoints = null;
-            for (let d of this.props.series.collection().events()) {
+            for (let d of this.props.series.events()) {
                 const timestamp = d.timestamp();
                 const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
@@ -185,14 +185,14 @@ export default React.createClass({
         } else {
             // Ignore nulls and NaNs in the line
             const cleanedPoints = [];
-            _.each(this.props.series.collection().events(), d => {
+            for (let d of this.props.series.events()) {
                 const timestamp = d.timestamp();
                 const value = d.get(column);
                 const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
                     cleanedPoints.push({x: timestamp, y: value});
                 }
-            });
+            }
 
             pathLines.push(this.renderPath(cleanedPoints, column, count));
         }
