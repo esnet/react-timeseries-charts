@@ -180,6 +180,7 @@ export default React.createClass({
                                         type="linear"
                                         format="$,.2f" />
                                     <Charts>
+<<<<<<< HEAD
                                         <LineChart
                                             axis="y"
                                             breakLine={false}
@@ -196,6 +197,11 @@ export default React.createClass({
                                             value={1.0}
                                             label="USD Baseline"
                                             position="right" />
+=======
+                                        <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" breakLine={false}/>
+                                        <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
+                                        <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
+>>>>>>> transition-fix
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>

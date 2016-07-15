@@ -242,7 +242,21 @@ export default React.createClass({
             axisGenerator = axis(scale)
                 .ticks(10, ".2s");
         }
+        /*
+        select(ReactDOM.findDOMNode(this)).select(".yaxis")
+            .transition()
+            .duration(this.props.transition)
+            .ease("sin-in-out")
+        */
+       
+        var t = transition()
+            .duration(750)
+            .ease(easeSinOut);
 
+        select(ReactDOM.findDOMNode(this)).select(".yaxis").transition(t)
+            .call(axisGenerator);
+
+        /*
         const t = transition()
             .duration(this.props.transition)
             .ease(easeSinOut);
@@ -250,7 +264,7 @@ export default React.createClass({
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
                 .transition(t)
-                .call(axisGenerator);
+                .call(axisGenerator); */
     },
 
     componentDidMount() {

@@ -4,6 +4,84 @@
     "displayName": "AreaChart",
     "methods": [
       {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "type"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
+        "name": "pathStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "areaStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderPaths",
         "docblock": null,
         "modifiers": [],
@@ -83,41 +161,10 @@
       },
       "style": {
         "type": {
-          "name": "shape",
-          "value": {
-            "up": {
-              "name": "arrayOf",
-              "value": {
-                "name": "string"
-              },
-              "required": false
-            },
-            "down": {
-              "name": "arrayOf",
-              "value": {
-                "name": "string"
-              },
-              "required": false
-            }
-          }
+          "name": "object"
         },
         "required": false,
-        "description": "The style of the area chart, with format:\n```\n\"style\": {\n    up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\", ...],\n    down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\", ...]\n}\n```\n\nCurrenly it is only possible to set the color for each area.\nThis may change in the future. You can, however, set the fill\nopacity (see `fillOpacity`), but this will apply to all areas.",
-        "defaultValue": {
-          "value": "{\n    up: [\"#448FDD\", \"#75ACE6\", \"#A9CBEF\"],\n    down: [\"#FD8D0D\", \"#FDA949\", \"#FEC686\"]\n}",
-          "computed": false
-        }
-      },
-      "fillOpacity": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "0.75",
-          "computed": false
-        }
+        "description": "The style of the area chart"
       },
       "interpolation": {
         "type": {
