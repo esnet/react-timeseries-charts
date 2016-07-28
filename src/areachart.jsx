@@ -13,6 +13,7 @@ import d3Shape from "d3-shape";
 import _ from "underscore";
 import merge from "merge";
 import { TimeSeries } from "pondjs";
+import { Styler } from "./styler";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -114,9 +115,41 @@ export default React.createClass({
         stack: React.PropTypes.bool,
 
         /**
-         * The style of the area chart
+         * The styles to apply to the underlying SVG lines. This is a mapping
+         * of column names to objects with style attributes, in the following
+         * format:
+         *
+         * ```
+         *  const areaStyles = {
+         *      value: {
+         *          area: {
+         *              fill: "#DDD"
+         *          },
+         *          outline: {
+         *              stroke: "black"
+         *          }
+         *      }
+         *  };
+         *
+         *  <LineChart style={areaStyles} ... />
+         *
+         *  Alternatively, you can pass in a Styler. For example:
+         *
+         * ```
+         * const currencyStyle = Styler([
+         *     {key: "aud", color: "steelblue", width: 1, dashed: true},
+         *     {key: "euro", color: "#F68B24", width: 2}
+         * ]);
+         *
+         * <LineChart columns={["aud", "euro"]} style={currencyStyle} ... />
+         *
+         * ```
          */
-        style: React.PropTypes.object,
+        style: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.func,
+            React.PropTypes.instanceOf(Styler)
+        ]),
 
         /**
          * Any of D3's interpolation modes.
@@ -170,58 +203,60 @@ export default React.createClass({
         }
     },
 
+    providedAreaStyleMap(column) {
+        let style = {};
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.areaChartStyle()[column];
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            }
+        }
+        return style;
+    },
+
     /**
      * Returns the style used for drawing the path
      */
     style(column, type) {
         let style;
 
+        const styleMap = this.providedAreaStyleMap(column);
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
 
-        // Style the user provided us with
-        const providedStyle = this.props.style ? this.props.style[column] : {line: {}, area: {}};
-        let providedStyleMap;
-        if (_.isFunction(this.props.style)) {
-            providedStyleMap = providedStyle;
-        } else {
-            if (_.has(this.props.style, column)) {
-                providedStyleMap = this.props.style[column];
-            } else {
-                console.error("Provided style for AreaChart does not have a style defined for column:", column);
-            }
+        if (!_.has(styleMap, "line")) {
+            console.error("Provided style for AreaChart does not default a style for the outline:", styleMap, column);
         }
 
-        if (!_.has(providedStyleMap, "line")) {
-            console.error("Provided style for AreaChart does not default a style for the outline:", providedStyleMap);
-        }
-
-        if (!_.has(providedStyleMap, "area")) {
-            console.error("Provided style for AreaChart does not default a style for the area:", providedStyleMap);
+        if (!_.has(styleMap, "area")) {
+            console.error("Provided style for AreaChart does not default a style for the area:", styleMap);
         }
 
         if (this.props.selection) {
             if (isSelected) {
                 style = merge(true,
                               defaultStyle[type].selected,
-                              providedStyleMap[type].selected ? providedStyleMap[type].selected : {});
+                              styleMap[type].selected ? styleMap[type].selected : {});
             } else if (isHighlighted) {
                 style = merge(true,
                               defaultStyle[type].highlighted,
-                              providedStyleMap[type].highlighted ? providedStyleMap[type].highlighted : {});
+                              styleMap[type].highlighted ? styleMap[type].highlighted : {});
             } else {
                 style = merge(true,
                               defaultStyle[type].muted,
-                              providedStyleMap[type].muted ? providedStyleMap[type].muted : {});
+                              styleMap[type].muted ? styleMap[type].muted : {});
             }
         } else if (isHighlighted) {
             style = merge(true,
                           defaultStyle[type].highlighted,
-                          providedStyleMap[type].highlighted ? providedStyleMap[type].highlighted : {});
+                          styleMap[type].highlighted ? styleMap[type].highlighted : {});
         } else {
             style = merge(true,
                           defaultStyle[type].normal,
-                          providedStyleMap[type].normal ? providedStyleMap[type].normal : {});
+                          styleMap[type].normal ? styleMap[type].normal : {});
         }
 
         return style;

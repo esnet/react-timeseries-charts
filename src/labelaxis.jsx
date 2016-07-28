@@ -8,7 +8,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "underscore";
 import React from "react";
 import { format } from "d3-format";
 import ValueList from "./valuelist";
@@ -21,17 +20,28 @@ import ValueList from "./valuelist";
  *      | Max 100 Gbps   |     | Chart  ...
  *      | Avg 26 Gbps    | 0   |
  *      +----------------+-----+------- ...
- *
- * EXPERIMENTAL
- *
  */
-
 export default React.createClass({
 
     displayName: "LabelAxis",
 
     propTypes: {
 
+        /**
+         * The label to show as the axis.
+         */
+        label: React.PropTypes.string.isRequired,
+
+        /**
+         * Show or hide the max/min values that appear alongside the label
+         */
+        hideScale: React.PropTypes.boolean,
+
+        /**
+         * Supply a list of label value pairs to render within the LabelAxis.
+         * This expects an array of objects. Each object is of the form:
+         *     {label: "Speed", value: "26.2 mph"}.
+         */
         values: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 label: React.PropTypes.string,
@@ -40,16 +50,45 @@ export default React.createClass({
                     React.PropTypes.string
                 ])
             }),
-        ).isRequired,
+        ),
 
+        /**
+         * Width to provide the values
+         */
+        valWidth: React.PropTypes.number,
+
+        /**
+         * Max value of the axis scale
+         */
+        max: React.PropTypes.number.isRequired,
+
+        /**
+         * Min value of the axis scale
+         */
+        min: React.PropTypes.number.isRequired,
+
+        /**
+         * If values are numbers, use this format string
+         */
+        format: React.PropTypes.string,
+        
         /**
          * The width of the axis
          */
         width: React.PropTypes.number
     },
 
+    getDefaultProps() {
+        return {
+            hideScale: false,
+            values: [],
+            valWidth: 40,
+            format: ".2f"
+        };
+    },
+
     renderAxis() {
-        const valueWidth = (this.props.valWidth) ? this.props.valWidth : 40;
+        const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
 
         const style = {
@@ -64,7 +103,7 @@ export default React.createClass({
             );
         }
         const valXPos = rectWidth + 3; // padding
-        const fmt = _.has(this.props, "format") ? this.props.format : ".2f";
+        const fmt = this.props.format;
         const maxStr = format(fmt)(this.props.max);
         const minStr = format(fmt)(this.props.min);
 
@@ -88,7 +127,7 @@ export default React.createClass({
     },
 
     render() {
-        const valueWidth = (this.props.valWidth) ? this.props.valWidth : 40;
+        const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
 
         const labelStyle = {
@@ -100,7 +139,7 @@ export default React.createClass({
         let valueList = null;
         let labelYPos;
         if (this.props.values) {
-            labelYPos = parseInt(this.props.height / 4, 10);
+            labelYPos = Math.max(parseInt(this.props.height / 4, 10), 10);
             valueList = (
                 <ValueList
                     style={{fill: "none", stroke: "none"}}

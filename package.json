@@ -51,7 +51,7 @@
     "underscore": "^1.7.0"
   },
   "peerDependencies": {
-    "react": "^0.14.3",
+    "react": "^0.14.0 || ^15.0.0",
     "pondjs": "^0.6.0"
   },
   "devDependencies": {
@@ -66,6 +66,7 @@
     "bundle-loader": "^0.5.4",
     "color": "^0.11.1",
     "css-loader": "^0.23.1",
+    "d3fc-discontinuous-scale": "^2.0.0",
     "dsv-loader": "^1.0.3",
     "eslint": "^1.10.0",
     "eslint-config-esnet": "^0.1.0",
@@ -73,14 +74,19 @@
     "eslint-plugin-react": "^3.9.0",
     "file-loader": "^0.8.5",
     "history": "^1.13.1",
+    "install": "^0.8.1",
     "json-loader": "^0.5.4",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "npm": "^3.10.5",
     "pondjs": "git+ssh://git@github.com/esnet/pond.git#v0.7",
     "raw-loader": "^0.5.1",
-    "react": "^0.14.3",
+    "react": "^15.2.1",
     "react-docgen": "^2.4.0",
-    "react-dom": "^0.14.3",
+    "react-dom": "^15.2.1",
     "react-markdown": "^1.0.5",
     "react-router": "^1.0.0",
+    "react-select": "^1.0.0-beta14",
     "ringjs": "0.0.1",
     "scroll-behavior": "^0.3.0",
     "style-loader": "^0.13.0",

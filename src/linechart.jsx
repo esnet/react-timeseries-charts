@@ -13,6 +13,7 @@ import _ from "underscore";
 import d3Shape from "d3-shape";
 import merge from "merge";
 import { TimeSeries } from "pondjs";
+import { Styler } from "./styler";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;
@@ -32,19 +33,21 @@ const defaultStyle = {
  * The `<LineChart>` should be used within `<ChartContainer>` etc., as this will
  * construct the horizontal and vertical axis, and manage other elements.
  *
- * Here is an example of two `<LineChart>`s overlaid on top of each other, along
- * with a `<BaseLine>`:
+ * Here is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:
  *
  * ```
-    <ChartContainer timeRange={timerange} >
+    <ChartContainer timeRange={this.state.timerange} >
         <ChartRow height="200">
-            <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f" />
+            <YAxis id="y" label="Price ($)" min={0.5} max={1.5} format="$,.2f" />
             <Charts>
-                <LineChart axis="axis1" series={currencySeries} columns={["aud"]} style={lineStyles} interpolation="curveBasis" />
-                <LineChart axis="axis2" series={currencySeries} columns={["euro"]} style={lineStyles} interpolation="curveBasis" />
-                <Baseline axis="axis1" value={1.0} label="USD Baseline" position="right" />
+                <LineChart
+                    axis="y"
+                    breakLine={false}
+                    series={currencySeries}
+                    columns={["aud", "euro"]}
+                    style={style}
+                    interpolation="curveBasis" />
             </Charts>
-            <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f" />
         </ChartRow>
     </ChartContainer>
  * ```
@@ -58,10 +61,6 @@ export default React.createClass({
             columns: ["value"],
             smooth: true,
             interpolation: "curveLinear",
-            style: {
-                stroke: "steelblue",
-                strokeWidth: 1
-            },
             breakLine: true
         };
     },
@@ -100,9 +99,24 @@ export default React.createClass({
          *  };
          *
          *  <LineChart style={lineStyles} ... />
-         *  ```
+         *
+         *  Alternatively, you can pass in a Styler. For example:
+         *
+         * ```
+         * const currencyStyle = Styler([
+         *     {key: "aud", color: "steelblue", width: 1, dashed: true},
+         *     {key: "euro", color: "#F68B24", width: 2}
+         * ]);
+         *
+         * <LineChart columns={["aud", "euro"]} style={currencyStyle} ... />
+         *
+         * ```
          */
-        style: React.PropTypes.object,
+        style: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.func,
+            React.PropTypes.instanceOf(Styler)
+        ]),
 
         /**
          * Any of D3's interpolation modes.
@@ -180,17 +194,30 @@ export default React.createClass({
         }
     },
 
+    providedPathStyleMap(column) {
+        let style = {};
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.lineChartStyle()[column];
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            }
+        }
+        return style;
+    },
+
     /**
      * Returns the style used for drawing the path
      */
     pathStyle(column) {
         let style;
 
+        const styleMap = this.providedPathStyleMap(column);
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
-        const providedStyle = this.props.style ? this.props.style[column] : {};
-        const styleMap = _.isFunction(this.props.style) ? this.props.style(column) : providedStyle;
-
+        
         if (this.props.selection) {
             if (isSelected) {
                 style = merge(true, defaultStyle.selected, styleMap.selected ? styleMap.selected : {});

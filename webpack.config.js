@@ -5,7 +5,7 @@
 module.exports = {
 
     entry: {
-        app: ["./examples/modules/main.jsx"]
+        app: ["./examples/components/main.jsx"]
     },
 
     output: {
@@ -29,6 +29,10 @@ module.exports = {
                 loader: "style-loader!css-loader"
             },
             {
+                test: /\.less$/,
+                loader: "style!css!less"
+            },
+            {
                 test: /\.(png|jpg|gif)$/,
                 loader: "url-loader?limit=32000"
             },
@@ -50,6 +54,9 @@ module.exports = {
     ],
 
     resolve: {
+        alias: {
+            src: process.cwd() + "/src"
+        },
         extensions: ["", ".js", ".jsx", ".json"]
     }
 };

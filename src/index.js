@@ -21,7 +21,6 @@ export Legend from "./legend";
 export LineChart from "./linechart";
 export Resizable from "./resizable";
 export ScatterChart from "./scatterchart";
-export Table from "./table";
 export TimeAxis from "./timeaxis";
 export Tracker from "./tracker";
 export ValueAxis from "./valueaxis";

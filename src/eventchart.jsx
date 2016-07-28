@@ -131,6 +131,11 @@ export default React.createClass({
             const width = endPos - beginPos - 2 * this.props.spacing;
             const height = this.props.size;
 
+            const eventLabelStyle = {
+                fontWeight: 100,
+                fontSize: 11
+            };
+
             let text = null;
             if (isHover) {
                 text = (
@@ -141,7 +146,7 @@ export default React.createClass({
                             style={merge(true, barNormalStyle, {pointerEvents: "none"})}
                             clipPath={this.props.clipPathURL} />
                         <text
-                            style={{pointerEvents: "none", fill: "#444"}}
+                            style={{pointerEvents: "none", fill: "#444", ...eventLabelStyle}}
                             x={8} y={15}
                             clipPath={this.props.clipPathURL} >
                             {label}

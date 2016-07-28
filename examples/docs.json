@@ -43,6 +43,18 @@
         "returns": null
       },
       {
+        "name": "providedAreaStyleMap",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "style",
         "docblock": "Returns the style used for drawing the path",
         "modifiers": [],
@@ -161,10 +173,22 @@
       },
       "style": {
         "type": {
-          "name": "object"
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
+            }
+          ]
         },
         "required": false,
-        "description": "The style of the area chart"
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const areaStyles = {\n     value: {\n         area: {\n             fill: \"#DDD\"\n         },\n         outline: {\n             stroke: \"black\"\n         }\n     }\n };\n\n <LineChart style={areaStyles} ... />\n\n Alternatively, you can pass in a Styler. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
       },
       "interpolation": {
         "type": {
@@ -1597,7 +1621,7 @@
     }
   },
   "src/labelaxis.jsx": {
-    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n\nEXPERIMENTAL",
+    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...",
     "displayName": "LabelAxis",
     "methods": [
       {
@@ -1609,6 +1633,25 @@
       }
     ],
     "props": {
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "The label to show as the axis."
+      },
+      "hideScale": {
+        "type": {
+          "name": "custom",
+          "raw": "React.PropTypes.boolean"
+        },
+        "required": false,
+        "description": "Show or hide the max/min values that appear alongside the label",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "values": {
         "type": {
           "name": "arrayOf",
@@ -1634,8 +1677,48 @@
             }
           }
         },
+        "required": false,
+        "description": "Supply a list of label value pairs to render within the LabelAxis.\nThis expects an array of objects. Each object is of the form:\n    {label: \"Speed\", value: \"26.2 mph\"}.",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "valWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Width to provide the values",
+        "defaultValue": {
+          "value": "40",
+          "computed": false
+        }
+      },
+      "max": {
+        "type": {
+          "name": "number"
+        },
         "required": true,
-        "description": ""
+        "description": "Max value of the axis scale"
+      },
+      "min": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "Min value of the axis scale"
+      },
+      "format": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "If values are numbers, use this format string",
+        "defaultValue": {
+          "value": "\".2f\"",
+          "computed": false
+        }
       },
       "width": {
         "type": {
@@ -1647,7 +1730,7 @@
     }
   },
   "src/legend.jsx": {
-    "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is the CSS that should\nbe appied to rendered symbol.\n\nNext build a list of categories you want in it\n\nFor example:\n\n```\nconst audStyle = {stroke: \"#1f77b4\"};\nconst usdStyle = {stroke: \"#aec7e8\"};\n\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled={true} style: audStyle},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled={false} style: usdStyle}\n];\n```\n\nThen render the legend as either \"line\", \"swatch\" or \"dot\" style:\n\n```\n<Legend type=\"line\" categories={categories} onChange={this.handleLegendChange}/>\n```\n\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not. As mentioned above, you also\nprovide a style.\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data.\n\nThe legend can also be supplied with a callback function which will\ntell you if the user has clicked on one of the legend items to\nenable/disable that item. The callback will be called with the key and\nthe new enabled/disabled state. You can use this to hide or show a series\non the chart, for example. Note that you'll want to pass the state back\ninto the legend as that category's disabled value.",
+    "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is either\nthe CSS that should be appied to rendered symbol. Or you can provide\na Styler object. See below for full styling details.\n\n```\nconst style = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n```\n\nNext build a list of categories you want in the legend.\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled: true},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled: false}\n];\n```\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not.\n\nThen render the legend, with type either \"line\", \"swatch\" or \"dot\":\n\n```\n<Legend type=\"line\" style={style} categories={categories} />\n```\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data. You can see this defined in the\nabove categories.\n\nThe legend can also be supplied with callback functions which will\ntell you if the user has clicked or hovered over on one of the legend\nitems. You can use this to sync highlighting and selection to a\nchart.\n\n## Styling\n\nThere are three methods of styling a legend:\n - using a Styler object\n - using an object containing inline styles\n - using a function which returns an inline style\n\nA Styler object can be supplied directly to the `style` prop\nof the legend. This is the simplest approach, since you can\nusually just use the same Styler as you use for your chart.\n\nSupplying an object to the `style` prop gives you more control\nthan the Styler, since you can provide the actual CSS properties\nfor each element of the legend. The format for the object is:\n\n```\n{\n    columnName1: {\n            symbol: {\n                normal: {...styleSymbol},\n                highlighted: {...styleSymbol},\n                selected: {...styleSymbol},\n                muted: {...styleSymbol}\n            },\n            label: {\n                normal: {...labelStyle},\n                highlighted: {...labelStyle},\n                selected: {...labelStyle},\n                muted: {...labelStyle}\n            },\n            value: {\n                normal: {...valueStyle},\n                highlighted: {...valueStyle},\n                selected: {...valueStyle},\n                muted: {...valueStyle}\n            }\n    },\n    columnName2 : {\n        ...\n    },\n    ...\n }\n\n - symbolStyle is the CSS properties for the symbol, which\nis either a swatch, dot or line. For a line, you'd want to\nprovide the SVG <line> properties, for a swatch you'd provide\nthe SVG <rect> properties and for a dot the <ellipse> properties.\n - labelStyle is the main label for the legend item. It is a\n SVG <text> element, so you can control the font properties.\n - valueStyle is the optional value. As with the labelStyle you\n this is an SVG <text> element.\n\nFinally, you can provide a function to the `style` prop. This\nis similar to providing an object, except your function will\nbe called with the columnName and you should return the map\ncontaining symbol, label and value styles.",
     "displayName": "Legend",
     "methods": [
       {
@@ -1656,14 +1739,37 @@
         "modifiers": [],
         "params": [
           {
-            "name": "key",
+            "name": "e",
             "type": null
           },
           {
-            "name": "disabled",
+            "name": "key",
             "type": null
           }
         ],
+        "returns": null
+      },
+      {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "key",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
         "returns": null
       },
       {
@@ -1697,6 +1803,66 @@
         "params": [
           {
             "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "providedStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "category",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "styleMode",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "category",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "symbolStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "category",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "labelStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "category",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "valueStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "category",
             "type": null
           }
         ],
@@ -1750,6 +1916,31 @@
           "computed": false
         }
       },
+      "style": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "React.PropTypes.object",
+              "computed": true
+            },
+            {
+              "value": "React.PropTypes.func",
+              "computed": true
+            },
+            {
+              "value": "React.PropTypes.instanceOf(Styler)",
+              "computed": true
+            }
+          ]
+        },
+        "required": true,
+        "description": "",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
       "categories": {
         "type": {
           "name": "arrayOf",
@@ -1789,12 +1980,6 @@
         "required": false,
         "description": "Callback which will be called when the use enables/disables the legend item\nby clicking on it. The callback will be called with the key and the new\ndisabled state."
       },
-      "style": {
-        "defaultValue": {
-          "value": "{}",
-          "computed": false
-        }
-      },
       "labelStyle": {
         "defaultValue": {
           "value": "{}",
@@ -1816,7 +2001,7 @@
     }
   },
   "src/linechart.jsx": {
-    "description": "The `<LineChart>` component is able to display multiple columns of a TimeSeries\nas separate line charts.\n\nThe `<LineChart>` should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\n\nHere is an example of two `<LineChart>`s overlaid on top of each other, along\nwith a `<BaseLine>`:\n\n```\n    <ChartContainer timeRange={timerange} >\n        <ChartRow height=\"200\">\n            <YAxis id=\"axis1\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\" />\n            <Charts>\n                <LineChart axis=\"axis1\" series={currencySeries} columns={[\"aud\"]} style={lineStyles} interpolation=\"curveBasis\" />\n                <LineChart axis=\"axis2\" series={currencySeries} columns={[\"euro\"]} style={lineStyles} interpolation=\"curveBasis\" />\n                <Baseline axis=\"axis1\" value={1.0} label=\"USD Baseline\" position=\"right\" />\n            </Charts>\n            <YAxis id=\"axis2\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\" />\n        </ChartRow>\n    </ChartContainer>\n```",
+    "description": "The `<LineChart>` component is able to display multiple columns of a TimeSeries\nas separate line charts.\n\nThe `<LineChart>` should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\n\nHere is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:\n\n```\n    <ChartContainer timeRange={this.state.timerange} >\n        <ChartRow height=\"200\">\n            <YAxis id=\"y\" label=\"Price ($)\" min={0.5} max={1.5} format=\"$,.2f\" />\n            <Charts>\n                <LineChart\n                    axis=\"y\"\n                    breakLine={false}\n                    series={currencySeries}\n                    columns={[\"aud\", \"euro\"]}\n                    style={style}\n                    interpolation=\"curveBasis\" />\n            </Charts>\n        </ChartRow>\n    </ChartContainer>\n```",
     "displayName": "LineChart",
     "methods": [
       {
@@ -1851,6 +2036,18 @@
             "name": "e",
             "type": null
           },
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "providedPathStyleMap",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
           {
             "name": "column",
             "type": null
@@ -1939,14 +2136,22 @@
       },
       "style": {
         "type": {
-          "name": "object"
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
+            }
+          ]
         },
         "required": false,
-        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const lineStyles = {\n     value: {\n         stroke: \"steelblue\",\n         strokeWidth: 1,\n         strokeDasharray: \"4,2\"\n     }\n };\n\n <LineChart style={lineStyles} ... />\n ```",
-        "defaultValue": {
-          "value": "{\n    stroke: \"steelblue\",\n    strokeWidth: 1\n}",
-          "computed": false
-        }
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const lineStyles = {\n     value: {\n         stroke: \"steelblue\",\n         strokeWidth: 1,\n         strokeDasharray: \"4,2\"\n     }\n };\n\n <LineChart style={lineStyles} ... />\n\n Alternatively, you can pass in a Styler. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
       },
       "interpolation": {
         "type": {
@@ -2287,54 +2492,6 @@
         },
         "required": false,
         "description": "A callback that will be called when the hovered over dot changes.\nIt will be called with an object containing the event and column."
-      }
-    }
-  },
-  "src/table.jsx": {
-    "description": "",
-    "displayName": "Table",
-    "methods": [
-      {
-        "name": "renderCells",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "event",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderHeader",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "series": {
-        "type": {
-          "name": "instanceOf",
-          "value": "TimeSeries"
-        },
-        "required": true,
-        "description": ""
-      },
-      "width": {
-        "defaultValue": {
-          "value": "300",
-          "computed": false
-        }
       }
     }
   },
