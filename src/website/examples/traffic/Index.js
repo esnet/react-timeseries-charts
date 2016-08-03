@@ -1,0 +1,151 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
+/* eslint max-len:0 */
+
+import React from "react";
+import _ from "underscore";
+
+// Pond
+import { TimeSeries } from "pondjs";
+
+// Imports from the charts library
+import ChartContainer from "../../../components/ChartContainer";
+import ChartRow from "../../../components/ChartRow";
+import Charts from "../../../components/Charts";
+import YAxis from "../../../components/YAxis";
+import AreaChart from "../../../components/AreaChart";
+import Legend from "../../../components/Legend";
+import Resizable from "../../../components/Resizable";
+import styler from "../../../js/styler";
+
+// Data
+const rawTrafficData = require("./link-traffic.json");
+
+const trafficBNLtoNEWYSeries = new TimeSeries({
+    name: `BNL to NEWY`,
+    columns: ["time", "in"],
+    points: _.map(rawTrafficData.traffic["BNL--NEWY"], p => [p[0] * 1000, p[1]])
+});
+
+const trafficNEWYtoBNLSeries = new TimeSeries({
+    name: `NEWY to BNL`,
+    columns: ["time", "out"],
+    points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])
+});
+
+const trafficSeries = TimeSeries.timeSeriesListMerge(
+    {name: "traffic"},
+    [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
+);
+
+const upDownStyle = styler([
+    {key: "in", color: "#C8D5B8"},
+    {key: "out", color: "#9BB8D7"}
+]);
+
+const traffic = React.createClass({
+
+    getInitialState() {
+        return {
+            tracker: null,
+            timerange: trafficSeries.range()
+        };
+    },
+
+    handleTrackerChanged(t) {
+        this.setState({tracker: t});
+    },
+
+    handleTimeRangeChange(timerange) {
+        this.setState({timerange});
+    },
+
+    render() {
+        const dateStyle = {
+            fontSize: 12,
+            color: "#AAA",
+            borderWidth: 1,
+            borderColor: "#F4F4F4"
+        };
+
+        const max = _.max([
+            trafficBNLtoNEWYSeries.max("in"),
+            trafficNEWYtoBNLSeries.max("out")
+        ]);
+
+        const axistype = "linear";
+        const tracker = this.state.tracker ? `${this.state.tracker}` : "";
+
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-md-4">
+                        <Legend
+                            type="swatch"
+                            style={upDownStyle}
+                            highlight={this.state.highlight}
+                            onHighlightChange={highlight => this.setState({highlight})}
+                            selection={this.state.selection}
+                            onSelectionChange={selection => this.setState({selection})}
+                            categories={[
+                                {key: "in", label: "Into Site"},
+                                {key: "out", label: "Out of site"}
+                            ]} />
+                    </div>
+                    <div className="col-md-8">
+                        <span style={dateStyle}>{tracker}</span>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Resizable>
+
+                            <ChartContainer
+                                timeRange={this.state.timerange}
+                                trackerPosition={this.state.tracker}
+                                onTrackerChanged={this.handleTrackerChanged}
+                                enablePanZoom={true}
+                                maxTime={trafficSeries.range().end()}
+                                minTime={trafficSeries.range().begin()}
+                                minDuration={1000 * 60 * 60}
+                                onBackgroundClick={() => this.setState({selection: null})}
+                                onTimeRangeChanged={this.handleTimeRangeChange} >
+                                <ChartRow height="150" debug={false}>
+                                    <Charts>
+                                        <AreaChart
+                                            axis="traffic"
+                                            series={trafficSeries}
+                                            columns={{up: ["in"], down: ["out"]}}
+                                            style={upDownStyle}
+                                            highlight={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selection={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
+                                    </Charts>
+                                    <YAxis id="traffic" label="Traffic (bps)" labelOffset={0} min={-max} max={max} absolute={true} width="60" type={axistype}/>
+                                </ChartRow>
+                            </ChartContainer>
+
+                        </Resizable>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+// Export example
+import traffic_docs from "raw!./traffic_docs.md";
+import traffic_thumbnail from "./traffic_thumbnail.png";
+export default {traffic, traffic_docs, traffic_thumbnail};
