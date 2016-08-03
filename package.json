@@ -19,9 +19,9 @@
     "docs": "react-docgen src/components -x js -o src/website/api/docs.json --pretty",
     "lint": "eslint src/*.jsx src/*.js",
     "test": "npm run lint",
-    "build": "rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
+    "build-lib": "rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
     "start-website": "react-scripts start",
-    "build-website": "react-scripts build"
+    "build": "react-scripts build"
   },
   "pre-commit": [
     "lint",
