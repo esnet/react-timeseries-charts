@@ -44,10 +44,10 @@ class App extends Component {
                 <div className="col-sm-3 col-md-2 sidebar">
                     <p />
 
-                    <div className="sidebar-heading">Docs</div>
+                    <div className="sidebar-heading">GUIDES</div>
 
                     <ul className="nav nav-sidebar">
-                        <li><Link to="/guide/intro">Introduction</Link></li>
+                        <li><Link to="/">Introduction</Link></li>
                         <li><Link to="/guide/start">Getting started</Link></li>
                     </ul>
 
@@ -72,17 +72,29 @@ class App extends Component {
                     <div className="sidebar-heading">API</div>
 
                     <ul className="nav nav-sidebar">
-                        <li><Link to="/api/areachart">AreaChart</Link></li>
-                        <li><Link to="/api/barchart">BarChart</Link></li>
-                        <li><Link to="/api/baseline">Baseline</Link></li>
-                        <li><Link to="/api/chartcontainer">ChartContainer</Link></li>
-                        <li><Link to="/api/chartrow">ChartRow</Link></li>
-                        <li><Link to="/api/charts">Charts</Link></li>
-                        <li><Link to="/api/hbarchart">Horizontal BarChart</Link></li>
-                        <li><Link to="/api/legend">Legend</Link></li>
-                        <li><Link to="/api/linechart">LineChart</Link></li>
-                        <li><Link to="/api/scatterchart">ScatterChart</Link></li>
-                        <li><Link to="/api/yaxis">YAxis</Link></li>
+
+                        <li><Link to="/api/AreaChart">AreaChart</Link></li>
+                        <li><Link to="/api/BarChart">BarChart</Link></li>
+                        <li><Link to="/api/Baseline">Baseline</Link></li>
+                        <li><Link to="/api/Brush">Brush</Link></li>
+                        <li><Link to="/api/ChartContainer">ChartContainer</Link></li>
+                        <li><Link to="/api/ChartRow">ChartRow</Link></li>
+                        <li><Link to="/api/Charts">Charts</Link></li>
+                        <li><Link to="/api/EventChart">EventChart</Link></li>
+                        <li><Link to="/api/EventMarker">EventMarker</Link></li>
+                        <li><Link to="/api/HorizontalBarChart">HorizontalBarChart</Link></li>
+                        <li><Link to="/api/LabelAxis">LabelAxis</Link></li>
+                        <li><Link to="/api/Legend">Legend</Link></li>
+                        <li><Link to="/api/LineChart">LineChart</Link></li>
+                        <li><Link to="/api/Resizable">Resizable</Link></li>
+                        <li><Link to="/api/ScatterChart">ScatterChart</Link></li>
+                        <li><Link to="/api/TimeAxis">TimeAxis</Link></li>
+                        <li><Link to="/api/TimeRangeMarker">TimeRangeMarker</Link></li>
+                        <li><Link to="/api/Tracker">Tracker</Link></li>
+                        <li><Link to="/api/ValueAxis">ValueAxis</Link></li>
+                        <li><Link to="/api/ValueList">ValueList</Link></li>
+                        <li><Link to="/api/YAxis">YAxis</Link></li>
+    
                     </ul>
 
                     <div className="sidebar-heading">Links</div>

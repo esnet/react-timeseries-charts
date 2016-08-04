@@ -95,7 +95,15 @@ export default React.createClass({
 
     render() {
         const component = this.props.params.component;
-        const path = `src/${component}.jsx`;
+        const path = `src/components/${component}.js`;
+
+        console.log(path, docsFile);
+
+        if (!_.has(docsFile, path)) {
+            return (
+                <div>API could not be found</div>
+            );
+        }
         const title = docsFile[path].displayName;
         return (
             <div>

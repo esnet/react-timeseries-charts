@@ -2,66 +2,66 @@
     "realtime": {
         "title": "Realtime",
         "description": "This example demonstrates using the pond.js library in conjunction with the charts library to do client side time series processing.",
-        "tags": ["realtime", "barchart", "scatterchart", "pondjs"]
+        "tags": ["Realtime", "BarChart", "ScatterChart", "pondjs"]
     },
     "baselines": {
         "title": "Baseline demo",
         "description": "This example demonstrates drawing multiple Baselines across a LineChart.",
-        "tags": ["linechart", "pondjs", "baseline"]
+        "tags": ["LineChart", "pondjs", "Baseline"]
     },
     "continents": {
         "title": "Stacked AreaCharts",
         "description": "This example demonstrates stacking of AreaCharts along with use of the Styler.",
-        "tags": ["areachart", "legend", "styler"]
+        "tags": ["Areachart", "Legend", "styler"]
     },
     "currency": {
         "title": "Currency example",
         "description": "This example demonstrates plotting multiple LineCharts on top of each other. The LineCharts are selectable and the time scale can be panned and zoomed.",
-        "tags": ["linechart", "baseline", "legend", "styler", "panzoom", "selectable"]
+        "tags": ["LineChart", "Baseline", "lLegend", "styler", "panzoom", "selectable"]
     },
     "cycling": {
         "title": "Cycling example",
         "description": "A multi-channel visualization of a bike ride. Features pan and zoom and brushing.",
-        "tags": ["linechart", "areachart", "legend", "styler", "panzoom", "brushing", "channels", "infobox"]
+        "tags": ["LineChart", "AreaChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox"]
     },
     "ddos": {
         "title": "DDoS attack",
         "description": "A LineChart example featuring scale transitions and an interactive legend",
-        "tags": ["linechart", "legend", "styler"]
+        "tags": ["LineChart", "Legend", "styler"]
     },
     "interfaces": {
         "title": "Traffic breakdown",
         "description": "Combining a Horizontal BarChart with an AreaChart to visualize relative contribution.",
-        "tags": ["hbarchart", "areachart"]
+        "tags": ["HorizontalBarChart", "AreaChart"]
     },
     "outages": {
         "title": "Outage events",
         "description": "Example showing the experimental EventChart.",
-        "tags": ["labelaxis", "eventchart", "panzoom"]
+        "tags": ["LabelAxis", "EventChart", "panzoom"]
     },
     "stockchart": {
         "title": "Stockchart",
         "description": "Example in progress to build a stock chart. Demonstrates log to linear scale transitions.",
-        "tags": ["linechart", "areachart", "panzoom"]
+        "tags": ["LineChart", "AreaChart", "panzoom"]
     },
     "traffic": {
         "title": "Network Traffic example",
         "description": "Example of how ESnet uses the charts library to display network traffic.",
-        "tags": ["areachart", "panzoom"]
+        "tags": ["AreaChart", "panzoom"]
     },
     "weather": {
         "title": "Weather example",
         "description": "Storm visualized as a multi-row chart.",
-        "tags": ["areachart", "linechart", "scatterchart"]
+        "tags": ["AreaChart", "LineChart", "ScatterChart"]
     },
     "wind": {
         "title": "Wind Scatter example",
         "description": "Basic scatter chart example.",
-        "tags": ["scatterchart"]
+        "tags": ["ScatterChart"]
     },
     "volume": {
         "title": "BarChart example",
         "description": "Bar chart examples using traffic volume data.",
-        "tags": ["barchart"]
+        "tags": ["BarChart"]
     }
 }
