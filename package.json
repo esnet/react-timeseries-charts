@@ -10,7 +10,6 @@
   ],
   "main": "lib/entry",
   "author": "ESnet Tools Team <tools@es.net>",
-  "homepage": "https://software.es.net/react-timeseries-charts",
   "repository": "esnet/react-timeseries-charts",
   "bugs": {
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
