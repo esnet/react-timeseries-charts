@@ -49,7 +49,8 @@ class App extends Component {
                     <ul className="nav nav-sidebar">
                         <li><Link to="/">Introduction</Link></li>
                         <li><Link to="/guide/start">Getting started</Link></li>
-                    </ul>
+                        <li><Link to="/guide/style">Styling</Link></li>
+                    </ul>>
 
                     <div className="sidebar-heading">Examples</div>
 
