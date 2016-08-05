@@ -50,7 +50,7 @@ class App extends Component {
                         <li><Link to="/">Introduction</Link></li>
                         <li><Link to="/guide/start">Getting started</Link></li>
                         <li><Link to="/guide/style">Styling</Link></li>
-                    </ul>>
+                    </ul>
 
                     <div className="sidebar-heading">Examples</div>
 

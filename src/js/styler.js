@@ -174,6 +174,11 @@ export class Styler {
                     fill: "none",
                     strokeWidth: width
                 };
+                const styleSelectedLine = {
+                    stroke: selected ? selected : color,
+                    fill: "none",
+                    strokeWidth: width
+                };
                 if (dashed) {
                     styleLine.strokeDasharray = "4,2";
                 }
@@ -181,17 +186,21 @@ export class Styler {
                     fill: c,
                     stroke: "none"
                 };
+                const styleSelectedArea = {
+                    fill: selected ? selected : color,
+                    stroke: "none"
+                };
                 style[column] = {
                     line: {
                         normal: {...styleLine, opacity: 0.9},
                         highlighted: {...styleLine, opacity: 1.0},
-                        selected: {...styleLine, opacity: 1.0},
+                        selected: {...styleSelectedLine, opacity: 1.0},
                         muted: {...styleLine, opacity: 0.4}
                     },
                     area: {
                         normal: {...styleArea, opacity: 0.7},
                         highlighted: {...styleArea, opacity: 0.8},
-                        selected: {...styleArea, opacity: 0.8},
+                        selected: {...styleSelectedArea, opacity: 0.8},
                         muted: {...styleArea, opacity: 0.2}
                     }
                 };
@@ -203,20 +212,46 @@ export class Styler {
     lineChartStyle() {
         const style = {};
         _.forEach(this._columnStyles,
-            ({color, width = 1, dashed = false} , column) => {
+            ({color, selected, width = 1, dashed = false} , column) => {
                 const styleLine = {
                     stroke: color,
                     strokeWidth: width,
                     fill: "none"
                 };
+                const styleSelectedLine = {
+                    stroke: selected ? selected : color,
+                    strokeWidth: width,
+                    fill: "none"
+                };
+
                 if (dashed) {
                     styleLine.strokeDasharray = "4,2";
                 }
                 style[column] = {
                     normal: {...styleLine, opacity: 0.8, strokeWidth: width},
                     highlighted: {...styleLine, opacity: 1.0, strokeWidth: width},
-                    selected: {...styleLine, opacity: 1.0, strokeWidth: width},
+                    selected: {...styleSelectedLine, opacity: 1.0, strokeWidth: width},
                     muted: {...styleLine, opacity: 0.2, strokeWidth: width}
+                };
+            });
+        return style;
+    }
+
+    barChartStyle() {
+        const style = {};
+        _.forEach(this._columnStyles,
+            ({color, selected} , column) => {
+                const fillStyle = {
+                    fill: color
+                };
+                const selectedStyle = {
+                    fill: selected ? selected : color
+                };
+                style[column] = {
+                    normal: {...fillStyle, opacity: 0.8},
+                    highlighted: {...fillStyle, opacity: 1.0},
+                    selected: {...selectedStyle, opacity: 1.0},
+                    muted: {...fillStyle, opacity: 0.2}
                 };
             });
         return style;

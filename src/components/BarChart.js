@@ -11,14 +11,15 @@
 import React from "react";
 import _ from "underscore";
 import merge from "merge";
-import { TimeSeries, Event, IndexedEvent } from "pondjs";
+import { TimeSeries, IndexedEvent, Event } from "pondjs";
 import EventMarker from "./EventMarker";
+import { Styler } from "../js/styler";
 
 const defaultStyle = {
-    normal: {fill: "steelblue"},
-    highlight: {fill: "#5a98cb"},
-    selected: {fill: "yellow"},
-    text: {fill: "#333", stroke: "none"}
+    normal: {fill: "steelblue", opacity: 0.8},
+    highlighted: {fill: "steelblue", opacity: 1.0},
+    selected: {fill: "steelblue", opacity: 1.0},
+    muted: {fill: "steelblue", opacity: 0.4}
 };
 
 /**
@@ -85,7 +86,6 @@ export default React.createClass({
             columns: ["value"],
             spacing: 1.0,
             offset: 0,
-            style: {},
             infoStyle: {
                 line: {
                     stroke: "#999",
@@ -172,7 +172,8 @@ export default React.createClass({
          */
         style: React.PropTypes.oneOfType([
             React.PropTypes.object,
-            React.PropTypes.func
+            React.PropTypes.func,
+            React.PropTypes.instanceOf(Styler)
         ]),
 
         /**
@@ -265,6 +266,62 @@ export default React.createClass({
         e.stopPropagation();
     },
 
+    providedStyleMap(column) {
+        let style = {};
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.barChartStyle()[column];
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            }
+        }
+        return style;
+    },
+
+    /**
+     * Returns the style used for drawing the path
+     */
+    style(column, event) {
+        let style;
+
+        const styleMap = this.providedStyleMap(column);
+
+        const isHighlighted = this.props.highlighted &&
+                              column === this.props.highlighted.column &&
+                              Event.is(this.props.highlighted.event, event);
+        const isSelected = this.props.selected &&
+                           column === this.props.selected.column &&
+                           Event.is(this.props.selected.event, event);
+
+        if (this.props.selected) {
+            if (isSelected) {
+                style = merge(true,
+                              defaultStyle.selected,
+                              styleMap.selected ? styleMap.selected : {});
+            } else if (isHighlighted) {
+                style = merge(true,
+                              defaultStyle.highlighted,
+                              styleMap.highlighted ? styleMap.highlighted : {});
+            } else {
+                style = merge(true,
+                              defaultStyle.muted,
+                              styleMap.muted ? styleMap.muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(true,
+                          defaultStyle.highlighted,
+                          styleMap.highlighted ? styleMap.highlighted : {});
+        } else {
+            style = merge(true,
+                          defaultStyle.normal,
+                          styleMap.normal ? styleMap.normal : {});
+        }
+
+        return style;
+    },
+
     renderBars() {
         const spacing = +this.props.spacing;
         const offset = +this.props.offset;
@@ -274,7 +331,7 @@ export default React.createClass({
         const columns = this.props.columns || series._columns;
 
         const bars = [];
-        let hoverOverlay;
+        let eventMarker;
 
         for (const event of series.events()) {
             const begin = event.begin();
@@ -309,50 +366,18 @@ export default React.createClass({
                     const index = event.index();
                     const key = `${series.name()}-${index}-${column}`;
                     const value = event.get(column);
+                    const style = this.style(column, event);
 
                     let height = yScale(0) - yScale(value);
-                    if (height < 1) {
-                        height = 1;
-                    }
-
+                    height = height < 1 ? 1 : height;
                     const y = ypos - height;
 
-                    const isHighlighted =
-                        this.props.highlight &&
-                        Event.is(this.props.highlight.event, event) &&
-                        column === this.props.highlight.column;
-
-                    const isSelected =
-                        (this.props.selection &&
-                            Event.is(this.props.selection.event, event) &&
-                            column === this.props.selection.column);
-
-                    const providedStyle = this.props.style ?
-                        this.props.style[column] : {};
-
-                    const styleMap = _.isFunction(this.props.style) ?
-                        this.props.style(event, column) :
-                        merge(true, defaultStyle, providedStyle);
-
-                    let style;
-                    if (this.props.selection) {
-                        if (isSelected) {
-                            style = styleMap.selected;
-                        } else if (isHighlighted) {
-                            style = styleMap.highlighted;
-                        } else {
-                            style = styleMap.muted;
-                        }
-                    } else if (isHighlighted) {
-                        style = styleMap.highlighted;
-                    } else {
-                        style = styleMap.normal;
-                    }
-                    style.cursor = "crosshair";
-
-                    // Hover info box
+                    // Event marker if info provided and hovering
+                    const isHighlighted = this.props.highlighted &&
+                                          column === this.props.highlighted.column &&
+                                          Event.is(this.props.highlighted.event, event);
                     if (isHighlighted && this.props.info) {
-                        hoverOverlay = (
+                        eventMarker = (
                             <EventMarker
                                 {...this.props}
                                 offsetX={offset}
@@ -362,14 +387,12 @@ export default React.createClass({
                         );
                     }
 
+                    const box = {x, y, width, height};
+
                     bars.push(
                         <rect
                             key={key}
-                            x={x}
-                            y={y}
-                            width={width}
-                            height={height}
-                            pointerEvents="none"
+                            {...box}
                             style={style}
                             clipPath={this.props.clipPathURL}
                             onClick={e => this.handleClick(e, event, column)}
@@ -385,7 +408,7 @@ export default React.createClass({
         return (
             <g>
                 {bars}
-                {hoverOverlay}
+                {eventMarker}
             </g>
         );
     },

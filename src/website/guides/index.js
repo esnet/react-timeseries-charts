@@ -9,7 +9,9 @@
  */
 
 import start from "raw!./start.md";
+import style from "raw!./style.md";
 
 export default {
-    start
+    start,
+    style
 };

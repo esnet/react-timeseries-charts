@@ -23,8 +23,8 @@ import ChartRow from "../../../components/ChartRow";
 import Charts from "../../../components/Charts";
 import YAxis from "../../../components/YAxis";
 import BarChart from "../../../components/BarChart";
-import Baseline from "../../../components/Baseline";
 import Resizable from "../../../components/Resizable";
+import styler from "../../../js/styler";
 
 // Test data
 import monthlyJSON from "./total_traffic_6mo.json";
@@ -39,8 +39,6 @@ const interfaceKey = "ornl-cr5::to_ornl_ip-a::standard";
 const days = interfacesJSON[interfaceKey].days;
 
 let max = 0;
-let count = 0;
-let totalIn = 0;
 _.each(days, (value, day) => {
     const dayOfMonth = Number(day);
     const volIn = value.in;
@@ -49,12 +47,6 @@ _.each(days, (value, day) => {
     // Max
     max = Math.max(max, value.in);
     max = Math.max(max, value.out);
-
-    // Skip the bad value in oct for a reasonable avg example
-    if (dayOfMonth !== 10) {
-        totalIn += value.in;
-        count++;
-    }
 
     trafficPoints.push([`2014-10-${dayOfMonth}`, volIn, volOut]);
 });
@@ -67,8 +59,6 @@ const octoberTrafficSeries = new TimeSeries({
 });
 
 max /= 100;
-
-const avgIn = totalIn / count;
 
 //
 // ESnet wide monthy traffic summary (part of 2014)
@@ -112,11 +102,15 @@ const volume = React.createClass({
     },
 
     render() {
+        /*
+        
+        Styling the hard way
+
         const style = {
             in: {
                 normal: {fill: "#A5C8E1"},
                 highlighted: {fill: "#BFDFF6"},
-                selected: {fill: "#5AA2D5"},
+                selected: {fill: "#2DB3D1"},
                 muted: {fill: "#A5C8E1", opacity: 0.4}
             }
         };
@@ -125,7 +119,7 @@ const volume = React.createClass({
             out: {
                 normal: {fill: "#FFCC9E"},
                 highlighted: {fill: "#fcc593"},
-                selected: {fill: "#FFCC9E"},
+                selected: {fill: "#2DB3D1"},
                 muted: {fill: "#FFCC9E", opacity: 0.4}
             }
         };
@@ -134,16 +128,22 @@ const volume = React.createClass({
             in: {
                 normal: {fill: "#A5C8E1"},
                 highlighted: {fill: "#BFDFF6"},
-                selected: {fill: "#5AA2D5"},
+                selected: {fill: "#2DB3D1"},
                 muted: {fill: "#A5C8E1", opacity: 0.4}
             },
             out: {
                 normal: {fill: "#FFCC9E"},
                 highlighted: {fill: "#fcc593"},
-                selected: {fill: "#FFCC9E"},
+                selected: {fill: "#2DB3D1"},
                 muted: {fill: "#FFCC9E", opacity: 0.4}
             }
         };
+        */
+
+        const style = styler([
+            {key: "in", color: "#A5C8E1", selected: "#2CB1CF"},
+            {key: "out", color: "#FFCC9E", selected: "#2CB1CF"}
+        ]);
 
         const formatter = format(".2s");
         const selectedDate = this.state.selection ?
@@ -199,15 +199,10 @@ const volume = React.createClass({
                                             columns={["in"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
-                                            highlight={this.state.highlight}
+                                            highlighted={this.state.highlight}
                                             onHighlightChange={highlight => this.setState({highlight})}
-                                            selection={this.state.selection}
+                                            selected={this.state.selection}
                                             onSelectionChange={selection => this.setState({selection})} />
-                                        <Baseline
-                                            axis="traffic"
-                                            value={avgIn}
-                                            label="Avg"
-                                            position="right" />
                                     </Charts>
                                     <YAxis
                                         id="traffic-rate"
@@ -219,7 +214,6 @@ const volume = React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
@@ -246,22 +240,22 @@ const volume = React.createClass({
                                             offset={5.5}
                                             columns={["in"]}
                                             series={octoberTrafficSeries}
-                                            highlight={this.state.highlight}
+                                            highlighted={this.state.highlight}
                                             info={infoValues}
                                             onHighlightChange={highlight => this.setState({highlight})}
-                                            selection={this.state.selection}
+                                            selected={this.state.selection}
                                             onSelectionChange={selection => this.setState({selection})} />
                                         <BarChart
                                             axis="traffic-volume"
-                                            style={altStyle}
+                                            style={style}
                                             size={10}
                                             offset={-5.5}
                                             columns={["out"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
-                                            highlight={this.state.highlight}
+                                            highlighted={this.state.highlight}
                                             onHighlightChange={highlight => this.setState({highlight})}
-                                            selection={this.state.selection}
+                                            selected={this.state.selection}
                                             onSelectionChange={selection => this.setState({selection})} />
 
                                     </Charts>
@@ -292,14 +286,14 @@ const volume = React.createClass({
                                     <Charts>
                                         <BarChart
                                             axis="traffic-volume"
-                                            style={combinedStyle}
+                                            style={style}
                                             spacing={3}
                                             columns={["in", "out"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
-                                            highlight={this.state.highlight}
+                                            highlighted={this.state.highlight}
                                             onHighlightChange={highlight => this.setState({highlight})}
-                                            selection={this.state.selection}
+                                            selected={this.state.selection}
                                             onSelectionChange={selection => this.setState({selection})} />
                                     </Charts>
                                  </ChartRow>
