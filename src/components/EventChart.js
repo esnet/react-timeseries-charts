@@ -143,12 +143,10 @@ export default React.createClass({
                         <rect
                             className="eventchart-marker"
                             x={x} y={y} width={5} height={height+4}
-                            style={merge(true, barNormalStyle, {pointerEvents: "none"})}
-                            clipPath={this.props.clipPathURL} />
+                            style={merge(true, barNormalStyle, {pointerEvents: "none"})} />
                         <text
                             style={{pointerEvents: "none", fill: "#444", ...eventLabelStyle}}
-                            x={8} y={15}
-                            clipPath={this.props.clipPathURL} >
+                            x={8} y={15} >
                             {label}
                         </text>
                     </g>
@@ -161,7 +159,6 @@ export default React.createClass({
                         className="eventchart-marker"
                         x={x} y={y} width={width} height={height}
                         style={barStyle}
-                        clipPath={this.props.clipPathURL}
                         onClick={e => this.handleClick(e, event)}
                         onMouseLeave={() => this.setState({hover: null})}
                         onMouseMove={e => this.handleMouseMove(e, event)} />

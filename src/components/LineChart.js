@@ -254,11 +254,9 @@ export default React.createClass({
             <g key={key}>
                 <path
                     d={path}
-                    clipPath={this.props.clipPathURL}
                     style={this.pathStyle(column)} />
                 <path
                     d={path}
-                    clipPath={this.props.clipPathURL}
                     style={hitStyle}
                     onClick={e => this.handleClick(e, column)}
                     onMouseLeave={this.handleHoverLeave}

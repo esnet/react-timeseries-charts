@@ -252,8 +252,7 @@ export default React.createClass({
                 style={overlayStyle}
                 onMouseDown={this.handleOverlayMouseDown}
                 onMouseUp={this.handleMouseUp}
-                onClick={this.handleClick}
-                clipPath={this.props.clipPathURL} />
+                onClick={this.handleClick} />
         );
     },
 
@@ -308,8 +307,7 @@ export default React.createClass({
                     style={brushStyle}
                     pointerEvents="all"
                     onMouseDown={this.handleBrushMouseDown}
-                    onMouseUp={this.handleMouseUp}
-                    clipPath={this.props.clipPathURL} />
+                    onMouseUp={this.handleMouseUp} />
             );
         }
     },

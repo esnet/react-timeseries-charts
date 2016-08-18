@@ -195,7 +195,6 @@ export default React.createClass({
             height: this.props.infoHeight
         };
 
-
         const w = this.props.infoWidth;
         const lineBottom = posy - 10;
 

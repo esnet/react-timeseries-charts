@@ -271,10 +271,10 @@ export default React.createClass({
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column, event);
             } else if (_.isObject(this.props.style)) {
                 style = this.props.style ? this.props.style[column] : defaultStyle;
-            } else if (_.isFunction(this.props.style)) {
-                style = this.props.style(column);
             }
         }
         return style;
@@ -394,7 +394,6 @@ export default React.createClass({
                             key={key}
                             {...box}
                             style={style}
-                            clipPath={this.props.clipPathURL}
                             onClick={e => this.handleClick(e, event, column)}
                             onMouseLeave={this.handleHoverLeave}
                             onMouseMove={e => this.handleHover(e, event, column)} />

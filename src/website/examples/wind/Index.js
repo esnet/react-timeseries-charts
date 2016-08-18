@@ -98,6 +98,36 @@ const wind = React.createClass({
             infoValues = [{label: "Speed", value: speedText}];
         }
 
+        const heat = ["#a50026","#d73027","#f46d43","#fdae61",
+                      "#fee08b","#ffffbf","#d9ef8b","#a6d96a",
+                      "#66bd63","#1a9850","#006837"]
+
+        const perEventStyle = (column, event) => {
+            const color = heat[Math.floor((1 - event.get("station1")/40) * 11)];
+            return {
+                normal: {
+                    fill: color,
+                    opacity: 1.0
+                },
+                highlighted: {
+                    fill: color,
+                    stroke: "none",
+                    opacity: 1.0
+                },
+                selected: {
+                    fill: "none",
+                    stroke: "#2CB1CF",
+                    strokeWidth: 3,
+                    opacity: 1.0
+                },
+                muted: {
+                    stroke: "none",
+                    opacity: 0.4,
+                    fill: color
+                }
+            }
+        };
+
         return (
             <div>
 
@@ -125,33 +155,7 @@ const wind = React.createClass({
                                             axis="wind-gust"
                                             series={series}
                                             columns={["station1", "station2"]}
-                                            style={(event, column) => ({
-                                                normal: {
-                                                    fill: column === "station1" ?
-                                                        "green" :
-                                                        "orange",
-                                                    opacity: 0.8
-                                                },
-                                                highlighted: {
-                                                    fill: column === "station1" ?
-                                                        "green" :
-                                                        "orange",
-                                                    stroke: "none",
-                                                    opacity: 1.0
-                                                },
-                                                selected: {
-                                                    fill: "none",
-                                                    stroke: "#2db3d1",
-                                                    strokeWidth: 3,
-                                                    opacity: 1.0
-                                                },
-                                                muted: {
-                                                    stroke: "none",
-                                                    opacity: 0.4,
-                                                    fill: column === "station1" ?
-                                                        "green" : "orange"
-                                                }
-                                            })}
+                                            style={perEventStyle}
                                             info={infoValues}
                                             infoHeight={28} infoWidth={110}
                                             format=".1f"

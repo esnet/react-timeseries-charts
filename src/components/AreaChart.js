@@ -317,14 +317,12 @@ export default React.createClass({
                     <path
                         d={areaPath}
                         style={style}
-                        clipPath={this.props.clipPathURL}
                         onClick={e => this.handleClick(e, column)}
                         onMouseLeave={this.handleHoverLeave}
                         onMouseMove={e => this.handleHover(e, column)} />
                      <path
                         d={outlinePath}
                         style={pathStyle}
-                        clipPath={this.props.clipPathURL}
                         onClick={e => this.handleClick(e, column)}
                         onMouseLeave={this.handleHoverLeave}
                         onMouseMove={e => this.handleHover(e, column)} />

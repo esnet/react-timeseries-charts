@@ -53,10 +53,6 @@ import React from "react";
  *
  * A d3 scale for the y-axis which you can use to transform your data in the y direction
  *
- * #### clipPathURL
- *
- * A URL for the clip path applied around this chart area
- *
  * #### transition
  *
  * The time in ms it is expected the code will take to move from one state to another

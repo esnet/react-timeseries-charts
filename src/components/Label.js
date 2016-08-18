@@ -75,7 +75,11 @@ export default React.createClass({
             parseInt(this.props.width / 2, 10) : 10;
 
         const label = (
-            <text x={posx} y={5} dy="1.2em" style={style}>
+            <text
+                x={posx}
+                y={5}
+                dy="1.2em"
+                style={style}>
                 {this.props.label}
             </text>
         );
@@ -83,8 +87,10 @@ export default React.createClass({
         const box = (
             <rect
                 style={this.props.style}
-                x={0} y={0}
-                width={this.props.width} height={this.props.height} />
+                x={0}
+                y={0}
+                width={this.props.width}
+                height={this.props.height} />
         );
 
         return (

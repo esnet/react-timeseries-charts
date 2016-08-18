@@ -62,10 +62,12 @@ export default React.createClass({
                 width = 1;
             }
             return (
-                <rect x={beginPos} y={0}
-                      width={width} height={this.props.height}
-                      style={bandStyle}
-                      clipPath={this.props.clipPathURL}/>
+                <rect
+                    x={beginPos}
+                    y={0}
+                    width={width}
+                    height={this.props.height}
+                    style={bandStyle} />
             );
         }
     },

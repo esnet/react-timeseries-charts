@@ -319,6 +319,33 @@
         "returns": null
       },
       {
+        "name": "providedStyleMap",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "event"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
         "name": "renderBars",
         "docblock": null,
         "modifiers": [],
@@ -380,15 +407,15 @@
             },
             {
               "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
             }
           ]
         },
         "required": false,
-        "description": "The style of the bar chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being drawn,\nper the `columns` prop. For each column a style is defined for\neach state the bar may be in. This style is the CSS properties for\nthe underlying SVG <Rect>, so most likely you'll define fill and\nopacity.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\nfour states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
-        "defaultValue": {
-          "value": "{}",
-          "computed": false
-        }
+        "description": "The style of the bar chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being drawn,\nper the `columns` prop. For each column a style is defined for\neach state the bar may be in. This style is the CSS properties for\nthe underlying SVG <Rect>, so most likely you'll define fill and\nopacity.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\nfour states (normal, highlighted, selected and muted) and the corresponding\nCSS properties."
       },
       "infoStyle": {
         "type": {
@@ -890,6 +917,17 @@
         "required": false,
         "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to \"day\", \"month\" or\n\"year\" will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to \"day\" will insure that a label is placed for each and every day.\n\nThe last option is \"relative\". This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
       },
+      "showGrid": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show grid lines for each time marker",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "trackerPosition": {
         "type": {
           "name": "instanceOf",
@@ -897,6 +935,13 @@
         },
         "required": false,
         "description": "A Date specifying the position of the tracker line on the chart. It is\ncommon to take this from the onTrackerChanged callback so that the tracker\nfollowers the user's cursor, but it could be modified to snap to a point or\nto the nearest minute, for example."
+      },
+      "trackerInfoValues": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The tracker can display an info box next to the vertical line, if we\nthis prop is supplied."
       },
       "onTrackerChanged": {
         "type": {
@@ -999,7 +1044,7 @@
     }
   },
   "src/components/Charts.js": {
-    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### clipPathURL\n\nA URL for the clip path applied around this chart area\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
+    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
     "displayName": "Charts",
     "methods": []
   },
@@ -2347,6 +2392,37 @@
         "returns": null
       },
       {
+        "name": "providedStyleMap",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "event"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
         "name": "renderScatter",
         "docblock": null,
         "modifiers": [],
@@ -2393,6 +2469,10 @@
             },
             {
               "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
             }
           ]
         },
@@ -2416,11 +2496,7 @@
           ]
         },
         "required": false,
-        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` prop. Each of those keys has an object as its\nvalue which has keys which are style properties for an SVG <Circle> and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\n4 states (normal, highlighted, selected and muted) and the corresponding\nCSS properties.",
-        "defaultValue": {
-          "value": "{}",
-          "computed": false
-        }
+        "description": "The style of the scatter chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being plotted,\nper the `columns` prop. Each of those keys has an object as its\nvalue which has keys which are style properties for an SVG <Circle> and\nthe value to use.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\n4 states (normal, highlighted, selected and muted) and the corresponding\nCSS properties."
       },
       "infoStyle": {
         "type": {
@@ -2523,11 +2599,170 @@
       }
     ],
     "props": {
+      "showGrid": {
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "style": {
         "defaultValue": {
           "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\"\n    }\n}",
           "computed": false
         }
+      }
+    }
+  },
+  "src/components/TimeMarker.js": {
+    "description": "",
+    "displayName": "TimeMarker",
+    "methods": [
+      {
+        "name": "renderLine",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "posx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderTimeMarker",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "d",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderInfoBox",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "posx",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "time": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "info": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "shape",
+                "value": {
+                  "label": {
+                    "name": "string",
+                    "required": false
+                  },
+                  "value": {
+                    "name": "string",
+                    "required": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is either an array of\nobjects, with each object specifying the label and value\nto be shown in the info box, or a simple string label"
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "25",
+          "computed": false
+        }
+      },
+      "showInfoBox": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Display the info box at all. If you don't have any values to show and just\nwant a line and a time (for example), you can set this to false.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "showLine": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "You can show the info box without the corresponding time marker. Why would\nyou do this? I don't know. Actually, I do. You might use the ChartContainer\ntracker mechanism to show the line across multiple rows, then add a TimeMarker\nselectively to each row.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "showTime": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "You can hide the time displayed above the info box. You might do this because\nit is already displayed elsewhere in your UI. Or maybe you just don't like it.",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "timeFormat": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The time format (d3 time format) used for display of the time above the info box."
       }
     }
   },
@@ -2572,137 +2807,6 @@
       "offset": {
         "defaultValue": {
           "value": "0",
-          "computed": false
-        }
-      }
-    }
-  },
-  "src/components/Tracker.js": {
-    "description": "",
-    "displayName": "Tracker",
-    "methods": [
-      {
-        "name": "renderLine",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "posx",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderTrackerTime",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "d",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderHint",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "posx",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "style": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\"\n    },\n    box: {\n        fill: \"#FFF\",\n        opacity: 0.85,\n        stroke: \"#AAA\"\n    }\n}",
-          "computed": false
-        }
-      },
-      "position": {
-        "type": {
-          "name": "instanceOf",
-          "value": "Date"
-        },
-        "required": false,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "width": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "showHint": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "true",
-          "computed": false
-        }
-      },
-      "showLine": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "true",
-          "computed": false
-        }
-      },
-      "timeFormat": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "timeScale": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "offset": {
-        "defaultValue": {
-          "value": "0",
-          "computed": false
-        }
-      },
-      "trackerHintWidth": {
-        "defaultValue": {
-          "value": "90",
-          "computed": false
-        }
-      },
-      "trackerHintHeight": {
-        "defaultValue": {
-          "value": "90",
           "computed": false
         }
       }

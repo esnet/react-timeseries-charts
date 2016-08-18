@@ -87,7 +87,7 @@ const stockchart = React.createClass({
                     <Charts>
                         <LineChart
                             axis="y"
-                            style={{close: {stroke: "steelblue"}}}
+                            style={{close: {normal: {stroke: "steelblue"}}}}
                             columns={["close"]}
                             series={croppedSeries}
                             interpolation="curveBasis" />
@@ -106,7 +106,7 @@ const stockchart = React.createClass({
                     <Charts>
                         <BarChart
                             axis="y"
-                            style={{close: {stroke: "steelblue"}}}
+                            style={{volume: {normal: {stroke: "steelblue"}}}}
                             columns={["volume"]}
                             series={croppedVolumeSeries}  />
                     </Charts>

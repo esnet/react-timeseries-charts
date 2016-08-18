@@ -62,7 +62,15 @@ To use a `styler` we start by importing it.
 
     import { styler } from "react-timeseries-charts";
 
-Then in constructing an instance of the styler we build a mapping of our column name to those characteristics we just talked about. In this case to just the color we want:
+Then in constructing an instance of the styler we build a mapping of our column name to those characteristics we just talked about.
+
+The current list of characteristics are:
+ * `color` - the main color of the element, opacity will be applied by the styler
+ * `selected` - the selection color. If not specified, `color` will be used
+ * `width` - the width of line drawing
+ * `dashed` - display line drawing as a dashed line or not
+
+In this case to just the `color` we want:
 
     const trafficStyle = styler([
         {key: "in", color: "orange"},
@@ -77,7 +85,7 @@ Now we can use the styler instance directly in our `AreaChart`:
             style={trafficStyle}
             ... />
 
-What's more we can use the same style `trafficStyle` in the `Legend`:
+What's more, we can use the same style `trafficStyle` in the `Legend`:
 
     <Legend
         type="swatch"
@@ -87,17 +95,19 @@ What's more we can use the same style `trafficStyle` in the `Legend`:
             {key: "out", label: "Out of site"}
         ]} />
 
-Under the hood, when a styler is passed into something like an AreaChart, the chart will ask the styler to provide the style. What it provides will actually be of the form we discussed in the first part of this guide, generated for your convenience from the color your gave it.
+Under the hood, when a styler is passed into something like an `AreaChart`, the chart will ask the `styler` to provide the style with a call to `styler.areaChartStyle()`. What it provides will actually be of the form we discussed in the first part of this guide, generated for your convenience from the color your gave it. As a result, it would be possible to provide your own styler or subclass the provided one.
 
 And that's pretty much it.
 
 Wait, no it's not.
 
-The styler has another trick. It comes with a palette of colors from Color Brewer, so you can just specify the color palette you want by name and it will assign colors to the columns for you.
+The styler has another trick. It also comes with a palette of colors from Color Brewer, so you can just specify the color palette you want by name and it will assign colors to the columns for you.
 
-    const stackedAreaChartStyle = styler(columnNames, schemeName);
+    const schemeName = "GnBu";
+    const columnNames = ["in", "out"];
+    const trafficStyle = styler(columnNames, schemeName);
 
-For an example of this, see the stacked AreaChart example. For the available scheme names see the color brewer website.
+For an example of this, see the "Stacked AreaChart" example. For the available scheme names see the color brewer website.
 
 ### Event level styling
 
