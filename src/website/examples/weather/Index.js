@@ -98,15 +98,6 @@ const style = styler([
     {key: "rainAccum", color: "#333"}
 ]);
 
-const scatterStyles = {
-    gust: {
-        normal: {
-            fill: scheme.gust,
-            opacity: 0.5
-        }
-    }
-};
-
 const linkStyle = {
     fontWeight: 600,
     color: "grey",
@@ -164,7 +155,7 @@ const weather = React.createClass({
                                 onTrackerChanged={(tracker) => this.setState({tracker})} >
 
                                 <ChartRow height="150" >
-                                    <YAxis id="temp" label="Temperature (°F)" labelOffset={-5} style={{labelColor: scheme.temp}}
+                                    <YAxis id="temp" label="Temperature (°F)" labelOffset={-5} style={style.axisStyle("temp")}
                                            min={50} max={70} width="80" type="linear" format=",.1f"/>
                                     <Charts>
                                         <LineChart
@@ -178,13 +169,13 @@ const weather = React.createClass({
                                             columns={["pressure"]}
                                             style={style} />
                                     </Charts>
-                                    <YAxis id="pressure" label="Pressure (in)" labelOffset={5} style={{labelColor: scheme.pressure}}
+                                    <YAxis id="pressure" label="Pressure (in)" labelOffset={5} style={style.axisStyle("pressure")}
                                            min={29.5} max={30.0} width="80" type="linear" format=",.1f"/>
 
                                 </ChartRow>
 
                                 <ChartRow height="150" >
-                                    <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5} style={{labelColor: scheme.gust}}
+                                    <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5} style={style.axisStyle("gust")}
                                            min={0} max={50} width="80" type="linear" format=",.1f"/>
 
                                     <Charts>
@@ -198,7 +189,7 @@ const weather = React.createClass({
                                             axis="wind-gust"
                                             series={gustSeries}
                                             columns={["gust"]}
-                                            style={scatterStyles}
+                                            style={style}
                                             radius={event => { return event.get("radius"); }}/>
                                     </Charts>
 
@@ -207,7 +198,7 @@ const weather = React.createClass({
                                 </ChartRow>
 
                                 <ChartRow height="150">
-                                    <YAxis id="total-rain" label="Total Precipitation (in)" labelOffset={-5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
+                                    <YAxis id="total-rain" label="Total Precipitation (in)" style={style.axisStyle("rainAccum")} labelOffset={-5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
                                     <Charts>
                                         <AreaChart
                                             axis="rain"
@@ -222,7 +213,7 @@ const weather = React.createClass({
                                             columns={["rainAccum"]}
                                             style={style} />
                                     </Charts>
-                                    <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={{labelColor: scheme.rain}}
+                                    <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={style.axisStyle("rain")}
                                            min={0} max={rainSeries.max("rain")} width="80" type="linear" format=",.2f"/>
                                 </ChartRow>
 

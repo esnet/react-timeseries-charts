@@ -14,13 +14,13 @@ import _ from "underscore";
 import merge from "merge";
 import { TimeSeries, Event } from "pondjs";
 import EventMarker from "./EventMarker";
+import { Styler } from "../js/styler";
 
 const defaultStyle = {
     normal: {fill: "steelblue", opacity: 0.8},
-    highlighted: {fill: "#5a98cb", opacity: 1.0},
-    selected: {fill: "orange", opacity: 1.0},
-    muted: {fill: "steelblue", opacity: 0.4},
-    text: {fill: "#333", stroke: "none"}
+    highlighted: {fill: "steelblue", opacity: 1.0},
+    selected: {fill: "steelblue", opacity: 1.0},
+    muted: {fill: "steelblue", opacity: 0.4}
 };
 
 // http://stackoverflow.com/a/28857255
@@ -81,7 +81,6 @@ export default React.createClass({
         return {
             columns: ["value"],
             radius: 2.0,
-            style: {},
             infoStyle: {
                 line: {
                     stroke: "#999",
@@ -139,7 +138,8 @@ export default React.createClass({
          */
         radius: React.PropTypes.oneOfType([
             React.PropTypes.number,
-            React.PropTypes.func
+            React.PropTypes.func,
+            React.PropTypes.instanceOf(Styler)
         ]),
 
         /**
@@ -286,6 +286,63 @@ export default React.createClass({
         }
     },
 
+
+    providedStyleMap(column, event) {
+        let style = {};
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.scatterChartStyle()[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column, event);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
+            }
+        }
+        return style;
+    },
+
+    /**
+     * Returns the style used for drawing the path
+     */
+    style(column, event) {
+        let style;
+
+        const styleMap = this.providedStyleMap(column, event);
+
+        const isHighlighted = this.props.highlighted &&
+                              column === this.props.highlighted.column &&
+                              Event.is(this.props.highlighted.event, event);
+        const isSelected = this.props.selected &&
+                           column === this.props.selected.column &&
+                           Event.is(this.props.selected.event, event);
+
+        if (this.props.selected) {
+            if (isSelected) {
+                style = merge(true,
+                              defaultStyle.selected,
+                              styleMap.selected ? styleMap.selected : {});
+            } else if (isHighlighted) {
+                style = merge(true,
+                              defaultStyle.highlighted,
+                              styleMap.highlighted ? styleMap.highlighted : {});
+            } else {
+                style = merge(true,
+                              defaultStyle.muted,
+                              styleMap.muted ? styleMap.muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(true,
+                          defaultStyle.highlighted,
+                          styleMap.highlighted ? styleMap.highlighted : {});
+        } else {
+            style = merge(true,
+                          defaultStyle.normal,
+                          styleMap.normal ? styleMap.normal : {});
+        }
+
+        return style;
+    },
+
     renderScatter() {
         const { series, timeScale, yScale } = this.props;
         const points = [];
@@ -296,45 +353,18 @@ export default React.createClass({
             for (const event of series.events()) {
                 const t = event.timestamp();
                 const value = event.get(column);
+                const style = this.style(column, event);
 
                 const x = timeScale(t);
                 const y = yScale(value);
 
                 const radius = _.isFunction(this.props.radius) ?
-                    this.props.radius(event, column) : this.props.radius;
+                    this.props.radius(event, column) : +this.props.radius;
 
                 const isHighlighted =
                     this.props.highlight &&
                     Event.is(this.props.highlight.event, event) &&
                     column === this.props.highlight.column;
-
-                const isSelected =
-                    (this.props.selection &&
-                        Event.is(this.props.selection.event, event) &&
-                        column === this.props.selection.column);
-
-                const providedStyle = this.props.style ?
-                    this.props.style[column] : {};
-
-                const styleMap = _.isFunction(this.props.style) ?
-                    this.props.style(event, column) :
-                    merge(true, defaultStyle, providedStyle);
-
-                let style;
-                if (this.props.selection) {
-                    if (isSelected) {
-                        style = styleMap.selected;
-                    } else if (isHighlighted) {
-                        style = styleMap.highlighted;
-                    } else {
-                        style = styleMap.muted;
-                    }
-                } else if (isHighlighted) {
-                    style = styleMap.highlighted;
-                } else {
-                    style = styleMap.normal;
-                }
-                style.cursor = "crosshair";
 
                 // Hover info
                 if (isHighlighted && this.props.info) {
@@ -356,7 +386,6 @@ export default React.createClass({
                         r={radius}
                         style={style}
                         pointerEvents="none"
-                        clipPath={this.props.clipPathURL}
                         onMouseMove={this.handleHover}
                         onClick={e => this.handleClick(e, event, column)} />
                 );

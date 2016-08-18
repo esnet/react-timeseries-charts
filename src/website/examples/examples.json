@@ -22,7 +22,7 @@
     "cycling": {
         "title": "Cycling example",
         "description": "A multi-channel visualization of a bike ride. Features pan and zoom and brushing.",
-        "tags": ["LineChart", "AreaChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox"]
+        "tags": ["LineChart", "AreaChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox", "TimeMarker"]
     },
     "ddos": {
         "title": "DDoS attack",

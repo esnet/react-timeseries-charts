@@ -16,7 +16,7 @@ import _ from "underscore";
 import YAxis from "./YAxis";
 import Charts from "./Charts";
 import Brush from "./Brush";
-import Tracker from "./Tracker";
+import TimeMarker from "./TimeMarker";
 import { ScaleInterpolator } from "../js/interpolators";
 
 const AXIS_MARGIN = 5;
@@ -362,7 +362,6 @@ export default React.createClass({
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-
             if (child.type === Charts) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
@@ -372,7 +371,6 @@ export default React.createClass({
                         key: keyCount,
                         width: chartWidth,
                         height: innerHeight,
-                        clipPathURL: this.state.clipPathURL,
                         timeScale: this.props.timeScale,
                         timeFormat: this.props.timeFormat,
                         yScale: this.state.yAxisScalerMap[chart.props.axis],
@@ -403,7 +401,6 @@ export default React.createClass({
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
-                    clipPathURL: this.state.clipPathURL,
                     timeScale: this.props.timeScale
                 };
                 brushList.push(React.cloneElement(child, brushProps));
@@ -414,7 +411,7 @@ export default React.createClass({
 
         const charts = (
             <g transform={chartTransform} key="event-rect-group">
-                <g key="charts">
+                <g key="charts" clipPath={this.state.clipPathURL}>
                     {chartList}
                 </g>
             </g>
@@ -424,9 +421,10 @@ export default React.createClass({
         let chartDebug = null;
         if (this.props.debug) {
             chartDebug = (
-                <rect className="chart-debug"
-                      x={leftWidth} y={0}
-                      width={chartWidth} height={innerHeight} />
+                <rect
+                    className="chart-debug"
+                    x={leftWidth} y={0}
+                    width={chartWidth} height={innerHeight} />
             );
         }
 
@@ -446,25 +444,25 @@ export default React.createClass({
             </g>
         );
 
-        // Row tracker
+        // Row TimeMarker used as a tracker
         let tracker;
-        if (this.props.trackerPosition) {
+        if (this.props.trackerTime) {
             const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
             tracker = (
                 <g
                     key="tracker-group"
                     style={{pointerEvents: "none"}}
                     transform={`translate(${leftWidth},0)`}>
-                    <Tracker
+                    <TimeMarker
                         showLine={false}
                         showTime={this.props.trackerShowTime}
-                        timeScale={this.props.timeScale}
-                        position={this.props.trackerPosition}
+                        time={this.props.trackerTime}
                         timeFormat={timeFormat}
+                        timeScale={this.props.timeScale}
                         width={chartWidth}
-                        trackerHintWidth={this.props.trackerHintWidth}
-                        trackerHintHeight={this.props.trackerHintHeight}
-                        trackerValues={this.props.trackerValues} />
+                        infoWidth={this.props.trackerInfoWidth}
+                        infoHeight={this.props.trackerInfoHeight}
+                        info={this.props.trackerInfoValues} />
                 </g>
             );
         }

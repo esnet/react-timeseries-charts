@@ -19,7 +19,7 @@ import EventHandler from "./EventHandler";
 import ChartRow from "./ChartRow";
 import Charts from "./Charts";
 import TimeAxis from "./TimeAxis";
-import Tracker from "./Tracker";
+import TimeMarker from "./TimeMarker";
 
 /**
  * The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.
@@ -48,7 +48,8 @@ export default React.createClass({
             width: 800,
             padding: 0,
             enablePanZoom: false,
-            utc: false
+            utc: false,
+            showGrid: false
         };
     },
 
@@ -122,12 +123,23 @@ export default React.createClass({
         format: React.PropTypes.string,
 
         /**
+         * Show grid lines for each time marker
+         */
+        showGrid: React.PropTypes.bool,
+
+        /**
          * A Date specifying the position of the tracker line on the chart. It is
          * common to take this from the onTrackerChanged callback so that the tracker
          * followers the user's cursor, but it could be modified to snap to a point or
          * to the nearest minute, for example.
          */
         trackerPosition: React.PropTypes.instanceOf(Date),
+
+        /**
+         * The tracker can display an info box next to the vertical line, if we
+         * this prop is supplied.
+         */
+        trackerInfoValues: React.PropTypes.object,
 
         /**
          * Will be called when the user hovers over a chart. The callback will
@@ -310,12 +322,6 @@ export default React.createClass({
                 .domain(this.props.timeRange.toJSON())
                 .range([0, timeAxisWidth]);
 
-        //
-        // For valid children (those children which are ChartRows), we actually
-        // build a Bootstrap row wrapper around those and then create cloned
-        // ChartRows that are passed the sizes of the determined axis columns.
-        //
-
         let i = 0;
         let yPosition = 0;
         React.Children.forEach(this.props.children, child => {
@@ -336,8 +342,8 @@ export default React.createClass({
                     minDuration: this.props.minDuration,
                     timeFormat: this.props.format,
                     trackerShowTime: firstRow,
-                    trackerPosition: this.props.trackerPosition,
-                    trackerTimeFormat: this.props.trackerTimeFormat,
+                    trackerTime: this.props.trackerPosition,
+                    trackerTimeFormat: this.props.format,
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
@@ -364,16 +370,16 @@ export default React.createClass({
                     key="tracker-group"
                     style={{pointerEvents: "none"}}
                     transform={`translate(${leftWidth},0)`}>
-                    <Tracker
-                        showHint={false}
-                        height={chartsHeight}
-                        timeScale={timeScale}
-                        position={this.props.trackerPosition}
-                        format={this.props.format}
+                    <TimeMarker
                         width={chartsWidth}
-                        trackerHintWidth={this.props.trackerHintWidth}
-                        trackerHintHeight={this.props.trackerHintHeight}
-                        trackerValues={this.props.trackerValues} />
+                        height={chartsHeight}
+                        showInfoBox={false}
+                        time={this.props.trackerPosition}
+                        timeScale={timeScale}
+                        timeFormat={this.props.format}
+                        infoWidth={this.props.trackerHintWidth}
+                        infoHeight={this.props.trackerHintHeight}
+                        info={this.props.trackerValues} />
                 </g>
             );
         }

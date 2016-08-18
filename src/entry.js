@@ -25,7 +25,7 @@ export Resizable from "./components/Resizable";
 export ScatterChart from "./components/ScatterChart";
 export TimeAxis from "./components/TimeAxis";
 export TimeRangeMarker from "./components/TimeRangeMarker";
-export Tracker from "./components/Tracker";
+export TimeMarker from "./components/TimeMarker";
 export ValueAxis from "./components/ValueAxis";
 export ValueList from "./components/ValueList";
 export YAxis from "./components/YAxis";

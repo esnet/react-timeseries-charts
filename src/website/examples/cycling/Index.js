@@ -30,6 +30,8 @@ import Brush from "../../../components/Brush";
 import LabelAxis from "../../../components/LabelAxis";
 import ValueAxis from "../../../components/ValueAxis";
 import Baseline from "../../../components/Baseline";
+import TimeMarker from "../../../components/TimeMarker";
+
 import styler from "../../../js/styler";
 
 // Custom CSS
@@ -212,7 +214,7 @@ const cycling = React.createClass({
                 minDuration={10 * 60 * 1000}
                 onTimeRangeChanged={this.handleTimeRangeChange}
                 onChartResize={this.handleChartResize}
-                showGrid={true} >
+                showGrid={false} >
                 <ChartRow height="100" debug={false}>
                     <LabelAxis
                         id="speedaxis"
@@ -308,7 +310,7 @@ const cycling = React.createClass({
                 hrValue = parseInt(hrAtTracker, 10);
             }
         }
-        const trackerValues = [
+        const trackerInfoValues = [
             {label: "Speed", value: speedValue},
             {label: "HR", value: hrValue}
         ];
@@ -323,12 +325,11 @@ const cycling = React.createClass({
                 maxTime={pace.range().end()}
                 minTime={pace.range().begin()}
                 minDuration={10 * 60 * 1000}
-                onTimeRangeChanged={this.handleTimeRangeChange}
-                showGrid={true} >
+                onTimeRangeChanged={this.handleTimeRangeChange}  >
                 <ChartRow
                     height="200"
-                    trackerValues={trackerValues}
-                    trackerHintHeight={50}>
+                    trackerInfoValues={trackerInfoValues}
+                    trackerInfoHeight={50}>
                     <YAxis
                         id="axis1"
                         label="Speed (mph)"
@@ -354,6 +355,12 @@ const cycling = React.createClass({
                             columns={["hr"]}
                             style={style}
                             breakLine={true}/>
+                        <TimeMarker
+                            axis="axis1"
+                            time={new Date(1000 * 60 * 94 + 51 * 1000)}
+                            infoStyle={{line: {strokeWidth: "2px", stroke: "#83C2FC"}}}
+                            infoValues="Chalk Hill" />
+
                     </Charts>
                 </ChartRow>
             </ChartContainer>

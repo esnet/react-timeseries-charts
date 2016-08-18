@@ -90,8 +90,8 @@ class App extends Component {
                         <li><Link to="/api/Resizable">Resizable</Link></li>
                         <li><Link to="/api/ScatterChart">ScatterChart</Link></li>
                         <li><Link to="/api/TimeAxis">TimeAxis</Link></li>
+                        <li><Link to="/api/TimeMarker">TimeMarker</Link></li>
                         <li><Link to="/api/TimeRangeMarker">TimeRangeMarker</Link></li>
-                        <li><Link to="/api/Tracker">Tracker</Link></li>
                         <li><Link to="/api/ValueAxis">ValueAxis</Link></li>
                         <li><Link to="/api/ValueList">ValueList</Link></li>
                         <li><Link to="/api/YAxis">YAxis</Link></li>

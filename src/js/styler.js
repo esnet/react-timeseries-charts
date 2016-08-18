@@ -167,7 +167,7 @@ export class Styler {
 
         let i = 0;
         _.forEach(this._columnStyles,
-            ({color, width = 1, dashed = false} , column) => {
+            ({color, selected, width = 1, dashed = false} , column) => {
                 const c = color ? color : colorLookup[i % colorLookup.length];
                 const styleLine = {
                     stroke: c,
@@ -238,6 +238,26 @@ export class Styler {
     }
 
     barChartStyle() {
+        const style = {};
+        _.forEach(this._columnStyles,
+            ({color, selected} , column) => {
+                const fillStyle = {
+                    fill: color
+                };
+                const selectedStyle = {
+                    fill: selected ? selected : color
+                };
+                style[column] = {
+                    normal: {...fillStyle, opacity: 0.8},
+                    highlighted: {...fillStyle, opacity: 1.0},
+                    selected: {...selectedStyle, opacity: 1.0},
+                    muted: {...fillStyle, opacity: 0.2}
+                };
+            });
+        return style;
+    }
+
+    scatterChartStyle() {
         const style = {};
         _.forEach(this._columnStyles,
             ({color, selected} , column) => {

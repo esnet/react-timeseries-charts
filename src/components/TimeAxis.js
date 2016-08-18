@@ -42,6 +42,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
+            showGrid: false,
             style: defaultStyle
         };
     },
