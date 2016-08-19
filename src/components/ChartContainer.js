@@ -136,12 +136,6 @@ export default React.createClass({
         trackerPosition: React.PropTypes.instanceOf(Date),
 
         /**
-         * The tracker can display an info box next to the vertical line, if we
-         * this prop is supplied.
-         */
-        trackerInfoValues: React.PropTypes.object,
-
-        /**
          * Will be called when the user hovers over a chart. The callback will
          * be called with the timestamp (a Date object) of the position hovered
          * over. This maybe then used as the trackerPosition (see above), or to

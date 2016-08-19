@@ -217,6 +217,7 @@ export default React.createClass({
             .append("g")
                 .attr("transform", `translate(${x},0)`)
                 .style("stroke", "none")
+                .attr("class", "yaxis")
                 .style("fill", labelColor)
                 .style("font-weight",labelWeight)
                 .style("font-size",labelSize)
@@ -282,11 +283,10 @@ export default React.createClass({
                 .ticks(10, ".2s");
         }
 
-        const t = transition()
-            .duration(750)
-            .ease(easeSinOut);
-
-        select(ReactDOM.findDOMNode(this)).select(".yaxis").transition(t)
+        select(ReactDOM.findDOMNode(this)).select(".yaxis")
+            .transition()
+                .duration(500)
+                .ease(easeSinOut)
             .call(axisGenerator);
 
     },
