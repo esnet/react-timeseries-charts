@@ -248,7 +248,8 @@ export default React.createClass({
             fill: "none",
             opacity: 0.0,
             strokeWidth: 7,
-            cursor: "crosshair"
+            cursor: "crosshair",
+            pointerEvents: "stroke"
         };
         return (
             <g key={key}>
