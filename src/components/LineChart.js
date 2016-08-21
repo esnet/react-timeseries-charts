@@ -234,6 +234,8 @@ export default React.createClass({
             style = merge(true, defaultStyle.normal, styleMap.normal);
         }
 
+        style.pointerEvents = "none";
+
         return style;
     },
 
