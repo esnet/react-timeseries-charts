@@ -93,7 +93,12 @@ const speed = new TimeSeries({
 });
 
 const speedSmoothed =
-    speed.fixedWindowRollup("1m", {speed5mAvg: {speed: avg(filter.ignoreMissing)}}, true);
+    speed.fixedWindowRollup({
+        windowSize: "1m",
+        aggregation: {
+            speed5mAvg: {speed: avg(filter.ignoreMissing)}},
+        toEvents: true
+    });
 
 //
 // Styling
@@ -179,8 +184,6 @@ const cycling = React.createClass({
         const tr = this.state.timerange;
         const speedCropped = speed.crop(tr);
         const hrCropped = hr.crop(tr);
-
-        console.log(Math.floor(tr.duration()/1000), "sec");
 
         // Get the speed at the current tracker position
         let speedValue = "--";

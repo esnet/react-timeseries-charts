@@ -21,8 +21,6 @@ import Meta from "../examples/examples.json";
 import Examples from "../examples/index.js";
 import docsFile from "./docs.json";
 
-console.log("Examples", Examples);
-
 const Example = React.createClass({
     render() {
         const style = {
@@ -39,7 +37,6 @@ const Example = React.createClass({
         const name = example.key;
         const imgName = `${name}_thumbnail`;
         const img = Examples[imgName];
-        console.log(" - img", img, name, imgName);
         const link = (
             <Link to={`example/${name}`}>{example.value.title}</Link>
         );
@@ -58,7 +55,6 @@ const Example = React.createClass({
 
 const TaggedExamples = React.createClass({
     render() {
-        console.log("Tagged examples:");
         const exampleList = [];
         _.forEach(Meta, (value, key) => {
             const tags = value.tags;
@@ -96,8 +92,6 @@ export default React.createClass({
     render() {
         const component = this.props.params.component;
         const path = `src/components/${component}.js`;
-
-        console.log(path, docsFile);
 
         if (!_.has(docsFile, path)) {
             return (

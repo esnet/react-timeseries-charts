@@ -448,21 +448,25 @@ export default React.createClass({
         let tracker;
         if (this.props.trackerTime) {
             const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
+            const timeMarkerProps = {
+                showLine: false,
+                showTime: this.props.trackerShowTime,
+                time: this.props.trackerTime,
+                timeFormat: timeFormat,
+                timeScale: this.props.timeScale,
+                width: chartWidth,
+            };
+            if (this.props.trackerInfoValues) {
+                timeMarkerProps.infoWidth = this.props.trackerInfoWidth;
+                timeMarkerProps.infoHeight = this.props.trackerInfoHeight;
+                timeMarkerProps.info = this.props.trackerInfoValues;
+            }
             tracker = (
                 <g
                     key="tracker-group"
                     style={{pointerEvents: "none"}}
                     transform={`translate(${leftWidth},0)`}>
-                    <TimeMarker
-                        showLine={false}
-                        showTime={this.props.trackerShowTime}
-                        time={this.props.trackerTime}
-                        timeFormat={timeFormat}
-                        timeScale={this.props.timeScale}
-                        width={chartWidth}
-                        infoWidth={this.props.trackerInfoWidth}
-                        infoHeight={this.props.trackerInfoHeight}
-                        info={this.props.trackerInfoValues} />
+                    <TimeMarker {...timeMarkerProps} />
                 </g>
             );
         }

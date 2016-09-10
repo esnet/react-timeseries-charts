@@ -15,7 +15,6 @@ import { axisLeft, axisRight } from "d3-axis";
 
 import { format } from "d3-format";
 import { select } from "d3-selection";
-import { transition } from "d3-transition";
 import { easeSinOut } from "d3-ease";
 
 const MARGIN = 0;

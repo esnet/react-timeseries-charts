@@ -1,6 +1,8 @@
 
 ## Styling
 
+---
+
 The charts library can be styled in a number of ways. This guide is intended to give an overview of the different levels at which one can modify the look of components in this library. For more detailed information, also see the styling specific section for each component in the API docs.
 
 ### Overview

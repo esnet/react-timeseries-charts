@@ -16,7 +16,7 @@ import {
     TimeRange,
     Event,
     Pipeline as pipeline,
-    UnboundedIn,
+    Stream,
     EventOut,
     percentile
 } from "pondjs";
@@ -60,10 +60,10 @@ const realtime = React.createClass({
         // Setup our aggregation pipelines
         //
 
-        this.eventSource = new UnboundedIn();
+        this.stream = new Stream();
 
         pipeline()
-            .from(this.eventSource)
+            .from(this.stream)
             .windowBy("5m")
             .emitOn("discard")
             .aggregate({
@@ -76,7 +76,7 @@ const realtime = React.createClass({
             });
 
         pipeline()
-            .from(this.eventSource)
+            .from(this.stream)
             .windowBy("5m")
             .emitOn("discard")
             .aggregate({
@@ -103,7 +103,7 @@ const realtime = React.createClass({
             this.setState({time: t, events: newEvents});
 
             // Let our aggregators process the event
-            this.eventSource.addEvent(event);
+            this.stream.addEvent(event);
 
         }, rate);
     },

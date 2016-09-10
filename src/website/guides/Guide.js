@@ -19,7 +19,6 @@ export default React.createClass({
 
     render() {
         const doc = this.props.params.doc;
-        console.log("GUIDE", doc);
         const text = Index[doc];
         return (
             <div>

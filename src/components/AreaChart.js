@@ -14,6 +14,7 @@ import _ from "underscore";
 import merge from "merge";
 import { TimeSeries } from "pondjs";
 import { Styler } from "../js/styler";
+import "array.prototype.fill";
 
 function scaleAsString(scale) {
     return `${scale.domain()}-${scale.range()}`;

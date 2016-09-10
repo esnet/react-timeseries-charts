@@ -1,5 +1,7 @@
 
-### Getting started
+## Getting started
+
+---
 
 This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/). It expects React to be present, as well as our TimeSeries abstraction library, [pond.js](http://software.es.net/pond). More on this below. To install:
 

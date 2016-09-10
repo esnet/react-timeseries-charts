@@ -1,5 +1,11 @@
 
-## React TimeSeries Charts
+# React Timeseries Charts
+
+---
+
+[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts)
+
+---
 
 ### Introduction
 

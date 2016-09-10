@@ -22,18 +22,18 @@ To store it, we put it into a circle buffer that keeps the last n Events. Otherw
 
 ### Aggregation
 
-For the more interesting part, the aggregation, we need to setup up a couple of Pond Pipelines to do the work. Here's the 5 min aggregator that we setup:
+For the more interesting part, the aggregation, we need to setup up a couple of Pond Pipelines to do the work. Here's the 5 min aggregation pipeline that we setup:
 
 ```js
 
-import { UnboundedIn, Pipeline, EventOut, percentile } from "pondjs";
+import { Stream, Pipeline, EventOut, percentile } from "pondjs";
 
 ...
 
-const eventSource = new UnboundedIn();
+const stream = new Stream();
 
 Pipeline()
-    .from(this.eventSource)
+    .from(stream)
     .windowBy("5m")
     .emitOn("discard")
     .aggregate({
@@ -44,11 +44,11 @@ Pipeline()
     });
 ```
 
-The Pipeline now just needs a feed of events added to its eventSource in order to process them into a new aggregated events. Each time one of these new events is emitted we take that from the callback defined in `to()` and place it into the component's state.
+The Pipeline now just needs a feed of events added to its stream in order to process them into a new aggregated events. Each time one of these new events is emitted we take that from the callback defined in `to()` and place it into the component's state.
 
 
 ```js
-eventSource.addEvent(event);
+stream.addEvent(event);
 ```
 
 ### Visualization
