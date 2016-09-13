@@ -164,7 +164,6 @@ const cycling = React.createClass({
     },
 
     handleChartResize(width) {
-        console.log("width", width);
         this.state({width});
     },
 

@@ -13,11 +13,11 @@ import _ from "underscore";
 export class ScaleInterpolator {
 
     constructor(transition, ease, observer) {
+        this._id = _.uniqueId("scaler");
         this._ease = ease;
         this._transition = transition;
         this._observer = observer;
 
-        this._t = 0;
         this._sourceScale = null;
         this._targetScale = null;
         this._cachedScaler = null;
@@ -25,7 +25,16 @@ export class ScaleInterpolator {
     }
 
     update() {
-        const t = Math.min(this._t, 1.0);
+        let animationTime = 0;
+
+        if (!this._initialTimestamp) {
+            this._initialTimestamp = window.performance.now();
+        } else {
+            animationTime = (window.performance.now() - this._initialTimestamp);
+        }
+
+        const animationPosition = Math.min(animationTime / this._transition, 1.0);
+
         if (!this._targetScale) {
             return;
         }
@@ -33,7 +42,7 @@ export class ScaleInterpolator {
         if (this._observer) {
             const func1 = this._sourceScale;
             const func2 = this._targetScale;
-            const te = this._ease(this._t);
+            const te = this._ease(animationPosition);
             const scaler = (x) => {
                 const a = func1(x);
                 const b = func2(x);
@@ -42,15 +51,14 @@ export class ScaleInterpolator {
             this._observer(scaler);
         }
 
-        if (t < 1.0) {
+        if (animationPosition < 1.0) {
             // keep animating
-            this._t = t + 20 / this._transition;
             setTimeout(() => this.update(), 20);
         } else {
             //reset
-            this._t = 0;
             this._sourceScale = this._targetScale;
             this._targetScale = null;
+            this._initialTimestamp = null;
         }
     }
 
@@ -74,10 +82,10 @@ export class ScaleInterpolator {
         //
 
         if (key !== this._cacheKey) {
-            this._t = this._transition ? 0.0 : 1.0;
             this._targetScale = scale;
             this._cachedScaler = null;
-            this.update();
+            this._initialTimestamp = null;
+            setTimeout(() => this.update(), 0);
         }
 
         this._cacheKey = key;

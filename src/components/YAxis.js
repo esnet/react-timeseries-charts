@@ -15,6 +15,7 @@ import { axisLeft, axisRight } from "d3-axis";
 
 import { format } from "d3-format";
 import { select } from "d3-selection";
+import { transition } from "d3-transition"; /* eslint-disable-line */
 import { easeSinOut } from "d3-ease";
 
 const MARGIN = 0;
@@ -255,6 +256,16 @@ export default React.createClass({
     updateAxis(align, scale, width, absolute, type, fmt) {
         const yformat = format(fmt);
         let axis = align === "left" ? axisLeft : axisRight;
+
+        const axisStyle = merge(true,
+                                defaultStyle.axis,
+                                this.props.style.axis ? this.props.style.axis : {});
+        const { axisColor } = axisStyle;
+
+        //
+        // Make an axis generator
+        //
+
         let axisGenerator;
         if (type === "linear" || type === "power") {
             if (this.props.height <= 200) {
@@ -284,10 +295,22 @@ export default React.createClass({
 
         select(ReactDOM.findDOMNode(this)).select(".yaxis")
             .transition()
-                .duration(500)
+                .duration(this.props.transition)
                 .ease(easeSinOut)
             .call(axisGenerator);
 
+        select(ReactDOM.findDOMNode(this))
+            .select("g")
+            .selectAll(".tick")
+            .select("text")
+            .style("fill", axisColor)
+            .style("stroke", "none");
+
+        select(ReactDOM.findDOMNode(this))
+            .select("g")
+            .selectAll(".tick")
+            .select("line")
+            .style("stroke", axisColor);
     },
 
     componentDidMount() {

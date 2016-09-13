@@ -387,16 +387,19 @@ export default React.createClass({
                         );
                     }
 
-                    const box = {x, y, width, height};
+                    const box = { x, y, width, height };
+                    const barProps = { key, ...box, style };
+                    
+                    if (this.props.onSelectionChange) {
+                        barProps.onClick = e => this.handleClick(e, event, column);
+                    }
+                    if (this.props.onHighlightChange) {
+                        barProps.onMouseMove = e => this.handleHover(e, event, column);
+                        barProps.onMouseLeave = this.handleHoverLeave;
+                    }
 
                     bars.push(
-                        <rect
-                            key={key}
-                            {...box}
-                            style={style}
-                            onClick={e => this.handleClick(e, event, column)}
-                            onMouseLeave={this.handleHoverLeave}
-                            onMouseMove={e => this.handleHover(e, event, column)} />
+                        <rect {...barProps} />
                     );
 
                     ypos -= height;

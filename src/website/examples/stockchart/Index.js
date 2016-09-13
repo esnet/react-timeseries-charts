@@ -73,6 +73,14 @@ const stockchart = React.createClass({
         this.setState({timerange});
     },
 
+    setModeLinear() {
+        this.setState({mode: "linear"});
+    },
+
+    setModeLog() {
+        this.setState({mode: "log"});
+    },
+
     renderChart() {
         const { timerange } = this.state;
         const croppedSeries = series.crop(timerange);
@@ -94,7 +102,6 @@ const stockchart = React.createClass({
                     </Charts>
                     <YAxis
                         id="y"
-                        transition={100}
                         label="Price ($)"
                         min={croppedSeries.min("close")}
                         max={croppedSeries.max("close")}
@@ -112,7 +119,6 @@ const stockchart = React.createClass({
                     </Charts>
                     <YAxis
                         id="y"
-                        transition={100}
                         label="Volume"
                         min={croppedVolumeSeries.min("volume")}
                         max={croppedVolumeSeries.max("volume")}
@@ -123,7 +129,6 @@ const stockchart = React.createClass({
     },
 
     render() {
-
         const linkStyle = {
             fontWeight: 600,
             color: "grey",
@@ -149,13 +154,13 @@ const stockchart = React.createClass({
                     <div className="col-md-12" style={{fontSize: 14, color: "#777"}}>
                         <span
                             style={this.state.mode === "log" ? linkStyleActive : linkStyle}
-                            onClick={() => this.setState({mode: "linear"})}>
+                            onClick={this.setModeLinear}>
                                 Linear
                         </span>
                         <span> | </span>
                         <span
                             style={this.state.mode === "linear" ? linkStyleActive : linkStyle}
-                            onClick={() => this.setState({mode: "log"})}>
+                            onClick={this.setModeLog}>
                                 Log
                         </span>
                     </div>
