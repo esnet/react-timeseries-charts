@@ -1,0 +1,159 @@
+/**
+ *  Copyright (c) 2015, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
+
+.chartcontainer.chartrow {
+    background: none;
+}
+
+
+/* Examples navigation */
+body {
+    padding-top: 100px;
+}
+
+p {
+    color: #333;
+    overflow: hidden;
+    line-height: 1.6;
+    word-wrap: break-word;
+    letter-spacing: .2px;
+    font-size: 1.6rem;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar-fixed-top {
+    background: #000000 !important;
+    border-bottom-style: solid !important;
+    border-bottom-color: #2DB3D1 !important;
+    border-bottom-width: 5px !important;
+}
+
+.navbar-brand {
+    margin-top: 8px;
+    font-size: 24px;
+}
+
+.docs-sidenav {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.docs-sidebar .nav > li > a {
+    color: #CCC;
+    background: #FFF;
+    display: block;
+    padding: 4px 20px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.docs-sidebar .nav > li > a.active {
+    color: #000;
+    font-weight: 600;
+    background: #FFF;
+    border-bottom-style: solid;
+    border-bottom-color: #2DB3D1;
+}
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 27px;
+}
+.nav-sidebar > li > a.active {
+    padding-left: 20px;
+    border-left: #2DB3D1;
+    border-left-style: solid;
+    border-left-width: 7px;
+    background: #ECECEC;
+}
+
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #428bca;
+}
+
+.sidebar-heading {
+    padding-left: 0px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+/*
+ * Main content
+ */
+
+.main {
+    padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+    margin-top: 0;
+}

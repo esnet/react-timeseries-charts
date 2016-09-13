@@ -14,7 +14,6 @@ Current features of the library include:
  * Multiple axis, multiple rows
  * Line, area, scatter charts
  * Brushing
- * Timeseries tables
  * Bar charts to compare multiple TimeSeries
  * Legends
  * Baseline and TimeRange markers

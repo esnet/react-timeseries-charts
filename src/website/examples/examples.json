@@ -1,0 +1,67 @@
+{
+    "realtime": {
+        "title": "Realtime",
+        "description": "This example demonstrates using the pond.js library in conjunction with the charts library to do client side time series processing.",
+        "tags": ["Realtime", "BarChart", "ScatterChart", "pondjs"]
+    },
+    "baselines": {
+        "title": "Baseline demo",
+        "description": "This example demonstrates drawing multiple Baselines across a LineChart.",
+        "tags": ["LineChart", "pondjs", "Baseline"]
+    },
+    "continents": {
+        "title": "Stacked AreaCharts",
+        "description": "This example demonstrates stacking of AreaCharts along with use of the Styler.",
+        "tags": ["Areachart", "Legend", "styler"]
+    },
+    "currency": {
+        "title": "Currency example",
+        "description": "This example demonstrates plotting multiple LineCharts on top of each other. The LineCharts are selectable and the time scale can be panned and zoomed.",
+        "tags": ["LineChart", "Baseline", "lLegend", "styler", "panzoom", "selectable"]
+    },
+    "cycling": {
+        "title": "Cycling example",
+        "description": "A multi-channel visualization of a bike ride. Features pan and zoom and brushing.",
+        "tags": ["LineChart", "AreaChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox", "TimeMarker"]
+    },
+    "ddos": {
+        "title": "DDoS attack",
+        "description": "A LineChart example featuring scale transitions and an interactive legend",
+        "tags": ["LineChart", "Legend", "styler"]
+    },
+    "interfaces": {
+        "title": "Traffic breakdown",
+        "description": "Combining a Horizontal BarChart with an AreaChart to visualize relative contribution.",
+        "tags": ["HorizontalBarChart", "AreaChart"]
+    },
+    "outages": {
+        "title": "Outage events",
+        "description": "Example showing the experimental EventChart.",
+        "tags": ["LabelAxis", "EventChart", "panzoom"]
+    },
+    "stockchart": {
+        "title": "Stockchart",
+        "description": "Example in progress to build a stock chart. Demonstrates log to linear scale transitions.",
+        "tags": ["LineChart", "AreaChart", "panzoom"]
+    },
+    "traffic": {
+        "title": "Network Traffic example",
+        "description": "Example of how ESnet uses the charts library to display network traffic.",
+        "tags": ["AreaChart", "panzoom"]
+    },
+    "weather": {
+        "title": "Weather example",
+        "description": "Storm visualized as a multi-row chart.",
+        "tags": ["AreaChart", "LineChart", "ScatterChart"]
+    },
+    "wind": {
+        "title": "Wind Scatter example",
+        "description": "Basic scatter chart example.",
+        "tags": ["ScatterChart"]
+    },
+    "volume": {
+        "title": "BarChart example",
+        "description": "Bar chart examples using traffic volume data.",
+        "tags": ["BarChart"]
+    }
+}
