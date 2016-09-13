@@ -15,7 +15,7 @@ import { axisLeft, axisRight } from "d3-axis";
 
 import { format } from "d3-format";
 import { select } from "d3-selection";
-import { transition } from "d3-transition"; /* eslint-disable-line */
+import "d3-transition"; /* eslint-disable-line */
 import { easeSinOut } from "d3-ease";
 
 const MARGIN = 0;
