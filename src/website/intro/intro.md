@@ -3,7 +3,8 @@
 
 ---
 
-[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts)
+[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts) 
+[![npm version](https://badge.fury.io/js/react-timeseries-charts.svg)](https://badge.fury.io/js/react-timeseries-charts)
 
 ---
 
