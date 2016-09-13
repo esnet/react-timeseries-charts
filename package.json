@@ -1,6 +1,6 @@
 {
   "name": "react-timeseries-charts",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "description": "Declarative timeseries charts",
   "keywords": [
     "d3",
