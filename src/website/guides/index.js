@@ -10,8 +10,10 @@
 
 import start from "raw!./start.md";
 import style from "raw!./style.md";
+import markers from "raw!./markers.md";
 
 export default {
     start,
-    style
+    style,
+    markers
 };
