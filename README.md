@@ -16,13 +16,13 @@ Current features of the library include:
  * Interactivity, including pan and zoom
  * Add new chart types or overlays
  * Multiple axis, multiple rows
- * Line, area, scatter charts
+ * Line, area, scatter and bar charts
  * Brushing
  * Bar charts to compare multiple TimeSeries
  * Legends
- * Baseline and TimeRange markers
+ * Overlay markers
 
-Please browse the examples for a feel for the library, or read on to get started.
+Please browse the [examples](http://software.es.net/react-timeseries-charts) for a feel for the library.
 
 Getting started
 ---------------
@@ -114,13 +114,13 @@ The repo contains the examples website. This is very helpful in developing new f
 
 This will install the development dependencies into your node_modules directory.
 
-You can then start up the test server, as well as automatic source building, by doing:
+You can then start up the test server:
 
     npm run start-website
 
 Then, point your browser to:
 
-[http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
+[http://localhost:3000/](http://localhost:3000/)
 
 License
 -------
