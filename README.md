@@ -1,10 +1,14 @@
-# React Timeseries Charts [![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts) [![npm version](https://badge.fury.io/js/react-timeseries-charts.svg)](https://badge.fury.io/js/react-timeseries-charts)
+<img src="https://github.com/esnet/react-timeseries-charts/blob/master/src/website/img/charts.png" alt="logo" width="160px"/>
+
+# React Timeseries Charts
 
 ---
 
-<img src="https://github.com/esnet/react-timeseries-charts/blob/master/src/website/img/charts.png" alt="logo" width="160px"/>
+[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts) [![npm version](https://badge.fury.io/js/react-timeseries-charts.svg)](https://badge.fury.io/js/react-timeseries-charts)
 
-#React Timeseries Charts
+---
+
+##Introduction
 
 This library contains a set of modular charting components used for building flexible interactive charts. It was built for React from the ground up, specifically to visualize timeseries data and network traffic data in particular. Low level elements are constructed using d3, while higher level composability is provided by React. Charts can be stacked as rows, overlaid on top of each other, or any combination, all in a highly declarative manner.
 
