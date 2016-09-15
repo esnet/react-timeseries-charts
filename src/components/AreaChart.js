@@ -121,28 +121,33 @@ export default React.createClass({
          * format:
          *
          * ```
-         *  const areaStyles = {
-         *      value: {
-         *          area: {
-         *              fill: "#DDD"
-         *          },
-         *          outline: {
-         *              stroke: "black"
-         *          }
+         * const style = {
+         *     line: {
+         *         normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+         *         highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+         *         selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+         *         muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+         *      },
+         *      area: {
+         *         normal: {fill: "steelblue", stroke: "none", opacity: 0.75},
+         *         highlighted: {fill: "#5a98cb", stroke: "none", opacity: 0.75},
+         *         selected: {fill: "steelblue", stroke: "none", opacity: 0.75},
+         *         muted: {fill: "steelblue", stroke: "none", opacity: 0.25}
          *      }
-         *  };
+         * };
          *
-         *  <LineChart style={areaStyles} ... />
+         * <AreaChart style={style} ... />
+         * ```
          *
-         *  Alternatively, you can pass in a Styler. For example:
+         * Alternatively, you can pass in a Styler. For example:
          *
          * ```
-         * const currencyStyle = Styler([
-         *     {key: "aud", color: "steelblue", width: 1, dashed: true},
-         *     {key: "euro", color: "#F68B24", width: 2}
+         * const upDownStyler = styler([
+         *     {key: "in", color: "#C8D5B8"},
+         *     {key: "out", color: "#9BB8D7"}
          * ]);
          *
-         * <LineChart columns={["aud", "euro"]} style={currencyStyle} ... />
+         * <AreaChart columns={["in", "out"]} style={upDownStyler} ... />
          *
          * ```
          */
@@ -175,7 +180,6 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
-            transition: 0,
             interpolation: "curveLinear",
             columns: {
                 up: ["value"],
