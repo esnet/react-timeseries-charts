@@ -24,7 +24,7 @@ const defaultStyle = {
     line: {
         normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
         highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
-        selected: {stroke: "steelblue", fill: "none", strokeWidth: 2},
+        selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
         muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
     },
     area: {
@@ -205,7 +205,7 @@ export default React.createClass({
     },
 
     providedAreaStyleMap(column) {
-        let style = {};
+        let style = defaultStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.areaChartStyle()[column];
@@ -229,11 +229,11 @@ export default React.createClass({
         const isSelected = this.props.selection && column === this.props.selection;
 
         if (!_.has(styleMap, "line")) {
-            console.error("Provided style for AreaChart does not default a style for the outline:", styleMap, column);
+            console.error("Provided style for AreaChart does not define a style for the outline:", styleMap, column);
         }
 
         if (!_.has(styleMap, "area")) {
-            console.error("Provided style for AreaChart does not default a style for the area:", styleMap);
+            console.error("Provided style for AreaChart does not define a style for the area:", styleMap);
         }
 
         if (this.props.selection) {
