@@ -8,31 +8,31 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import 'array.prototype.fill';
+import React from "react";
+import d3Shape from "d3-shape";
+import _ from "underscore";
+import merge from "merge";
+import { TimeSeries } from "pondjs";
+import { Styler } from "../js/styler";
+import "array.prototype.fill";
 
-import _ from 'underscore';
-import d3Shape from 'd3-shape';
-import merge from 'merge';
-import React from 'react';
-import { TimeSeries } from 'pondjs';
-import { scaleTime, scaleUtc, scaleLinear, scaleLog, scalePow } from 'd3-scale';
-
-import { Styler } from '../js/styler';
-import { scaleAsString } from '../js/util';
+function scaleAsString(scale) {
+    return `${scale.domain()}-${scale.range()}`;
+}
 
 const defaultStyle = {
-  line: {
-    normal: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
-    highlighted: { stroke: '#5a98cb', fill: 'none', strokeWidth: 1 },
-    selected: { stroke: 'steelblue', fill: 'none', strokeWidth: 2 },
-    muted: { stroke: 'steelblue', fill: 'none', opacity: 0.4, strokeWidth: 1 },
-  },
-  area: {
-    normal: { fill: 'steelblue', stroke: 'none', opacity: 0.75 },
-    highlighted: { fill: '#5a98cb', stroke: 'none', opacity: 0.75 },
-    selected: { fill: 'steelblue', stroke: 'none', opacity: 0.75 },
-    muted: { fill: 'steelblue', stroke: 'none', opacity: 0.25 },
-  },
+    line: {
+        normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+        highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+        selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+        muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+    },
+    area: {
+        normal: {fill: "steelblue", stroke: "none", opacity: 0.75},
+        highlighted: {fill: "#5a98cb", stroke: "none", opacity: 0.75},
+        selected: {fill: "steelblue", stroke: "none", opacity: 0.75},
+        muted: {fill: "steelblue", stroke: "none", opacity: 0.25}
+    }
 };
 
 /**
@@ -77,376 +77,341 @@ const defaultStyle = {
  * we map the "in" column in `trafficSeries` to the up direction and the "out" column to
  * the down direction. Each direction is specified as an array, so adding multiple
  * columns into a direction will stack the areas in that direction.
+ *
+ * Note: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,
+ * rather than hard coding the width as in the above example.
  */
-export default class AreaChart extends React.Component {
+export default React.createClass({
 
-  shouldComponentUpdate(nextProps) {
-    const newSeries = nextProps.series;
-    const oldSeries = this.props.series;
+    displayName: "AreaChart",
 
-    const width = nextProps.width;
-    const timeScale = nextProps.timeScale;
-    const yScale = nextProps.yScale;
-    const interpolation = nextProps.interpolation;
-    const isPanning = nextProps.isPanning;
-    const columns = nextProps.columns;
-    const style = nextProps.style;
-    const highlight = nextProps.highlight;
-    const selection = nextProps.selection;
+    propTypes: {
 
-    const widthChanged =
-      (this.props.width !== width);
-    const timeScaleChanged =
-      (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
-    const yAxisScaleChanged =
-      (this.props.yScale !== yScale);
-    const interpolationChanged =
-      (this.props.interpolation !== interpolation);
-    const isPanningChanged =
-      (this.props.isPanning !== isPanning);
-    const columnsChanged =
-      (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
-    const styleChanged =
-      (JSON.stringify(this.props.style) !== JSON.stringify(style));
-    const highlightChanged =
-      (this.props.highlight !== highlight);
-    const selectionChanged =
-      (this.props.selection !== selection);
+        /**
+         * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
+         */
+        series: React.PropTypes.instanceOf(TimeSeries).isRequired,
 
-    let seriesChanged = false;
-    if (oldSeries.length !== newSeries.length) {
-      seriesChanged = true;
-    } else {
-      seriesChanged = !TimeSeries.is(oldSeries, newSeries);
-    }
+        /**
+         * Reference to the axis which provides the vertical scale for ## drawing. e.g.
+         * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+         */
+        axis: React.PropTypes.string.isRequired,
 
-    return (
-      seriesChanged ||
-      timeScaleChanged ||
-      widthChanged ||
-      interpolationChanged ||
-      isPanningChanged ||
-      columnsChanged ||
-      styleChanged ||
-      yAxisScaleChanged ||
-      highlightChanged ||
-      selectionChanged);
-  }
+        /**
+         * The series series columns mapped to stacking up and down.
+         * Has the format:
+         * ```
+         *  "columns": {
+         *      up: ["in", ...],
+         *      down: ["out", ...]
+         *  }
+         *  ```
+         */
+        columns: React.PropTypes.shape({
+            up: React.PropTypes.arrayOf(React.PropTypes.string),
+            down: React.PropTypes.arrayOf(React.PropTypes.string)
+        }),
 
-  handleHover(e, column) {
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(column);
-    }
-  }
+        stack: React.PropTypes.bool,
 
-  handleHoverLeave() {
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(null);
-    }
-  }
+        /**
+         * The styles to apply to the underlying SVG lines. This is a mapping
+         * of column names to objects with style attributes, in the following
+         * format:
+         *
+         * ```
+         * const style = {
+         *     in: {
+         *         line: {
+         *             normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+         *             highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+         *             selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+         *             muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+         *         },
+         *         area: {
+         *             normal: {fill: "steelblue", stroke: "none", opacity: 0.75},
+         *             highlighted: {fill: "#5a98cb", stroke: "none", opacity: 0.75},
+         *             selected: {fill: "steelblue", stroke: "none", opacity: 0.75},
+         *             muted: {fill: "steelblue", stroke: "none", opacity: 0.25}
+         *         }
+         *     },
+         *     out: {
+         *         ...
+         *     }
+         * };
+         *
+         * <AreaChart style={style} ... />
+         * ```
+         *
+         * Alternatively, you can pass in a Styler. For example:
+         *
+         * ```
+         * const upDownStyler = styler([
+         *     {key: "in", color: "#C8D5B8"},
+         *     {key: "out", color: "#9BB8D7"}
+         * ]);
+         *
+         * <AreaChart columns={["in", "out"]} style={upDownStyler} ... />
+         *
+         * ```
+         */
+        style: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.func,
+            React.PropTypes.instanceOf(Styler)
+        ]),
 
-  handleClick(e, column) {
-    e.stopPropagation();
-    if (this.props.onSelectionChange) {
-      this.props.onSelectionChange(column);
-    }
-  }
+        /**
+         * Any of D3's interpolation modes.
+         */
+        interpolation: React.PropTypes.oneOf([
+            "curveBasis",
+            "curveBasisOpen",
+            "curveBundle",
+            "curveCardinal",
+            "curveCardinalOpen",
+            "curveCatmullRom",
+            "curveCatmullRomOpen",
+            "curveLinear",
+            "curveMonotone",
+            "curveNatural",
+            "curveRadial",
+            "curveStep",
+            "curveStepAfter",
+            "curveStepBefore"
+        ])
+    },
 
-  providedAreaStyleMap(column) {
-    let style = {};
-    if (this.props.style) {
-      if (this.props.style instanceof Styler) {
-        style = this.props.style.areaChartStyle()[column];
-      } else if (_.isObject(this.props.style)) {
-        style = this.props.style[column];
-      } else if (_.isFunction(this.props.style)) {
-        style = this.props.style(column);
-      }
-    }
-    return style;
-  }
+    getDefaultProps() {
+        return {
+            interpolation: "curveLinear",
+            columns: {
+                up: ["value"],
+                down: []
+            },
+            stack: true
+        };
+    },
 
-  /**
-   * Returns the style used for drawing the path
-   */
-  style(column, type) {
-    let style;
-
-    const styleMap = this.providedAreaStyleMap(column);
-    const isHighlighted = this.props.highlight && column === this.props.highlight;
-    const isSelected = this.props.selection && column === this.props.selection;
-
-    if (!_.has(styleMap, 'line')) {
-      console.error('Provided style for AreaChart does not default a style for the outline:', styleMap, column);
-    }
-
-    if (!_.has(styleMap, 'area')) {
-      console.error('Provided style for AreaChart does not default a style for the area:', styleMap);
-    }
-
-    if (this.props.selection) {
-      if (isSelected) {
-        style = merge(true,
-                defaultStyle[type].selected,
-                styleMap[type].selected ? styleMap[type].selected : {});
-      } else if (isHighlighted) {
-        style = merge(true,
-                defaultStyle[type].highlighted,
-                styleMap[type].highlighted ? styleMap[type].highlighted : {});
-      } else {
-        style = merge(true,
-                defaultStyle[type].muted,
-                styleMap[type].muted ? styleMap[type].muted : {});
-      }
-    } else if (isHighlighted) {
-      style = merge(true,
-              defaultStyle[type].highlighted,
-              styleMap[type].highlighted ? styleMap[type].highlighted : {});
-    } else {
-      style = merge(true,
-              defaultStyle[type].normal,
-              styleMap[type].normal ? styleMap[type].normal : {});
-    }
-
-    return style;
-  }
-
-  pathStyle(column) {
-    return this.style(column, 'line');
-  }
-
-  areaStyle(column) {
-    return this.style(column, 'area');
-  }
-
-  renderPaths(columnList, direction) {
-    const dir = direction === 'up' ? 1 : -1;
-    const size = this.props.series.size();
-    const offsets = new Array(size).fill(0);
-
-    return columnList.map((column, i) => {
-      const style = this.areaStyle(column);
-      const pathStyle = this.pathStyle(column);
-
-      // Stack the series columns to get our data in x0, y0, y1 format
-      const data = [];
-      for (let j = 0; j < this.props.series.size(); j += 1) {
-        const seriesPoint = this.props.series.at(j);
-        data.push({
-          x0: this.props.timeScale(seriesPoint.timestamp()),
-          y0: this.props.yScale(offsets[j]),
-          y1: this.props.yScale(offsets[j] + (dir * seriesPoint.get(column))),
-        });
-        if (this.props.stack) {
-          offsets[j] += dir * seriesPoint.get(column);
+    handleHover(e, column) {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(column);
         }
-      }
+    },
 
-      // Use D3 to build an area generation function
-      const area = d3Shape.area()
-        .curve(d3Shape[this.props.interpolation])
-        .x(d => d.x0)
-        .y0(d => d.y0)
-        .y1(d => d.y1);
+    handleHoverLeave() {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(null);
+        }
+    },
 
-      // Use the area generation function with our stacked data
-      // to get an SVG path
-      const areaPath = area(data);
+    handleClick(e, column) {
+        e.stopPropagation();
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(column);
+        }
+    },
 
-      // Outline the top of the curve
-      const lineFunction = d3Shape.line()
-        .curve(d3Shape[this.props.interpolation])
-        .x(d => d.x0)
-        .y(d => d.y1);
-      const outlinePath = lineFunction(data);
+    providedAreaStyleMap(column) {
+        let style = defaultStyle;
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.areaChartStyle()[column];
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            }
+        }
+        return style;
+    },
 
-      return (
-        <g key={`area-${i}`}>
-          <path
-            d={areaPath}
-            style={style}
-            onClick={e => this.handleClick(e, column)}
-            onMouseLeave={this.handleHoverLeave}
-            onMouseMove={e => this.handleHover(e, column)}
-          />
-          <path
-            d={outlinePath}
-            style={pathStyle}
-            onClick={e => this.handleClick(e, column)}
-            onMouseLeave={this.handleHoverLeave}
-            onMouseMove={e => this.handleHover(e, column)}
-          />
-        </g>
-      );
-    });
-  }
+    /**
+     * Returns the style used for drawing the path
+     */
+    style(column, type) {
+        let style;
 
-  renderAreas() {
-    const up = this.props.columns.up || [];
-    const down = this.props.columns.down || [];
+        const styleMap = this.providedAreaStyleMap(column);
+        const isHighlighted = this.props.highlight && column === this.props.highlight;
+        const isSelected = this.props.selection && column === this.props.selection;
 
-    return (
-      <g>
-        {this.renderPaths(up, 'up')}
-        {this.renderPaths(down, 'down')}
-      </g>
-    );
-  }
+        if (!_.has(styleMap, "line")) {
+            console.error("Provided style for AreaChart does not define a style for the outline:", styleMap, column);
+        }
 
-  render() {
-    return (
-      <g >
-        {this.renderAreas()}
-      </g>
-    );
-  }
-}
+        if (!_.has(styleMap, "area")) {
+            console.error("Provided style for AreaChart does not define a style for the area:", styleMap);
+        }
 
-AreaChart.propTypes = {
-  /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
-   */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+        if (this.props.selection) {
+            if (isSelected) {
+                style = merge(true,
+                              defaultStyle[type].selected,
+                              styleMap[type].selected ? styleMap[type].selected : {});
+            } else if (isHighlighted) {
+                style = merge(true,
+                              defaultStyle[type].highlighted,
+                              styleMap[type].highlighted ? styleMap[type].highlighted : {});
+            } else {
+                style = merge(true,
+                              defaultStyle[type].muted,
+                              styleMap[type].muted ? styleMap[type].muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(true,
+                          defaultStyle[type].highlighted,
+                          styleMap[type].highlighted ? styleMap[type].highlighted : {});
+        } else {
+            style = merge(true,
+                          defaultStyle[type].normal,
+                          styleMap[type].normal ? styleMap[type].normal : {});
+        }
 
-  /**
-   * Reference to the axis which provides the vertical scale for ## drawing. e.g.
-   * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
-   */
-  axis: React.PropTypes.string.isRequired, // eslint-disable-line
+        return style;
+    },
 
-  /**
-   * [Internal] The width to render the AreaChart, supplied by the containing
-   * ChartContainer.
-   */
-  width: React.PropTypes.number,
+    pathStyle(column) {
+        return this.style(column, "line");
+    },
 
-  /**
-   * [Interal] Internal state as to if the view is currently panning or not
-   */
-  isPanning: React.PropTypes.bool,
+    areaStyle(column) {
+        //const cursor = this.props.isPanning ? "-webkit-grabbing" : "default";
+        return this.style(column, "area");
+    },
 
-  /**
-   * [Internal] The time scale to be used on the x-axis. This is passed in
-   * internally from the surrounding ChartContainer.
-   */
-  timeScale: React.PropTypes.oneOfType([
-    React.PropTypes.instanceOf(scaleTime),
-    React.PropTypes.instanceOf(scaleUtc),
-  ]),
+    renderPaths(columnList, direction) {
+        const dir = direction === "up" ? 1 : -1;
+        const size = this.props.series.size();
+        const offsets = new Array(size).fill(0);
 
-  /**
-   * [Internal] The scale to be used on the y-axis. This is passed in
-   * internally from the surrounding ChartRow.
-   */
-  yScale: React.PropTypes.oneOfType([
-    React.PropTypes.instanceOf(scaleLinear),
-    React.PropTypes.instanceOf(scaleLog),
-    React.PropTypes.instanceOf(scalePow),
-  ]),
+        return columnList.map((column, i) => {
+            const style = this.areaStyle(column);
+            const pathStyle = this.pathStyle(column);
 
-  /**
-   * The column to highlight
-   */
-  highlight: React.PropTypes.string,
+            // Stack the series columns to get our data in x0, y0, y1 format
+            const data = [];
+            for (let i = 0; i < this.props.series.size(); i++) {
+                const seriesPoint = this.props.series.at(i);
+                data.push({
+                    x0: this.props.timeScale(seriesPoint.timestamp()),
+                    y0: this.props.yScale(offsets[i]),
+                    y1: this.props.yScale(offsets[i] + dir * seriesPoint.get(column))
+                });
+                if (this.props.stack) {
+                    offsets[i] += dir * seriesPoint.get(column);
+                }
+            }
 
-  /**
-   * The column to select
-   */
-  selection: React.PropTypes.string,
+            // Use D3 to build an area generation function
+            const area = d3Shape.area()
+                .curve(d3Shape[this.props.interpolation])
+                .x(d => d.x0)
+                .y0(d => d.y0)
+                .y1(d => d.y1);
 
-  /**
-   * The series series columns mapped to stacking up and down.
-   * Has the format:
-   * ```
-   *  "columns": {
-   *      up: ["in", ...],
-   *      down: ["out", ...]
-   *  }
-   *  ```
-   */
-  columns: React.PropTypes.shape({
-    up: React.PropTypes.arrayOf(React.PropTypes.string),
-    down: React.PropTypes.arrayOf(React.PropTypes.string),
-  }),
+            // Use the area generation function with our stacked data
+            // to get an SVG path
+            const areaPath = area(data);
 
-  stack: React.PropTypes.bool,
+            // Outline the top of the curve
+            const lineFunction = d3Shape.line()
+                .curve(d3Shape[this.props.interpolation])
+                .x(d => d.x0)
+                .y(d => d.y1);
+            const outlinePath = lineFunction(data);
 
-  /**
-   * The styles to apply to the underlying SVG lines. This is a mapping
-   * of column names to objects with style attributes, in the following
-   * format:
-   *
-   * ```
-   *  const areaStyles = {
-   *      value: {
-   *          area: {
-   *              fill: "#DDD"
-   *          },
-   *          outline: {
-   *              stroke: "black"
-   *          }
-   *      }
-   *  };
-   *
-   *  <LineChart style={areaStyles} ... />
-   *
-   *  Alternatively, you can pass in a Styler. For example:
-   *
-   * ```
-   * const currencyStyle = Styler([
-   *     {key: "aud", color: "steelblue", width: 1, dashed: true},
-   *     {key: "euro", color: "#F68B24", width: 2}
-   * ]);
-   *
-   * <LineChart columns={["aud", "euro"]} style={currencyStyle} ... />
-   *
-   * ```
-   */
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
-  ]),
+            return (
+                <g key={`area-${i}`}>
+                    <path
+                        d={areaPath}
+                        style={style}
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={this.handleHoverLeave}
+                        onMouseMove={e => this.handleHover(e, column)} />
+                     <path
+                        d={outlinePath}
+                        style={pathStyle}
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={this.handleHoverLeave}
+                        onMouseMove={e => this.handleHover(e, column)} />
+                </g>
+            );
+        });
+    },
 
-  /**
-   * Any of D3's interpolation modes.
-   */
-  interpolation: React.PropTypes.oneOf([
-    'curveBasis',
-    'curveBasisOpen',
-    'curveBundle',
-    'curveCardinal',
-    'curveCardinalOpen',
-    'curveCatmullRom',
-    'curveCatmullRomOpen',
-    'curveLinear',
-    'curveMonotone',
-    'curveNatural',
-    'curveRadial',
-    'curveStep',
-    'curveStepAfter',
-    'curveStepBefore',
-  ]),
+    renderAreas() {
+        const up = this.props.columns.up || [];
+        const down = this.props.columns.down || [];
 
-  /**
-   * Called when the highlight is changed on the areachart (i.e
-   * when it is hovered over)
-   */
-  onHighlightChange: React.PropTypes.function,
+        return (
+            <g>
+                {this.renderPaths(up, "up")}
+                {this.renderPaths(down, "down")}
+            </g>
+        );
 
-  /**
-   * Called when the selection is changed on the areachart (i.e
-   * when it is clicked)
-   */
-  onSelectionChange: React.PropTypes.function,
-};
+    },
 
-AreaChart.defaultProps = {
-  transition: 0,
-  interpolation: 'curveLinear',
-  columns: {
-    up: ['value'],
-    down: [],
-  },
-  stack: true,
-};
+    shouldComponentUpdate(nextProps) {
+        const newSeries = nextProps.series;
+        const oldSeries = this.props.series;
+
+        const width = nextProps.width;
+        const timeScale = nextProps.timeScale;
+        const yScale = nextProps.yScale;
+        const interpolate = nextProps.interpolate;
+        const isPanning = nextProps.isPanning;
+        const columns = nextProps.columns;
+        const style = nextProps.style;
+        const highlight = nextProps.highlight;
+        const selection = nextProps.selection;
+
+        const widthChanged =
+            (this.props.width !== width);
+        const timeScaleChanged =
+            (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
+        const yAxisScaleChanged =
+            (this.props.yScale !== yScale);
+        const interpolateChanged =
+            (this.props.interpolate !== interpolate);
+        const isPanningChanged =
+            (this.props.isPanning !== isPanning);
+        const columnsChanged =
+            (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
+        const styleChanged =
+            (JSON.stringify(this.props.style) !== JSON.stringify(style));
+        const highlightChanged =
+            (this.props.highlight !== highlight);
+        const selectionChanged =
+            (this.props.selection !== selection);
+
+        let seriesChanged = false;
+        if (oldSeries.length !== newSeries.length) {
+            seriesChanged = true;
+        } else {
+            seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+        }
+
+        return (
+            seriesChanged ||
+            timeScaleChanged ||
+            widthChanged ||
+            interpolateChanged ||
+            isPanningChanged ||
+            columnsChanged ||
+            styleChanged ||
+            yAxisScaleChanged ||
+            highlightChanged ||
+            selectionChanged);
+    },
+
+    render() {
+        return (
+            <g >
+                {this.renderAreas()}
+            </g>
+        );
+    }
+});

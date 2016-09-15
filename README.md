@@ -1,6 +1,10 @@
-# React Timeseries Charts [![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts)
+<img src="https://github.com/esnet/react-timeseries-charts/blob/master/src/website/img/charts.png" alt="logo" width="160px"/>
 
-![Area chart](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/screenshots/areachart.png)
+# React Timeseries Charts
+
+[![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts) [![npm version](https://badge.fury.io/js/react-timeseries-charts.svg)](https://badge.fury.io/js/react-timeseries-charts)
+
+---
 
 This library contains a set of modular charting components used for building flexible interactive charts. It was built for React from the ground up, specifically to visualize timeseries data and network traffic data in particular. Low level elements are constructed using d3, while higher level composability is provided by React. Charts can be stacked as rows, overlaid on top of each other, or any combination, all in a highly declarative manner.
 
@@ -12,13 +16,13 @@ Current features of the library include:
  * Interactivity, including pan and zoom
  * Add new chart types or overlays
  * Multiple axis, multiple rows
- * Line, area, scatter charts
+ * Line, area, scatter and bar charts
  * Brushing
  * Bar charts to compare multiple TimeSeries
  * Legends
- * Baseline and TimeRange markers
+ * Overlay markers
 
-Please browse the examples for a feel for the library, or read on to get started.
+Please browse the [examples](http://software.es.net/react-timeseries-charts) for a feel for the library.
 
 Getting started
 ---------------
@@ -110,13 +114,13 @@ The repo contains the examples website. This is very helpful in developing new f
 
 This will install the development dependencies into your node_modules directory.
 
-You can then start up the test server, as well as automatic source building, by doing:
+You can then start up the test server:
 
     npm run start-website
 
 Then, point your browser to:
 
-[http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
+[http://localhost:3000/](http://localhost:3000/)
 
 License
 -------

@@ -1,6 +1,8 @@
 
 ## Markers
 
+---
+
 This section describes how you can use different types of overlay markers to communicate to your users. Markers in this context are anything you can add on top of your charts to describe some additional feature. For example, a BaseLine lets you draw a labeled horizontal line that you might use to indicate the average of the charts values, or a threshold that you expect the chart to not cross. We'll talk about the different options below, but this is an evolving list, so more capabilities will likely be added in the future.
 
 ### Tracker
@@ -49,10 +51,30 @@ Where `trackerInfoValues` might be pulled from the TimeSeries being plotted at t
         {label: "HR", value: hrValue}
     ];
 
+### TimeMarker
+
+Within the Charts you can also overlay a TimeMarker. This is essentially what is used as the above tracker, only you have control of it. Here is a simple example which overlays a line at a time with a label.
+
+    <Charts>
+        ...
+        <TimeMarker
+            axis="axis1"
+            time={powerPeakTime}
+            infoStyle={{line: {strokeWidth: "2px", stroke: "#83C2FC"}}}
+            infoValues="Peak power" />
+        ...
+    </Charts>
 
 ### Other types of trackers
 
-This simple tracker works well in our experience for AreaChart and LineCharts. However, for BarCharts and ScatterCharts we need to be more precise with the info overlay we provide as the user explores the data with their cursor.
+This simple tracker works well in our experience for AreaChart and LineCharts. However, for BarCharts and ScatterCharts we need to be more precise with the info overlay we provide as the user explores the data with their cursor. For this reason these charts provide their own specialized overlays. For example a ScatterChart
 
-
+    <ScatterChart
+        axis="wind-gust"
+        series={series}
+        columns={["station1", "station2"]}
+        ...
+        info={infoValues}
+        infoHeight={28} infoWidth={110}
+        ... />
 

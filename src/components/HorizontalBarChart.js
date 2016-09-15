@@ -14,7 +14,6 @@ import { Flexbox, FlexItem } from "flexbox-react";
 
 //d3
 import { scaleLinear } from "d3-scale";
-import { format } from "d3-format";
 
 import { TimeSeries } from "pondjs";
 import Resizable from "./Resizable";

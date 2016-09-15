@@ -1,3 +1,21 @@
+## v0.10.0
+> Sep 13, 2016
+
+**General**
+
+- The main theme of this release is styling improvements (#57), and this presents the only significant breaking change. Pretty much all styles have at least changed format. Additionally there's a `styler` object that can simplify defining styles across the API. See the [Styling Guide](https://github.com/esnet/react-timeseries-charts/blob/master/src/website/guides/style.md).
+- Overhaul of overlay markers. See the [Marker Guide](https://github.com/esnet/react-timeseries-charts/blob/master/src/website/guides/markers.md).
+- Selection and highlighting supported across the API.
+- Pond v0.7 is now a peer dependency.
+- React 15 and 0.14 are now both supported.
+- Support for UTC time axis scales.
+- Overhaul of example pages (now build on create-react-app).
+
+**Bugfixes**
+- Handle background selection clearing on the EventHandler rather than in the Scatter and BarChart code, so that these charts can be overlaid on top of each other without stealing each other's events.
+- Fixes use of array fill for older browsers (#71)
+- Fixes bad YAxis animations that sometimes finished in the wrong place (#77)
+
 ## v0.9.2
 > Jul 6, 2016
 

@@ -188,7 +188,7 @@
           ]
         },
         "required": false,
-        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const areaStyles = {\n     value: {\n         area: {\n             fill: \"#DDD\"\n         },\n         outline: {\n             stroke: \"black\"\n         }\n     }\n };\n\n <LineChart style={areaStyles} ... />\n\n Alternatively, you can pass in a Styler. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\nconst style = {\n    in: {\n        line: {\n            normal: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n            highlighted: {stroke: \"#5a98cb\", fill: \"none\", strokeWidth: 1},\n            selected: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n            muted: {stroke: \"steelblue\", fill: \"none\", opacity: 0.4, strokeWidth: 1}\n        },\n        area: {\n            normal: {fill: \"steelblue\", stroke: \"none\", opacity: 0.75},\n            highlighted: {fill: \"#5a98cb\", stroke: \"none\", opacity: 0.75},\n            selected: {fill: \"steelblue\", stroke: \"none\", opacity: 0.75},\n            muted: {fill: \"steelblue\", stroke: \"none\", opacity: 0.25}\n        }\n    },\n    out: {\n        ...\n    }\n};\n\n<AreaChart style={style} ... />\n```\n\nAlternatively, you can pass in a Styler. For example:\n\n```\nconst upDownStyler = styler([\n    {key: \"in\", color: \"#C8D5B8\"},\n    {key: \"out\", color: \"#9BB8D7\"}\n]);\n\n<AreaChart columns={[\"in\", \"out\"]} style={upDownStyler} ... />\n\n```"
       },
       "interpolation": {
         "type": {
@@ -256,12 +256,6 @@
         "description": "Any of D3's interpolation modes.",
         "defaultValue": {
           "value": "\"curveLinear\"",
-          "computed": false
-        }
-      },
-      "transition": {
-        "defaultValue": {
-          "value": "0",
           "computed": false
         }
       }
@@ -935,13 +929,6 @@
         },
         "required": false,
         "description": "A Date specifying the position of the tracker line on the chart. It is\ncommon to take this from the onTrackerChanged callback so that the tracker\nfollowers the user's cursor, but it could be modified to snap to a point or\nto the nearest minute, for example."
-      },
-      "trackerInfoValues": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": "The tracker can display an info box next to the vertical line, if we\nthis prop is supplied."
       },
       "onTrackerChanged": {
         "type": {
