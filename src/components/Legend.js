@@ -8,31 +8,32 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
-import _ from "underscore";
-import { Flexbox, FlexItem } from "flexbox-react";
-import merge from "merge";
-import { Styler } from "../js/styler";
+import _ from 'underscore';
+import merge from 'merge';
+import React from 'react';
+import { Flexbox, FlexItem } from 'flexbox-react';
+
+import { Styler } from '../js/styler';
 
 const defaultStyle = {
-    symbol: {
-        normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
-        highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
-        selected: {stroke: "steelblue", fill: "none", strokeWidth: 2},
-        muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
-    },
-    label: {
-        normal: {fontSize: "normal", color: "#333"},
-        highlighted: {fontSize: "normal", color: "#222"},
-        selected: {fontSize: "normal", color: "#333"},
-        muted: {fontSize: "normal", color: "#333", opacity: 0.4}
-    },
-    value: {
-        normal: {fontSize: "normal", color: "#333"},
-        highlighted: {fontSize: "normal", color: "#222"},
-        selected: {fontSize: "normal", color: "#333"},
-        muted: {fontSize: "normal", color: "#333", opacity: 0.4}
-    }
+  symbol: {
+    normal: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
+    highlighted: { stroke: '#5a98cb', fill: 'none', strokeWidth: 1 },
+    selected: { stroke: 'steelblue', fill: 'none', strokeWidth: 2 },
+    muted: { stroke: 'steelblue', fill: 'none', opacity: 0.4, strokeWidth: 1 },
+  },
+  label: {
+    normal: { fontSize: 'normal', color: '#333' },
+    highlighted: { fontSize: 'normal', color: '#222' },
+    selected: { fontSize: 'normal', color: '#333' },
+    muted: { fontSize: 'normal', color: '#333', opacity: 0.4 },
+  },
+  value: {
+    normal: { fontSize: 'normal', color: '#333' },
+    highlighted: { fontSize: 'normal', color: '#222' },
+    selected: { fontSize: 'normal', color: '#333' },
+    muted: { fontSize: 'normal', color: '#333', opacity: 0.4 },
+  },
 };
 
 /**
@@ -94,24 +95,24 @@ const defaultStyle = {
  * ```
  * {
  *     columnName1: {
-            symbol: {
-                normal: {...styleSymbol},
-                highlighted: {...styleSymbol},
-                selected: {...styleSymbol},
-                muted: {...styleSymbol}
-            },
-            label: {
-                normal: {...labelStyle},
-                highlighted: {...labelStyle},
-                selected: {...labelStyle},
-                muted: {...labelStyle}
-            },
-            value: {
-                normal: {...valueStyle},
-                highlighted: {...valueStyle},
-                selected: {...valueStyle},
-                muted: {...valueStyle}
-            }
+      symbol: {
+        normal: {...styleSymbol},
+        highlighted: {...styleSymbol},
+        selected: {...styleSymbol},
+        muted: {...styleSymbol}
+      },
+      label: {
+        normal: {...labelStyle},
+        highlighted: {...labelStyle},
+        selected: {...labelStyle},
+        muted: {...labelStyle}
+      },
+      value: {
+        normal: {...valueStyle},
+        highlighted: {...valueStyle},
+        selected: {...valueStyle},
+        muted: {...valueStyle}
+      }
  *     },
  *     columnName2 : {
  *         ...
@@ -133,250 +134,280 @@ const defaultStyle = {
  * be called with the columnName and you should return the map
  * containing symbol, label and value styles.
  */
-export default React.createClass({
+export default class Legend extends React.Component {
 
-    displayName: "Legend",
-
-    getDefaultProps() {
-        return {
-            style: {},
-            labelStyle: {},
-            type: "swatch", // or "line" or "dot"
-            align: "left",
-            width: 16,
-            height: 16
-        };
-    },
-
-    propTypes: {
-
-        /**
-         * The overall style of the legend items, either a color "swatch", a
-         * colored "line", or a "dot".
-         */
-        type: React.PropTypes.oneOf([
-            "swatch",
-            "line",
-            "dot"
-        ]),
-
-        /**
-         * Alignment of the legend within the available space. Either left or right.
-         */
-        align: React.PropTypes.oneOf([
-            "left",
-            "right"
-        ]),
-
-        style: React.PropTypes.oneOfType([
-            React.PropTypes.object,
-            React.PropTypes.func,
-            React.PropTypes.instanceOf(Styler)
-        ]).isRequired,
-
-        /**
-         * The categories array specifies details and style for each item in the legend. For each item:
-         *  * "key" - (required) the name by which the legend will be known
-         *  * "label" - (required) the displayed label
-         *  * "style" - the swatch, dot, or line style. Typically you'd just specify {backgroundColor: "#1f77b4"}
-         *  * "labelStyle" - the label style
-         *  * "disabled" - a disabled state
-         *
-         * ```
-         * const categories = [
-         *    {key: "aust", label: "AUD", disabled: this.state.disabled["aust"], style: {backgroundColor: "#1f77b4"}},
-         *    {key: "usa", label: "USD", disabled: this.state.disabled["usa"], style: {backgroundColor: "#aec7e8"}}
-         * ];
-         * ```
-         */
-        categories: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                key: React.PropTypes.string.isRequired,
-                label: React.PropTypes.string.isRequired,
-                disabled: React.PropTypes.bool,
-                style: React.PropTypes.object,
-                labelStyle: React.PropTypes.object
-            })
-        ).isRequired,
-
-        /**
-         * Callback which will be called when the use enables/disables the legend item
-         * by clicking on it. The callback will be called with the key and the new
-         * disabled state.
-         */
-        onChange: React.PropTypes.func
-    },
-
-    handleClick(e, key) {
-        e.stopPropagation();
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(key);
-        }
-    },
-
-    handleHover(e, key) {
-        if (this.props.onHighlightChange) {
-            this.props.onHighlightChange(key);
-        }
-    },
-
-    handleHoverLeave() {
-        if (this.props.onHighlightChange) {
-            this.props.onHighlightChange(null);
-        }
-    },
-
-    renderLine(style) {
-        const { width, height } = this.props;
-        return (
-            <svg style={{float: "left"}} height={height} width={width} >
-                <line
-                    style={style}
-                    x1={0} y1={parseInt(width / 2, 10)}
-                    x2={width} y2={parseInt(width / 2, 10)}
-                    stroke="black"
-                    strokeWidth="2"/>
-            </svg>
-        );
-    },
-
-    renderSwatch(style) {
-        const { width, height } = this.props;
-        return (
-            <svg style={{float: "left"}} height={height} width={width} >
-                <rect
-                    style={style}
-                    x={2} y={2}
-                    width={width-4} height={height-4}
-                    rx={2} ry={2} />
-
-            </svg>
-        );
-    },
-
-    renderDot(style) {
-        const { width, height } = this.props;
-        return (
-            <svg style={{float: "left"}} height={height} width={width} >
-                <ellipse
-                    style={style}
-                    cx={parseInt(width/2, 10) + 2} cy={parseInt(height/2, 10) + 1}
-                    rx={parseInt(width/2, 10) - 2} ry={parseInt(height/2, 10) - 2} />
-            </svg>
-        );
-    },
-
-    providedStyle(category) {
-        let style = {};
-        if (this.props.style) {
-            if (this.props.style instanceof Styler) {
-                style = this.props.style.legendStyle(category.key, this.props.type);
-            } else if (_.isObject(this.props.style)) {
-                style = this.props.style[category.key];
-            } else if (_.isFunction(this.props.style)) {
-                style = this.props.style(category.key);
-            }
-        }
-        return style;
-    },
-
-    styleMode(category) {
-        const isHighlighted = this.props.highlight && category.key === this.props.highlight;
-        const isSelected = this.props.selection && category.key === this.props.selection;
-        const isDisabled = category.disabled;
-
-        let mode = "normal";
-        if (this.props.selection) {
-            if (isSelected) {
-                mode = "selected";
-            } else if (isHighlighted) {
-                mode = "highlighted";
-            } else {
-                mode = "muted";
-            }
-        } else if (isHighlighted) {
-            mode = "highlighted";
-        } else if (isDisabled) {
-            mode = "muted";
-        }
-        return mode;
-    },
-
-    symbolStyle(category) {
-        const styleMap = this.providedStyle(category, this.props.type);
-        const styleMode = this.styleMode(category);
-        return merge(true,
-                     defaultStyle[styleMode],
-                     styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {});
-    },
-
-    labelStyle(category) {
-        const styleMap = this.providedStyle(category);
-        const styleMode = this.styleMode(category);
-        return merge(true,
-                     defaultStyle[styleMode],
-                     styleMap.label[styleMode] ? styleMap.label[styleMode] : {});
-    },
-
-    valueStyle(category) {
-        const styleMap = this.providedStyle(category);
-        const styleMode = this.styleMode(category);
-        return merge(true,
-                     defaultStyle[styleMode],
-                     styleMap.value[styleMode] ? styleMap.value[styleMode] : {});
-    },
-
-    render() {
-        const items = this.props.categories.map(category => {
-            const symbolStyle = this.symbolStyle(category);
-            const labelStyle = this.labelStyle(category);
-            const valueStyle = this.valueStyle(category);
-
-            let symbol;
-            if (this.props.type === "swatch") {
-                symbol = this.renderSwatch(symbolStyle);
-            } else if (this.props.type === "line") {
-                symbol = this.renderLine(symbolStyle);
-            } else if (this.props.type === "dot") {
-                symbol = this.renderDot(symbolStyle);
-            }
-
-            return (
-                <Flexbox flexDirection="column"
-                         key={category.key}>
-                    <div
-                        onClick={(e) => this.handleClick(e, category.key)}
-                        onMouseMove={e => this.handleHover(e, category.key)}
-                        onMouseLeave={this.handleHoverLeave}>
-                    <Flexbox flexDirection="row">
-                        <FlexItem width="20px">
-                            {symbol}
-                        </FlexItem>
-                        <Flexbox flexDirection="column">
-                            <FlexItem>
-                                <div style={labelStyle}>
-                                    {category.label}
-                                </div>
-                            </FlexItem>
-                            <FlexItem>
-                                <div style={valueStyle}>
-                                    {category.value}
-                                </div>
-                            </FlexItem>
-                        </Flexbox>
-                    </Flexbox>
-                    </div>
-                </Flexbox>
-            );
-        });
-
-        const align = this.props.align === "left" ?
-            "flex-start" : "flex-end";
-
-        return (
-            <Flexbox justifyContent={align}>
-                {items}
-            </Flexbox>
-        );
+  handleClick(e, key) {
+    e.stopPropagation();
+    if (this.props.onSelectionChange) {
+      this.props.onSelectionChange(key);
     }
-});
+  }
+
+  handleHover(e, key) {
+    if (this.props.onHighlightChange) {
+      this.props.onHighlightChange(key);
+    }
+  }
+
+  handleHoverLeave() {
+    if (this.props.onHighlightChange) {
+      this.props.onHighlightChange(null);
+    }
+  }
+
+  providedStyle(category) {
+    let style = {};
+    if (this.props.style) {
+      if (this.props.style instanceof Styler) {
+        style = this.props.style.legendStyle(category.key, this.props.type);
+      } else if (_.isObject(this.props.style)) {
+        style = this.props.style[category.key];
+      } else if (_.isFunction(this.props.style)) {
+        style = this.props.style(category.key);
+      }
+    }
+    return style;
+  }
+
+  styleMode(category) {
+    const isHighlighted = this.props.highlight && category.key === this.props.highlight;
+    const isSelected = this.props.selection && category.key === this.props.selection;
+    const isDisabled = category.disabled;
+
+    let mode = 'normal';
+    if (this.props.selection) {
+      if (isSelected) {
+        mode = 'selected';
+      } else if (isHighlighted) {
+        mode = 'highlighted';
+      } else {
+        mode = 'muted';
+      }
+    } else if (isHighlighted) {
+      mode = 'highlighted';
+    } else if (isDisabled) {
+      mode = 'muted';
+    }
+    return mode;
+  }
+
+  symbolStyle(category) {
+    const styleMap = this.providedStyle(category, this.props.type);
+    const styleMode = this.styleMode(category);
+    return merge(true,
+           defaultStyle[styleMode],
+           styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {});
+  }
+
+  labelStyle(category) {
+    const styleMap = this.providedStyle(category);
+    const styleMode = this.styleMode(category);
+    return merge(true,
+           defaultStyle[styleMode],
+           styleMap.label[styleMode] ? styleMap.label[styleMode] : {});
+  }
+
+  valueStyle(category) {
+    const styleMap = this.providedStyle(category);
+    const styleMode = this.styleMode(category);
+    return merge(true,
+           defaultStyle[styleMode],
+           styleMap.value[styleMode] ? styleMap.value[styleMode] : {});
+  }
+
+  renderLine(style) {
+    const { width, height } = this.props;
+    return (
+      <svg style={{ float: 'left' }} height={height} width={width} >
+        <line
+          style={style}
+          x1={0} y1={parseInt(width / 2, 10)}
+          x2={width} y2={parseInt(width / 2, 10)}
+          stroke="black"
+          strokeWidth="2"
+        />
+      </svg>
+    );
+  }
+
+  renderSwatch(style) {
+    const { width, height } = this.props;
+    return (
+      <svg style={{ float: 'left' }} height={height} width={width} >
+        <rect
+          style={style}
+          x={2}
+          y={2}
+          width={width - 4}
+          height={height - 4}
+          rx={2} ry={2}
+        />
+      </svg>
+    );
+  }
+
+  renderDot(style) {
+    const { width, height } = this.props;
+    return (
+      <svg style={{ float: 'left' }} height={height} width={width} >
+        <ellipse
+          style={style}
+          cx={parseInt(width / 2, 10) + 2} cy={parseInt(height / 2, 10) + 1}
+          rx={parseInt(width / 2, 10) - 2} ry={parseInt(height / 2, 10) - 2}
+        />
+      </svg>
+    );
+  }
+
+  render() {
+    const items = this.props.categories.map((category) => {
+      const symbolStyle = this.symbolStyle(category);
+      const labelStyle = this.labelStyle(category);
+      const valueStyle = this.valueStyle(category);
+
+      let symbol;
+      if (this.props.type === 'swatch') {
+        symbol = this.renderSwatch(symbolStyle);
+      } else if (this.props.type === 'line') {
+        symbol = this.renderLine(symbolStyle);
+      } else if (this.props.type === 'dot') {
+        symbol = this.renderDot(symbolStyle);
+      }
+
+      // TODO: We shouldn't be adding interactions to a element like this.
+      //       The alternative it to put it on a <a> or something?
+
+      return (
+        <Flexbox flexDirection="column" key={category.key}>
+          <div //eslint-disable-line
+            onClick={e => this.handleClick(e, category.key)}
+            onMouseMove={e => this.handleHover(e, category.key)}
+            onMouseLeave={this.handleHoverLeave}
+          >
+            <Flexbox flexDirection="row">
+              <FlexItem width="20px">
+                {symbol}
+              </FlexItem>
+              <Flexbox flexDirection="column">
+                <FlexItem>
+                  <div style={labelStyle}>
+                    {category.label}
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div style={valueStyle}>
+                    {category.value}
+                  </div>
+                </FlexItem>
+              </Flexbox>
+            </Flexbox>
+          </div>
+        </Flexbox>
+      );
+    });
+
+    const align = this.props.align === 'left' ? 'flex-start' : 'flex-end';
+
+    return (
+      <Flexbox justifyContent={align}>
+        {items}
+      </Flexbox>
+    );
+  }
+}
+
+Legend.propTypes = {
+
+  /**
+   * The overall style of the legend items, either a color "swatch", a
+   * colored "line", or a "dot".
+   */
+  type: React.PropTypes.oneOf([
+    'swatch',
+    'line',
+    'dot',
+  ]),
+
+  /**
+   * Alignment of the legend within the available space. Either left or right.
+   */
+  align: React.PropTypes.oneOf([
+    'left',
+    'right',
+  ]),
+
+  style: React.PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.func,
+    React.PropTypes.instanceOf(Styler),
+  ]).isRequired,
+
+  /**
+   * The categories array specifies details and style for each item in the legend. For each item:
+   *  * "key" - (required) the name by which the legend will be known
+   *  * "label" - (required) the displayed label
+   *  * "style" - the swatch, dot, or line style. Typically you'd just
+   *              specify {backgroundColor: "#1f77b4"}
+   *  * "labelStyle" - the label style
+   *  * "disabled" - a disabled state
+   *
+   * ```
+   * const categories = [
+   *    {key: "aust", label: "AUD", disabled: this.state.disabled["aust"],
+   *      style: {backgroundColor: "#1f77b4"}},
+   *    {key: "usa", label: "USD", disabled: this.state.disabled["usa"],
+   *      style: {backgroundColor: "#aec7e8"}}
+   * ];
+   * ```
+   */
+  categories: React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+      key: React.PropTypes.string.isRequired,    // eslint-disable-line
+      label: React.PropTypes.string.isRequired,  // eslint-disable-line
+      disabled: React.PropTypes.bool,            // eslint-disable-line
+      style: React.PropTypes.object,             // eslint-disable-line
+      labelStyle: React.PropTypes.object         // eslint-disable-line
+    })
+  ).isRequired,
+
+  /**
+   * The width of the legend symbol
+   */
+  width: React.PropTypes.number,
+
+  /**
+   * The height of the legend symbol
+   */
+  height: React.PropTypes.number,
+
+  /**
+   * Which item, specified by its key, should be rendered as highlighted
+   */
+  highlight: React.PropTypes.string,
+
+  /**
+   * Which item, specified by its key, should be rendered as selected
+   */
+  selection: React.PropTypes.string,
+
+  /**
+   * Callback will be called with a legend item is selected (i.e. it is clicked
+   * on by the user)
+   */
+  onSelectionChange: React.PropTypes.func,
+
+  /**
+   * Callback will be called with a legend item is highlighted (i.e. it is hovered
+   * over by the user)
+   */
+  onHighlightChange: React.PropTypes.func,
+};
+
+Legend.defaultProps = {
+  style: {},
+  labelStyle: {},
+  type: 'swatch', // or "line" or "dot"
+  align: 'left',
+  width: 16,
+  height: 16,
+};
