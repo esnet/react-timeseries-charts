@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015-2016, The Regents of the University of California,
+ *  Copyright (c) 2015-present, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -111,7 +111,7 @@ export default class ChartContainer extends React.Component {
     //          left cols              right cols
     //
 
-    React.Children.forEach(this.props.children, childRow => {
+    React.Children.forEach(this.props.children, (childRow) => {
       if (childRow.type === ChartRow) {
         //
         // Within this row, count the number of columns that will be
@@ -124,7 +124,7 @@ export default class ChartContainer extends React.Component {
 
         let align = 'left';
 
-        React.Children.forEach(childRow.props.children, child => {
+        React.Children.forEach(childRow.props.children, (child) => {
           if (child.type === Charts) {
             countCharts += 1;
             align = 'right';
@@ -145,7 +145,7 @@ export default class ChartContainer extends React.Component {
         align = 'left';
         let pos = countLeft - 1;
 
-        React.Children.forEach(childRow.props.children, child => {
+        React.Children.forEach(childRow.props.children, (child) => {
           if (child.type === Charts || child.type === Brush) {
             if (child.type === Charts) {
               align = 'right';
@@ -192,7 +192,7 @@ export default class ChartContainer extends React.Component {
 
     let i = 0;
     let yPosition = 0;
-    React.Children.forEach(this.props.children, child => {
+    React.Children.forEach(this.props.children, (child) => {
       if (child.type === ChartRow) {
         const chartRow = child;
         const rowKey = `chart-row-row-${i}`;
@@ -202,7 +202,6 @@ export default class ChartContainer extends React.Component {
           leftAxisWidths,
           rightAxisWidths,
           width: this.props.width,
-          padding: this.props.padding,
           minTime: this.props.minTime,
           maxTime: this.props.maxTime,
           transition: this.props.transition,
@@ -404,9 +403,39 @@ ChartContainer.propTypes = {
   format: React.PropTypes.string,
 
   /**
+   * Time in milliseconds to transition from one Y-scale to the next
+   */
+  transition: React.PropTypes.number,
+
+  /**
    * Show grid lines for each time marker
    */
   showGrid: React.PropTypes.bool,
+
+  /**
+   * The width of the tracker info box
+   */
+  trackerHintWidth: React.PropTypes.number,
+
+  /**
+   * The height of the tracker info box
+   */
+  trackerHintHeight: React.PropTypes.number,
+
+  /**
+   * Info box value or values to place next to the tracker line.
+   * This is either an array of objects, with each object
+   * specifying the label and value to be shown in the info box,
+   * or a simple string label.
+   */
+  trackerValues: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.arrayOf(
+      React.PropTypes.shape({
+        label: React.PropTypes.string,  // eslint-disable-line
+        value: React.PropTypes.string,  // eslint-disable-line
+      })
+  )]),
 
   /**
    * A Date specifying the position of the tracker line on the chart. It is
@@ -449,5 +478,11 @@ ChartContainer.propTypes = {
    * Called when the size of the chart changes
    */
   onChartResize: React.PropTypes.func,
+
+  /**
+   * Called when the user clicks the background plane of the chart. This is
+   * useful when deselecting elements.
+   */
+  onBackgroundClick: React.PropTypes.func,
 
 };
