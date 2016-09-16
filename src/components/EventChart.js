@@ -13,16 +13,14 @@ import React from 'react';
 import { TimeSeries } from 'pondjs';
 
 /**
- * Renders an event view that shows the supplied set of
- * events along a time axis. The events should be supplied as a Pond TimeSeries.
+ * Renders an event view that shows the supplied set of events along a time axis.
+ * The events should be supplied as a Pond TimeSeries.
  * That series may contain regular Events, TimeRangeEvents or IndexedEvents.
  */
 export default class EventChart extends React.Component {
 
   constructor(props) {
     super(props);
-
-    // hover state is tracked internally and a highlight shown as a result
     this.state = {
       hover: null,
     };
@@ -66,7 +64,6 @@ export default class EventChart extends React.Component {
       const isHover = this.state.hover ? event.data() === this.state.hover.data() : false;
 
       let state;
-      
       if (isHover) {
         state = 'hover';
       } else {
@@ -80,8 +77,7 @@ export default class EventChart extends React.Component {
         barStyle = this.props.style(event, state);
       }
 
-      let label =  this.props.label(event);
-
+      const label = this.props.label(event);
       const x = this.props.spacing;
       const y = 0;
       const width = endPos - beginPos - (2 * this.props.spacing);
@@ -175,5 +171,15 @@ EventChart.propTypes = {
    * with the Event selected.
    */
   onSelectionChange: React.PropTypes.function,
+
+  /**
+   * [Internal] The timeScale supplied by the surrounding ChartContainer
+   */
+  timeScale: React.object.func.isRequired,
+
+  /**
+   * [Internal] The width supplied by the surrounding ChartContainer
+   */
+  width: React.PropTypes.number.isRequired,
 
 };

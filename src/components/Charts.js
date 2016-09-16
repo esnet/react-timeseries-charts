@@ -52,6 +52,10 @@ import React from 'react';
  * #### yScale
  *
  * A d3 scale for the y-axis which you can use to transform your data in the y direction
+ *
+ * #### width
+ *
+ * A the width your chart will render into
  */
 export default class Charts extends React.Component {
 
