@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2015-present, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
 import merge from 'merge';
+import React from 'react';
 
 const defaultStyle = {
   label: {
@@ -94,12 +94,7 @@ export default class Baseline extends React.component {
     return (
       <g className="baseline" transform={transform}>
         <polyline points={points} style={lineStyle} />
-        <text
-          style={labelStyle}
-          x={textPositionX}
-          y={textPositionY}
-          textAnchor={textAnchor}
-        >
+        <text style={labelStyle} x={textPositionX} y={textPositionY} textAnchor={textAnchor}>
           {this.props.label}
         </text>
       </g>
@@ -136,4 +131,18 @@ Baseline.propTypes = {
    */
   position: React.PropTypes.oneOf(['left', 'right']),
 
+  /**
+   * [Internal] The timeScale supplied by the surrounding ChartContainer
+   */
+  timeScale: React.object.func.isRequired,
+
+  /**
+   * [Internal] The yScale supplied by the associated YAxis
+   */
+  yScale: React.PropTypes.func.isRequired,
+
+  /**
+   * [Internal] The width supplied by the surrounding ChartContainer
+   */
+  width: React.PropTypes.number.isRequired,
 };

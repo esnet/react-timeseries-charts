@@ -8,18 +8,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
 import merge from 'merge';
+import React from 'react';
 import { TimeRange } from 'pondjs';
 
-// http://stackoverflow.com/a/28857255
-function getElementOffset(element) {
-  const de = document.documentElement;
-  const box = element.getBoundingClientRect();
-  const top = box.top + window.pageYOffset - de.clientTop;
-  const left = box.left + window.pageXOffset - de.clientLeft;
-  return { top, left };
-}
+import { getElementOffset } from '../js/util';
 
 /**
  * Renders a brush with the range defined in the prop `timeRange`.
@@ -61,7 +54,7 @@ export default class Brush extends React.Component {
   handleOverlayMouseDown(e) {
     e.preventDefault();
 
-    const offset = getElementOffset(this.refs.overlay);
+    const offset = getElementOffset(this.overlay);
     const x = e.pageX - offset.left;
     const t = this.props.timeScale.invert(x).getTime();
     this.setState({
@@ -137,7 +130,7 @@ export default class Brush extends React.Component {
       const te = this.state.initialBrushEndTime;
 
       if (this.state.brushingInitializationSite === 'overlay') {
-        const offset = getElementOffset(this.refs.overlay);
+        const offset = getElementOffset(this.overlay);
         const xx = e.pageX - offset.left;
         const t = this.props.timeScale.invert(xx).getTime();
         if (t < tb) {
@@ -203,7 +196,7 @@ export default class Brush extends React.Component {
     };
     return (
       <rect
-        ref="overlay"
+        ref={(c) => { this.overlay = c; }}
         x={0} y={0}
         width={width} height={height}
         style={overlayStyle}
@@ -314,14 +307,14 @@ export default class Brush extends React.Component {
             {...leftHandleBounds}
             style={handleStyle}
             pointerEvents="all"
-            onMouseDown={(e) => this.handleHandleMouseDown(e, 'left')}
+            onMouseDown={e => this.handleHandleMouseDown(e, 'left')}
             onMouseUp={this.handleMouseUp}
           />
           <rect
             {...rightHandleBounds}
             style={handleStyle}
             pointerEvents="all"
-            onMouseDown={(e) => this.handleHandleMouseDown(e, 'right')}
+            onMouseDown={e => this.handleHandleMouseDown(e, 'right')}
             onMouseUp={this.handleMouseUp}
           />
         </g>
@@ -360,7 +353,7 @@ Brush.propTypes = {
    * The brush is rendered as an SVG rect. You can specify the style
    * of this rect using this prop.
    */
-  style: React.PropTypes.object,
+  style: React.PropTypes.object, //eslint-disable-line
 
   /**
    * The size of the invisible side handles. Defaults to 6 pixels.
@@ -377,10 +370,26 @@ Brush.propTypes = {
    * this case it will be called with null as the TimeRange. You can
    * use this to reset the selection, perhaps to some initial range.
    */
-  onTimeRangeChanged: React.PropTypes.func
+  onTimeRangeChanged: React.PropTypes.func,
+
+  /**
+   * [Internal] The timeScale supplied by the surrounding ChartContainer
+   */
+  timeScale: React.object.func.isRequired,
+
+  /**
+   * [Internal] The width supplied by the surrounding ChartContainer
+   */
+  width: React.PropTypes.number.isRequired,
+
+  /**
+   * [Internal] The height supplied by the surrounding ChartContainer
+   */
+  height: React.PropTypes.number.isRequired,
+
 };
 
 Brush.defaultProps = {
   handleSize: 6,
-  allowSelectionClear: false
+  allowSelectionClear: false,
 };
