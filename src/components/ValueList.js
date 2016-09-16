@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React from 'react';
 
 /**
  * Renders a list of values in svg
@@ -18,99 +18,97 @@ import React from "react";
  *      | Avg 26 Gbps    |
  *      +----------------+
  */
+const ValueList = (props) => {
+  const { align, style, width, height } = props;
 
-export default React.createClass({
+  const textStyle = {
+    fontSize: 11,
+    textAnchor: 'left',
+    fill: '#b0b0b0',
+    pointerEvents: 'none',
+  };
 
-    displayName: "ValueList",
+  const textStyleCentered = {
+    fontSize: 11,
+    textAnchor: 'middle',
+    fill: '#bdbdbd',
+    pointerEvents: 'none',
+  };
 
-    getDefaultProps() {
-        return {
-            align: "center",
-            width: 100,
-            height: 100,
-            pointerEvents: "none",
-            style: {fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8}
-        };
-    },
-
-    propTypes: {
-
-        align: React.PropTypes.oneOf(["center", "left"]),
-
-        /**
-         * An array of label value pairs to render
-         */
-        values: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                label: React.PropTypes.string,
-                value: React.PropTypes.oneOfType([
-                    React.PropTypes.number,
-                    React.PropTypes.string
-                ])
-            }),
-        ).isRequired,
-
-        /**
-         * The width of the rectangle to render into
-         */
-        width: React.PropTypes.number,
-
-        /**
-         * The height of the rectangle to render into
-         */
-        height: React.PropTypes.number
-    },
-
-    render() {
-        const textStyle = {
-            fontSize: 11,
-            textAnchor: "left",
-            fill: "#b0b0b0",
-            pointerEvents: "none"
-        };
-        
-        const textStyleCentered = {
-            fontSize: 11,
-            textAnchor: "middle",
-            fill: "#bdbdbd",
-            pointerEvents: "none"
-        };
-
-        const values = this.props.values.map((item, i) => {
-            if (this.props.align === "left") {
-                return (
-                    <g key={i}>
-                        <text x={10} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyle}>
-                            <tspan style={{fontWeight: 700}}>{`${item.label}: `}</tspan>
-                            <tspan>{`${item.value}`}</tspan>
-                        </text>
-                    </g>
-                );
-            } else {
-                const posx = parseInt(this.props.width / 2, 10);
-                return (
-                    <g key={i}>
-                        <text x={posx} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyleCentered}>
-                            <tspan style={{fontWeight: 700}}>{`${item.label}: `}</tspan>
-                            <tspan>{`${item.value}`}</tspan>
-                        </text>
-                    </g>
-                );
-            }
-        });
-
-        const box = (
-            <rect
-                style={this.props.style}
-                x={0} y={0}
-                width={this.props.width} height={this.props.height} />
-        );
-
-        return (
-            <g>
-                {box}
-                {values}
-            </g>
-        );
+  const values = props.values.map((item, i) => {
+    if (align === 'left') {
+      return (
+        <g key={i}>
+          <text x={10} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyle}>
+            <tspan style={{ fontWeight: 700 }}>{`${item.label}: `}</tspan>
+            <tspan>{`${item.value}`}</tspan>
+          </text>
+        </g>
+      );
     }
-});
+
+    const posx = parseInt(props.width / 2, 10);
+    return (
+      <g key={i}>
+        <text x={posx} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyleCentered}>
+          <tspan style={{ fontWeight: 700 }}>{`${item.label}: `}</tspan>
+          <tspan>{`${item.value}`}</tspan>
+        </text>
+      </g>
+    );
+  });
+
+  const box = (
+    <rect style={style} x={0} y={0} width={width} height={height} />
+  );
+
+  return (
+    <g>
+      {box}
+      {values}
+    </g>
+  );
+};
+
+ValueList.defaultProps = {
+  align: 'center',
+  width: 100,
+  height: 100,
+  pointerEvents: 'none',
+  style: { fill: '#FEFEFE', stroke: '#DDD', opacity: 0.8 },
+};
+
+ValueList.propTypes = {
+
+  align: React.PropTypes.oneOf(['center', 'left']),
+
+  /**
+   * An array of label value pairs to render
+   */
+  values: React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+      label: React.PropTypes.string,      // eslint-disable-line
+      value: React.PropTypes.oneOfType([  // eslint-disable-line
+        React.PropTypes.number,
+        React.PropTypes.string,
+      ]),
+    })
+  ).isRequired,
+
+  /**
+   * CSS object to be applied to the ValueList surrounding box
+   */
+  style: React.PropTypes.object,          // eslint-disable-line
+
+  /**
+   * The width of the rectangle to render into
+   */
+  width: React.PropTypes.number,
+
+  /**
+   * The height of the rectangle to render into
+   */
+  height: React.PropTypes.number,
+};
+
+export default ValueList;
