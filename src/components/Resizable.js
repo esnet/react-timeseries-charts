@@ -8,40 +8,47 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React from 'react';
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-export default React.createClass({
-    getInitialState() {
-        return {width: 0};
-    },
+export default class Resizable extends React.Component {
 
-    handleResize() {
-        this.setState({width: this.refs.container.offsetWidth});
-    },
+  constructor(props) {
+    super(props);
+    this.state = { width: 0 };
+  }
 
-    componentDidMount() {
-        window.addEventListener("resize", this.handleResize);  //eslint-disable-line
-        this.handleResize();
-    },
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.handleResize);  //eslint-disable-line
-    },
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
 
-    render() {
-        const props = {width: this.state.width};
-        const child = React.Children.only(this.props.children);
-        const childElement = this.state.width ?
-            React.cloneElement(child, props) : null;
-        return (
-            <div ref="container" style={this.props.style} className={this.props.className}>
-                {childElement}
-            </div>
-        );
-    }
-});
+  handleResize() {
+    this.setState({
+      width: this.container.offsetWidth,
+    });
+  }
+
+  render() {
+    const child = React.Children.only(this.props.children);
+    const childElement = this.state.width ?
+      React.cloneElement(child, { width: this.state.width }) : null;
+    return (
+      <div ref={(c) => { this.container = c; }} {...this.props}>
+        {childElement}
+      </div>
+    );
+  }
+}
+
+Resizable.propTypes = {
+  children: React.PropTypes.node,
+};
