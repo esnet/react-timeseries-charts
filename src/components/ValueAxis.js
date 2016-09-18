@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2015-present, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React from 'react';
 
 /**
  * Renders a 'axis' that display a label for a current tracker value
@@ -18,47 +18,66 @@ import React from "react";
  *          |      bps       |
  *          |                |
  *      ----+----------------+
- *
- *  EXPERIMENTAL
  */
-export default React.createClass({
+const ValueAxis = ({ width, height, value, detail }) => {
+  const labelStyle = {
+    fill: '#666',
+    fontSize: 20,
+    textAnchor: 'middle',
+  };
+  const detailStyle = {
+    fontSize: 12,
+    textAnchor: 'middle',
+    fill: '#9a9a9a',
+  };
+  return (
+    <g>
+      <rect
+        key="background"
+        x="0" y="0"
+        width={width}
+        height={height}
+        style={{ fill: 'none', stroke: 'none' }}
+      />
+      <text
+        key="value"
+        x={parseInt(width / 2, 10)}
+        y={height / 2}
+        style={labelStyle}
+      >
+        {value}
+      </text>
+      <text
+        key="detail"
+        x={parseInt(width / 2, 10)}
+        y={height / 2} dy="1.2em"
+        style={detailStyle}
+      >
+        {detail}
+      </text>
+    </g>
+  );
+};
 
-    displayName: "ValueAxis",
+ValueAxis.propTypes = {
+  /**
+   * If values are numbers, use this format string
+   */
+  value: React.PropTypes.string,
 
-    render() {
-        const labelStyle = {
-            fill: "#666",
-            fontSize: 20,
-            textAnchor: "middle"
-        };
-        const detailStyle = {
-            fontSize: 12,
-            textAnchor: "middle",
-            fill: "#9a9a9a"
-        };
-        return (
-            <g>
-                <rect
-                    key="background"
-                    x="0" y="0"
-                    width={this.props.width}
-                    height={this.props.height}
-                    style={{fill: "none", stroke: "none"}}/>
-                <text
-                    key="value"
-                    x={parseInt(this.props.width / 2, 10)}
-                    y={this.props.height / 2}
-                    style={labelStyle}>
-                    {this.props.value}
-                </text>
-                <text
-                    key="detail"
-                    x={parseInt(this.props.width / 2, 10)}
-                    y={this.props.height / 2} dy="1.2em"
-                    style={detailStyle}>
-                    {this.props.detail}
-                </text>
-            </g>
-        );
-    }
-});
+  /**
+   * If values are numbers, use this format string
+   */
+  detail: React.PropTypes.string,
+
+  /**
+   * The width of the axis
+   */
+  width: React.PropTypes.number,
+
+  /**
+   * The height of the axis
+   */
+  height: React.PropTypes.number,
+
+};
