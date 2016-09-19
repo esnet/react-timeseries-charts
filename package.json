@@ -17,7 +17,7 @@
   },
   "scripts": {
     "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/api/docs.json --pretty",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint src/components/*.js",
     "test": "npm run lint",
     "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
     "start-website": "react-scripts start",
