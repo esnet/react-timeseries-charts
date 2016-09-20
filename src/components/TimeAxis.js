@@ -147,10 +147,10 @@ TimeAxis.defaultProps = {
 
 TimeAxis.propTypes = {
   scale: React.PropTypes.func.isRequired,
-  showGrid: React.PropTypes.boolean,
+  showGrid: React.PropTypes.bool,
   gridHeight: React.PropTypes.number,
   format: React.PropTypes.string,
-  utc: React.PropTypes.boolean,
+  utc: React.PropTypes.bool,
   style: React.PropTypes.shape({
     labels: React.PropTypes.object,     // eslint-disable-line
     axis: React.PropTypes.object,       // eslint-disable-line

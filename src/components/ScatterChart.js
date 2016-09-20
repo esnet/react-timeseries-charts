@@ -71,6 +71,13 @@ const defaultStyle = {
  */
 export default class ScatterChart extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.handleHover = this.handleHover.bind(this);
+    this.handleHoverLeave = this.handleHoverLeave.bind(this);
+  }
+
   // get the event mouse position relative to the event rect
   getOffsetMousePosition(e) {
     const offset = getElementOffset(this.eventrect);
@@ -78,6 +85,10 @@ export default class ScatterChart extends React.Component {
     const y = e.pageY - offset.top;
     return [Math.round(x), Math.round(y)];
   }
+
+  //
+  // Event handlers
+  //
 
   handleClick(e, event, column) {
     const point = { event, column };
@@ -116,6 +127,10 @@ export default class ScatterChart extends React.Component {
       this.props.onMouseNear(null);
     }
   }
+
+  //
+  // Internal methods
+  //
 
   providedStyleMap(column, event) {
     let style = {};
@@ -173,6 +188,10 @@ export default class ScatterChart extends React.Component {
     return style;
   }
 
+  //
+  // Render
+  //
+
   renderScatter() {
     const { series, timeScale, yScale } = this.props;
     const points = [];
@@ -208,7 +227,7 @@ export default class ScatterChart extends React.Component {
               event={event}
               column={column}
               marker="circle"
-              markerRadius="0"
+              markerRadius={0}
             />
           );
         }
@@ -427,21 +446,21 @@ ScatterChart.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number.isRequired,
+  height: React.PropTypes.number,
 
 };

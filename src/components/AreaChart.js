@@ -255,14 +255,14 @@ export default class AreaChart extends React.Component {
             d={areaPath}
             style={style}
             onClick={e => this.handleClick(e, column)}
-            onMouseLeave={this.handleHoverLeave}
+            onMouseLeave={() => this.handleHoverLeave()}
             onMouseMove={e => this.handleHover(e, column)}
           />
           <path
             d={outlinePath}
             style={pathStyle}
             onClick={e => this.handleClick(e, column)}
-            onMouseLeave={this.handleHoverLeave}
+            onMouseLeave={() => this.handleHoverLeave()}
             onMouseMove={e => this.handleHover(e, column)}
           />
         </g>
@@ -410,17 +410,17 @@ AreaChart.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
 };
 

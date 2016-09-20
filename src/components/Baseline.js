@@ -52,7 +52,7 @@ const defaultStyle = {
  * </ChartContainer>
  * ```
  */
-export default class Baseline extends React.component {
+export default class Baseline extends React.Component {
 
   render() {
     if (!this.props.yScale || !this.props.value) {
@@ -114,7 +114,17 @@ Baseline.propTypes = {
    * Reference to the axis which provides the vertical scale for drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired,
+  axis: React.PropTypes.string.isRequired,   // eslint-disable-line
+
+  /**
+   * An object describing the style of the baseline of the form
+   * { label, line }. "label" and "line" are both objects containing
+   * the inline CSS for that part of the baseline.
+   */
+  style: React.PropTypes.shape({
+    label: React.PropTypes.object,        // eslint-disable-line
+    line: React.PropTypes.object,         // eslint-disable-line
+  }),
 
   /**
    * The y-value to display the line at.
@@ -132,17 +142,12 @@ Baseline.propTypes = {
   position: React.PropTypes.oneOf(['left', 'right']),
 
   /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
-  timeScale: React.object.func.isRequired,
-
-  /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 };

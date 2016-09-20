@@ -17,7 +17,7 @@ import Brush from './Brush';
 import Charts from './Charts';
 import TimeMarker from './TimeMarker';
 import YAxis from './YAxis';
-import { ScaleInterpolator } from '../js/interpolators';
+import ScaleInterpolator from '../js/interpolators';
 
 const AXIS_MARGIN = 5;
 
@@ -136,16 +136,18 @@ export default class ChartRow extends React.Component {
     const rangeTop = AXIS_MARGIN;
     const rangeBottom = innerHeight - AXIS_MARGIN;
 
-    // Loop over all the children who are YAxis. If this is our first time here, we'll
-    // populate the scaleMap with new ScaleInterpolators. If we already have a ScaleInterpolator
-    // then we can set a new scale target on it.
+    // Loop over all the children who are YAxis. If this is our first
+    // time here, we'll populate the scaleMap with new ScaleInterpolators.
+    // If we already have a ScaleInterpolator then we can set a new scale
+    // target on it.
     React.Children.forEach(nextProps.children, (child) => {
       if (child.type === YAxis ||
         (_.has(child.props, 'min') && _.has(child.props, 'max'))) {
         const { id, max, min, transition = 0, type = 'linear' } = child.props;
 
-        const scale = this.createScale(child, type, min, max, rangeBottom, rangeTop);
+        const scale = createScale(child, type, min, max, rangeBottom, rangeTop);
         if (!_.has(this.scaleMap, id)) {
+          // No scale map yet, create one on this.state.yAxisScalarMap
           this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, (s) => {
             const yAxisScalerMap = this.state.yAxisScalerMap;
             yAxisScalerMap[id] = s;
@@ -446,20 +448,20 @@ ChartRow.propTypes = {
 
   rightAxisWidths: React.PropTypes.arrayOf(React.PropTypes.number),
 
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
-  trackerTimeFormat: React.object.string,
+  trackerTimeFormat: React.PropTypes.string,
 
-  timeFormat: React.object.string,
+  timeFormat: React.PropTypes.string,
 
   trackerTime: React.PropTypes.instanceOf(Date),
 
   /**
    * Should the time be shown on top of the tracker info box
    */
-  trackerShowTime: React.PropTypes.boolean,
+  trackerShowTime: React.PropTypes.bool,
 
   /**
    * The width of the tracker info box

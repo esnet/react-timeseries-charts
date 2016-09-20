@@ -146,7 +146,7 @@ EventChart.propTypes = {
    * Label of each event. This is a function that will be called so that you
    * can return the label you want for the Event passed in.
    */
-  label: React.PropTypes.function,
+  label: React.PropTypes.func,
 
   /**
    * The height in pixels for the event bar
@@ -164,22 +164,22 @@ EventChart.propTypes = {
   /**
    * A function that should return the style of the event box
    */
-  style: React.PropTypes.function,
+  style: React.PropTypes.func,
 
   /**
    * Callback called when the selection of an Event changes. Will be called
    * with the Event selected.
    */
-  onSelectionChange: React.PropTypes.function,
+  onSelectionChange: React.PropTypes.func,
 
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
 };

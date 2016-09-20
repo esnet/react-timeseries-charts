@@ -25,6 +25,13 @@ export default class Brush extends React.Component {
     this.state = {
       isBrushing: false,
     };
+
+    this.handleBrushMouseDown = this.handleBrushMouseDown.bind(this);
+    this.handleOverlayMouseDown = this.handleOverlayMouseDown.bind(this);
+    this.handleHandleMouseDown = this.handleHandleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
   }
 
   viewport() {
@@ -33,6 +40,10 @@ export default class Brush extends React.Component {
     const viewEndTime = timeScale.invert(width);
     return new TimeRange(viewBeginTime, viewEndTime);
   }
+
+  //
+  // Event handlers
+  //
 
   handleBrushMouseDown(e) {
     e.preventDefault();
@@ -172,6 +183,10 @@ export default class Brush extends React.Component {
       }
     }
   }
+
+  //
+  // Render
+  //
 
   renderOverlay() {
     const { width, height } = this.props;
@@ -375,17 +390,17 @@ Brush.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number.isRequired,
+  height: React.PropTypes.number,
 
 };
 

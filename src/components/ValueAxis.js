@@ -63,7 +63,10 @@ ValueAxis.propTypes = {
   /**
    * If values are numbers, use this format string
    */
-  value: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.number,
+  ]),
 
   /**
    * If values are numbers, use this format string
@@ -81,3 +84,5 @@ ValueAxis.propTypes = {
   height: React.PropTypes.number,
 
 };
+
+export default ValueAxis;

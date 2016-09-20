@@ -23,12 +23,12 @@ export default class Resizable extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', () => this.handleResize);
     this.handleResize();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', () => this.handleResize);
   }
 
   handleResize() {

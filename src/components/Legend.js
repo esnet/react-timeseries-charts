@@ -282,7 +282,7 @@ export default class Legend extends React.Component {
           <div //eslint-disable-line
             onClick={e => this.handleClick(e, category.key)}
             onMouseMove={e => this.handleHover(e, category.key)}
-            onMouseLeave={this.handleHoverLeave}
+            onMouseLeave={() => this.handleHoverLeave()}
           >
             <Flexbox flexDirection="row">
               <FlexItem width="20px">

@@ -33,6 +33,12 @@ export default class EventHandler extends React.Component {
       initialPanEnd: null,
       initialPanPosition: null,
     };
+
+    this.handleScrollWheel = this.handleScrollWheel.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
   }
 
   // get the event mouse position relative to the event rect
@@ -42,6 +48,10 @@ export default class EventHandler extends React.Component {
     const y = e.pageY - offset.top;
     return [Math.round(x), Math.round(y)];
   }
+
+  //
+  // Event handlers
+  //
 
   handleScrollWheel(e) {
     e.preventDefault();
@@ -196,6 +206,10 @@ export default class EventHandler extends React.Component {
       }
     }
   }
+
+  //
+  // Render
+  //
 
   render() {
     const cursor = this.state.isPanning ? '-webkit-grabbing' : 'default';

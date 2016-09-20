@@ -166,12 +166,6 @@ export default class LineChart extends React.Component {
   }
 
   renderPath(data, column, key) {
-    const lineFunction = d3Shape.line()
-      .curve(d3Shape[this.props.interpolation])
-      .x(d => this.props.timeScale(d.x))
-      .y(d => this.props.yScale(d.y));
-    const path = lineFunction(data);
-
     const hitStyle = {
       stroke: 'white',
       fill: 'none',
@@ -181,6 +175,12 @@ export default class LineChart extends React.Component {
       pointerEvents: 'stroke',
     };
 
+    // D3 generates each path
+    const path = d3Shape.line()
+      .curve(d3Shape[this.props.interpolation])
+      .x(d => this.props.timeScale(d.x))
+      .y(d => this.props.yScale(d.y))(data);
+
     return (
       <g key={key}>
         <path d={path} style={this.pathStyle(column)} />
@@ -188,7 +188,7 @@ export default class LineChart extends React.Component {
           d={path}
           style={hitStyle}
           onClick={e => this.handleClick(e, column)}
-          onMouseLeave={this.handleHoverLeave}
+          onMouseLeave={() => this.handleHoverLeave()}
           onMouseMove={e => this.handleHover(e, column)}
         />
       </g>
@@ -214,13 +214,15 @@ export default class LineChart extends React.Component {
           currentPoints.push({ x: timestamp, y: value });
         } else if (currentPoints) {
           if (currentPoints.length > 1) {
-            pathLines.push(this.renderPath(currentPoints, column, count += 1));
+            pathLines.push(this.renderPath(currentPoints, column, count));
+            count += 1;
           }
           currentPoints = null;
         }
       }
       if (currentPoints && currentPoints.length > 1) {
         pathLines.push(this.renderPath(currentPoints, column, count));
+        count += 1;
       }
     } else {
       // Ignore nulls and NaNs in the line
@@ -235,6 +237,7 @@ export default class LineChart extends React.Component {
       }
 
       pathLines.push(this.renderPath(cleanedPoints, column, count));
+      count += 1;
     }
 
     return (
@@ -365,17 +368,17 @@ LineChart.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number,
 
 };
 

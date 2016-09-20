@@ -46,6 +46,10 @@ import TimeMarker from './TimeMarker';
  */
 export default class ChartContainer extends React.Component {
 
+  //
+  // Event handlers
+  //
+
   handleTrackerChanged(t) {
     if (this.props.onTrackerChanged) {
       this.props.onTrackerChanged(t);
@@ -92,6 +96,10 @@ export default class ChartContainer extends React.Component {
       this.props.onChartResize(width, height);
     }
   }
+
+  //
+  // Render
+  //
 
   render() {
     const chartRows = [];
@@ -211,8 +219,8 @@ export default class ChartContainer extends React.Component {
           trackerShowTime: firstRow,
           trackerTime: this.props.trackerPosition,
           trackerTimeFormat: this.props.format,
-          onTimeRangeChanged: this.handleTimeRangeChanged,
-          onTrackerChanged: this.handleTrackerChanged,
+          onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
+          onTrackerChanged: t => this.handleTrackerChanged(t),
         };
         const transform = `translate(${-leftWidth},${yPosition})`;
         chartRows.push(
@@ -295,11 +303,11 @@ export default class ChartContainer extends React.Component {
           minDuration={this.props.minDuration}
           minTime={this.props.minTime}
           maxTime={this.props.maxTime}
-          onMouseOut={this.handleMouseOut}
-          onMouseMove={this.handleMouseMove}
-          onMouseClick={this.handleBackgroundClick}
-          onZoom={this.handleZoom}
-          onResize={this.handleResize}
+          onMouseOut={e => this.handleMouseOut(e)}
+          onMouseMove={e => this.handleMouseMove(e)}
+          onMouseClick={e => this.handleBackgroundClick(e)}
+          onZoom={tr => this.handleZoom(tr)}
+          onResize={(width, height) => this.handleResize(width, height)}
         >
             {chartRows}
         </EventHandler>
@@ -311,12 +319,11 @@ export default class ChartContainer extends React.Component {
     // chartRows, a timeAxis and the tracker indicator
     //
 
+    const svgWidth = this.props.width;
+    const svgHeight = yPosition + timeAxisHeight;
+
     return (
-      <svg
-        width={this.props.width}
-        height={yPosition + timeAxisHeight}
-        style={{ display: 'block' }}
-      >
+      <svg width={svgWidth} height={svgHeight} style={{ display: 'block' }}>
         {rows}
         {tracker}
         {timeAxis}
@@ -324,14 +331,6 @@ export default class ChartContainer extends React.Component {
     );
   }
 }
-
-ChartContainer.defaultProps = {
-  width: 800,
-  padding: 0,
-  enablePanZoom: false,
-  utc: false,
-  showGrid: false,
-};
 
 ChartContainer.propTypes = {
 
@@ -485,4 +484,12 @@ ChartContainer.propTypes = {
    */
   onBackgroundClick: React.PropTypes.func,
 
+};
+
+ChartContainer.defaultProps = {
+  width: 800,
+  padding: 0,
+  enablePanZoom: false,
+  utc: false,
+  showGrid: false,
 };

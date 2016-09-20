@@ -98,7 +98,6 @@ export default class BarChart extends React.Component {
     if (this.props.onSelectionChange) {
       this.props.onSelectionChange(bar);
     }
-
     e.stopPropagation();
   }
 
@@ -233,7 +232,7 @@ export default class BarChart extends React.Component {
           }
           if (this.props.onHighlightChange) {
             barProps.onMouseMove = e => this.handleHover(e, event, column);
-            barProps.onMouseLeave = this.handleHoverLeave;
+            barProps.onMouseLeave = () => this.handleHoverLeave();
           }
 
           bars.push(
@@ -244,7 +243,6 @@ export default class BarChart extends React.Component {
         }
       }
     }
-
     return (
       <g>
         {bars}
@@ -399,12 +397,12 @@ BarChart.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func,
 
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
 
 };
 

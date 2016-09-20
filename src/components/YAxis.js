@@ -325,11 +325,11 @@ YAxis.propTypes = {
   style: React.PropTypes.shape({
     labels: React.PropTypes.object,        // eslint-disable-line
     axis: React.PropTypes.object,          // eslint-disable-line
-    labelColor: React.PropTypes.object,    // eslint-disable-line
-    labelFont: React.PropTypes.object,     // eslint-disable-line
-    labelWeight: React.PropTypes.object,   // eslint-disable-line
-    labelSize: React.PropTypes.object,     // eslint-disable-line
-    width: React.PropTypes.object,         // eslint-disable-line
+    labelColor: React.PropTypes.string,
+    labelFont: React.PropTypes.string,
+    labelWeight: React.PropTypes.string,
+    labelSize: React.PropTypes.string,
+    width: React.PropTypes.number,
   }),
 
   /**
@@ -368,7 +368,7 @@ YAxis.propTypes = {
   /**
    * [Internal] The scale supplied by the ChartRow
    */
-  scale: React.PropTypes.func.isRequired,
+  scale: React.PropTypes.func,
 
   /**
    * [Internal] The height supplied by the surrounding ChartContainer

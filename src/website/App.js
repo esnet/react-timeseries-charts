@@ -62,7 +62,6 @@ class App extends Component {
                         <li><Link to="/example/currency">Currency example</Link></li>
                         <li><Link to="/example/cycling">Cycling example</Link></li>
                         <li><Link to="/example/ddos">DDoS attack example</Link></li>
-                        <li><Link to="/example/interfaces">Traffic breakdown</Link></li>
                         <li><Link to="/example/outages">Outage events</Link></li>
                         <li><Link to="/example/stockchart">Stock chart</Link></li>
                         <li><Link to="/example/traffic">Network traffic</Link></li>

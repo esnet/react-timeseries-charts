@@ -18,7 +18,6 @@ import continents from "./continents/Index";
 import currency from "./currency/Index";
 import cycling from "./cycling/Index";
 import ddos from "./ddos/Index";
-import interfaces from "./interfaces/Index";
 import outages from "./outages/Index";
 import stockchart from "./stockchart/Index";
 import traffic from "./traffic/Index";
@@ -33,7 +32,6 @@ export default {
     ...currency,
     ...cycling,
     ...ddos,
-    ...interfaces,
     ...outages,
     ...stockchart,
     ...traffic,

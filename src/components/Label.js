@@ -93,3 +93,5 @@ Label.propTypes = {
   height: React.PropTypes.number,
 
 };
+
+export default Label;
