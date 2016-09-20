@@ -1,3 +1,15 @@
+## v0.11.0
+
+**General**
+
+- Overhaul of linting rules and propTypes
+- Better API docs
+
+## v0.10.1
+> Sep 15, 2016
+
+- Fix AreaChart default style (#79)
+
 ## v0.10.0
 > Sep 13, 2016
 
