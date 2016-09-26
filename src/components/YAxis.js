@@ -45,12 +45,16 @@ const defaultStyle = {
  * which it gets its height and positioning. You can have more than
  * one axis per row.
  *
- * ![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png "YAxis")
- *
  * Here's a simple YAxis example:
  *
  * ```js
- * <YAxis id="price-axis" label="Price (USD)" min={0} max={100} width="60" type="linear" format="$,.2f"/>
+ * <YAxis
+ *     id="price-axis"
+ *     label="Price (USD)"
+ *     min={0} max={100}
+ *     width="60"
+ *     type="linear"
+ *     format="$,.2f" />
  * ```
  *
  * Visually you can control the axis `label`, its size via the `width`

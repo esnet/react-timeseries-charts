@@ -34,7 +34,8 @@ const defaultStyle = {
 };
 
 /**
- * Renders a horizontal time axis
+ * Renders a horizontal time axis. The TimeAxis is generally rendered by
+ * the <ChartContainer> so you do not have to create one of these yourself.
  */
 export default React.createClass({
 
@@ -88,7 +89,6 @@ export default React.createClass({
         const { axisColor } = axisStyle;
         const { labelColor, labelWeight, labelSize } = labelStyle;
 
-
         // Remove the old axis from under this DOM node
         select(ReactDOM.findDOMNode(this)).selectAll("*").remove();
 
@@ -106,7 +106,7 @@ export default React.createClass({
             .select("g")
             .selectAll(".tick")
             .select("text")
-            .style("fill", axisColor)
+            .style("fill", labelColor)
             .style("stroke", "none");
 
         select(ReactDOM.findDOMNode(this))

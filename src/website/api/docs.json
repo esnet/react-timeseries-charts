@@ -739,7 +739,7 @@
     }
   },
   "src/components/ChartContainer.js": {
-    "description": "The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.\n\n![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png \"ChartContainer\")\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
+    "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows. The time axis can be styled via the ChartContainer.\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "ChartContainer",
     "methods": [
       {
@@ -922,6 +922,27 @@
           "computed": false
         }
       },
+      "timeAxisStyle": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "labels": {
+              "name": "object",
+              "required": false
+            },
+            "axis": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Adjust the time axis style. This is an object of the form { labels, axis }\nwhere \"label\" and \"axis\" are objects themselves. The options here are best\nrepresented by an example:\n```\n const axisStyle = {\n     labels: {\n         labelColor: \"grey\",\n         labelWeight: 100,\n         labelSize: 11\n     },\n     axis: {\n         axisColor: \"grey\",\n         axisWidth: 1\n     }\n };\n```",
+        "defaultValue": {
+          "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\",\n        axisWidth: 1\n    }\n}",
+          "computed": false
+        }
+      },
       "trackerPosition": {
         "type": {
           "name": "instanceOf",
@@ -960,7 +981,7 @@
     }
   },
   "src/components/ChartRow.js": {
-    "description": "A ChartRow is a container for a set of Y axes and multiple charts\nwhich are overlaid on each other in a central canvas.\n\n![ChartRow](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartrows.png \"ChartRow\")\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
+    "description": "A ChartRow is a container for a set of YAxis and multiple charts\nwhich are overlaid on each other in a central canvas.\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
     "displayName": "ChartRow",
     "methods": [
       {
@@ -1031,7 +1052,7 @@
     }
   },
   "src/components/Charts.js": {
-    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
+    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
     "displayName": "Charts",
     "methods": []
   },
@@ -2569,7 +2590,7 @@
     }
   },
   "src/components/TimeAxis.js": {
-    "description": "Renders a horizontal time axis",
+    "description": "Renders a horizontal time axis. The TimeAxis is generally rendered by\nthe <ChartContainer> so you do not have to create one of these yourself.",
     "displayName": "TimeAxis",
     "methods": [
       {
@@ -2895,7 +2916,7 @@
     }
   },
   "src/components/YAxis.js": {
-    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\n![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png \"YAxis\")\n\nHere's a simple YAxis example:\n\n```js\n<YAxis id=\"price-axis\" label=\"Price (USD)\" min={0} max={100} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
+    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n    id=\"price-axis\"\n    label=\"Price (USD)\"\n    min={0} max={100}\n    width=\"60\"\n    type=\"linear\"\n    format=\"$,.2f\" />\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
     "displayName": "YAxis",
     "methods": [
       {

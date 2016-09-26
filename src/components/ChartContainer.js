@@ -21,10 +21,25 @@ import Charts from "./Charts";
 import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
 
+const defaultTimeAxisStyle = {
+    labels: {
+        labelColor: "#8B7E7E", // Default label color
+        labelWeight: 100,
+        labelSize: 11
+    },
+    axis: {
+        axisColor: "#C0C0C0",
+        axisWidth: 1
+    }
+};
+
 /**
- * The `<ChartContainer>` is the outer most element of a chart and is responsible for generating and arranging its sub-elements. Specifically, it is a container for one or more `<ChartRows>` (each of which contains charts, axes etc) and in addition it manages the overall time range of the chart and so also is responsible for the time axis, which is always shared by all the rows.
- *
- * ![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png "ChartContainer")
+ * The `<ChartContainer>` is the outer most element of a chart and is
+ * responsible for generating and arranging its sub-elements. Specifically,
+ * it is a container for one or more `<ChartRows>` (each of which contains
+ * charts, axes etc) and in addition it manages the overall time range of
+ * the chart and so also is responsible for the time axis, which is always
+ * shared by all the rows. The time axis can be styled via the ChartContainer.
  *
  * Here is an example:
  *
@@ -49,7 +64,8 @@ export default React.createClass({
             padding: 0,
             enablePanZoom: false,
             utc: false,
-            showGrid: false
+            showGrid: false,
+            timeAxisStyle: defaultTimeAxisStyle
         };
     },
 
@@ -126,6 +142,29 @@ export default React.createClass({
          * Show grid lines for each time marker
          */
         showGrid: React.PropTypes.bool,
+
+        /**
+         * Adjust the time axis style. This is an object of the form { labels, axis }
+         * where "label" and "axis" are objects themselves. The options here are best
+         * represented by an example:
+         * ```
+         *  const axisStyle = {
+         *      labels: {
+         *          labelColor: "grey",
+         *          labelWeight: 100,
+         *          labelSize: 11
+         *      },
+         *      axis: {
+         *          axisColor: "grey",
+         *          axisWidth: 1
+         *      }
+         *  };
+         * ```
+         */
+        timeAxisStyle: React.PropTypes.shape({
+            labels: React.PropTypes.object,
+            axis: React.PropTypes.object
+        }),
 
         /**
          * A Date specifying the position of the tracker line on the chart. It is
@@ -382,21 +421,21 @@ export default React.createClass({
         // TimeAxis
         //
 
-        const timeAxisStyle = {
-            stroke: "#C0C0C0",
-            strokeWidth: 1,
+        const xStyle = {
+            stroke: this.props.timeAxisStyle.axis.axisColor,
+            strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
             fill: "none",
             pointerEvents: "none"
         };
-
         const timeAxis = (
             <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line
                     x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5}
-                    style={timeAxisStyle} />
+                    style={xStyle} />
                 <TimeAxis
                     scale={timeScale}
                     utc={this.props.utc}
+                    style={this.props.timeAxisStyle}
                     format={this.props.format}
                     showGrid={this.props.showGrid}
                     gridHeight={chartsHeight} />
