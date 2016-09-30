@@ -25,6 +25,7 @@ import Charts from "../../../components/Charts";
 import YAxis from "../../../components/YAxis";
 import LineChart from "../../../components/LineChart";
 import AreaChart from "../../../components/AreaChart";
+import BoxChart from "../../../components/BoxChart";
 import Resizable from "../../../components/Resizable";
 import Brush from "../../../components/Brush";
 import LabelAxis from "../../../components/LabelAxis";
@@ -226,12 +227,15 @@ const cycling = React.createClass({
                         width={140}
                         type="linear" format=",.1f"/>
                     <Charts>
-                        <LineChart
+                        {/*
+
+                        */}
+
+                        <BoxChart
                             axis="speedaxis"
-                            series={speedCropped}
-                            columns={["speed"]}
-                            style={style}
-                            breakLine={true} />
+                            series={speed}
+                            column="speed" />
+                        { /*
                         <LineChart
                             axis="speedaxis"
                             series={speedSmoothed}
@@ -239,10 +243,18 @@ const cycling = React.createClass({
                             interpolation="curveBasis"
                             style={style}
                             breakLine={false} />
+                        <LineChart
+                            axis="speedaxis"
+                            series={speedCropped}
+                            columns={["speed"]}
+                            style={style}
+                            breakLine={true} />
+                        
                         <Baseline
                             style={baselineStyles.speed}
                             axis="speedaxis"
                             value={speed.avg("speed")}/>
+                        */}
                     </Charts>
                     <ValueAxis
                         id="speedvalueaxis"
