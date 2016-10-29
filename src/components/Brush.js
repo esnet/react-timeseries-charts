@@ -62,7 +62,15 @@ export default React.createClass({
          * this case it will be called with null as the TimeRange. You can
          * use this to reset the selection, perhaps to some initial range.
          */
-        onTimeRangeChanged: React.PropTypes.func
+        onTimeRangeChanged: React.PropTypes.func,
+
+        /**
+         * A callback which will be called once the range selection is complete.
+         * This callback is fired from 'handleMouseUp()' function and
+         * selection would cleared after callback is fired.
+         * This way brush can be used to modify timerange on the same graph.
+         */
+        onSelectComplete: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -151,8 +159,8 @@ export default React.createClass({
             initialBrushXYPosition: null
         });
 		
-		if (this.props.onSeclectComplete) {
-            this.props.onSeclectComplete();
+		if (this.props.onSelectComplete) {
+            this.props.onSelectComplete();
             this.props.onTimeRangeChanged(null);
         }
     },
