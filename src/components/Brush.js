@@ -150,6 +150,11 @@ export default React.createClass({
             initialBrushEndTime: null,
             initialBrushXYPosition: null
         });
+		
+		if (this.props.onSeclectComplete) {
+            this.props.onSeclectComplete();
+            this.props.onTimeRangeChanged(null);
+        }
     },
 
     /**
