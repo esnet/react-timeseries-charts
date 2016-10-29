@@ -159,7 +159,7 @@ export default React.createClass({
             initialBrushXYPosition: null
         });
 		
-		if (this.props.onSelectComplete) {
+        if (this.props.onSelectComplete) {
             this.props.onSelectComplete();
             this.props.onTimeRangeChanged(null);
         }
