@@ -369,8 +369,10 @@ export default React.createClass({
                     const style = this.style(column, event);
 
                     let height = yScale(0) - yScale(value);
-                    height = height < 1 ? 1 : height;
-                    const y = ypos - height;
+                    // Allow negative values. Minimum bar height = 1 pixel.
+                    height = Math.abs(height) < 1 ? 1 : height;
+                    const y = height > 0 ? ypos - height : ypos;
+                    height = height < 0 ? -height : height;
 
                     // Event marker if info provided and hovering
                     const isHighlighted = this.props.highlighted &&
