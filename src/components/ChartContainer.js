@@ -21,6 +21,18 @@ import EventHandler from './EventHandler';
 import TimeAxis from './TimeAxis';
 import TimeMarker from './TimeMarker';
 
+const defaultTimeAxisStyle = {
+  labels: {
+    labelColor: "#8B7E7E",
+    labelWeight: 100,
+    labelSize: 11,
+  },
+  axis: {
+    axisColor: "#C0C0C0",
+    axisWidth: 1,
+  }
+};
+
 /**
  * The `<ChartContainer>` is the outer most element of a chart and is
  * responsible for generating and arranging its sub-elements. Specifically,
@@ -265,22 +277,23 @@ export default class ChartContainer extends React.Component {
     // TimeAxis
     //
 
-    const timeAxisStyle = {
-      stroke: '#C0C0C0',
-      strokeWidth: 1,
-      fill: 'none',
-      pointerEvents: 'none',
+    const xStyle = {
+      stroke: this.props.timeAxisStyle.axis.axisColor,
+      strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
+      fill: "none",
+      pointerEvents: "none"
     };
 
     const timeAxis = (
       <g transform={`translate(${leftWidth},${chartsHeight})`}>
         <line
           x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5}
-          style={timeAxisStyle}
+          style={xStyle}
         />
         <TimeAxis
           scale={timeScale}
           utc={this.props.utc}
+          style={this.props.timeAxisStyle}
           format={this.props.format}
           showGrid={this.props.showGrid}
           gridHeight={chartsHeight}
@@ -412,6 +425,31 @@ ChartContainer.propTypes = {
   showGrid: React.PropTypes.bool,
 
   /**
+   * Adjust the time axis style. This is an object of the
+   * form { labels, axis } where "label" and "axis" are objects
+   * themselves. The options here are best represented by
+   * an example:
+   *
+   * ```
+   *  const axisStyle = {
+   *      labels: {
+   *          labelColor: "grey",
+   *          labelWeight: 100,
+   *          labelSize: 11
+   *      },
+   *      axis: {
+   *          axisColor: "grey",
+   *          axisWidth: 1
+   *      }
+   *  };
+   * ```
+   */
+  timeAxisStyle: React.PropTypes.shape({
+    labels: React.PropTypes.object,
+    axis: React.PropTypes.object,
+  }),
+
+  /**
    * The width of the tracker info box
    */
   trackerHintWidth: React.PropTypes.number,
@@ -492,4 +530,5 @@ ChartContainer.defaultProps = {
   enablePanZoom: false,
   utc: false,
   showGrid: false,
+  timeAxisStyle: defaultTimeAxisStyle,
 };

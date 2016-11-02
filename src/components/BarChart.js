@@ -196,7 +196,8 @@ export default class BarChart extends React.Component {
       }
 
       const yBase = yScale(0);
-      let ypos = yBase;
+      let yposPositive = yBase;
+      let yposNegative = yBase;
       if (columns) {
         for (const column of columns) {
           const index = event.index();
@@ -205,8 +206,11 @@ export default class BarChart extends React.Component {
           const style = this.style(column, event);
 
           let height = yScale(0) - yScale(value);
-          height = height < 1 ? 1 : height;
-          const y = ypos - height;
+          // Allow negative values. Minimum bar height = 1 pixel.
+          // Stack negative bars below X-axis and positive above X-Axis
+          const positiveBar = height >= 0;
+          height = Math.max(Math.abs(height), 1);
+          const y = positiveBar ? yposPositive - height : yposNegative;
 
           // Event marker if info provided and hovering
           const isHighlighted = this.props.highlighted &&
@@ -217,7 +221,7 @@ export default class BarChart extends React.Component {
               <EventMarker
                 {...this.props}
                 offsetX={offset}
-                offsetY={yBase - ypos}
+                offsetY={yBase - (positiveBar ? yposPositive : yposNegative)}
                 event={event}
                 column={column}
               />
@@ -239,7 +243,11 @@ export default class BarChart extends React.Component {
             <rect {...barProps} />
           );
 
-          ypos -= height;
+          if (positiveBar) {
+            yposPositive -= height;
+          } else {
+            yposNegative += height;
+          }
         }
       }
     }
