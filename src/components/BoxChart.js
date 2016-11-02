@@ -11,23 +11,166 @@
 import _ from 'underscore';
 import merge from 'merge';
 import React from 'react';
-import { TimeSeries, IndexedEvent, Event, min, avg, max, percentile } from 'pondjs';
+import {
+  TimeSeries,
+  IndexedEvent,
+  TimeRangeEvent,
+  Event,
+  min,
+  max,
+  percentile,
+  median,
+} from 'pondjs';
 
-import EventMarker from './EventMarker';
+// import EventMarker from './EventMarker';
 import { Styler } from '../js/styler';
+import { scaleAsString } from '../js/util';
 
-const defaultStyle = {
-  normal: { fill: 'steelblue', opacity: 0.8 },
-  highlighted: { fill: 'steelblue', opacity: 1.0 },
-  selected: { fill: 'steelblue', opacity: 1.0 },
-  muted: { fill: 'steelblue', opacity: 0.4 },
+const defaultFillStyle = {
+  fill: 'steelblue',
+  stroke: 'none',
 };
+
+const defaultStyle = [
+  {
+    normal: { ...defaultFillStyle, opacity: 0.2 },
+    highlighted: { ...defaultFillStyle, opacity: 0.3 },
+    selected: { ...defaultFillStyle, opacity: 0.3 },
+    muted: { ...defaultFillStyle, opacity: 0.1 },
+  },
+  {
+    normal: { ...defaultFillStyle, opacity: 0.5 },
+    highlighted: { ...defaultFillStyle, opacity: 0.6 },
+    selected: { ...defaultFillStyle, opacity: 0.6 },
+    muted: { ...defaultFillStyle, opacity: 0.2 },
+  },
+  {
+    normal: { ...defaultFillStyle, opacity: 0.9 },
+    highlighted: { ...defaultFillStyle, opacity: 1.0 },
+    selected: { ...defaultFillStyle, opacity: 1.0 },
+    muted: { ...defaultFillStyle, opacity: 0.2 },
+  },
+];
+
+const defaultAggregation = {
+  size: '5m',
+  reducers: {
+    outer: [min(), max()],
+    inner: [percentile(25), percentile(75)],
+    center: median(),
+  },
+};
+
+function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
+  const { size, reducers } = aggregation;
+  const { inner, outer, center } = reducers;
+
+  function mapColumn(c, r) {
+    const obj = {};
+    obj[c] = r;
+    return obj;
+  }
+
+  const fixedWindowAggregation = {};
+
+  if (inner) {
+    fixedWindowAggregation.innerMin = mapColumn(column, inner[0]);
+    fixedWindowAggregation.innerMax = mapColumn(column, inner[1]);
+  }
+
+  if (outer) {
+    fixedWindowAggregation.outerMin = mapColumn(column, outer[0]);
+    fixedWindowAggregation.outerMax = mapColumn(column, outer[1]);
+  }
+
+  if (center) {
+    fixedWindowAggregation.center = mapColumn(column, center);
+  }
+
+  return series.fixedWindowRollup({
+    windowSize: size,
+    aggregation: fixedWindowAggregation,
+  });
+}
 
 /**
  * Renders a boxplot chart.
  */
 export default class BoxChart extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.series = getAggregatedSeries(props.series,
+                                      props.column,
+                                      props.aggregation);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const aggregation = nextProps.aggregation;
+
+    let aggregationChanged = false;
+    if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
+      aggregationChanged = true;
+    }
+
+    if (aggregation && this.props.aggregation) {
+      if (aggregation.size !== this.props.aggregation.size) {
+        aggregationChanged = true;
+      }
+    }
+
+    if (aggregationChanged) {
+      this.series = getAggregatedSeries(nextProps.series,
+                                        nextProps.column,
+                                        nextProps.aggregation);
+    }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    const newSeries = nextProps.series;
+    const oldSeries = this.props.series;
+    const width = nextProps.width;
+    const timeScale = nextProps.timeScale;
+    const yScale = nextProps.yScale;
+    const column = nextProps.column;
+    const style = nextProps.style;
+    const aggregation = nextProps.aggregation;
+
+    const widthChanged = (this.props.width !== width);
+    const timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
+    const yAxisScaleChanged = (this.props.yScale !== yScale);
+    const columnChanged = this.props.column !== column;
+    const styleChanged = (JSON.stringify(this.props.style) !== JSON.stringify(style));
+
+    let aggregationChanged = false;
+    if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
+      aggregationChanged = true;
+    }
+
+    if (aggregation && this.props.aggregation) {
+      if (aggregation.size !== this.props.aggregation.size) {
+        aggregationChanged = true;
+      }
+    }
+
+    let seriesChanged = false;
+    if (oldSeries.length !== newSeries.length) {
+      seriesChanged = true;
+    } else {
+      seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+    }
+
+    return (
+      seriesChanged ||
+      timeScaleChanged ||
+      widthChanged ||
+      columnChanged ||
+      styleChanged ||
+      yAxisScaleChanged ||
+      aggregationChanged
+    );
+  }
+  /*
   handleHover(e, event, column) {
     const bar = { event, column };
     if (this.props.onHighlightChange) {
@@ -48,12 +191,13 @@ export default class BoxChart extends React.Component {
     }
     e.stopPropagation();
   }
+  */
 
-  providedStyleMap(column) {
-    let style = {};
+  providedStyleArray(column) {
+    let style = defaultStyle;
     if (this.props.style) {
       if (this.props.style instanceof Styler) {
-        style = this.props.style.barChartStyle()[column];
+        style = this.props.style.boxChartStyle()[column];
       } else if (_.isFunction(this.props.style)) {
         style = this.props.style(column);
       } else if (_.isObject(this.props.style)) {
@@ -66,9 +210,16 @@ export default class BoxChart extends React.Component {
   /**
    * Returns the style used for drawing the path
    */
-  style(column, event) {
+  style(event, level) {
     let style;
-    const styleMap = this.providedStyleMap(column);
+    if (!this.providedStyle) {
+      this.providedStyle = this.providedStyleArray(this.props.column);
+    }
+
+    if (!_.isNull(this.providedStyle) && (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)) {
+      console.warn('Provided style to BoxChart should be an array of 3 objects');
+      return defaultStyle;
+    }
 
     const isHighlighted =
       this.props.highlighted &&
@@ -82,26 +233,45 @@ export default class BoxChart extends React.Component {
 
     if (this.props.selected) {
       if (isSelected) {
-        style = merge(true,
-                defaultStyle.selected,
-                styleMap.selected ? styleMap.selected : {});
+        if (!this.selectedStyle) {
+          this.selectedStyle = merge(true,
+                defaultStyle[level].selected,
+                this.providedStyle[level].selected ? this.providedStyle[level].selected : {});
+        }
+        style = this.selectedStyle;
       } else if (isHighlighted) {
-        style = merge(true,
-                defaultStyle.highlighted,
-                styleMap.highlighted ? styleMap.highlighted : {});
+        if (!this.highlightedStyle) {
+          this.highlightedStyle = merge(true,
+                  defaultStyle[level].highlighted,
+                  this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
+        }
+        style = this.highlightedStyle;
       } else {
-        style = merge(true,
-                defaultStyle.muted,
-                styleMap.muted ? styleMap.muted : {});
+        if (!this.mutedStyle) {
+          this.mutedStyle = [];
+        }
+        if (!this.mutedStyle[level]) {
+          this.mutedStyle[level] = merge(true,
+                                         defaultStyle[level].muted,
+                                         this.providedStyle[level].muted ?
+                                         this.providedStyle[level].muted : {});
+        }
+        style = this.mutedStyle[level];
       }
     } else if (isHighlighted) {
       style = merge(true,
-              defaultStyle.highlighted,
-              styleMap.highlighted ? styleMap.highlighted : {});
+              defaultStyle[level].highlighted,
+              this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
     } else {
-      style = merge(true,
-              defaultStyle.normal,
-              styleMap.normal ? styleMap.normal : {});
+        if (!this.normalStyle) {
+          this.normalStyle = [];
+        }
+        if (!this.normalStyle[level]) {
+          this.normalStyle[level] = merge(true,
+                  defaultStyle[level].normal,
+                  this.providedStyle[level].normal ? this.providedStyle[level].normal : {});
+        }
+        style = this.normalStyle[level];
     }
 
     return style;
@@ -109,44 +279,22 @@ export default class BoxChart extends React.Component {
 
   renderBars() {
     const spacing = +this.props.spacing;
-    const offset = +this.props.offset;
-    const timeSeries = this.props.series;
     const timeScale = this.props.timeScale;
     const yScale = this.props.yScale;
-    const column = this.props.column || 'value';
 
     const bars = [];
-    let eventMarker;
+    // let eventMarker;
 
     //
     // Convert the series
     //
 
-    const aggregation = {min: {}, p25: {}, median: {}, p75: {}, max: {}};
-    aggregation.min[column] = min();
-    aggregation.p25[column] = percentile(25);
-    aggregation.median[column] = percentile(50);
-    aggregation.p75[column] = percentile(75);
-    aggregation.max[column] = max();
-    
-    const series = timeSeries.fixedWindowRollup({
-      windowSize: "5m",
-      aggregation
-    });
-
-    for (const event of series.events()) {
+    for (const event of this.series.events()) {
       const begin = event.begin();
       const end = event.end();
       const beginPos = timeScale(begin) + spacing;
       const endPos = timeScale(end) - spacing;
-
-      let width;
-      if (this.props.size) {
-        width = this.props.size;
-      } else {
-        width = endPos - beginPos;
-      }
-
+      let width = this.props.size ? this.props.size : endPos - beginPos;
       if (width < 1) {
         width = 1;
       }
@@ -161,69 +309,94 @@ export default class BoxChart extends React.Component {
 
       const index = event.index();
 
-      const perc25Value = event.get("p25");
-      const perc75Value = event.get("p75");
-      const medianValue = event.get("median");
-      const rangeMin = event.get("min");
-      const rangeMax = event.get("max");
+      const styles = [];
+      styles[0] = this.style(event, 0);
+      styles[1] = this.style(event, 1);
+      styles[2] = this.style(event, 2);
 
-      const styleInner = {fill: "steelblue", opacity: 0.5}; //this.style(column, event);
-      const styleOuter = {fill: "steelblue", opacity: 0.2};
-      const styleMedian = {fill: "steelblue", opacity: 1};
+      const d = event.data();
 
-      const y0 = yScale(perc25Value);
-      const y1 = yScale(perc75Value);
-      const ymin = yScale(rangeMin);
-      const ymax = yScale(rangeMax);
-      const ymedian = yScale(medianValue);
+      const innerMin = d.has('innerMin') ? yScale(event.get('innerMin')) : null;
+      const innerMax = d.has('innerMax') ? yScale(event.get('innerMax')) : null;
+      const outerMin = d.has('outerMin') ? yScale(event.get('outerMin')) : null;
+      const outerMax = d.has('outerMax') ? yScale(event.get('outerMax')) : null;
+      const center = d.has('center') ? yScale(event.get('center')) : null;
 
-        // Event marker if info provided and hovering
-        /*
-        const isHighlighted = this.props.highlighted &&
-                    column === this.props.highlighted.column &&
-                    Event.is(this.props.highlighted.event, event);
-        if (isHighlighted && this.props.info) {
-          eventMarker = (
-            <EventMarker
-              {...this.props}
-              offsetX={offset}
-              offsetY={yBase - ypos}
-              event={event}
-              column={column}
-            />
-          );
+      let hasInner = true;
+      let hasOuter = true;
+      let hasCenter = true;
+      if (_.isNull(innerMin) || _.isNull(innerMax)) {
+        hasInner = false;
+      }
+      if (_.isNull(outerMin) || _.isNull(outerMax)) {
+        hasOuter = false;
+      }
+      if (_.isNull(center)) {
+        hasCenter = false;
+      }
+
+      if (hasOuter) {
+        let level = 0;
+        if (!hasInner) {
+          level += 1;
         }
-        */
-      
-      const key1 = `${series.name()}-${index}-inner`;
-      const box1 = { x, y: y1, width: width, height: y0 - y1 };
-      const barProps1 = { key: key1, ...box1, style: styleInner };
+        if (!hasCenter) {
+          level += 1;
+        }
+        const keyOuter = `${this.series.name()}-${index}-outer`;
+        const boxOuter = { x, y: outerMax, width, height: outerMin - outerMax, rx: 2, ry: 2 };
+        const barOuterProps = { key: keyOuter, ...boxOuter, style: styles[level] };
+        bars.push(
+          <rect {...barOuterProps} />
+        );
+      }
 
-      const key2 = `${series.name()}-${index}-range`;
-      const box2 = { x, y: ymax, width: width, height: ymin - ymax, rx: 2, ry: 2 };
-      const barProps2 = { key: key2, ...box2, style: styleOuter };
+      if (hasInner) {
+        let level = 1;
+        if (!hasCenter) {
+          level += 1;
+        }
+        const keyInner = `${this.series.name()}-${index}-inner`;
+        const boxInner = { x, y: innerMax, width, height: innerMin - innerMax, rx: 1, ry: 1 };
+        const barInnerProps = { key: keyInner, ...boxInner, style: styles[level] };
+        bars.push(
+          <rect {...barInnerProps} />
+        );
+      }
 
-      const key3 = `${series.name()}-${index}-median`;
-      const box3 = { x, y: ymedian, width: width, height: 1 };
-      const barMedianProps = { key: key3, ...box3, style: styleMedian };
+      if (hasCenter) {
+        const level = 2;
+        const keyCenter = `${this.series.name()}-${index}-center`;
+        const boxCenter = { x, y: center, width, height: 1 };
+        const barCenterProps = { key: keyCenter, ...boxCenter, style: styles[level] };
+        bars.push(
+          <rect {...barCenterProps} />
+        );
+      }
 
-      bars.push(
-        <rect {...barProps1} />
-      );
-
-      bars.push(
-        <rect {...barProps2} />
-      );
-      bars.push(
-        <rect {...barMedianProps} />
-      );
-
+      // Event marker if info provided and hovering
+      /*
+      const isHighlighted = this.props.highlighted &&
+                  column === this.props.highlighted.column &&
+                  Event.is(this.props.highlighted.event, event);
+      if (isHighlighted && this.props.info) {
+        eventMarker = (
+          <EventMarker
+            {...this.props}
+            offsetX={offset}
+            offsetY={yBase - ypos}
+            event={event}
+            column={column}
+          />
+        );
+      }
+      */
     }
 
     return (
       <g>
         {bars}
-        {/*eventMarker*/}
+        { /* eventMarker */ }
       </g>
     );
   }
@@ -242,7 +415,26 @@ BoxChart.propTypes = {
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
    * data to visualize
    */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  // series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+
+  series: (props, propName, componentName) => {
+    const value = props[propName];
+    if (!(value instanceof TimeSeries)) {
+      return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);
+    }
+
+    const t = value.collection().type();
+    if (t instanceof Event) {
+      console.log('Event style TimeSeries supplied');
+    }
+
+    if (t instanceof TimeRangeEvent || t instanceof IndexedEvent) {
+      console.log('Event style TimeSeries supplied');
+    }
+
+    // everythin ok
+    return null;
+  },
 
   /**
    * The distance in pixels to inset the bar chart from its actual timerange
@@ -250,17 +442,30 @@ BoxChart.propTypes = {
   spacing: React.PropTypes.number,
 
   /**
-   * The distance in pixels to offset the bar from its center position within the timerange
-   * it represents
+   * The column within a Event based TimeSeries to summarize
    */
-  offset: React.PropTypes.number,
+  column: React.PropTypes.string,
 
   /**
-   * A list of columns within the series that will be stacked on top of each other
+   * The aggregation specification. This object should contain:
+   *   - innerMax
+   *   - innerMin
+   *   - outerMax
+   *   - outerMin
+   *   - center
+   * Though each of the pairs, and center, is optional.
+   * For each of these keys you should supply the function you
+   * want to use to calculate these. You can import common functions
+   * from Pond, e.g. min(), avg(), percentile(95), etc.
    */
-  columns: React.PropTypes.arrayOf(
-    React.PropTypes.string
-  ),
+  aggregation: React.PropTypes.shape({
+    size: React.PropTypes.string,
+    reducers: React.PropTypes.shape({
+      inner: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
+      outer: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
+      center: React.PropTypes.func,                         // eslint-disable-line
+    }),
+  }), // eslint-disable-line
 
   /**
    * The style of the bar chart drawing (using SVG CSS properties).
@@ -325,7 +530,7 @@ BoxChart.propTypes = {
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: React.PropTypes.arrayOf(
+  info: React.PropTypes.arrayOf(      //eslint-disable-line
     React.PropTypes.shape({
       label: React.PropTypes.string,  //eslint-disable-line
       value: React.PropTypes.string,  //eslint-disable-line
@@ -353,7 +558,7 @@ BoxChart.propTypes = {
    * A callback that will be called when the selection changes. It will be called
    * with an object containing the event and column.
    */
-  onSelectionChange: React.PropTypes.func,
+  // onSelectionChange: React.PropTypes.func,
 
   /**
    * The highlighted item, which will be rendered in the "highlighted" style.
@@ -369,7 +574,7 @@ BoxChart.propTypes = {
    * A callback that will be called when the hovered over bar changes.
    * It will be called with an object containing the event and column.
    */
-  onHighlightChange: React.PropTypes.func,
+  // onHighlightChange: React.PropTypes.func,
 
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
@@ -381,12 +586,15 @@ BoxChart.propTypes = {
    */
   yScale: React.PropTypes.func,
 
+  /**
+   * [Internal] The width supplied by the surrounding ChartContainer
+   */
+  width: React.PropTypes.number,
 };
 
 BoxChart.defaultProps = {
-  columns: ['value'],
+  column: 'value',
   spacing: 1.0,
-  offset: 0,
   infoStyle: {
     line: {
       stroke: '#999',
