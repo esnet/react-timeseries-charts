@@ -38,8 +38,6 @@ const defaultStyle = {
  * which it gets its height and positioning. You can have more than
  * one axis per row.
  *
- * ![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png "YAxis")
- *
  * Here's a simple YAxis example:
  *
  * ```js

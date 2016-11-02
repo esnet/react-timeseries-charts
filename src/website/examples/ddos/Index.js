@@ -13,6 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import moment from "moment";
+import merge from "merge";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -102,14 +103,30 @@ const ddos = React.createClass({
                     interpolation="curveBasis" />
             );
         }
+
+        const axisStyle = {
+            labels: {
+                labelColor: "grey", // Default label color
+                labelWeight: 100,
+                labelSize: 11
+            },
+            axis: {
+                axisColor: "grey",
+                axisWidth: 1
+            }
+        };
+
+        const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
+        const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
+
         return (
-            <ChartContainer timeRange={requestsSeries.range()}>
+            <ChartContainer timeRange={requestsSeries.range()} timeAxisStyle={axisStyle}>
                 <ChartRow height="300">
                     <YAxis
                         id="axis1"
                         label="Requests"
                         transition={300}
-                        style={style.axisStyle("requests")}
+                        style={requestsAxisStyle}
                         labelOffset={-10}
                         min={0} max={max}
                         format=",.0f"
@@ -122,7 +139,7 @@ const ddos = React.createClass({
                         id="axis2"
                         label="Connections"
                         transition={300}
-                        style={style.axisStyle("connections")}
+                        style={connectionsAxisStyle}
                         labelOffset={12}
                         min={0}
                         format=",.0f"
