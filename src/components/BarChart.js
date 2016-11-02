@@ -360,7 +360,8 @@ export default React.createClass({
             }
 
             const yBase = yScale(0);
-            let ypos = yBase;
+            let yposPositive = yBase;
+            let yposNegative = yBase;
             if (columns) {
                 for (const column of columns) {
                     const index = event.index();
@@ -370,9 +371,10 @@ export default React.createClass({
 
                     let height = yScale(0) - yScale(value);
                     // Allow negative values. Minimum bar height = 1 pixel.
-                    height = Math.abs(height) < 1 ? 1 : height;
-                    const y = height > 0 ? ypos - height : ypos;
-                    height = height < 0 ? -height : height;
+                    // Stack negative bars below X-axis and positive above X-Axis
+                    const positiveBar = height >= 0;
+                    height = Math.max(Math.abs(height), 1);
+                    const y = positiveBar ? yposPositive - height : yposNegative;
 
                     // Event marker if info provided and hovering
                     const isHighlighted = this.props.highlighted &&
@@ -383,7 +385,7 @@ export default React.createClass({
                             <EventMarker
                                 {...this.props}
                                 offsetX={offset}
-                                offsetY={yBase - ypos}
+                                offsetY={yBase - (positiveBar ? yposPositive : yposNegative)}
                                 event={event}
                                 column={column} />
                         );
@@ -404,7 +406,11 @@ export default React.createClass({
                         <rect {...barProps} />
                     );
 
-                    ypos -= height;
+                    if (positiveBar) {
+                        yposPositive -= height;
+                    } else {
+                        yposNegative += height;
+                    }
                 }
             }
         }

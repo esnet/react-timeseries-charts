@@ -61,6 +61,52 @@ const octoberTrafficSeries = new TimeSeries({
 max /= 100;
 
 //
+// October 2014 net daily traffic for multiple interfaces
+//
+
+const netTrafficPoints = [];
+const interfaceKeys = [ "lbl-mr2::xe-8_3_0.911::standard", "pnwg-cr5::111-10_1_4-814::sap", "denv-cr5::to_denv-frgp(as14041)::standard" ];
+const octoberDays = interfacesJSON[interfaceKeys[0]].days;
+
+let maxTotalTraffic = 0;
+let minTotalTraffic = 0;
+_.each(octoberDays, (ignoreValue, day) => {
+    const dayOfMonth = Number(day);
+    const netTrafficForDay = [`2014-10-${dayOfMonth}`];
+    let maxDay = 0;
+    let minDay = 0;
+    _.each(interfaceKeys, (interfaceKey) => {
+        let value = interfacesJSON[interfaceKey].days[dayOfMonth];
+        let netTraffic = value.out - value.in;
+        netTrafficForDay.push(netTraffic);
+        if (netTraffic > 0) {
+            maxDay += netTraffic;
+        } else {
+            minDay += netTraffic;
+        }
+    });
+    maxTotalTraffic = Math.max(maxTotalTraffic, maxDay);
+    minTotalTraffic = Math.min(minTotalTraffic, minDay);
+    netTrafficPoints.push(netTrafficForDay);
+});
+
+const netTrafficColumnNames = ["index"];
+_.each(interfaceKeys, (interfaceKey) => {
+    netTrafficColumnNames.push(interfaceKey.split(":")[0]);
+});
+
+const octoberNetTrafficSeries = new TimeSeries({
+    name: "October Net Traffic",
+    utc: false,
+    columns: netTrafficColumnNames,
+    points: netTrafficPoints
+});
+
+// Correct for measurement error on October 10th
+maxTotalTraffic /= 150;
+minTotalTraffic /= 10;
+
+//
 // ESnet wide monthy traffic summary (part of 2014)
 //
 
@@ -142,7 +188,10 @@ const volume = React.createClass({
 
         const style = styler([
             {key: "in", color: "#A5C8E1", selected: "#2CB1CF"},
-            {key: "out", color: "#FFCC9E", selected: "#2CB1CF"}
+            {key: "out", color: "#FFCC9E", selected: "#2CB1CF"},
+            {key: netTrafficColumnNames[1], color: "#A5C8E1", selected: "#2CB1CF"},
+            {key: netTrafficColumnNames[2], color: "#FFCC9E", selected: "#2CB1CF"},
+            {key: netTrafficColumnNames[3], color: "#DEB887", selected: "#2CB1CF"}
         ]);
 
         const formatter = format(".2s");
@@ -154,9 +203,11 @@ const volume = React.createClass({
 
         const highlight = this.state.highlight;
         let infoValues = [];
+        let infoNetValues = [];
         if (highlight) {
             const trafficText = `${formatter(highlight.event.get(highlight.column))}`;
             infoValues = [{label: "Traffic", value: trafficText}];
+            infoNetValues = [{label: "Traffic " + highlight.column, value: trafficText}];
         }
 
         return (
@@ -291,6 +342,44 @@ const volume = React.createClass({
                                             columns={["in", "out"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
+                                            highlighted={this.state.highlight}
+                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            selected={this.state.selection}
+                                            onSelectionChange={selection => this.setState({selection})} />
+                                    </Charts>
+                                 </ChartRow>
+                            </ChartContainer>
+                        </Resizable>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <hr />
+                        BarChart can display negative values as well, as shown below for a stacked format. Note that all bars representing positive values are stacked together above the x-axis and the bars for negative values are stacked below the x-axis.
+                        <hr />
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <Resizable>
+                            <ChartContainer
+                                timeRange={octoberNetTrafficSeries.range()}
+                                format="day"
+                                onBackgroundClick={() => this.setState({selection: null})}>
+                                <ChartRow height="150">
+                                    <YAxis id="net-traffic-volume" label="Net Traffic (B)" classed="traffic-in"
+                                           min={minTotalTraffic} max={maxTotalTraffic} width="70" type="linear"/>
+                                    <Charts>
+                                        <BarChart
+                                            axis="net-traffic-volume"
+                                            style={style}
+                                            spacing={3}
+                                            columns={netTrafficColumnNames.slice(1, netTrafficColumnNames.length)}
+                                            series={octoberNetTrafficSeries}
+                                            info={infoNetValues}
+                                            infoWidth={140}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight => this.setState({highlight})}
                                             selected={this.state.selection}
