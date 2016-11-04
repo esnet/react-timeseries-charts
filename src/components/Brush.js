@@ -66,11 +66,11 @@ export default React.createClass({
 
         /**
          * A callback which will be called once the range selection is complete.
-         * This callback is fired from 'handleMouseUp()' function and
-         * selection would cleared after callback is fired.
+         * This callback is fired from 'handleMouseUp()' function.
+         *
          * This way brush can be used to modify timerange on the same graph.
          */
-        onSelectComplete: React.PropTypes.func
+        onTimeRangeSelectComplete: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -158,10 +158,9 @@ export default React.createClass({
             initialBrushEndTime: null,
             initialBrushXYPosition: null
         });
-		
-        if (this.props.onSelectComplete) {
-            this.props.onSelectComplete();
-            this.props.onTimeRangeChanged(null);
+
+        if (this.props.onTimeRangeSelectComplete) {
+            this.props.onTimeRangeSelectComplete();
         }
     },
 
@@ -346,7 +345,7 @@ export default React.createClass({
             const [ begin, end ] = range.toJSON();
             const [ x, y ] = [timeScale(begin), 0];
             const endPos = timeScale(end);
-            
+
             let width = endPos - x;
             if (width < 1) {
                 width = 1;
