@@ -210,16 +210,20 @@ export class Styler {
     }
 
     lineChartStyle() {
+        const numColumns = this.numColumns();
+        const colorLookup = this.colorLookup(numColumns);
         const style = {};
         _.forEach(this._columnStyles,
             ({color, selected, width = 1, dashed = false} , column) => {
+                const i = _.indexOf(this._columnNames, column);
+                const c = color ? color : colorLookup[i % colorLookup.length];
                 const styleLine = {
-                    stroke: color,
+                    stroke: c,
                     strokeWidth: width,
                     fill: "none"
                 };
                 const styleSelectedLine = {
-                    stroke: selected ? selected : color,
+                    stroke: selected ? selected : c,
                     strokeWidth: width,
                     fill: "none"
                 };
@@ -238,14 +242,18 @@ export class Styler {
     }
 
     barChartStyle() {
+        const numColumns = this.numColumns();
+        const colorLookup = this.colorLookup(numColumns);
         const style = {};
         _.forEach(this._columnStyles,
             ({color, selected} , column) => {
+                const i = _.indexOf(this._columnNames, column);
+                const c = color ? color : colorLookup[i % colorLookup.length];
                 const fillStyle = {
-                    fill: color
+                    fill: c
                 };
                 const selectedStyle = {
-                    fill: selected ? selected : color
+                    fill: selected ? selected : c
                 };
                 style[column] = {
                     normal: {...fillStyle, opacity: 0.8},
@@ -258,14 +266,18 @@ export class Styler {
     }
 
     scatterChartStyle() {
+        const numColumns = this.numColumns();
+        const colorLookup = this.colorLookup(numColumns);
         const style = {};
         _.forEach(this._columnStyles,
             ({color, selected} , column) => {
+                const i = _.indexOf(this._columnNames, column);
+                const c = color ? color : colorLookup[i % colorLookup.length];
                 const fillStyle = {
-                    fill: color
+                    fill: c
                 };
                 const selectedStyle = {
-                    fill: selected ? selected : color
+                    fill: selected ? selected : c
                 };
                 style[column] = {
                     normal: {...fillStyle, opacity: 0.8},
