@@ -128,7 +128,8 @@ export default React.createClass({
 
             let x = this.props.spacing;
             const y = 0;
-            const width = endPos - beginPos - 2 * this.props.spacing;
+            let width = endPos - beginPos - 2 * this.props.spacing;
+            width = width < 0 ? 0 : width;
             const height = this.props.size;
 
             const eventLabelStyle = {
