@@ -34,7 +34,10 @@ export default React.createClass({
     getDefaultProps() {
         return {
             size: 30,
-            spacing: 0
+            spacing: 0,
+            textOffsetX: 0,
+            textOffsetY: 0,
+            hoverMarkerWidth: 5
         };
     },
 
@@ -51,6 +54,21 @@ export default React.createClass({
         size: React.PropTypes.number,
 
         /**
+         * Marker width on hover
+         */
+        hoverMarkerWidth: React.PropTypes.number,
+
+        /**
+         * Hover text offset position X
+         */
+        textOffsetX: React.PropTypes.number,
+
+        /**
+         * Hover text offset position Y
+         */
+        textOffsetY: React.PropTypes.number,
+
+        /**
          * Minimum width for an event
          */
         /**
@@ -61,14 +79,40 @@ export default React.createClass({
         /**
          * A function that should return the style of the event box
          */
-        style: React.PropTypes.func
+        style: React.PropTypes.func,
 
+        /**
+         * Event selection on click. Will be called with selected event.
+         */
+        onSelectionChange: React.PropTypes.func,
+
+        /**
+         * Mouse leave end of hover event
+         */
+        onMouseLeave: React.PropTypes.func,
+
+        /**
+         * Mouse over event callback
+         */
+        onMouseOver: React.PropTypes.func,
+
+        /**
+         * Set hover label text
+         * When label is function callback it will be called with current event.
+         */
+        label: React.PropTypes.oneOfType([
+          React.PropTypes.string,
+          React.PropTypes.func
+        ])
     },
 
     /**
      * Continues a hover event on a specific bar of the bar chart.
      */
-    handleMouseMove(e, event) {
+    onMouseOver(e, event) {
+        if (this.props.onMouseOver) {
+            this.props.onMouseOver(event);
+        }
         this.setState({hover: event});
     },
 
@@ -83,8 +127,18 @@ export default React.createClass({
         }
     },
 
+    /**
+     * Handle mouse leave and calls onMouseLeave callback if one is provided
+     */
+    onMouseLeave() {
+        if (this.props.onMouseLeave) {
+            this.props.onMouseLeave(this.state.hover);
+        }
+        this.setState({hover: null})
+    },
+
     render() {
-        const series = this.props.series;
+        const { series, textOffsetX, textOffsetY, hoverMarkerWidth } = this.props;
         const scale = this.props.timeScale;
         const eventMarkers = [];
 
@@ -143,11 +197,11 @@ export default React.createClass({
                     <g>
                         <rect
                             className="eventchart-marker"
-                            x={x} y={y} width={5} height={height+4}
+                            x={x} y={y} width={hoverMarkerWidth} height={height+4}
                             style={merge(true, barNormalStyle, {pointerEvents: "none"})} />
                         <text
                             style={{pointerEvents: "none", fill: "#444", ...eventLabelStyle}}
-                            x={8} y={15} >
+                            x={8 + textOffsetX} y={15 + textOffsetY} >
                             {label}
                         </text>
                     </g>
@@ -161,8 +215,8 @@ export default React.createClass({
                         x={x} y={y} width={width} height={height}
                         style={barStyle}
                         onClick={e => this.handleClick(e, event)}
-                        onMouseLeave={() => this.setState({hover: null})}
-                        onMouseMove={e => this.handleMouseMove(e, event)} />
+                        onMouseLeave={this.onMouseLeave}
+                        onMouseOver={e => this.onMouseOver(e, event)} />
                     {text}
                 </g>
             );
