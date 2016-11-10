@@ -16,12 +16,12 @@
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
-    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/api/docs.json --pretty",
+    "docs": "echo \"*** Building API docs ***\" && react-docgen src/components -x js -o src/website/api/docs.json --pretty",
     "lint": "eslint src/**/*.js",
     "test": "npm run lint",
-    "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
+    "build": "echo \"*** Building lib ***\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
     "start-website": "react-scripts start",
-    "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs"
+    "build-website": "echo \"*** Building website ***\" && rm -rf docs && react-scripts build && mv build docs"
   },
   "pre-commit": [
     "lint",
@@ -69,11 +69,13 @@
     "raw-loader": "^0.5.1",
     "react": "^15.3.1",
     "react-docgen": "^2.9.1",
+    "react-dom": "^15.3.2",
     "react-markdown": "^1.0.5",
     "react-router": "^2.6.1",
     "react-scripts": "0.2.1",
     "react-select": "^1.0.0-beta14",
-    "ringjs": "0.0.1"
+    "ringjs": "0.0.1",
+    "webpack": "^1.13.3"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.3.1",
