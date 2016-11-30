@@ -139,17 +139,73 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
 /**
  * Renders a boxplot chart.
  *
- * The TimeSeries supplied to the boxplot can be one of two types:
+ * The TimeSeries supplied to the boxplot, as the `series` prop can be one of two types:
  *
  *  1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.
  *     In this case a `column` prop should be supplied to specify the
- *     dimensions of the boxes. This props should be an array of size 1 to
- *     5 elements. e.g. [12, 18, 22, 28].
+ *     data column containing the dimensions of the boxes. This props
+ *     should be an array of size 1 to 5 elements. e.g. [12, 18, 22, 28]. The
+ *     numbers should be ordered, lowest to greatest.
  *
  *  2) A TimeSeries containing timestamp based Events. In this case the
- *     boxplot will be aggregated. To control the aggregation you can supply
+ *     boxplot will be aggregated for you. To control the aggregation you can supply
  *     an `aggregation` prop: a structure to specify the window size and
  *     reducers used to determine the boxes.
+ *
+ * In both cases you are generating up to two ranges and a center marker. In the
+ * first case you are defining this based on the array of numbers. The outer numbers
+ * specify the outerRange, the inner numbers specify the innerRange and the middle
+ * number specifies the center marker. In the second case you are building those ranges
+ * from denser data, specifying a window and aggregation functions to build each
+ * of the ranges and center maker.
+ *
+ * In both cases you do not need to supply all the values. For example if you
+ * provide an array of 2 elements, that would define a single range, with no outer range
+ * and no center marker. The BoxChart is pretty flexible in that way, so you
+ * can use it in many situations.
+ *
+ * Here is an example of using it to display temperature ranges. The series
+ * passed to this code would be a TimeSeries containing IndexedEvents. For
+ * each event, the column `temp` contains an array of values used for the
+ * box plot ranges:
+ *
+ * ```
+ *     <BoxChart
+ *       axis="temperatureAxis"
+ *       style={style}
+ *       column="temp"
+ *       series={series} />
+ * ```
+ *
+ * While here is an example with a dense TimeSeries of Events supplied,
+ * along with an aggregation specification. This code would produce an
+ * outer range from the 5th percentile to the 95th, along with an inner
+ * range for the interquantile, and a center marker at the median:
+ *
+ * ```
+ *    <BoxChart
+ *      axis="speedaxis"
+ *      series={speed}
+ *      column="speed"
+ *      style={style}
+ *      aggregation={{
+ *        size: this.state.rollup,
+ *        reducers: {
+ *          outer: [percentile(5), percentile(95)],
+ *          inner: [percentile(25), percentile(75)],
+ *          center: median(),
+ *        },
+ *      }}
+ *    />
+ * ```
+ *
+ * The BoxChart supports Info boxes, highlighting and selection.
+ *
+ * Note: selection and highlighting is on the whole event, not individual ranges.
+ * Also note that since the box chart builds an internal TimeSeries for performance
+ * reasons, selection will give you and IndexedEvent, but it won't be the same
+ * IndexedEvent in your `series`. Similarly if you are using the aggregation
+ * specification you will get events for the rollup, not your original data.
  */
 export default class BoxChart extends React.Component {
 
@@ -510,7 +566,7 @@ export default class BoxChart extends React.Component {
 BoxChart.propTypes = {
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
-   * data to visualize
+   * data to visualize. See general notes on the BoxChart.
    */
   // series: React.PropTypes.instanceOf(TimeSeries).isRequired,
 
@@ -520,26 +576,15 @@ BoxChart.propTypes = {
       return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);
     }
 
-    const t = value.collection().type();
-    if (t instanceof Event) {
-      console.log('Event style TimeSeries supplied');
-    }
-
-    if (t instanceof TimeRangeEvent || t instanceof IndexedEvent) {
-      console.log('Event style TimeSeries supplied');
-    }
+    // TODO: Better detection of errors
 
     // everything ok
     return null;
   },
 
   /**
-   * The distance in pixels to inset the bar chart from its actual timerange
-   */
-  spacing: React.PropTypes.number,
-
-  /**
-   * The column within a Event based TimeSeries to summarize
+   * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
+   * works on just a single column.
    */
   column: React.PropTypes.string,
 
@@ -554,6 +599,18 @@ BoxChart.propTypes = {
    * For each of these keys you should supply the function you
    * want to use to calculate these. You can import common functions
    * from Pond, e.g. min(), avg(), percentile(95), etc.
+   *
+   * For example:
+   * ```
+   *     {
+   *       size: this.state.rollup,
+   *       reducers: {
+   *         outer: [min(), max()],
+   *         inner: [percentile(25), percentile(75)],
+   *         center: median(),
+   *       },
+   *     }
+   * ```
    */
   aggregation: React.PropTypes.shape({
     size: React.PropTypes.string,
@@ -565,41 +622,9 @@ BoxChart.propTypes = {
   }), // eslint-disable-line
 
   /**
-   * The style of the bar chart drawing (using SVG CSS properties).
-   * This is an object with a key for each column which is being drawn,
-   * per the `columns` prop. For each column a style is defined for
-   * each state the bar may be in. This style is the CSS properties for
-   * the underlying SVG <Rect>, so most likely you'll define fill and
-   * opacity.
-   *
-   * For example:
-   * ```
-   * style = {
-   *     columnName: {
-   *         normal: {
-   *             fill: "steelblue",
-   *             opacity: 0.8,
-   *         },
-   *         highlighted: {
-   *             fill: "#a7c4dd",
-   *             opacity: 1.0,
-   *         },
-   *         selected: {
-   *             fill: "orange",
-   *             opacity: 1.0,
-   *         },
-   *         muted: {
-   *             fill: "grey",
-   *             opacity: 0.5
-   *         }
-   *     }
-   * }
-   * ```
-   *
-   * You can also supply a function, which will be called with an event
-   * and column. The function should return an object containing the
-   * four states (normal, highlighted, selected and muted) and the corresponding
-   * CSS properties.
+   * The style of the box chart drawing (using SVG CSS properties) or
+   * a styler object. It is recommended to user the styler unless you need
+   * detailed customization.
    */
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
@@ -649,12 +674,6 @@ BoxChart.propTypes = {
   selected: React.PropTypes.instanceOf(IndexedEvent),
 
   /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
-  // onSelectionChange: React.PropTypes.func,
-
-  /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
@@ -668,16 +687,10 @@ BoxChart.propTypes = {
   onSelectionChange: React.PropTypes.func,
 
   /**
-   * A callback that will be called when the hovered over bar changes.
+   * A callback that will be called when the hovered over box changes.
    * It will be called with the event corresponding to the box hovered over.
    */
   onHighlightChange: React.PropTypes.func,
-
-  /**
-   * A callback that will be called when the hovered over bar changes.
-   * It will be called with an object containing the event and column.
-   */
-  // onHighlightChange: React.PropTypes.func,
 
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
