@@ -16,9 +16,8 @@ Current features of the library include:
  * Interactivity, including pan and zoom
  * Add new chart types or overlays
  * Multiple axis, multiple rows
- * Line, area, scatter and bar charts
+ * Line, area, scatter, bar and boxplot charts
  * Brushing
- * Bar charts to compare multiple TimeSeries
  * Legends
  * Overlay markers
 
