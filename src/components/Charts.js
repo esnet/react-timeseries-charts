@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2015-present, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React from 'react';
 
 /**
  *
@@ -51,19 +51,16 @@ import React from "react";
  *
  * A d3 scale for the y-axis which you can use to transform your data in the y direction
  *
- * #### transition
+ * #### width
  *
- * The time in ms it is expected the code will take to move from one state to another
- *
+ * A the width your chart will render into
  */
-export default React.createClass({
+export default class Charts extends React.Component {
 
-    displayName: "Charts",
-
-    render() {
-        return (
-            `${this.constructor.name} elements are for configuration only
+  render() {
+    return (
+      `${this.constructor.name} elements are for configuration only
 and should not be rendered`
-        );
-    }
-});
+    );
+  }
+}

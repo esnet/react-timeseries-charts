@@ -356,7 +356,9 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
-                        BarChart can display negative values as well, as shown below for a stacked format. Note that all bars representing positive values are stacked together above the x-axis and the bars for negative values are stacked below the x-axis.
+                        BarChart can display negative values as well, as shown below for a stacked format.
+                        Note that all bars representing positive values are stacked together above the
+                        x-axis and the bars for negative values are stacked below the x-axis.
                         <hr />
                     </div>
                 </div>

@@ -9,19 +9,18 @@
     "timeseries"
   ],
   "main": "lib/entry",
-  "homepage": "http://software.es.net/react-timeseries-charts",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": "esnet/react-timeseries-charts",
   "bugs": {
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
-    "docs": "echo \"*** Building API docs ***\" && react-docgen src/components -x js -o src/website/api/docs.json --pretty",
-    "lint": "eslint src/**/*.js",
+    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/api/docs.json --pretty",
+    "lint": "eslint src/components/*.js",
     "test": "npm run lint",
-    "build": "echo \"*** Building lib ***\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
+    "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
     "start-website": "react-scripts start",
-    "build-website": "echo \"*** Building website ***\" && rm -rf docs && react-scripts build && mv build docs"
+    "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs"
   },
   "pre-commit": [
     "lint",
@@ -60,22 +59,22 @@
     "babel-preset-stage-0": "^6.5.0",
     "dsv-loader": "^1.1.0",
     "eslint": "^3.5.0",
+    "eslint-config-airbnb": "^11.1.0",
     "eslint-config-esnet": "^0.1.0",
     "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-flowtype": "^2.17.1",
+    "eslint-plugin-import": "^1.15.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.2.1",
     "pondjs": "^0.7.0",
     "raw-loader": "^0.5.1",
     "react": "^15.3.1",
     "react-docgen": "^2.9.1",
-    "react-dom": "^15.3.2",
     "react-markdown": "^1.0.5",
     "react-router": "^2.6.1",
     "react-scripts": "0.2.1",
     "react-select": "^1.0.0-beta14",
-    "ringjs": "0.0.1",
-    "webpack": "^1.13.3"
+    "ringjs": "0.0.1"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.3.1",

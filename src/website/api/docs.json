@@ -1,7 +1,6 @@
 {
   "src/components/AreaChart.js": {
     "description": "The `<AreaChart>` component is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe `<AreaChart>` should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an `<AreaChart>` with an up and down\nnetwork traffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}/>\n                 </Charts>\n                 <YAxis\n                     id=\"traffic\"\n                     label=\"Traffic (bps)\"\n                     min={-max} max={max}\n                     absolute={true}\n                     width=\"60\"\n                     type=\"linear\"/>\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.",
-    "displayName": "AreaChart",
     "methods": [
       {
         "name": "handleHover",
@@ -156,7 +155,7 @@
         "required": false,
         "description": "The series series columns mapped to stacking up and down.\nHas the format:\n```\n \"columns\": {\n     up: [\"in\", ...],\n     down: [\"out\", ...]\n }\n ```",
         "defaultValue": {
-          "value": "{\n    up: [\"value\"],\n    down: []\n}",
+          "value": "{\n  up: ['value'],\n  down: [],\n}",
           "computed": false
         }
       },
@@ -195,59 +194,59 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"curveBasis\"",
+              "value": "'curveBasis'",
               "computed": false
             },
             {
-              "value": "\"curveBasisOpen\"",
+              "value": "'curveBasisOpen'",
               "computed": false
             },
             {
-              "value": "\"curveBundle\"",
+              "value": "'curveBundle'",
               "computed": false
             },
             {
-              "value": "\"curveCardinal\"",
+              "value": "'curveCardinal'",
               "computed": false
             },
             {
-              "value": "\"curveCardinalOpen\"",
+              "value": "'curveCardinalOpen'",
               "computed": false
             },
             {
-              "value": "\"curveCatmullRom\"",
+              "value": "'curveCatmullRom'",
               "computed": false
             },
             {
-              "value": "\"curveCatmullRomOpen\"",
+              "value": "'curveCatmullRomOpen'",
               "computed": false
             },
             {
-              "value": "\"curveLinear\"",
+              "value": "'curveLinear'",
               "computed": false
             },
             {
-              "value": "\"curveMonotone\"",
+              "value": "'curveMonotone'",
               "computed": false
             },
             {
-              "value": "\"curveNatural\"",
+              "value": "'curveNatural'",
               "computed": false
             },
             {
-              "value": "\"curveRadial\"",
+              "value": "'curveRadial'",
               "computed": false
             },
             {
-              "value": "\"curveStep\"",
+              "value": "'curveStep'",
               "computed": false
             },
             {
-              "value": "\"curveStepAfter\"",
+              "value": "'curveStepAfter'",
               "computed": false
             },
             {
-              "value": "\"curveStepBefore\"",
+              "value": "'curveStepBefore'",
               "computed": false
             }
           ]
@@ -255,15 +254,63 @@
         "required": false,
         "description": "Any of D3's interpolation modes.",
         "defaultValue": {
-          "value": "\"curveLinear\"",
+          "value": "'curveLinear'",
           "computed": false
         }
+      },
+      "highlight": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The currenly highlighted column"
+      },
+      "onHighlightChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback called when the highlight changes, i.e. hover event"
+      },
+      "selection": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The currenly selected column"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback called when the selection changes, i.e. area is clicked"
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/BarChart.js": {
-    "description": "Renders a barchart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different that other time axis\nbar charts in that it will render across a the time range of the event\nrather than rendering to specific categories. As a result,\na Aug-2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.\n\nThe BarChart will render a single TimeSeries. You can specify the columns\nyou want to render with the `columns` prop. Each column will be stacked on\nthe other, in the order specified in the `columns` array.\n\nThe BarChart supports selection of individual bars. To control this use\n`onSelectionChange` to get a callback of selection changed. Your callback\nwill be called with with the selection (and object containing the event\nand column). You can pass this back into the BarChart as `selection`. For\nexample:\n\n```\n <BarChart\n     ...\n     selection={this.state.selection}\n     onSelectionChange={selection => this.setState({selection})} />\n```\n\nSimilarly you can monitor which bar is being hovered over with the\n`onHighlightChanged` callback. This can be used to determine the info text\nto display. Info text will display a box (like a tooltip) with a line\nconnecting it to the bar. You use the `info` prop to evoke this and to\nsupply the text for the info box. See the styling notes below for more\ninformation on this.\n\n### Styling\n\nA BarChart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected and muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\n\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the bars can be controlled with the `spacing` and\n`offset` props. Spacing controls the gap between the bars. Offset moves the\nbars left or right by the given number of pixels. You can use this to place\nbars along side each other. Alternatively, you can give each column a fixed width\nusing the `size` prop. In this case this size will be used over the size\ndetermined from the timerange of the event and the `spacing`.\n\nThe highlight info for each bar is also able to be styled using the `infoStyle`.\nThis enables you to control the drawing of the box, connecting lines and dot.\nUsing the `infoWidth` and `infoHeight` props you can control the size of the\nbox, which is fixed. For the info inside the box, it's up to you: it can either\nbe a simple string or an array of {label, value} pairs.",
-    "displayName": "BarChart",
+    "description": "Renders a bar chart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different that other time axis\nbar charts in that it will render across a the time range of the event\nrather than rendering to specific categories. As a result,\na Aug-2014 bar will render between the Aug 2014 tick mark and the Sept 2014\ntickmark.\n\nThe BarChart will render a single TimeSeries. You can specify the columns\nyou want to render with the `columns` prop. Each column will be stacked on\nthe other, in the order specified in the `columns` array.\n\nThe BarChart supports selection of individual bars. To control this use\n`onSelectionChange` to get a callback of selection changed. Your callback\nwill be called with with the selection (and object containing the event\nand column). You can pass this back into the BarChart as `selection`. For\nexample:\n\n```\n <BarChart\n     ...\n     selection={this.state.selection}\n     onSelectionChange={selection => this.setState({selection})} />\n```\n\nSimilarly you can monitor which bar is being hovered over with the\n`onHighlightChange` callback. This can be used to determine the info text\nto display. Info text will display a box (like a tooltip) with a line\nconnecting it to the bar. You use the `info` prop to evoke this and to\nsupply the text for the info box. See the styling notes below for more\ninformation on this.\n\n### Styling\n\nA BarChart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected and muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\n\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the bars can be controlled with the `spacing` and\n`offset` props. Spacing controls the gap between the bars. Offset moves the\nbars left or right by the given number of pixels. You can use this to place\nbars along side each other. Alternatively, you can give each column a fixed width\nusing the `size` prop. In this case this size will be used over the size\ndetermined from the timerange of the event and the `spacing`.\n\nThe highlight info for each bar is also able to be styled using the `infoStyle`.\nThis enables you to control the drawing of the box, connecting lines and dot.\nUsing the `infoWidth` and `infoHeight` props you can control the size of the\nbox, which is fixed. For the info inside the box, it's up to you: it can either\nbe a simple string or an array of {label, value} pairs.",
     "methods": [
       {
         "name": "handleHover",
@@ -388,7 +435,7 @@
         "required": false,
         "description": "A list of columns within the series that will be stacked on top of each other",
         "defaultValue": {
-          "value": "[\"value\"]",
+          "value": "['value']",
           "computed": false
         }
       },
@@ -418,7 +465,7 @@
         "required": false,
         "description": "The style of the info box and connecting lines",
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n  dot: {\n    fill: '#999',\n  },\n}",
           "computed": false
         }
       },
@@ -512,20 +559,33 @@
           }
         },
         "required": false,
-        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChange`"
       },
-      "onHighlightChanged": {
+      "onHighlightChange": {
         "type": {
           "name": "func"
         },
         "required": false,
         "description": "A callback that will be called when the hovered over bar changes.\nIt will be called with an object containing the event and column."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
       }
     }
   },
   "src/components/Baseline.js": {
-    "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis id=\"price\" label=\"Price ($)\" min={series.min()} max={series.max()} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style}/>\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\"/>\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()}/>\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()}/>\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
-    "displayName": "Baseline",
+    "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis\n          id=\"price\"\n          label=\"Price ($)\"\n          min={series.min()} max={series.max()}\n          width=\"60\" format=\"$,.2f\"\n        />\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style} />\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\" />\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()} />\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
     "methods": [],
     "props": {
       "axis": {
@@ -534,6 +594,27 @@
         },
         "required": true,
         "description": "Reference to the axis which provides the vertical scale for drawing. e.g.\nspecifying axis=\"trafficRate\" would refer the y-scale to the YAxis of id=\"trafficRate\"."
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "label": {
+              "name": "object",
+              "required": false
+            },
+            "line": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "An object describing the style of the baseline of the form\n{ label, line }. \"label\" and \"line\" are both objects containing\nthe inline CSS for that part of the baseline.",
+        "defaultValue": {
+          "value": "{\n  label: {\n    fill: '#8B7E7E', // Default label color\n    fontWeight: 100,\n    fontSize: 11,\n    pointerEvents: 'none',\n  },\n  line: {\n    stroke: '#626262',\n    strokeWidth: 1,\n    strokeDasharray: '5,3',\n    pointerEvents: 'none',\n  },\n}",
+          "computed": false
+        }
       },
       "value": {
         "type": {
@@ -553,7 +634,7 @@
         "required": false,
         "description": "The label to display with the axis.",
         "defaultValue": {
-          "value": "\"\"",
+          "value": "''",
           "computed": false
         }
       },
@@ -562,11 +643,11 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"left\"",
+              "value": "'left'",
               "computed": false
             },
             {
-              "value": "\"right\"",
+              "value": "'right'",
               "computed": false
             }
           ]
@@ -574,21 +655,326 @@
         "required": false,
         "description": "Whether to display the label on the \"left\" or \"right\".",
         "defaultValue": {
-          "value": "\"left\"",
+          "value": "'left'",
           "computed": false
         }
       },
-      "style": {
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      }
+    }
+  },
+  "src/components/BoxChart.js": {
+    "description": "Renders a boxplot chart.\n\nThe TimeSeries supplied to the boxplot, as the `series` prop can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    data column containing the dimensions of the boxes. This props\n    should be an array of size 1 to 5 elements. e.g. [12, 18, 22, 28]. The\n    numbers should be ordered, lowest to greatest.\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    boxplot will be aggregated for you. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.\n\nIn both cases you are generating up to two ranges and a center marker. In the\nfirst case you are defining this based on the array of numbers. The outer numbers\nspecify the outerRange, the inner numbers specify the innerRange and the middle\nnumber specifies the center marker. In the second case you are building those ranges\nfrom denser data, specifying a window and aggregation functions to build each\nof the ranges and center maker.\n\nIn both cases you do not need to supply all the values. For example if you\nprovide an array of 2 elements, that would define a single range, with no outer range\nand no center marker. The BoxChart is pretty flexible in that way, so you\ncan use it in many situations.\n\nHere is an example of using it to display temperature ranges. The series\npassed to this code would be a TimeSeries containing IndexedEvents. For\neach event, the column `temp` contains an array of values used for the\nbox plot ranges:\n\n```\n    <BoxChart\n      axis=\"temperatureAxis\"\n      style={style}\n      column=\"temp\"\n      series={series} />\n```\n\nWhile here is an example with a dense TimeSeries of Events supplied,\nalong with an aggregation specification. This code would produce an\nouter range from the 5th percentile to the 95th, along with an inner\nrange for the interquantile, and a center marker at the median:\n\n```\n   <BoxChart\n     axis=\"speedaxis\"\n     series={speed}\n     column=\"speed\"\n     style={style}\n     aggregation={{\n       size: this.state.rollup,\n       reducers: {\n         outer: [percentile(5), percentile(95)],\n         inner: [percentile(25), percentile(75)],\n         center: median(),\n       },\n     }}\n   />\n```\n\nThe BoxChart supports Info boxes, highlighting and selection.\n\nNote: selection and highlighting is on the whole event, not individual ranges.\nAlso note that since the box chart builds an internal TimeSeries for performance\nreasons, selection will give you and IndexedEvent, but it won't be the same\nIndexedEvent in your `series`. Similarly if you are using the aggregation\nspecification you will get events for the rollup, not your original data.",
+    "methods": [
+      {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "providedStyleArray",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "event"
+          },
+          {
+            "name": "level"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
+        "name": "renderBars",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "series": {
+        "type": {
+          "name": "custom",
+          "raw": "(props, propName, componentName) => {\n  const value = props[propName];\n  if (!(value instanceof TimeSeries)) {\n    return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);\n  }\n\n  // TODO: Better detection of errors\n\n  // everything ok\n  return null;\n}"
+        },
+        "required": false,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize. See general notes on the BoxChart."
+      },
+      "column": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.",
         "defaultValue": {
-          "value": "{\n    label: {\n        fill: \"#8B7E7E\", // Default label color\n        fontWeight: 100,\n        fontSize: 11,\n        pointerEvents: \"none\"\n    },\n    line: {\n        stroke: \"#626262\",\n        strokeWidth: 1,\n        strokeDasharray: \"5,3\",\n        pointerEvents: \"none\"\n    }\n}",
+          "value": "'value'",
           "computed": false
         }
+      },
+      "aggregation": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "size": {
+              "name": "string",
+              "required": false
+            },
+            "reducers": {
+              "name": "shape",
+              "value": {
+                "inner": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "outer": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "center": {
+                  "name": "func",
+                  "required": false
+                }
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The aggregation specification. This object should contain:\n  - innerMax\n  - innerMin\n  - outerMax\n  - outerMin\n  - center\nThough each of the pairs, and center, is optional.\nFor each of these keys you should supply the function you\nwant to use to calculate these. You can import common functions\nfrom Pond, e.g. min(), avg(), percentile(95), etc.\n\nFor example:\n```\n    {\n      size: this.state.rollup,\n      reducers: {\n        outer: [min(), max()],\n        inner: [percentile(25), percentile(75)],\n        center: median(),\n      },\n    }\n```"
+      },
+      "style": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The style of the box chart drawing (using SVG CSS properties) or\na styler object. It is recommended to user the styler unless you need\ndetailed customization."
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n  dot: {\n    fill: '#999',\n  },\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "info": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "string",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
+      },
+      "innerSpacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "1.0",
+          "computed": false
+        }
+      },
+      "outerSpacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "2.0",
+          "computed": false
+        }
+      },
+      "innerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the innerBox will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "outerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the outer box will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "selected": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The selected item, which will be rendered in the \"selected\" style.\nIf a bar is selected, all other bars will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
+      },
+      "highlighted": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChange`"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith the event corresponding to the box clicked as its only arg."
+      },
+      "onHighlightChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over box changes.\nIt will be called with the event corresponding to the box hovered over."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/Brush.js": {
     "description": "Renders a brush with the range defined in the prop `timeRange`.",
-    "displayName": "Brush",
     "methods": [
       {
         "name": "viewport",
@@ -735,12 +1121,32 @@
         },
         "required": false,
         "description": "A callback which will be called if the brush range is changed by\nthe user. It is called with a Pond TimeRange object. Note that if\n`allowSelectionClear` is set to true, then this can also be called\nwhen the user performs a simple click outside the brush area. In\nthis case it will be called with null as the TimeRange. You can\nuse this to reset the selection, perhaps to some initial range."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/ChartContainer.js": {
-    "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows. The time axis can be styled via the ChartContainer.\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
-    "displayName": "ChartContainer",
+    "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows.\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
     "methods": [
       {
         "name": "handleTrackerChanged",
@@ -911,6 +1317,13 @@
         "required": false,
         "description": "Provides several options as to the format of the time axis labels.\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, four special options exist: setting format to \"day\", \"month\" or\n\"year\" will show only ticks on those, and every one of those intervals.\nFor example maybe you are showing a bar chart for October 2014 then setting\nthe format to \"day\" will insure that a label is placed for each and every day.\n\nThe last option is \"relative\". This interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time."
       },
+      "transition": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Time in milliseconds to transition from one Y-scale to the next"
+      },
       "showGrid": {
         "type": {
           "name": "bool"
@@ -937,11 +1350,53 @@
           }
         },
         "required": false,
-        "description": "Adjust the time axis style. This is an object of the form { labels, axis }\nwhere \"label\" and \"axis\" are objects themselves. The options here are best\nrepresented by an example:\n```\n const axisStyle = {\n     labels: {\n         labelColor: \"grey\",\n         labelWeight: 100,\n         labelSize: 11\n     },\n     axis: {\n         axisColor: \"grey\",\n         axisWidth: 1\n     }\n };\n```",
+        "description": "Adjust the time axis style. This is an object of the\nform { labels, axis } where \"label\" and \"axis\" are objects\nthemselves. The options here are best represented by\nan example:\n\n```\n const axisStyle = {\n     labels: {\n         labelColor: \"grey\",\n         labelWeight: 100,\n         labelSize: 11\n     },\n     axis: {\n         axisColor: \"grey\",\n         axisWidth: 1\n     }\n };\n```",
         "defaultValue": {
-          "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\",\n        axisWidth: 1\n    }\n}",
+          "value": "{\n  labels: {\n    labelColor: '#8B7E7E',\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: '#C0C0C0',\n    axisWidth: 1,\n  },\n}",
           "computed": false
         }
+      },
+      "trackerHintWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the tracker info box"
+      },
+      "trackerHintHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the tracker info box"
+      },
+      "trackerValues": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "shape",
+                "value": {
+                  "label": {
+                    "name": "string",
+                    "required": false
+                  },
+                  "value": {
+                    "name": "string",
+                    "required": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": "Info box value or values to place next to the tracker line.\nThis is either an array of objects, with each object\nspecifying the label and value to be shown in the info box,\nor a simple string label."
       },
       "trackerPosition": {
         "type": {
@@ -972,6 +1427,13 @@
         "required": false,
         "description": "Called when the size of the chart changes"
       },
+      "onBackgroundClick": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Called when the user clicks the background plane of the chart. This is\nuseful when deselecting elements."
+      },
       "padding": {
         "defaultValue": {
           "value": "0",
@@ -982,41 +1444,7 @@
   },
   "src/components/ChartRow.js": {
     "description": "A ChartRow is a container for a set of YAxis and multiple charts\nwhich are overlaid on each other in a central canvas.\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
-    "displayName": "ChartRow",
-    "methods": [
-      {
-        "name": "createScale",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "yaxis",
-            "type": null
-          },
-          {
-            "name": "type",
-            "type": null
-          },
-          {
-            "name": "min",
-            "type": null
-          },
-          {
-            "name": "max",
-            "type": null
-          },
-          {
-            "name": "y0",
-            "type": null
-          },
-          {
-            "name": "y1",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
+    "methods": [],
     "props": {
       "height": {
         "type": {
@@ -1037,11 +1465,132 @@
           "computed": false
         }
       },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "node"
+              }
+            },
+            {
+              "name": "node"
+            }
+          ]
+        },
+        "required": false,
+        "description": ""
+      },
+      "leftAxisWidths": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "number"
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "rightAxisWidths": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "number"
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "trackerTimeFormat": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
         "defaultValue": {
-          "value": "\"%b %d %Y %X\"",
+          "value": "'%b %d %Y %X'",
           "computed": false
         }
+      },
+      "timeFormat": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "trackerTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "trackerShowTime": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Should the time be shown on top of the tracker info box"
+      },
+      "trackerInfoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the tracker info box"
+      },
+      "trackerInfoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the tracker info box"
+      },
+      "trackerInfoValues": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "shape",
+                "value": {
+                  "label": {
+                    "name": "string",
+                    "required": false
+                  },
+                  "value": {
+                    "name": "string",
+                    "required": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": "Info box value or values to place next to the tracker line\nThis is either an array of objects, with each object\nspecifying the label and value to be shown in the info box,\nor a simple string label."
       },
       "enablePanZoom": {
         "defaultValue": {
@@ -1052,16 +1601,14 @@
     }
   },
   "src/components/Charts.js": {
-    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### transition\n\nThe time in ms it is expected the code will take to move from one state to another",
-    "displayName": "Charts",
+    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### width\n\nA the width your chart will render into",
     "methods": []
   },
   "src/components/EventChart.js": {
-    "description": "Renders an event view that shows the supplied set of\nevents along a time axis. The events should be supplied as a Pond TimeSeries.\nThat series may contain regular Events, TimeRangeEvents or IndexedEvents.",
-    "displayName": "EventChart",
+    "description": "Renders an event view that shows the supplied set of events along a time axis.\nThe events should be supplied as a Pond TimeSeries.\nThat series may contain regular Events, TimeRangeEvents or IndexedEvents.",
     "methods": [
       {
-        "name": "handleMouseMove",
+        "name": "onMouseOver",
         "docblock": "Continues a hover event on a specific bar of the bar chart.",
         "modifiers": [],
         "params": [
@@ -1074,6 +1621,14 @@
         ],
         "returns": null,
         "description": "Continues a hover event on a specific bar of the bar chart."
+      },
+      {
+        "name": "onMouseLeave",
+        "docblock": "Handle mouse leave and calls onMouseLeave callback if one is provided",
+        "modifiers": [],
+        "params": [],
+        "returns": null,
+        "description": "Handle mouse leave and calls onMouseLeave callback if one is provided"
       },
       {
         "name": "handleClick",
@@ -1100,6 +1655,21 @@
         "required": true,
         "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
       },
+      "label": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "func"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Set hover label text\nWhen label is function callback it will be called with current event."
+      },
       "size": {
         "type": {
           "name": "number"
@@ -1122,18 +1692,85 @@
           "computed": false
         }
       },
+      "hoverMarkerWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Marker width on hover",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
+      "textOffsetX": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Hover text offset position X",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "textOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Hover text offset position Y",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
       "style": {
         "type": {
           "name": "func"
         },
         "required": false,
         "description": "A function that should return the style of the event box"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Event selection on click. Will be called with selected event."
+      },
+      "onMouseLeave": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Mouse leave at end of hover event"
+      },
+      "onMouseOver": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Mouse over event callback"
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/EventHandler.js": {
-    "description": "",
-    "displayName": "EventHandler",
+    "description": "Internal component which provides the top level event catcher for the charts.\nThis is a higher order component. It wraps a tree of SVG elements below it,\npassed in as this.props.children, and catches events that they do not handle.\n\nThe EventHandler is responsible for pan and zoom events as well as other click\nand hover actions.",
     "methods": [
       {
         "name": "getOffsetMousePosition",
@@ -1207,11 +1844,102 @@
         ],
         "returns": null
       }
-    ]
+    ],
+    "props": {
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "node"
+              }
+            },
+            {
+              "name": "node"
+            }
+          ]
+        },
+        "required": false,
+        "description": ""
+      },
+      "scale": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "maxTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "minTime": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Date"
+        },
+        "required": false,
+        "description": ""
+      },
+      "minDuration": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onZoom": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onMouseMove": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onMouseOut": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onMouseClick": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
   },
   "src/components/EventMarker.js": {
     "description": "Renders a marker at a specific event on the chart. You can also\noverride either the x or y position, so this allows you to position\na timestamped label or timestamped list of label/value pairs anywhere\non a chart.",
-    "displayName": "EventMarker",
     "methods": [
       {
         "name": "renderTime",
@@ -1220,42 +1948,6 @@
         "params": [
           {
             "name": "event",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderEventTime",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "d",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderEventIndex",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "index",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderEventTimeRange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "timerange",
             "type": null
           }
         ],
@@ -1311,18 +2003,32 @@
         "required": false,
         "description": "Which column in the Event to use",
         "defaultValue": {
-          "value": "\"value\"",
+          "value": "'value'",
           "computed": false
         }
       },
       "infoStyle": {
         "type": {
-          "name": "object"
+          "name": "shape",
+          "value": {
+            "line": {
+              "name": "object",
+              "required": false
+            },
+            "box": {
+              "name": "object",
+              "required": false
+            },
+            "dot": {
+              "name": "object",
+              "required": false
+            }
+          }
         },
         "required": false,
-        "description": "The style of the info box and connecting lines",
+        "description": "The style of the info box and connecting lines. The object\nshould contain the \"line\", \"box\" and \"dot\" properties. Each of those\nis the inline CSS for that element.",
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n  dot: {\n    fill: '#999',\n  },\n}",
           "computed": false
         }
       },
@@ -1376,250 +2082,82 @@
         "required": false,
         "description": "The values to show in the info box. This is either an array of\nobjects, with each object specifying the label and value\nto be shown in the info box, or a simple string label"
       },
+      "infoTimeFormat": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'%m/%d/%y %X'",
+          "computed": false
+        }
+      },
       "markerRadius": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The radius of the dot at the end of the marker",
         "defaultValue": {
           "value": "2",
           "computed": false
         }
       },
+      "yValueFunc": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "The y value is calculated by the column and event, but if\nthis prop is provided this will be used instead."
+      },
       "offsetX": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Offset the marker position in the x direction.",
         "defaultValue": {
           "value": "0",
           "computed": false
         }
       },
       "offsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Offset the marker position in the y direction",
         "defaultValue": {
           "value": "0",
           "computed": false
         }
-      }
-    }
-  },
-  "src/components/HorizontalBarChart.js": {
-    "description": "The HorizontalBarChart takes a list of `TimeSeries` objects and displays a bar chart\nvisualization summarizing those. As an example, let's say we have a set of interfaces, which\ntogether carry the entire network traffic to a particular location. We want to see which\ninterfaces contribute the most to the total traffic.\n\nTo display this we render the HorizontalBarChart in our page:\n \n    <HorizontalBarChart\n        display=\"range\"\n        seriesList={interfaces}\n        columns={[\"out\", \"in\"]}\n        top={5} sortBy=\"max\"\n        timestamp={this.state.tracker}\n        format={formatter}\n        selected={this.state.selected}\n        onSelectionChanged={this.handleSelectionChange}\n        selectionColor=\"#37B6D3\"\n        style={[{fill: \"#1F78B4\"}, {fill: \"#FF7F00\"}]} />\n\nOur first prop `display` tells the component how to draw the bars. In this case we use the\n\"range\", which will draw from min to max (with additional drawing to show 1 stdev away from\nthe center).\n\nNext we specify the `seriesList` itself. This should be an array of Pond TimeSeries objects.\n\nThe `columns` prop tells us which columns within the TimeSeries should be displayed as a bar.\nIn this case we have `in` and `out` traffic columns, so we'll get two bars for each series.\n\n`top` and `sortBy` are used to order and trim the list of TimeSeries. Here we order by the max\nvalues in the specified columns, then just display the top 5.\n\nThe `timestamp` lets the component know the current value. You could display the last timestamp\nin the series, or perhaps a time being interacted with in the UI.\n\nThe `format` can either be a d3 format string of a function. In this case we have our own\nformatter function to display values:\n\n    function formatter(value) {\n        const prefix = d3.formatPrefix(value);\n        return `${prefix.scale(value).toFixed()} ${prefix.symbol}bps`;\n    }\n\nSelection is handled with `selected`, which gives the name of the TimeSeries currently selected.\nIf the user selects a different row the callback passed to `onSelectionChanged` will be called\nwith the name of the TimeSeries represented in the newly selected row. We also specify a color\nto mark the selected item with the `selectionColor` prop.\n\nNext we specify the `style`. This is the css style of each column's bars. Typically you would\njust want to specify the fill color. Each bar is a svg rect.",
-    "displayName": "HorizontalBarChart",
-    "methods": [
-      {
-        "name": "renderRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "seriesList",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "display": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "\"avg\"",
-              "computed": false
-            },
-            {
-              "value": "\"max\"",
-              "computed": false
-            },
-            {
-              "value": "\"range\"",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": "Sort by either \"max\", \"avg\" or \"name\"",
-        "defaultValue": {
-          "value": "\"avg\"",
-          "computed": false
-        }
       },
-      "seriesList": {
+      "timeScale": {
         "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "instanceOf",
-            "value": "TimeSeries"
-          }
+          "name": "func"
         },
         "required": true,
-        "description": "A list of [TimeSeries](http://software.es.net/pond#timeseries) objects to visualize",
-        "defaultValue": {
-          "value": "[]",
-          "computed": false
-        }
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
       },
-      "columns": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "string"
-          }
-        },
-        "required": false,
-        "description": "Columns in each timeseries to display",
-        "defaultValue": {
-          "value": "[\"value\"]",
-          "computed": false
-        }
-      },
-      "sortBy": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "\"name\"",
-              "computed": false
-            },
-            {
-              "value": "\"max\"",
-              "computed": false
-            },
-            {
-              "value": "\"avg\"",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": "Sort by either \"name\", \"max\", or \"avg\"",
-        "defaultValue": {
-          "value": "\"max\"",
-          "computed": false
-        }
-      },
-      "top": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "Display only the top n"
-      },
-      "size": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The height or thickness of each bar",
-        "defaultValue": {
-          "value": "14",
-          "computed": false
-        }
-      },
-      "spacing": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The spacing between each bar (column) of the series",
-        "defaultValue": {
-          "value": "2",
-          "computed": false
-        }
-      },
-      "padding": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The spacing above and below each series",
-        "defaultValue": {
-          "value": "5",
-          "computed": false
-        }
-      },
-      "labelWidth": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The width of the label area",
-        "defaultValue": {
-          "value": "240",
-          "computed": false
-        }
-      },
-      "onSelectionChanged": {
+      "yScale": {
         "type": {
           "name": "func"
         },
-        "required": false,
-        "description": "Callback for when the selection changes. The callback function will be called\nwith the name of the TimeSeries selected."
+        "required": true,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
       },
-      "selected": {
+      "width": {
         "type": {
-          "name": "string"
+          "name": "number"
         },
-        "required": false,
-        "description": "Specify which TimeSeries is selected by providing the name of the selected\nseries."
-      },
-      "selectionColor": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "Color to mark the selected row with.",
-        "defaultValue": {
-          "value": "\"steelblue\"",
-          "computed": false
-        }
-      },
-      "onNavigate": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "Renders the series name as a link and calls this callback function when it is clicked."
-      },
-      "navigateColor": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "Color to render the series name if navigate is enabled",
-        "defaultValue": {
-          "value": "\"steelblue\"",
-          "computed": false
-        }
-      },
-      "format": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "func"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": false,
-        "description": "The format is used to format the display text for the bar. It can be specified as a d3\nformat string (such as \".2f\") or a function. The function will be called with the value\nand should return a string."
-      },
-      "children": {
-        "type": {
-          "name": "element"
-        },
-        "required": false,
-        "description": "A single child which will be rendered when the item is selected. The child will have\na couple of additional props injected onto it when rendered:\n * `series` - the TimeSeries of the row being rendered\n * `timestamp` - the current timestamp being shown"
-      },
-      "style": {
-        "defaultValue": {
-          "value": "[{fill: \"steelblue\"}]",
-          "computed": false
-        }
+        "required": true,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/Label.js": {
     "description": "Renders a simple label surrounded by a box within in svg\n\n     +----------------+\n     | My label       |\n     |                |\n     +----------------+",
-    "displayName": "Label",
     "methods": [],
     "props": {
       "align": {
@@ -1627,11 +2165,11 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"center\"",
+              "value": "'center'",
               "computed": false
             },
             {
-              "value": "\"left\"",
+              "value": "'left'",
               "computed": false
             }
           ]
@@ -1639,7 +2177,7 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "\"center\"",
+          "value": "'center'",
           "computed": false
         }
       },
@@ -1649,6 +2187,17 @@
         },
         "required": true,
         "description": "The label to render"
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the label. This is the inline CSS applied directly\nto the label box",
+        "defaultValue": {
+          "value": "{ fill: '#FEFEFE', stroke: '#DDD', opacity: 0.8 }",
+          "computed": false
+        }
       },
       "width": {
         "type": {
@@ -1674,13 +2223,7 @@
       },
       "pointerEvents": {
         "defaultValue": {
-          "value": "\"none\"",
-          "computed": false
-        }
-      },
-      "style": {
-        "defaultValue": {
-          "value": "{fill: \"#FEFEFE\", stroke: \"#DDD\", opacity: 0.8}",
+          "value": "'none'",
           "computed": false
         }
       }
@@ -1688,7 +2231,6 @@
   },
   "src/components/LabelAxis.js": {
     "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...",
-    "displayName": "LabelAxis",
     "methods": [
       {
         "name": "renderAxis",
@@ -1742,7 +2284,7 @@
             }
           }
         },
-        "required": false,
+        "required": true,
         "description": "Supply a list of label value pairs to render within the LabelAxis.\nThis expects an array of objects. Each object is of the form:\n    {label: \"Speed\", value: \"26.2 mph\"}.",
         "defaultValue": {
           "value": "[]",
@@ -1781,7 +2323,7 @@
         "required": false,
         "description": "If values are numbers, use this format string",
         "defaultValue": {
-          "value": "\".2f\"",
+          "value": "'.2f'",
           "computed": false
         }
       },
@@ -1791,12 +2333,18 @@
         },
         "required": false,
         "description": "The width of the axis"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the axis"
       }
     }
   },
   "src/components/Legend.js": {
-    "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is either\nthe CSS that should be appied to rendered symbol. Or you can provide\na Styler object. See below for full styling details.\n\n```\nconst style = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n```\n\nNext build a list of categories you want in the legend.\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled: true},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled: false}\n];\n```\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not.\n\nThen render the legend, with type either \"line\", \"swatch\" or \"dot\":\n\n```\n<Legend type=\"line\" style={style} categories={categories} />\n```\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data. You can see this defined in the\nabove categories.\n\nThe legend can also be supplied with callback functions which will\ntell you if the user has clicked or hovered over on one of the legend\nitems. You can use this to sync highlighting and selection to a\nchart.\n\n## Styling\n\nThere are three methods of styling a legend:\n - using a Styler object\n - using an object containing inline styles\n - using a function which returns an inline style\n\nA Styler object can be supplied directly to the `style` prop\nof the legend. This is the simplest approach, since you can\nusually just use the same Styler as you use for your chart.\n\nSupplying an object to the `style` prop gives you more control\nthan the Styler, since you can provide the actual CSS properties\nfor each element of the legend. The format for the object is:\n\n```\n{\n    columnName1: {\n            symbol: {\n                normal: {...styleSymbol},\n                highlighted: {...styleSymbol},\n                selected: {...styleSymbol},\n                muted: {...styleSymbol}\n            },\n            label: {\n                normal: {...labelStyle},\n                highlighted: {...labelStyle},\n                selected: {...labelStyle},\n                muted: {...labelStyle}\n            },\n            value: {\n                normal: {...valueStyle},\n                highlighted: {...valueStyle},\n                selected: {...valueStyle},\n                muted: {...valueStyle}\n            }\n    },\n    columnName2 : {\n        ...\n    },\n    ...\n }\n\n - symbolStyle is the CSS properties for the symbol, which\nis either a swatch, dot or line. For a line, you'd want to\nprovide the SVG <line> properties, for a swatch you'd provide\nthe SVG <rect> properties and for a dot the <ellipse> properties.\n - labelStyle is the main label for the legend item. It is a\n SVG <text> element, so you can control the font properties.\n - valueStyle is the optional value. As with the labelStyle you\n this is an SVG <text> element.\n\nFinally, you can provide a function to the `style` prop. This\nis similar to providing an object, except your function will\nbe called with the columnName and you should return the map\ncontaining symbol, label and value styles.",
-    "displayName": "Legend",
+    "description": "Legends are simple to define.\n\nFirst specify the styles you want each item to have. This is either\nthe CSS that should be appied to rendered symbol. Or you can provide\na Styler object. See below for full styling details.\n\n```\nconst style = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n```\n\nNext build a list of categories you want in the legend.\n\n```\nconst categories = [\n    {key: \"aust\", label: \"AUD\", value: \"1.52\", disabled: true},\n    {key: \"usa\", label: \"USD\", value: \"1.43\", disabled: false}\n];\n```\nFor each category to display you must provide a key, a label and\nif it should be displayed disabled or not.\n\nThen render the legend, with type either \"line\", \"swatch\" or \"dot\":\n\n```\n<Legend type=\"line\" style={style} categories={categories} />\n```\n\nOptionally you can also display a value below the label. This is\nuseful when hovering over another chart on the page, or to display\nthe current value of live data. You can see this defined in the\nabove categories.\n\nThe legend can also be supplied with callback functions which will\ntell you if the user has clicked or hovered over on one of the legend\nitems. You can use this to sync highlighting and selection to a\nchart.\n\n## Styling\n\nThere are three methods of styling a legend:\n - using a Styler object\n - using an object containing inline styles\n - using a function which returns an inline style\n\nA Styler object can be supplied directly to the `style` prop\nof the legend. This is the simplest approach, since you can\nusually just use the same Styler as you use for your chart.\n\nSupplying an object to the `style` prop gives you more control\nthan the Styler, since you can provide the actual CSS properties\nfor each element of the legend. The format for the object is:\n\n```\n{\n    columnName1: {\n      symbol: {\n        normal: {...styleSymbol},\n        highlighted: {...styleSymbol},\n        selected: {...styleSymbol},\n        muted: {...styleSymbol}\n      },\n      label: {\n        normal: {...labelStyle},\n        highlighted: {...labelStyle},\n        selected: {...labelStyle},\n        muted: {...labelStyle}\n      },\n      value: {\n        normal: {...valueStyle},\n        highlighted: {...valueStyle},\n        selected: {...valueStyle},\n        muted: {...valueStyle}\n      }\n    },\n    columnName2 : {\n        ...\n    },\n    ...\n }\n\n - symbolStyle is the CSS properties for the symbol, which\nis either a swatch, dot or line. For a line, you'd want to\nprovide the SVG <line> properties, for a swatch you'd provide\nthe SVG <rect> properties and for a dot the <ellipse> properties.\n - labelStyle is the main label for the legend item. It is a\n SVG <text> element, so you can control the font properties.\n - valueStyle is the optional value. As with the labelStyle you\n this is an SVG <text> element.\n\nFinally, you can provide a function to the `style` prop. This\nis similar to providing an object, except your function will\nbe called with the columnName and you should return the map\ncontaining symbol, label and value styles.",
     "methods": [
       {
         "name": "handleClick",
@@ -1835,42 +2383,6 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderLine",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "style",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderSwatch",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "style",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderDot",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "style",
-            "type": null
-          }
-        ],
         "returns": null
       },
       {
@@ -1932,6 +2444,42 @@
           }
         ],
         "returns": null
+      },
+      {
+        "name": "renderLine",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderSwatch",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderDot",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
       }
     ],
     "props": {
@@ -1940,15 +2488,15 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"swatch\"",
+              "value": "'swatch'",
               "computed": false
             },
             {
-              "value": "\"line\"",
+              "value": "'line'",
               "computed": false
             },
             {
-              "value": "\"dot\"",
+              "value": "'dot'",
               "computed": false
             }
           ]
@@ -1956,7 +2504,7 @@
         "required": false,
         "description": "The overall style of the legend items, either a color \"swatch\", a\ncolored \"line\", or a \"dot\".",
         "defaultValue": {
-          "value": "\"swatch\"",
+          "value": "'swatch'",
           "computed": false
         }
       },
@@ -1965,11 +2513,11 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"left\"",
+              "value": "'left'",
               "computed": false
             },
             {
-              "value": "\"right\"",
+              "value": "'right'",
               "computed": false
             }
           ]
@@ -1977,7 +2525,7 @@
         "required": false,
         "description": "Alignment of the legend within the available space. Either left or right.",
         "defaultValue": {
-          "value": "\"left\"",
+          "value": "'left'",
           "computed": false
         }
       },
@@ -2034,38 +2582,68 @@
           }
         },
         "required": true,
-        "description": "The categories array specifies details and style for each item in the legend. For each item:\n * \"key\" - (required) the name by which the legend will be known\n * \"label\" - (required) the displayed label\n * \"style\" - the swatch, dot, or line style. Typically you'd just specify {backgroundColor: \"#1f77b4\"}\n * \"labelStyle\" - the label style\n * \"disabled\" - a disabled state\n\n```\nconst categories = [\n   {key: \"aust\", label: \"AUD\", disabled: this.state.disabled[\"aust\"], style: {backgroundColor: \"#1f77b4\"}},\n   {key: \"usa\", label: \"USD\", disabled: this.state.disabled[\"usa\"], style: {backgroundColor: \"#aec7e8\"}}\n];\n```"
-      },
-      "onChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "Callback which will be called when the use enables/disables the legend item\nby clicking on it. The callback will be called with the key and the new\ndisabled state."
-      },
-      "labelStyle": {
-        "defaultValue": {
-          "value": "{}",
-          "computed": false
-        }
+        "description": "The categories array specifies details and style for each item in the legend. For each item:\n * \"key\" - (required) the name by which the legend will be known\n * \"label\" - (required) the displayed label\n * \"style\" - the swatch, dot, or line style. Typically you'd just\n             specify {backgroundColor: \"#1f77b4\"}\n * \"labelStyle\" - the label style\n * \"disabled\" - a disabled state\n\n```\nconst categories = [\n   {key: \"aust\", label: \"AUD\", disabled: this.state.disabled[\"aust\"],\n     style: {backgroundColor: \"#1f77b4\"}},\n   {key: \"usa\", label: \"USD\", disabled: this.state.disabled[\"usa\"],\n     style: {backgroundColor: \"#aec7e8\"}}\n];\n```"
       },
       "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the legend symbol",
         "defaultValue": {
           "value": "16",
           "computed": false
         }
       },
       "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the legend symbol",
         "defaultValue": {
           "value": "16",
+          "computed": false
+        }
+      },
+      "highlight": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Which item, specified by its key, should be rendered as highlighted"
+      },
+      "selection": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Which item, specified by its key, should be rendered as selected"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback will be called with a legend item is selected (i.e. it is clicked\non by the user)"
+      },
+      "onHighlightChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Callback will be called with a legend item is highlighted (i.e. it is hovered\nover by the user)"
+      },
+      "labelStyle": {
+        "defaultValue": {
+          "value": "{}",
           "computed": false
         }
       }
     }
   },
   "src/components/LineChart.js": {
-    "description": "The `<LineChart>` component is able to display multiple columns of a TimeSeries\nas separate line charts.\n\nThe `<LineChart>` should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\n\nHere is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:\n\n```\n    <ChartContainer timeRange={this.state.timerange} >\n        <ChartRow height=\"200\">\n            <YAxis id=\"y\" label=\"Price ($)\" min={0.5} max={1.5} format=\"$,.2f\" />\n            <Charts>\n                <LineChart\n                    axis=\"y\"\n                    breakLine={false}\n                    series={currencySeries}\n                    columns={[\"aud\", \"euro\"]}\n                    style={style}\n                    interpolation=\"curveBasis\" />\n            </Charts>\n        </ChartRow>\n    </ChartContainer>\n```",
-    "displayName": "LineChart",
+    "description": "The `<LineChart>` component is able to display multiple columns of a TimeSeries\nas separate line charts.\n\nThe `<LineChart>` should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\n\nHere is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:\n\n```\n  <ChartContainer timeRange={this.state.timerange} >\n    <ChartRow height=\"200\">\n      <YAxis id=\"y\" label=\"Price ($)\" min={0.5} max={1.5} format=\"$,.2f\" />\n      <Charts>\n        <LineChart\n          axis=\"y\"\n          breakLine={false}\n          series={currencySeries}\n          columns={[\"aud\", \"euro\"]}\n          style={style}\n          interpolation=\"curveBasis\" />\n      </Charts>\n    </ChartRow>\n  </ChartContainer>\n```",
     "methods": [
       {
         "name": "handleHover",
@@ -2188,12 +2766,15 @@
       },
       "columns": {
         "type": {
-          "name": "array"
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
         },
         "required": false,
         "description": "Which columns from the series to draw.",
         "defaultValue": {
-          "value": "[\"value\"]",
+          "value": "['value']",
           "computed": false
         }
       },
@@ -2214,66 +2795,66 @@
           ]
         },
         "required": false,
-        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const lineStyles = {\n     value: {\n         stroke: \"steelblue\",\n         strokeWidth: 1,\n         strokeDasharray: \"4,2\"\n     }\n };\n\n <LineChart style={lineStyles} ... />\n\n Alternatively, you can pass in a Styler. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\nconst style = {\n    in: {\n        normal: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n        highlighted: {stroke: \"#5a98cb\", fill: \"none\", strokeWidth: 1},\n        selected: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n        muted: {stroke: \"steelblue\", fill: \"none\", opacity: 0.4, strokeWidth: 1}\n    },\n    out: {\n        ...\n    }\n};\n\n <LineChart style={style} ... />\n```\n\nAlternatively, you can pass in a `Styler`. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
       },
       "interpolation": {
         "type": {
           "name": "enum",
           "value": [
             {
-              "value": "\"curveBasis\"",
+              "value": "'curveBasis'",
               "computed": false
             },
             {
-              "value": "\"curveBasisOpen\"",
+              "value": "'curveBasisOpen'",
               "computed": false
             },
             {
-              "value": "\"curveBundle\"",
+              "value": "'curveBundle'",
               "computed": false
             },
             {
-              "value": "\"curveCardinal\"",
+              "value": "'curveCardinal'",
               "computed": false
             },
             {
-              "value": "\"curveCardinalOpen\"",
+              "value": "'curveCardinalOpen'",
               "computed": false
             },
             {
-              "value": "\"curveCatmullRom\"",
+              "value": "'curveCatmullRom'",
               "computed": false
             },
             {
-              "value": "\"curveCatmullRomOpen\"",
+              "value": "'curveCatmullRomOpen'",
               "computed": false
             },
             {
-              "value": "\"curveLinear\"",
+              "value": "'curveLinear'",
               "computed": false
             },
             {
-              "value": "\"curveMonotone\"",
+              "value": "'curveMonotone'",
               "computed": false
             },
             {
-              "value": "\"curveNatural\"",
+              "value": "'curveNatural'",
               "computed": false
             },
             {
-              "value": "\"curveRadial\"",
+              "value": "'curveRadial'",
               "computed": false
             },
             {
-              "value": "\"curveStep\"",
+              "value": "'curveStep'",
               "computed": false
             },
             {
-              "value": "\"curveStepAfter\"",
+              "value": "'curveStepAfter'",
               "computed": false
             },
             {
-              "value": "\"curveStepBefore\"",
+              "value": "'curveStepBefore'",
               "computed": false
             }
           ]
@@ -2281,7 +2862,7 @@
         "required": false,
         "description": "Any of D3's interpolation modes.",
         "defaultValue": {
-          "value": "\"curveLinear\"",
+          "value": "'curveLinear'",
           "computed": false
         }
       },
@@ -2296,7 +2877,7 @@
           "computed": false
         }
       },
-      "selected": {
+      "selection": {
         "type": {
           "name": "string"
         },
@@ -2310,19 +2891,40 @@
         "required": false,
         "description": "A callback that will be called when the selection changes. It will be called\nwith the column corresponding to the line being clicked."
       },
-      "highlighted": {
+      "highlight": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": "The highlighted column, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+        "description": "The highlighted column, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChange`"
       },
-      "onHighlightChanged": {
+      "onHighlightChange": {
         "type": {
           "name": "func"
         },
         "required": false,
         "description": "A callback that will be called when the hovered over line changes.\nIt will be called with the corresponding column."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
       },
       "smooth": {
         "defaultValue": {
@@ -2342,12 +2944,32 @@
         "params": [],
         "returns": null
       }
-    ]
+    ],
+    "props": {
+      "children": {
+        "type": {
+          "name": "node"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
   },
   "src/components/ScatterChart.js": {
-    "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom info overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart axis=\"wind\" series={series} style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover info for each point is also able to be styled using the info style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `infoWidth` and `infoHeight` props you can control the size of the box, which\nis fixed.",
-    "displayName": "ScatterChart",
+    "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom info overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart\n              axis=\"wind\"\n              series={series}\n              style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover info for each point is also able to be styled using the info style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `infoWidth` and `infoHeight` props you can control the size of the box, which\nis fixed.",
     "methods": [
+      {
+        "name": "getOffsetMousePosition",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
       {
         "name": "handleClick",
         "docblock": null,
@@ -2363,18 +2985,6 @@
           },
           {
             "name": "column",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getOffsetMousePosition",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
             "type": null
           }
         ],
@@ -2457,7 +3067,7 @@
         "required": false,
         "description": "Which columns of the series to render",
         "defaultValue": {
-          "value": "[\"value\"]",
+          "value": "['value']",
           "computed": false
         }
       },
@@ -2508,12 +3118,22 @@
       },
       "infoStyle": {
         "type": {
-          "name": "object"
+          "name": "shape",
+          "value": {
+            "line": {
+              "name": "object",
+              "required": false
+            },
+            "box": {
+              "name": "object",
+              "required": false
+            }
+          }
         },
         "required": false,
-        "description": "The style of the info box and connecting lines",
+        "description": "The style of the info box and connecting lines. The style should\nbe an object of the form { line, box }. Line and box are both objects\ncontaining the inline CSS for those elements of the info tracker.",
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    }\n}",
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n}",
           "computed": false
         }
       },
@@ -2561,7 +3181,7 @@
       },
       "selected": {
         "type": {
-          "name": "object"
+          "name": "string"
         },
         "required": false,
         "description": "The selected dot, which will be rendered in the \"selected\" style.\nIf a dot is selected, all other dots will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
@@ -2573,25 +3193,63 @@
         "required": false,
         "description": "A callback that will be called when the selection changes. It will be called\nwith an object containing the event and column."
       },
-      "highlighted": {
+      "highlight": {
         "type": {
-          "name": "object"
+          "name": "shape",
+          "value": {
+            "event": {
+              "name": "instanceOf",
+              "value": "Event",
+              "required": false
+            },
+            "column": {
+              "name": "string",
+              "required": false
+            }
+          }
         },
         "required": false,
-        "description": "The highlighted dot, as an object containing the event and\ncolumn, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChanged`"
+        "description": "The highlighted dot, as an object containing the { event, column },\nwhich will be rendered in the \"highlighted\" style.\n\nSee also the prop `onMouseNear`."
       },
-      "onHighlightChanged": {
+      "onMouseNear": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": "A callback that will be called when the hovered over dot changes.\nIt will be called with an object containing the event and column."
+        "description": "Will be called with the nearest point to the cursor. The callback\nwill contain the point, which is a map of { event, column }."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/TimeAxis.js": {
-    "description": "Renders a horizontal time axis. The TimeAxis is generally rendered by\nthe <ChartContainer> so you do not have to create one of these yourself.",
-    "displayName": "TimeAxis",
+    "description": "Renders a horizontal time axis. This is used internally by the ChartContainer\nas a result of you specifying the timerange for the chart. Please see the API\ndocs for ChartContainer for more information.",
     "methods": [
       {
         "name": "renderTimeAxis",
@@ -2607,15 +3265,63 @@
       }
     ],
     "props": {
+      "scale": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
       "showGrid": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
         "defaultValue": {
           "value": "false",
           "computed": false
         }
       },
+      "gridHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "format": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "utc": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
       "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "labels": {
+              "name": "object",
+              "required": false
+            },
+            "axis": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "",
         "defaultValue": {
-          "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\"\n    }\n}",
+          "value": "{\n  labels: {\n    labelColor: '#8B7E7E', // Default label color\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: '#C0C0C0',\n  },\n}",
           "computed": false
         }
       }
@@ -2623,7 +3329,6 @@
   },
   "src/components/TimeMarker.js": {
     "description": "",
-    "displayName": "TimeMarker",
     "methods": [
       {
         "name": "renderLine",
@@ -2671,7 +3376,7 @@
         "required": false,
         "description": ""
       },
-      "info": {
+      "infoValues": {
         "type": {
           "name": "union",
           "value": [
@@ -2701,12 +3406,26 @@
       },
       "infoStyle": {
         "type": {
-          "name": "object"
+          "name": "shape",
+          "value": {
+            "line": {
+              "name": "object",
+              "required": false
+            },
+            "box": {
+              "name": "object",
+              "required": false
+            },
+            "dot": {
+              "name": "object",
+              "required": false
+            }
+          }
         },
         "required": false,
-        "description": "The style of the info box and connecting lines",
+        "description": "The style of the info box and connecting lines. This is an\nobject of the form { line, box, dot }. Line, box and dot\nare themselves objects representing inline CSS for each of\nthe pieces of the info marker.",
         "defaultValue": {
-          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.90,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n  dot: {\n    fill: '#999',\n  },\n}",
           "computed": false
         }
       },
@@ -2771,12 +3490,32 @@
         },
         "required": false,
         "description": "The time format (d3 time format) used for display of the time above the info box."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
       }
     }
   },
   "src/components/TimeRangeMarker.js": {
-    "description": "Renders a band with extents defined by the supplied TimeRange.",
-    "displayName": "TimeRangeMarker",
+    "description": "Renders a band with extents defined by the supplied TimeRange. This\nis a super simple component right now which just renders a simple\nrectangle, in the style of the prop `style` across the timerange\nspecified. However, this is useful for highlighting a timerange to\ncorrespond with another part of the your UI.\n\nSee also the Brush component for a TimeRange marker that you can\nresize interactively.",
     "methods": [
       {
         "name": "renderBand",
@@ -2793,18 +3532,39 @@
           "value": "TimeRange"
         },
         "required": true,
-        "description": ""
+        "description": "The timerange to mark. This is in the form of a Pond TimeRange."
       },
       "style": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "",
+        "description": "The style of the rect that will be rendered as a SVG <Rect>. This\nobject is the inline CSS for that rect.",
         "defaultValue": {
-          "value": "{fill: \"rgba(70, 130, 180, 0.25);\"}",
+          "value": "{ fill: 'rgba(70, 130, 180, 0.25);' }",
           "computed": false
         }
+      },
+      "timeScale": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
       },
       "spacing": {
         "defaultValue": {
@@ -2821,13 +3581,49 @@
     }
   },
   "src/components/ValueAxis.js": {
-    "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n\n EXPERIMENTAL",
-    "displayName": "ValueAxis",
-    "methods": []
+    "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+",
+    "methods": [],
+    "props": {
+      "value": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        "required": false,
+        "description": "If values are numbers, use this format string"
+      },
+      "detail": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "If values are numbers, use this format string"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the axis"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the axis"
+      }
+    }
   },
   "src/components/ValueList.js": {
     "description": "Renders a list of values in svg\n\n     +----------------+\n     | Max 100 Gbps   |\n     | Avg 26 Gbps    |\n     +----------------+",
-    "displayName": "ValueList",
     "methods": [],
     "props": {
       "align": {
@@ -2835,11 +3631,11 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"center\"",
+              "value": "'center'",
               "computed": false
             },
             {
-              "value": "\"left\"",
+              "value": "'left'",
               "computed": false
             }
           ]
@@ -2847,7 +3643,7 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "\"center\"",
+          "value": "'center'",
           "computed": false
         }
       },
@@ -2879,6 +3675,17 @@
         "required": true,
         "description": "An array of label value pairs to render"
       },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "CSS object to be applied to the ValueList surrounding box",
+        "defaultValue": {
+          "value": "{ fill: '#FEFEFE', stroke: '#DDD', opacity: 0.8 }",
+          "computed": false
+        }
+      },
       "width": {
         "type": {
           "name": "number"
@@ -2903,50 +3710,15 @@
       },
       "pointerEvents": {
         "defaultValue": {
-          "value": "\"none\"",
-          "computed": false
-        }
-      },
-      "style": {
-        "defaultValue": {
-          "value": "{fill: \"#FEFEFE\", stroke: \"#DDD\", opacity: 0.8}",
+          "value": "'none'",
           "computed": false
         }
       }
     }
   },
   "src/components/YAxis.js": {
-    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n    id=\"price-axis\"\n    label=\"Price (USD)\"\n    min={0} max={100}\n    width=\"60\"\n    type=\"linear\"\n    format=\"$,.2f\" />\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" type=\"linear\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" type=\"linear\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
-    "displayName": "YAxis",
+    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
     "methods": [
-      {
-        "name": "renderAxis",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "align",
-            "type": null
-          },
-          {
-            "name": "scale",
-            "type": null
-          },
-          {
-            "name": "width",
-            "type": null
-          },
-          {
-            "name": "absolute",
-            "type": null
-          },
-          {
-            "name": "fmt",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
       {
         "name": "updateAxis",
         "docblock": null,
@@ -2978,6 +3750,34 @@
           }
         ],
         "returns": null
+      },
+      {
+        "name": "renderAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "align",
+            "type": null
+          },
+          {
+            "name": "scale",
+            "type": null
+          },
+          {
+            "name": "width",
+            "type": null
+          },
+          {
+            "name": "absolute",
+            "type": null
+          },
+          {
+            "name": "fmt",
+            "type": null
+          }
+        ],
+        "returns": null
       }
     ],
     "props": {
@@ -2986,9 +3786,9 @@
           "name": "string"
         },
         "required": true,
-        "description": "A name for the axis which can be used by a chart to reference the axis.",
+        "description": "A name for the axis which can be used by a chart to reference the axis.\nThis is used by the ChartRow to match charts to this axis.",
         "defaultValue": {
-          "value": "\"yaxis\"",
+          "value": "'yaxis'",
           "computed": false
         }
       },
@@ -3004,15 +3804,15 @@
           "name": "enum",
           "value": [
             {
-              "value": "\"linear\"",
+              "value": "'linear'",
               "computed": false
             },
             {
-              "value": "\"power\"",
+              "value": "'power'",
               "computed": false
             },
             {
-              "value": "\"log\"",
+              "value": "'log'",
               "computed": false
             }
           ]
@@ -3020,7 +3820,7 @@
         "required": false,
         "description": "The scale type: linear, power, or log.",
         "defaultValue": {
-          "value": "\"linear\"",
+          "value": "'linear'",
           "computed": false
         }
       },
@@ -3043,6 +3843,47 @@
         "description": "Maxium value, which combined with \"min,\"\" define the scale of the axis.",
         "defaultValue": {
           "value": "1",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "labels": {
+              "name": "object",
+              "required": false
+            },
+            "axis": {
+              "name": "object",
+              "required": false
+            },
+            "labelColor": {
+              "name": "string",
+              "required": false
+            },
+            "labelFont": {
+              "name": "string",
+              "required": false
+            },
+            "labelWeight": {
+              "name": "string",
+              "required": false
+            },
+            "labelSize": {
+              "name": "string",
+              "required": false
+            },
+            "width": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Object specifying the available parameters by which the axis can be\nstyled. The object can contain: \"labels\" and \"axis\". Each of these\nis an inline CSS style applied to the tick labels and axis lines\nrespectively.\n\nIn addition the axis label itself can be styled with: \"labelColor\",\n\"labelFont\", \"labelWidth\" and \"labelSize\".",
+        "defaultValue": {
+          "value": "{\n  labels: {\n    labelColor: '#8B7E7E', // Default label color\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: '#C0C0C0',\n  },\n}",
           "computed": false
         }
       },
@@ -3076,6 +3917,17 @@
           "computed": false
         }
       },
+      "labelOffset": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Offset the axis label from its default position. This allows you to\nfine tune the label location, which may be necessary depending on the\nscale and how much room the tick labels take up. Maybe positive or\nnegative.",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
       "format": {
         "type": {
           "name": "string"
@@ -3083,7 +3935,7 @@
         "required": false,
         "description": "d3.format for the axis labels. e.g. `format=\"$,.2f\"`",
         "defaultValue": {
-          "value": "\".2s\"",
+          "value": "'.2s'",
           "computed": false
         }
       },
@@ -3094,25 +3946,27 @@
         "required": false,
         "description": "If the chart should be rendered to with the axis on the left or right.\nIf you are using the axis in a ChartRow, you do not need to provide this.",
         "defaultValue": {
-          "value": "\"left\"",
+          "value": "'left'",
           "computed": false
         }
+      },
+      "scale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The scale supplied by the ChartRow"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
       },
       "absolute": {
         "defaultValue": {
           "value": "false",
-          "computed": false
-        }
-      },
-      "labelOffset": {
-        "defaultValue": {
-          "value": "0",
-          "computed": false
-        }
-      },
-      "style": {
-        "defaultValue": {
-          "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\"\n    }\n}",
           "computed": false
         }
       }
