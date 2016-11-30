@@ -284,7 +284,7 @@ export default class AreaChart extends React.Component {
   render() {
     return (
       <g>
-          {this.renderAreas()}
+        {this.renderAreas()}
       </g>
     );
   }

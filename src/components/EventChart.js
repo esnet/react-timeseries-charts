@@ -144,7 +144,7 @@ export default class EventChart extends React.Component {
             onMouseLeave={() => this.onMouseLeave()}
             onMouseOver={e => this.onMouseOver(e, event)}
           />
-            {text}
+          {text}
         </g>
       );
 

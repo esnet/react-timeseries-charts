@@ -320,7 +320,7 @@ export default class ChartContainer extends React.Component {
           onZoom={tr => this.handleZoom(tr)}
           onResize={(width, height) => this.handleResize(width, height)}
         >
-            {chartRows}
+          {chartRows}
         </EventHandler>
       </g>
     );
