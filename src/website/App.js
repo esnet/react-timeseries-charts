@@ -68,6 +68,8 @@ class App extends Component {
                         <li><Link to="/example/weather">Weather example</Link></li>
                         <li><Link to="/example/wind">Scatter example</Link></li>
                         <li><Link to="/example/volume">Barchart example</Link></li>
+                        <li><Link to="/example/nyc">Boxplot example</Link></li>
+                        <li><Link to="/example/climate">Climate example</Link></li>
                     </ul>
 
                     <div className="sidebar-heading">API</div>
@@ -77,6 +79,7 @@ class App extends Component {
                         <li><Link to="/api/AreaChart">AreaChart</Link></li>
                         <li><Link to="/api/BarChart">BarChart</Link></li>
                         <li><Link to="/api/Baseline">Baseline</Link></li>
+                        <li><Link to="/api/BoxChart">BoxChart</Link></li>
                         <li><Link to="/api/Brush">Brush</Link></li>
                         <li><Link to="/api/ChartContainer">ChartContainer</Link></li>
                         <li><Link to="/api/ChartRow">ChartRow</Link></li>

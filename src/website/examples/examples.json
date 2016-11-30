@@ -22,7 +22,7 @@
     "cycling": {
         "title": "Cycling example",
         "description": "A multi-channel visualization of a bike ride. Features pan and zoom and brushing.",
-        "tags": ["LineChart", "AreaChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox", "TimeMarker"]
+        "tags": ["LineChart", "AreaChart", "BoxChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox", "TimeMarker"]
     },
     "ddos": {
         "title": "DDoS attack",
@@ -63,5 +63,15 @@
         "title": "BarChart example",
         "description": "Bar chart examples using traffic volume data.",
         "tags": ["BarChart"]
+    },
+    "nyc": {
+        "title": "NYC temperature example",
+        "description": "Box plot example using NYC temperature data over 1 year. It shows the historical max and min temperature vs actual temperature range.",
+        "tags": ["BoxChart"]
+    },
+    "climate": {
+        "title": "Climate temperature data",
+        "description": "Change in global surface temperature relative to 1951-1980 average temperatures",
+        "tags": ["Baseline", "LineChart", "ScatterChart", "Climate"]
     }
 }

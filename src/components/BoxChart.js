@@ -22,7 +22,7 @@ import {
   median,
 } from 'pondjs';
 
-// import EventMarker from './EventMarker';
+import EventMarker from './EventMarker';
 import { Styler } from '../js/styler';
 import { scaleAsString } from '../js/util';
 
@@ -31,24 +31,29 @@ const defaultFillStyle = {
   stroke: 'none',
 };
 
+const defaultMutedStyle = {
+  fill: 'grey',
+  stroke: 'none',
+};
+
 const defaultStyle = [
   {
     normal: { ...defaultFillStyle, opacity: 0.2 },
     highlighted: { ...defaultFillStyle, opacity: 0.3 },
     selected: { ...defaultFillStyle, opacity: 0.3 },
-    muted: { ...defaultFillStyle, opacity: 0.1 },
+    muted: { ...defaultMutedStyle, opacity: 0.1 },
   },
   {
     normal: { ...defaultFillStyle, opacity: 0.5 },
     highlighted: { ...defaultFillStyle, opacity: 0.6 },
     selected: { ...defaultFillStyle, opacity: 0.6 },
-    muted: { ...defaultFillStyle, opacity: 0.2 },
+    muted: { ...defaultMutedStyle, opacity: 0.2 },
   },
   {
     normal: { ...defaultFillStyle, opacity: 0.9 },
     highlighted: { ...defaultFillStyle, opacity: 1.0 },
     selected: { ...defaultFillStyle, opacity: 1.0 },
-    muted: { ...defaultFillStyle, opacity: 0.2 },
+    muted: { ...defaultMutedStyle, opacity: 0.2 },
   },
 ];
 
@@ -60,6 +65,44 @@ const defaultAggregation = {
     center: median(),
   },
 };
+
+function getSeries(series, column) {
+  return series.map((e) => {
+    const v = e.get(column);
+    const d = {};
+    switch (v.length) {
+      case 1:
+        d.center = v[0];
+        break;
+      case 2:
+        d.innerMin = v[0];
+        d.innerMax = v[1];
+        break;
+      case 3:
+        d.innerMin = v[0];
+        d.center = v[1];
+        d.innerMax = v[2];
+        break;
+      case 4:
+        d.outerMin = v[0];
+        d.innerMin = v[1];
+        d.innerMax = v[2];
+        d.outerMax = v[3];
+        break;
+      case 5:
+        d.outerMin = v[0];
+        d.innerMin = v[1];
+        d.center = v[2];
+        d.innerMax = v[3];
+        d.outerMax = v[4];
+        break;
+      default:
+        console.error('Tried to make boxchart from invalid array');
+    }
+    const ee = new IndexedEvent(e.index(), d);
+    return ee;
+  });
+}
 
 function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
   const { size, reducers } = aggregation;
@@ -95,14 +138,31 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
 
 /**
  * Renders a boxplot chart.
+ *
+ * The TimeSeries supplied to the boxplot can be one of two types:
+ *
+ *  1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.
+ *     In this case a `column` prop should be supplied to specify the
+ *     dimensions of the boxes. This props should be an array of size 1 to
+ *     5 elements. e.g. [12, 18, 22, 28].
+ *
+ *  2) A TimeSeries containing timestamp based Events. In this case the
+ *     boxplot will be aggregated. To control the aggregation you can supply
+ *     an `aggregation` prop: a structure to specify the window size and
+ *     reducers used to determine the boxes.
  */
 export default class BoxChart extends React.Component {
 
   constructor(props) {
     super(props);
-    this.series = getAggregatedSeries(props.series,
-                                      props.column,
-                                      props.aggregation);
+    if (props.series._collection._type === Event) {  // eslint-disable-line
+      this.series = getAggregatedSeries(props.series,
+                                        props.column,
+                                        props.aggregation);
+    } else {
+      this.series = getSeries(props.series,
+                              props.column);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -135,12 +195,16 @@ export default class BoxChart extends React.Component {
     const column = nextProps.column;
     const style = nextProps.style;
     const aggregation = nextProps.aggregation;
+    const highlighted = nextProps.highlighted;
+    const selected = nextProps.selected;
 
     const widthChanged = (this.props.width !== width);
     const timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
     const yAxisScaleChanged = (this.props.yScale !== yScale);
     const columnChanged = this.props.column !== column;
     const styleChanged = (JSON.stringify(this.props.style) !== JSON.stringify(style));
+    const highlightedChanged = this.props.highlighted !== highlighted;
+    const selectedChanged = this.props.selected !== selected;
 
     let aggregationChanged = false;
     if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
@@ -167,14 +231,15 @@ export default class BoxChart extends React.Component {
       columnChanged ||
       styleChanged ||
       yAxisScaleChanged ||
-      aggregationChanged
+      aggregationChanged ||
+      highlightedChanged ||
+      selectedChanged
     );
   }
-  /*
-  handleHover(e, event, column) {
-    const bar = { event, column };
+
+  handleHover(e, event) {
     if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(bar);
+      this.props.onHighlightChange(event);
     }
   }
 
@@ -184,14 +249,12 @@ export default class BoxChart extends React.Component {
     }
   }
 
-  handleClick(e, event, column) {
-    const bar = { event, column };
+  handleClick(e, event) {
     if (this.props.onSelectionChange) {
-      this.props.onSelectionChange(bar);
+      this.props.onSelectionChange(event);
     }
     e.stopPropagation();
   }
-  */
 
   providedStyleArray(column) {
     let style = defaultStyle;
@@ -210,42 +273,50 @@ export default class BoxChart extends React.Component {
   /**
    * Returns the style used for drawing the path
    */
-  style(event, level) {
+  style(column, event, level) {
     let style;
     if (!this.providedStyle) {
       this.providedStyle = this.providedStyleArray(this.props.column);
     }
 
-    if (!_.isNull(this.providedStyle) && (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)) {
+    if (!_.isNull(this.providedStyle) &&
+      (!_.isArray(this.providedStyle) ||
+        this.providedStyle.length !== 3)) {
       console.warn('Provided style to BoxChart should be an array of 3 objects');
       return defaultStyle;
     }
 
     const isHighlighted =
       this.props.highlighted &&
-      column === this.props.highlighted.column &&
-      Event.is(this.props.highlighted.event, event);
+      Event.is(this.props.highlighted, event);
 
     const isSelected =
       this.props.selected &&
-      column === this.props.selected.column &&
-      Event.is(this.props.selected.event, event);
+      Event.is(this.props.selected, event);
 
     if (this.props.selected) {
       if (isSelected) {
-        if (!this.selectedStyle) {
-          this.selectedStyle = merge(true,
+        if (!this.selectedStyle || !this.selectedStyle[level]) {
+          if (!this.selectedStyle) {
+            this.selectedStyle = [];
+          }
+          this.selectedStyle[level] = merge(true,
                 defaultStyle[level].selected,
-                this.providedStyle[level].selected ? this.providedStyle[level].selected : {});
+                this.providedStyle[level].selected ?
+                this.providedStyle[level].selected : {});
         }
-        style = this.selectedStyle;
+        style = this.selectedStyle[level];
       } else if (isHighlighted) {
-        if (!this.highlightedStyle) {
-          this.highlightedStyle = merge(true,
+        if (!this.highlightedStyle || !this.highlightedStyle[level]) {
+          if (!this.highlightedStyle) {
+            this.highlightedStyle = [];
+          }
+          this.highlightedStyle[level] = merge(true,
                   defaultStyle[level].highlighted,
-                  this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
+                  this.providedStyle[level].highlighted ?
+                  this.providedStyle[level].highlighted : {});
         }
-        style = this.highlightedStyle;
+        style = this.highlightedStyle[level];
       } else {
         if (!this.mutedStyle) {
           this.mutedStyle = [];
@@ -263,27 +334,30 @@ export default class BoxChart extends React.Component {
               defaultStyle[level].highlighted,
               this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
     } else {
-        if (!this.normalStyle) {
-          this.normalStyle = [];
-        }
-        if (!this.normalStyle[level]) {
-          this.normalStyle[level] = merge(true,
-                  defaultStyle[level].normal,
-                  this.providedStyle[level].normal ? this.providedStyle[level].normal : {});
-        }
-        style = this.normalStyle[level];
+      if (!this.normalStyle) {
+        this.normalStyle = [];
+      }
+      if (!this.normalStyle[level]) {
+        this.normalStyle[level] = merge(true,
+                                        defaultStyle[level].normal,
+                                        this.providedStyle[level].normal ?
+                                        this.providedStyle[level].normal : {});
+      }
+      style = this.normalStyle[level];
     }
-
     return style;
   }
 
   renderBars() {
     const spacing = +this.props.spacing;
-    const timeScale = this.props.timeScale;
-    const yScale = this.props.yScale;
+    const {
+      timeScale,
+      yScale,
+      column,
+    } = this.props;
 
     const bars = [];
-    // let eventMarker;
+    let eventMarker;
 
     //
     // Convert the series
@@ -310,9 +384,9 @@ export default class BoxChart extends React.Component {
       const index = event.index();
 
       const styles = [];
-      styles[0] = this.style(event, 0);
-      styles[1] = this.style(event, 1);
-      styles[2] = this.style(event, 2);
+      styles[0] = this.style(column, event, 0);
+      styles[1] = this.style(column, event, 1);
+      styles[2] = this.style(column, event, 2);
 
       const d = event.data();
 
@@ -335,6 +409,7 @@ export default class BoxChart extends React.Component {
         hasCenter = false;
       }
 
+      let ymax = 0;
       if (hasOuter) {
         let level = 0;
         if (!hasInner) {
@@ -344,11 +419,19 @@ export default class BoxChart extends React.Component {
           level += 1;
         }
         const keyOuter = `${this.series.name()}-${index}-outer`;
-        const boxOuter = { x, y: outerMax, width, height: outerMin - outerMax, rx: 2, ry: 2 };
+        const boxOuter = { x: x + 1, y: outerMax, width: width - 2 < 1 ? 1 : width - 2, height: outerMin - outerMax, rx: 2, ry: 2 };
         const barOuterProps = { key: keyOuter, ...boxOuter, style: styles[level] };
+        if (this.props.onSelectionChange) {
+          barOuterProps.onClick = e => this.handleClick(e, event);
+        }
+        if (this.props.onHighlightChange) {
+          barOuterProps.onMouseMove = e => this.handleHover(e, event);
+          barOuterProps.onMouseLeave = () => this.handleHoverLeave();
+        }
         bars.push(
           <rect {...barOuterProps} />
         );
+        ymax = 'outerMax';
       }
 
       if (hasInner) {
@@ -359,9 +442,17 @@ export default class BoxChart extends React.Component {
         const keyInner = `${this.series.name()}-${index}-inner`;
         const boxInner = { x, y: innerMax, width, height: innerMin - innerMax, rx: 1, ry: 1 };
         const barInnerProps = { key: keyInner, ...boxInner, style: styles[level] };
+        if (this.props.onSelectionChange) {
+          barInnerProps.onClick = e => this.handleClick(e, event);
+        }
+        if (this.props.onHighlightChange) {
+          barInnerProps.onMouseMove = e => this.handleHover(e, event);
+          barInnerProps.onMouseLeave = () => this.handleHoverLeave();
+        }
         bars.push(
           <rect {...barInnerProps} />
         );
+        ymax = ymax || 'innerMax';
       }
 
       if (hasCenter) {
@@ -369,34 +460,40 @@ export default class BoxChart extends React.Component {
         const keyCenter = `${this.series.name()}-${index}-center`;
         const boxCenter = { x, y: center, width, height: 1 };
         const barCenterProps = { key: keyCenter, ...boxCenter, style: styles[level] };
+        if (this.props.onSelectionChange) {
+          barCenterProps.onClick = e => this.handleClick(e, event);
+        }
+        if (this.props.onHighlightChange) {
+          barCenterProps.onMouseMove = e => this.handleHover(e, event);
+          barCenterProps.onMouseLeave = () => this.handleHoverLeave();
+        }
         bars.push(
           <rect {...barCenterProps} />
         );
+        ymax = ymax || 'center';
       }
 
       // Event marker if info provided and hovering
-      /*
       const isHighlighted = this.props.highlighted &&
-                  column === this.props.highlighted.column &&
-                  Event.is(this.props.highlighted.event, event);
+                            Event.is(this.props.highlighted, event);
       if (isHighlighted && this.props.info) {
         eventMarker = (
           <EventMarker
             {...this.props}
-            offsetX={offset}
-            offsetY={yBase - ypos}
+            yValueFunc={e => e.get(ymax)}
             event={event}
             column={column}
+            marker="circle"
+            markerRadius={2}
           />
         );
       }
-      */
     }
 
     return (
       <g>
         {bars}
-        { /* eventMarker */ }
+        {eventMarker}
       </g>
     );
   }
@@ -432,7 +529,7 @@ BoxChart.propTypes = {
       console.log('Event style TimeSeries supplied');
     }
 
-    // everythin ok
+    // everything ok
     return null;
   },
 
@@ -549,10 +646,7 @@ BoxChart.propTypes = {
    *
    * See also `onSelectionChange`
    */
-  selected: React.PropTypes.shape({
-    event: React.PropTypes.instanceOf(IndexedEvent),
-    column: React.PropTypes.string,
-  }),
+  selected: React.PropTypes.instanceOf(IndexedEvent),
 
   /**
    * A callback that will be called when the selection changes. It will be called
@@ -565,10 +659,19 @@ BoxChart.propTypes = {
    *
    * See also `onHighlightChange`
    */
-  highlighted: React.PropTypes.shape({
-    event: React.PropTypes.instanceOf(IndexedEvent),
-    column: React.PropTypes.string,
-  }),
+  highlighted: React.PropTypes.instanceOf(IndexedEvent),
+
+  /**
+   * A callback that will be called when the selection changes. It will be called
+   * with the event corresponding to the box clicked as its only arg.
+   */
+  onSelectionChange: React.PropTypes.func,
+
+  /**
+   * A callback that will be called when the hovered over bar changes.
+   * It will be called with the event corresponding to the box hovered over.
+   */
+  onHighlightChange: React.PropTypes.func,
 
   /**
    * A callback that will be called when the hovered over bar changes.

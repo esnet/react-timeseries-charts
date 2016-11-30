@@ -675,6 +675,286 @@
       }
     }
   },
+  "src/components/BoxChart.js": {
+    "description": "Renders a boxplot chart.\n\nThe TimeSeries supplied to the boxplot can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    dimensions of the boxes. This props should be an array of size 1 to\n    5 elements. e.g. [12, 18, 22, 28].\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    boxplot will be aggregated. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.",
+    "methods": [
+      {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "providedStyleArray",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "event"
+          },
+          {
+            "name": "level"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
+        "name": "renderBars",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "series": {
+        "type": {
+          "name": "custom",
+          "raw": "(props, propName, componentName) => {\n  const value = props[propName];\n  if (!(value instanceof TimeSeries)) {\n    return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);\n  }\n\n  const t = value.collection().type();\n  if (t instanceof Event) {\n    console.log('Event style TimeSeries supplied');\n  }\n\n  if (t instanceof TimeRangeEvent || t instanceof IndexedEvent) {\n    console.log('Event style TimeSeries supplied');\n  }\n\n  // everything ok\n  return null;\n}"
+        },
+        "required": false,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize"
+      },
+      "spacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The distance in pixels to inset the bar chart from its actual timerange",
+        "defaultValue": {
+          "value": "1.0",
+          "computed": false
+        }
+      },
+      "column": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The column within a Event based TimeSeries to summarize",
+        "defaultValue": {
+          "value": "'value'",
+          "computed": false
+        }
+      },
+      "aggregation": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "size": {
+              "name": "string",
+              "required": false
+            },
+            "reducers": {
+              "name": "shape",
+              "value": {
+                "inner": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "outer": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "center": {
+                  "name": "func",
+                  "required": false
+                }
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The aggregation specification. This object should contain:\n  - innerMax\n  - innerMin\n  - outerMax\n  - outerMin\n  - center\nThough each of the pairs, and center, is optional.\nFor each of these keys you should supply the function you\nwant to use to calculate these. You can import common functions\nfrom Pond, e.g. min(), avg(), percentile(95), etc."
+      },
+      "style": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The style of the bar chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being drawn,\nper the `columns` prop. For each column a style is defined for\neach state the bar may be in. This style is the CSS properties for\nthe underlying SVG <Rect>, so most likely you'll define fill and\nopacity.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\nfour states (normal, highlighted, selected and muted) and the corresponding\nCSS properties."
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n  line: {\n    stroke: '#999',\n    cursor: 'crosshair',\n    pointerEvents: 'none',\n  },\n  box: {\n    fill: 'white',\n    opacity: 0.90,\n    stroke: '#999',\n    pointerEvents: 'none',\n  },\n  dot: {\n    fill: '#999',\n  },\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "info": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "string",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
+      },
+      "size": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the bar will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "selected": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The selected item, which will be rendered in the \"selected\" style.\nIf a bar is selected, all other bars will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
+      },
+      "highlighted": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChange`"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith the event corresponding to the box clicked as its only arg."
+      },
+      "onHighlightChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over bar changes.\nIt will be called with the event corresponding to the box hovered over."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      }
+    }
+  },
   "src/components/Brush.js": {
     "description": "Renders a brush with the range defined in the prop `timeRange`.",
     "methods": [
@@ -1037,6 +1317,27 @@
           "computed": false
         }
       },
+      "timeAxisStyle": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "labels": {
+              "name": "object",
+              "required": false
+            },
+            "axis": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Adjust the time axis style. This is an object of the\nform { labels, axis } where \"label\" and \"axis\" are objects\nthemselves. The options here are best represented by\nan example:\n\n```\n const axisStyle = {\n     labels: {\n         labelColor: \"grey\",\n         labelWeight: 100,\n         labelSize: 11\n     },\n     axis: {\n         axisColor: \"grey\",\n         axisWidth: 1\n     }\n };\n```",
+        "defaultValue": {
+          "value": "{\n  labels: {\n    labelColor: \"#8B7E7E\",\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: \"#C0C0C0\",\n    axisWidth: 1,\n  }\n}",
+          "computed": false
+        }
+      },
       "trackerHintWidth": {
         "type": {
           "name": "number"
@@ -1124,7 +1425,7 @@
     }
   },
   "src/components/ChartRow.js": {
-    "description": "A ChartRow is a container for a set of Y axes and multiple charts\nwhich are overlaid on each other in a central canvas.\n\n![ChartRow](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartrows.png \"ChartRow\")\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
+    "description": "A ChartRow is a container for a set of YAxis and multiple charts\nwhich are overlaid on each other in a central canvas.\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
     "methods": [],
     "props": {
       "height": {
@@ -1282,7 +1583,7 @@
     }
   },
   "src/components/Charts.js": {
-    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\n![Charts](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/charts.png \"Charts\")\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### width\n\nA the width your chart will render into",
+    "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### width\n\nA the width your chart will render into",
     "methods": []
   },
   "src/components/EventChart.js": {
@@ -1721,6 +2022,13 @@
           "value": "2",
           "computed": false
         }
+      },
+      "yValueFunc": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "The y value is calculated by the column and event, but if\nthis prop is provided this will be used instead."
       },
       "offsetX": {
         "type": {
@@ -2406,7 +2714,7 @@
           ]
         },
         "required": false,
-        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\n const lineStyles = {\n     value: {\n         stroke: \"steelblue\",\n         strokeWidth: 1,\n         strokeDasharray: \"4,2\"\n     }\n };\n\n <LineChart style={lineStyles} ... />\n\n Alternatively, you can pass in a Styler. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
+        "description": "The styles to apply to the underlying SVG lines. This is a mapping\nof column names to objects with style attributes, in the following\nformat:\n\n```\nconst style = {\n    in: {\n        normal: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n        highlighted: {stroke: \"#5a98cb\", fill: \"none\", strokeWidth: 1},\n        selected: {stroke: \"steelblue\", fill: \"none\", strokeWidth: 1},\n        muted: {stroke: \"steelblue\", fill: \"none\", opacity: 0.4, strokeWidth: 1}\n    },\n    out: {\n        ...\n    }\n};\n\n <LineChart style={style} ... />\n```\n\nAlternatively, you can pass in a `Styler`. For example:\n\n```\nconst currencyStyle = Styler([\n    {key: \"aud\", color: \"steelblue\", width: 1, dashed: true},\n    {key: \"euro\", color: \"#F68B24\", width: 2}\n]);\n\n<LineChart columns={[\"aud\", \"euro\"]} style={currencyStyle} ... />\n\n```"
       },
       "interpolation": {
         "type": {
@@ -3328,7 +3636,7 @@
     }
   },
   "src/components/YAxis.js": {
-    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\n![YAxis](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/yaxis.png \"YAxis\")\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
+    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
     "methods": [
       {
         "name": "updateAxis",

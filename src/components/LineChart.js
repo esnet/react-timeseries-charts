@@ -281,17 +281,22 @@ LineChart.propTypes = {
    * format:
    *
    * ```
-   *  const lineStyles = {
-   *      value: {
-   *          stroke: "steelblue",
-   *          strokeWidth: 1,
-   *          strokeDasharray: "4,2"
-   *      }
-   *  };
+   * const style = {
+   *     in: {
+   *         normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+   *         highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+   *         selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+   *         muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+   *     },
+   *     out: {
+   *         ...
+   *     }
+   * };
    *
-   *  <LineChart style={lineStyles} ... />
+   *  <LineChart style={style} ... />
+   * ```
    *
-   *  Alternatively, you can pass in a Styler. For example:
+   * Alternatively, you can pass in a `Styler`. For example:
    *
    * ```
    * const currencyStyle = Styler([

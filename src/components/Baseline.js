@@ -10,6 +10,7 @@
 
 import merge from 'merge';
 import React from 'react';
+import _ from 'underscore';
 
 const defaultStyle = {
   label: {
@@ -55,7 +56,7 @@ const defaultStyle = {
 export default class Baseline extends React.Component {
 
   render() {
-    if (!this.props.yScale || !this.props.value) {
+    if (!this.props.yScale || _.isUndefined(this.props.value)) {
       return null;
     }
 

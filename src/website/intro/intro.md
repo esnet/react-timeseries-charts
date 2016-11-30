@@ -35,9 +35,10 @@ This charts library was built using React from the ground up, specifically to vi
 
 For us, key drivers in the build our own equation were:
 
+ * time series use cases first, not an after thought
+ * build on an underlying timeseries abstraction (pond.js)
  * ability to pan and zoom, with enough control to dynamically load in data
  * ability to visualize network data using stacked and up/down area charts
- * ability to use a common data abstraction for TimeSeries data
 
 Since then the library has grown to form the basis of visualization throughout the public facing [ESnet Portal](http://my.es.net).
 
@@ -49,7 +50,7 @@ Current features of the library include:
  * Composition into multiple axis and multiple rows and overlays
  * Interactivity, including pan and zoom, selection and highlighting
  * Easily add your own chart types or overlays
- * Line, area, scatter, bar and event charts
+ * Line, area, scatter, bar, boxplot and event charts
  * Brushing for interactive chart region selection
  * Chart pan and zoom constraints
  * Legends

@@ -106,11 +106,18 @@ export default class EventMarker extends React.Component {
         (event.end().getTime() - event.begin().getTime()) / 2);
     }
 
+    let value;
+    if (this.props.yValueFunc) {
+      value = this.props.yValueFunc(event, column);
+    } else {
+      value = event.get(column);
+    }
+
     // Allow overrides on the x and y position. This is useful for the barchart
     // tracker because bars maybe be offset from their actual event position in
     // order to display them side by side.
     const posx = this.props.timeScale(t) + this.props.offsetX;
-    const posy = this.props.yScale(event.get(column)) - this.props.offsetY;
+    const posy = this.props.yScale(value) - this.props.offsetY;
 
     const infoBoxProps = {
       align: 'left',
@@ -280,6 +287,12 @@ EventMarker.propTypes = {
    * The radius of the dot at the end of the marker
    */
   markerRadius: React.PropTypes.number,
+
+  /**
+   * The y value is calculated by the column and event, but if
+   * this prop is provided this will be used instead.
+   */
+  yValueFunc: React.PropTypes.func,
 
   /**
    * Offset the marker position in the x direction.

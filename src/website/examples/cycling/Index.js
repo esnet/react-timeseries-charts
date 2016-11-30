@@ -42,9 +42,6 @@ import ValueAxis from '../../../components/ValueAxis';
 import YAxis from '../../../components/YAxis';
 import styler from '../../../js/styler';
 
-// Custom CSS
-// import "./cycling.css";
-
 //
 // Build TimeSeries from our data file
 //
@@ -181,6 +178,8 @@ const cycling = React.createClass({
       return this.renderMultiAxisChart();
     } else if (this.state.mode === 'channels') {
       return this.renderChannelsChart();
+    } else if (this.state.mode === 'rollup') {
+      return this.renderBoxChart();
     }
 
     return (
@@ -238,25 +237,6 @@ const cycling = React.createClass({
             format=",.1f"
           />
           <Charts>
-            {/*
-
-            */}
-
-            <BoxChart
-              axis="speedaxis"
-              series={speed}
-              column="speed"
-              style={style}
-              aggregation={{
-                size: this.state.rollup,
-                reducers: {
-                  outer: [percentile(5), percentile(95)],
-                  inner: [percentile(25), percentile(75)],
-                  center: median(),
-                },
-              }}
-            />
-{           /*
             <LineChart
               axis="speedaxis"
               series={speedSmoothed}
@@ -265,21 +245,18 @@ const cycling = React.createClass({
               style={style}
               breakLine={false}
             />
-
-            
             <LineChart
               axis="speedaxis"
               series={speedCropped}
-              columns={["speed"]}
+              columns={['speed']}
               style={style}
-              breakLine={true} />
-
+              breakLine
+            />
             <Baseline
               style={baselineStyles.speed}
               axis="speedaxis"
-              value={speed.avg("speed")}/>
-            */}
-
+              value={speed.avg('speed')}
+            />
           </Charts>
           <ValueAxis
             id="speedvalueaxis"
@@ -302,16 +279,118 @@ const cycling = React.createClass({
             format="d"
           />
           <Charts>
-            {/*
             <LineChart
               axis="hraxis"
               series={hrCropped}
               columns={['hr']}
               style={style}
               breakLine
-              tension={0.1}
             />
-            */}
+            <Baseline
+              axis="hraxis"
+              style={baselineStyles.hr}
+              value={hr.avg('hr')}
+            />
+          </Charts>
+          <ValueAxis
+            id="hrvalueaxis"
+            value={hrValue}
+            detail="BPM"
+            min={60}
+            max={200}
+            width={80}
+          />
+        </ChartRow>
+      </ChartContainer>
+    );
+  },
+
+  renderBoxChart() {
+    const tr = this.state.timerange;
+    const speedCropped = speed.crop(tr);
+    const hrCropped = hr.crop(tr);
+
+    // Get the speed at the current tracker position
+    let speedValue = '--';
+    if (this.state.tracker) {
+      const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
+      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get('speed');
+      if (speedAtTracker) {
+        speedValue = speedFormat(speedAtTracker);
+      }
+    }
+
+    // Get the heartrate value at the current tracker position
+    let hrValue = '--';
+    if (this.state.tracker) {
+      const hrIndexAtTracker = hrCropped.bisect(new Date(this.state.tracker));
+      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get('hr');
+      if (hrAtTracker) {
+        hrValue = parseInt(hrAtTracker, 10);
+      }
+    }
+
+    return (
+      <ChartContainer
+        timeRange={this.state.timerange}
+        format="relative"
+        trackerPosition={this.state.tracker}
+        onTrackerChanged={this.handleTrackerChanged}
+        enablePanZoom
+        maxTime={pace.range().end()}
+        minTime={pace.range().begin()}
+        minDuration={10 * 60 * 1000}
+        onTimeRangeChanged={this.handleTimeRangeChange}
+        onChartResize={this.handleChartResize}
+        showGrid={false}
+      >
+        <ChartRow height="100" debug={false}>
+          <LabelAxis
+            id="speedaxis"
+            label="Speed"
+            values={speedSummaryValues}
+            min={0} max={35}
+            width={140}
+            type="linear"
+            format=",.1f"
+          />
+          <Charts>
+            <BoxChart
+              axis="speedaxis"
+              series={speed}
+              column="speed"
+              style={style}
+              aggregation={{
+                size: this.state.rollup,
+                reducers: {
+                  outer: [percentile(5), percentile(95)],
+                  inner: [percentile(25), percentile(75)],
+                  center: median(),
+                },
+              }}
+            />
+          </Charts>
+          <ValueAxis
+            id="speedvalueaxis"
+            value={speedValue}
+            detail="Mph"
+            width={80}
+            min={0}
+            max={35}
+          />
+        </ChartRow>
+        <ChartRow height="100" debug={false}>
+          <LabelAxis
+            id="hraxis"
+            label="Heart Rate"
+            values={hrSummaryValues}
+            min={60}
+            max={200}
+            width={140}
+            type="linear"
+            format="d"
+          />
+          <Charts>
             <BoxChart
               axis="hraxis"
               series={hr}
@@ -326,13 +405,6 @@ const cycling = React.createClass({
                 },
               }}
             />
-            {/*
-            <Baseline
-              axis="hraxis"
-              style={baselineStyles.hr}
-              value={hr.avg('hr')}
-            />
-            */}
           </Charts>
           <ValueAxis
             id="hrvalueaxis"
@@ -474,6 +546,97 @@ const cycling = React.createClass({
     );
   },
 
+  renderMode() {
+    const linkStyle = {
+      fontWeight: 600,
+      color: 'grey',
+      cursor: 'default',
+    };
+
+    const linkStyleActive = {
+      color: 'steelblue',
+      cursor: 'pointer',
+    };
+
+    return (
+      <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
+        <span
+          style={this.state.mode !== 'multiaxis' ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: 'multiaxis' })}
+        >
+            Multi-axis
+        </span>
+        <span> | </span>
+        <span
+          style={this.state.mode !== 'channels' ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: 'channels' })}
+        >
+            Channels
+        </span>
+        <span> | </span>
+        <span
+          style={this.state.mode !== 'rollup' ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: 'rollup' })}
+        >
+            Rollups
+        </span>
+        <hr />
+      </div>
+    );
+  },
+
+  renderModeOptions() {
+    const linkStyle = {
+      fontWeight: 600,
+      color: 'grey',
+      cursor: 'default',
+    };
+
+    const linkStyleActive = {
+      color: 'steelblue',
+      cursor: 'pointer',
+    };
+
+    if (this.state.mode === 'multiaxis') {
+      return (
+        <div />
+      );
+    } else if (this.state.mode === 'channels') {
+      return (
+        <div />
+      );
+    } else if (this.state.mode === 'rollup') {
+      return (
+        <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
+          <span
+            style={this.state.rollup !== '1m' ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: '1m' })}
+          >
+              1m
+          </span>
+          <span> | </span>
+          <span
+            style={this.state.rollup !== '5m' ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: '5m' })}
+          >
+              5m
+          </span>
+          <span> | </span>
+          <span
+            style={this.state.rollup !== '15m' ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: '15m' })}
+          >
+              15m
+          </span>
+          <hr />
+        </div>
+      );
+    }
+    return (
+      <div />
+    );
+  },
+
   render() {
     const chartStyle = {
       borderStyle: 'solid',
@@ -489,62 +652,12 @@ const cycling = React.createClass({
       paddingTop: 10,
     };
 
-    const linkStyle = {
-      fontWeight: 600,
-      color: 'grey',
-      cursor: 'default',
-    };
-
-    const linkStyleActive = {
-      color: 'steelblue',
-      cursor: 'pointer',
-    };
-
     return (
       <div>
         <div className="row">
-          <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
-            <span
-              style={this.state.mode === 'channels' ? linkStyleActive : linkStyle}
-              onClick={() => this.setState({ mode: 'multiaxis' })}
-            >
-                Multi-axis
-            </span>
-            <span> | </span>
-            <span
-              style={this.state.mode === 'multiaxis' ? linkStyleActive : linkStyle}
-              onClick={() => this.setState({ mode: 'channels' })}
-            >
-                Channels
-            </span>
-            <hr />
-          </div>
-
-          <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
-            <span
-              style={this.state.rollup !== '1m' ? linkStyleActive : linkStyle}
-              onClick={() => this.setState({ rollup: '1m' })}
-            >
-                1m
-            </span>
-            <span> | </span>
-            <span
-              style={this.state.rollup !== '5m' ? linkStyleActive : linkStyle}
-              onClick={() => this.setState({ rollup: '5m' })}
-            >
-                5m
-            </span>
-            <span> | </span>
-            <span
-              style={this.state.rollup !== '15m' ? linkStyleActive : linkStyle}
-              onClick={() => this.setState({ rollup: '15m' })}
-            >
-                15m
-            </span>
-            <hr />
-          </div>
+          {this.renderMode()}
+          {this.renderModeOptions()}
         </div>
-
         <div className="row">
           <div
             className="col-md-12"
@@ -567,7 +680,6 @@ const cycling = React.createClass({
             </Resizable>
           </div>
         </div>
-        {/*
         <div className="row">
           <div className="col-md-12" style={brushStyle}>
             <Resizable>
@@ -575,8 +687,6 @@ const cycling = React.createClass({
             </Resizable>
           </div>
         </div>
-        */}
-       
       </div>
     );
   },
