@@ -121,7 +121,7 @@ export default class TimeAxis extends React.Component {
       .select('g')
       .selectAll('.tick')
       .select('text')
-      .style("fill", labelColor)
+      .style('fill', labelColor)
       .style('stroke', 'none');
                                         // XXX
     select(ReactDOM.findDOMNode(this))  // eslint-disable-line

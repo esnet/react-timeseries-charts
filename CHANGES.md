@@ -1,8 +1,29 @@
 ## v0.11.0
 
+**New**
+
+- Adds a BoxChart chart. This is the first chart to enable automatic aggregations. More to come.
+- Adds a BoxChart example showing temperature ranges in NYC
+- Adds a BoxChart example to the existing cycling example, which shows how to do roll-ups directly on a TimeSeries to produce the summary BoxChart
+- Adds an example showing NASA global temperature data
+
+**Enhancements**
+
+- BarChart: Support for negative values ([@jverhoeven](https://github.com/jverhoeven) in [#95](https://github.com/esnet/react-timeseries-charts/pull/95))
+- EventChart: Can now set text label position and hover marker width ([@primozs](https://github.com/primozs) in [#104](https://github.com/esnet/react-timeseries-charts/pull/104))
+- EventChart: Separate events for hover: onMouseOver and onMouseLeave replace onMouseMove ([@primozs](https://github.com/primozs) in [#104](https://github.com/esnet/react-timeseries-charts/pull/104))
+- Brush: Adds a callback for `onTimeRangeSelectComplete` ([@viky293](https://github.com/viky293) in [#91](https://github.com/esnet/react-timeseries-charts/pull/91))
+
+**Bug fixes**
+
+- EventChart: Fixes errors on pan/zoom ([@primozs](https://github.com/primozs) in [#102](https://github.com/esnet/react-timeseries-charts/pull/102))
+- Styler now correctly falls back to defaults for LineCharts, BarCharts and ScatterCharts ([@siavelis](https://github.com/siavelis) in [#103](https://github.com/esnet/react-timeseries-charts/pull/103))
+
 **General**
 
-- Overhaul of linting rules and propTypes
+- Removes the HorizontalBarChart, which now lives at react-timeseries-barchart to keep the library better focused
+- Overhaul of linting rules. Uses AirBnB, almost. But not all examples are converted yet :(
+- More complete use of propTypes
 - Better API docs
 
 ## v0.10.1

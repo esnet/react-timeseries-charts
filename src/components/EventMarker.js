@@ -86,7 +86,7 @@ export default class EventMarker extends React.Component {
 
   renderTime(event) {
     if (event instanceof Event) {
-      return <EventTime time={event.timestamp()} />;
+      return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
     } else if (event instanceof IndexedEvent) {
       return <EventIndex index={event.index()} />;
     } else if (event instanceof TimeRangeEvent) {

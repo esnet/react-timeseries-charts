@@ -38,15 +38,11 @@ _.each(temperatures, (val) => {
   points.push([index, temperature, fiveyear]);
 });
 
-console.log('CLIMATE', points);
-
-
 const temperatureSeries = new TimeSeries({
   name: 'temperature anomoly',
   columns: ['index', 'temperature', 'five_year'],
   points,
 });
-
 
 //
 // Styles

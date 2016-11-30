@@ -212,41 +212,49 @@ export class Styler {
   }
 
   lineChartStyle() {
+    const numColumns = this.numColumns();
+    const colorLookup = this.colorLookup(numColumns);
     const style = {};
     _.forEach(this.columnStyles,
-      ({ color, selected, width = 1, dashed = false }, column) => {
-        const styleLine = {
-          stroke: color,
-          strokeWidth: width,
-          fill: 'none',
-        };
-        const styleSelectedLine = {
-          stroke: selected || color,
-          strokeWidth: width,
-          fill: 'none',
-        };
+    ({ color, selected, width = 1, dashed = false }, column) => {
+      const i = _.indexOf(this.columnNames, column);
+      const c = color || colorLookup[i % colorLookup.length];
+      const styleLine = {
+        stroke: c,
+        strokeWidth: width,
+        fill: 'none',
+      };
+      const styleSelectedLine = {
+        stroke: selected || c,
+        strokeWidth: width,
+        fill: 'none',
+      };
 
-        if (dashed) {
-          styleLine.strokeDasharray = '4,2';
-        }
-        style[column] = {
-          normal: { ...styleLine, opacity: 0.8, strokeWidth: width },
-          highlighted: { ...styleLine, opacity: 1.0, strokeWidth: width },
-          selected: { ...styleSelectedLine, opacity: 1.0, strokeWidth: width },
-          muted: { ...styleLine, opacity: 0.2, strokeWidth: width },
-        };
-      });
+      if (dashed) {
+        styleLine.strokeDasharray = '4,2';
+      }
+      style[column] = {
+        normal: { ...styleLine, opacity: 0.8, strokeWidth: width },
+        highlighted: { ...styleLine, opacity: 1.0, strokeWidth: width },
+        selected: { ...styleSelectedLine, opacity: 1.0, strokeWidth: width },
+        muted: { ...styleLine, opacity: 0.2, strokeWidth: width },
+      };
+    });
     return style;
   }
 
   barChartStyle() {
+    const numColumns = this.numColumns();
+    const colorLookup = this.colorLookup(numColumns);
     const style = {};
     _.forEach(this.columnStyles, ({ color, selected }, column) => {
+      const i = _.indexOf(this.columnNames, column);
+      const c = color || colorLookup[i % colorLookup.length];
       const fillStyle = {
-        fill: color,
+        fill: c,
       };
       const selectedStyle = {
-        fill: selected || color,
+        fill: selected || c,
       };
       style[column] = {
         normal: { ...fillStyle, opacity: 0.8 },
@@ -259,13 +267,17 @@ export class Styler {
   }
 
   scatterChartStyle() {
+    const numColumns = this.numColumns();
+    const colorLookup = this.colorLookup(numColumns);
     const style = {};
     _.forEach(this.columnStyles, ({ color, selected }, column) => {
+      const i = _.indexOf(this.columnNames, column);
+      const c = color || colorLookup[i % colorLookup.length];
       const fillStyle = {
-        fill: color,
+        fill: c,
       };
       const selectedStyle = {
-        fill: selected || color,
+        fill: selected || c,
       };
       style[column] = {
         normal: { ...fillStyle, opacity: 0.8 },

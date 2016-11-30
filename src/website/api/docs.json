@@ -676,7 +676,7 @@
     }
   },
   "src/components/BoxChart.js": {
-    "description": "Renders a boxplot chart.\n\nThe TimeSeries supplied to the boxplot can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    dimensions of the boxes. This props should be an array of size 1 to\n    5 elements. e.g. [12, 18, 22, 28].\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    boxplot will be aggregated. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.",
+    "description": "Renders a boxplot chart.\n\nThe TimeSeries supplied to the boxplot, as the `series` prop can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    data column containing the dimensions of the boxes. This props\n    should be an array of size 1 to 5 elements. e.g. [12, 18, 22, 28]. The\n    numbers should be ordered, lowest to greatest.\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    boxplot will be aggregated for you. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.\n\nIn both cases you are generating up to two ranges and a center marker. In the\nfirst case you are defining this based on the array of numbers. The outer numbers\nspecify the outerRange, the inner numbers specify the innerRange and the middle\nnumber specifies the center marker. In the second case you are building those ranges\nfrom denser data, specifying a window and aggregation functions to build each\nof the ranges and center maker.\n\nIn both cases you do not need to supply all the values. For example if you\nprovide an array of 2 elements, that would define a single range, with no outer range\nand no center marker. The BoxChart is pretty flexible in that way, so you\ncan use it in many situations.\n\nHere is an example of using it to display temperature ranges. The series\npassed to this code would be a TimeSeries containing IndexedEvents. For\neach event, the column `temp` contains an array of values used for the\nbox plot ranges:\n\n```\n    <BoxChart\n      axis=\"temperatureAxis\"\n      style={style}\n      column=\"temp\"\n      series={series} />\n```\n\nWhile here is an example with a dense TimeSeries of Events supplied,\nalong with an aggregation specification. This code would produce an\nouter range from the 5th percentile to the 95th, along with an inner\nrange for the interquantile, and a center marker at the median:\n\n```\n   <BoxChart\n     axis=\"speedaxis\"\n     series={speed}\n     column=\"speed\"\n     style={style}\n     aggregation={{\n       size: this.state.rollup,\n       reducers: {\n         outer: [percentile(5), percentile(95)],\n         inner: [percentile(25), percentile(75)],\n         center: median(),\n       },\n     }}\n   />\n```\n\nThe BoxChart supports Info boxes, highlighting and selection.\n\nNote: selection and highlighting is on the whole event, not individual ranges.\nAlso note that since the box chart builds an internal TimeSeries for performance\nreasons, selection will give you and IndexedEvent, but it won't be the same\nIndexedEvent in your `series`. Similarly if you are using the aggregation\nspecification you will get events for the rollup, not your original data.",
     "methods": [
       {
         "name": "handleHover",
@@ -759,28 +759,17 @@
       "series": {
         "type": {
           "name": "custom",
-          "raw": "(props, propName, componentName) => {\n  const value = props[propName];\n  if (!(value instanceof TimeSeries)) {\n    return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);\n  }\n\n  const t = value.collection().type();\n  if (t instanceof Event) {\n    console.log('Event style TimeSeries supplied');\n  }\n\n  if (t instanceof TimeRangeEvent || t instanceof IndexedEvent) {\n    console.log('Event style TimeSeries supplied');\n  }\n\n  // everything ok\n  return null;\n}"
+          "raw": "(props, propName, componentName) => {\n  const value = props[propName];\n  if (!(value instanceof TimeSeries)) {\n    return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);\n  }\n\n  // TODO: Better detection of errors\n\n  // everything ok\n  return null;\n}"
         },
         "required": false,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize"
-      },
-      "spacing": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The distance in pixels to inset the bar chart from its actual timerange",
-        "defaultValue": {
-          "value": "1.0",
-          "computed": false
-        }
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize. See general notes on the BoxChart."
       },
       "column": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": "The column within a Event based TimeSeries to summarize",
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.",
         "defaultValue": {
           "value": "'value'",
           "computed": false
@@ -821,7 +810,7 @@
           }
         },
         "required": false,
-        "description": "The aggregation specification. This object should contain:\n  - innerMax\n  - innerMin\n  - outerMax\n  - outerMin\n  - center\nThough each of the pairs, and center, is optional.\nFor each of these keys you should supply the function you\nwant to use to calculate these. You can import common functions\nfrom Pond, e.g. min(), avg(), percentile(95), etc."
+        "description": "The aggregation specification. This object should contain:\n  - innerMax\n  - innerMin\n  - outerMax\n  - outerMin\n  - center\nThough each of the pairs, and center, is optional.\nFor each of these keys you should supply the function you\nwant to use to calculate these. You can import common functions\nfrom Pond, e.g. min(), avg(), percentile(95), etc.\n\nFor example:\n```\n    {\n      size: this.state.rollup,\n      reducers: {\n        outer: [min(), max()],\n        inner: [percentile(25), percentile(75)],\n        center: median(),\n      },\n    }\n```"
       },
       "style": {
         "type": {
@@ -840,7 +829,7 @@
           ]
         },
         "required": false,
-        "description": "The style of the bar chart drawing (using SVG CSS properties).\nThis is an object with a key for each column which is being drawn,\nper the `columns` prop. For each column a style is defined for\neach state the bar may be in. This style is the CSS properties for\nthe underlying SVG <Rect>, so most likely you'll define fill and\nopacity.\n\nFor example:\n```\nstyle = {\n    columnName: {\n        normal: {\n            fill: \"steelblue\",\n            opacity: 0.8,\n        },\n        highlighted: {\n            fill: \"#a7c4dd\",\n            opacity: 1.0,\n        },\n        selected: {\n            fill: \"orange\",\n            opacity: 1.0,\n        },\n        muted: {\n            fill: \"grey\",\n            opacity: 0.5\n        }\n    }\n}\n```\n\nYou can also supply a function, which will be called with an event\nand column. The function should return an object containing the\nfour states (normal, highlighted, selected and muted) and the corresponding\nCSS properties."
+        "description": "The style of the box chart drawing (using SVG CSS properties) or\na styler object. It is recommended to user the styler unless you need\ndetailed customization."
       },
       "infoStyle": {
         "type": {
@@ -895,12 +884,41 @@
         "required": false,
         "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
       },
-      "size": {
+      "innerSpacing": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "If size is specified, then the bar will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "1.0",
+          "computed": false
+        }
+      },
+      "outerSpacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "2.0",
+          "computed": false
+        }
+      },
+      "innerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the innerBox will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "outerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the outer box will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
       },
       "selected": {
         "type": {
@@ -930,7 +948,7 @@
           "name": "func"
         },
         "required": false,
-        "description": "A callback that will be called when the hovered over bar changes.\nIt will be called with the event corresponding to the box hovered over."
+        "description": "A callback that will be called when the hovered over box changes.\nIt will be called with the event corresponding to the box hovered over."
       },
       "timeScale": {
         "type": {
@@ -1128,7 +1146,7 @@
     }
   },
   "src/components/ChartContainer.js": {
-    "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows.\n\n![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png \"ChartContainer\")\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
+    "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows.\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
     "methods": [
       {
         "name": "handleTrackerChanged",
@@ -1334,7 +1352,7 @@
         "required": false,
         "description": "Adjust the time axis style. This is an object of the\nform { labels, axis } where \"label\" and \"axis\" are objects\nthemselves. The options here are best represented by\nan example:\n\n```\n const axisStyle = {\n     labels: {\n         labelColor: \"grey\",\n         labelWeight: 100,\n         labelSize: 11\n     },\n     axis: {\n         axisColor: \"grey\",\n         axisWidth: 1\n     }\n };\n```",
         "defaultValue": {
-          "value": "{\n  labels: {\n    labelColor: \"#8B7E7E\",\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: \"#C0C0C0\",\n    axisWidth: 1,\n  }\n}",
+          "value": "{\n  labels: {\n    labelColor: '#8B7E7E',\n    labelWeight: 100,\n    labelSize: 11,\n  },\n  axis: {\n    axisColor: '#C0C0C0',\n    axisWidth: 1,\n  },\n}",
           "computed": false
         }
       },
@@ -1590,7 +1608,7 @@
     "description": "Renders an event view that shows the supplied set of events along a time axis.\nThe events should be supplied as a Pond TimeSeries.\nThat series may contain regular Events, TimeRangeEvents or IndexedEvents.",
     "methods": [
       {
-        "name": "handleMouseMove",
+        "name": "onMouseOver",
         "docblock": "Continues a hover event on a specific bar of the bar chart.",
         "modifiers": [],
         "params": [
@@ -1603,6 +1621,14 @@
         ],
         "returns": null,
         "description": "Continues a hover event on a specific bar of the bar chart."
+      },
+      {
+        "name": "onMouseLeave",
+        "docblock": "Handle mouse leave and calls onMouseLeave callback if one is provided",
+        "modifiers": [],
+        "params": [],
+        "returns": null,
+        "description": "Handle mouse leave and calls onMouseLeave callback if one is provided"
       },
       {
         "name": "handleClick",
@@ -1631,10 +1657,18 @@
       },
       "label": {
         "type": {
-          "name": "func"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
-        "description": "Label of each event. This is a function that will be called so that you\ncan return the label you want for the Event passed in."
+        "description": "Set hover label text\nWhen label is function callback it will be called with current event."
       },
       "size": {
         "type": {
@@ -1658,6 +1692,39 @@
           "computed": false
         }
       },
+      "hoverMarkerWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Marker width on hover",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
+      "textOffsetX": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Hover text offset position X",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "textOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Hover text offset position Y",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
       "style": {
         "type": {
           "name": "func"
@@ -1670,7 +1737,21 @@
           "name": "func"
         },
         "required": false,
-        "description": "Callback called when the selection of an Event changes. Will be called\nwith the Event selected."
+        "description": "Event selection on click. Will be called with selected event."
+      },
+      "onMouseLeave": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Mouse leave at end of hover event"
+      },
+      "onMouseOver": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Mouse over event callback"
       },
       "timeScale": {
         "type": {

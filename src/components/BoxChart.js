@@ -14,7 +14,6 @@ import React from 'react';
 import {
   TimeSeries,
   IndexedEvent,
-  TimeRangeEvent,
   Event,
   min,
   max,
@@ -405,46 +404,58 @@ export default class BoxChart extends React.Component {
   }
 
   renderBars() {
-    const spacing = +this.props.spacing;
     const {
       timeScale,
       yScale,
       column,
     } = this.props;
 
+    const innerSpacing = +this.props.innerSpacing;
+    const outerSpacing = +this.props.outerSpacing;
+    const innerSize = +this.props.innerSize;
+    const outerSize = +this.props.outerSize;
+
     const bars = [];
     let eventMarker;
 
-    //
-    // Convert the series
-    //
-
     for (const event of this.series.events()) {
+      const index = event.index();
       const begin = event.begin();
       const end = event.end();
-      const beginPos = timeScale(begin) + spacing;
-      const endPos = timeScale(end) - spacing;
-      let width = this.props.size ? this.props.size : endPos - beginPos;
-      if (width < 1) {
-        width = 1;
+      const d = event.data();
+
+      const beginPosInner = timeScale(begin) + innerSpacing;
+      const endPosInner = timeScale(end) - innerSpacing;
+
+      const beginPosOuter = timeScale(begin) + outerSpacing;
+      const endPosOuter = timeScale(end) - outerSpacing;
+
+      let innerWidth = innerSize || endPosInner - beginPosInner;
+      if (innerWidth < 1) {
+        innerWidth = 1;
       }
 
-      let x;
-      if (this.props.size) {
-        const center = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
-        x = center - (this.props.size / 2);
-      } else {
-        x = timeScale(begin) + spacing;
+      let outerWidth = outerSize || endPosOuter - beginPosOuter;
+      if (outerWidth < 1) {
+        outerWidth = 1;
       }
 
-      const index = event.index();
+      const c = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
+
+      let xInner = timeScale(begin) + innerSpacing;
+      if (innerSize) {
+        xInner = c - (innerSize / 2);
+      }
+
+      let xOuter = timeScale(begin) + outerSpacing;
+      if (outerSize) {
+        xOuter = c - (outerSize / 2);
+      }
 
       const styles = [];
       styles[0] = this.style(column, event, 0);
       styles[1] = this.style(column, event, 1);
       styles[2] = this.style(column, event, 2);
-
-      const d = event.data();
 
       const innerMin = d.has('innerMin') ? yScale(event.get('innerMin')) : null;
       const innerMax = d.has('innerMax') ? yScale(event.get('innerMax')) : null;
@@ -475,7 +486,14 @@ export default class BoxChart extends React.Component {
           level += 1;
         }
         const keyOuter = `${this.series.name()}-${index}-outer`;
-        const boxOuter = { x: x + 1, y: outerMax, width: width - 2 < 1 ? 1 : width - 2, height: outerMin - outerMax, rx: 2, ry: 2 };
+        const boxOuter = {
+          x: xOuter,
+          y: outerMax,
+          width: outerWidth,
+          height: outerMin - outerMax,
+          rx: 2,
+          ry: 2,
+        };
         const barOuterProps = { key: keyOuter, ...boxOuter, style: styles[level] };
         if (this.props.onSelectionChange) {
           barOuterProps.onClick = e => this.handleClick(e, event);
@@ -496,7 +514,14 @@ export default class BoxChart extends React.Component {
           level += 1;
         }
         const keyInner = `${this.series.name()}-${index}-inner`;
-        const boxInner = { x, y: innerMax, width, height: innerMin - innerMax, rx: 1, ry: 1 };
+        const boxInner = {
+          x: xInner,
+          y: innerMax,
+          width: innerWidth,
+          height: innerMin - innerMax,
+          rx: 1,
+          ry: 1,
+        };
         const barInnerProps = { key: keyInner, ...boxInner, style: styles[level] };
         if (this.props.onSelectionChange) {
           barInnerProps.onClick = e => this.handleClick(e, event);
@@ -514,7 +539,12 @@ export default class BoxChart extends React.Component {
       if (hasCenter) {
         const level = 2;
         const keyCenter = `${this.series.name()}-${index}-center`;
-        const boxCenter = { x, y: center, width, height: 1 };
+        const boxCenter = {
+          x: xInner,
+          y: center,
+          width: innerWidth,
+          height: 1,
+        };
         const barCenterProps = { key: keyCenter, ...boxCenter, style: styles[level] };
         if (this.props.onSelectionChange) {
           barCenterProps.onClick = e => this.handleClick(e, event);
@@ -660,10 +690,32 @@ BoxChart.propTypes = {
   ),
 
   /**
-   * If size is specified, then the bar will be this number of pixels wide. This
+   * If spacing is specified, then the boxes will be separated from the
+   * timerange boundary by this number of pixels. Use this to space out
+   * the boxes from each other. Inner and outer boxes are controlled
+   * separately.
+   */
+  innerSpacing: React.PropTypes.number,
+
+  /**
+   * If spacing is specified, then the boxes will be separated from the
+   * timerange boundary by this number of pixels. Use this to space out
+   * the boxes from each other. Inner and outer boxes are controlled
+   * separately.
+   */
+  outerSpacing: React.PropTypes.number,
+
+  /**
+   * If size is specified, then the innerBox will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  size: React.PropTypes.number,
+  innerSize: React.PropTypes.number,
+
+  /**
+   * If size is specified, then the outer box will be this number of pixels wide. This
+   * prop takes priority over "spacing".
+   */
+  outerSize: React.PropTypes.number,
 
   /**
    * The selected item, which will be rendered in the "selected" style.
@@ -710,7 +762,8 @@ BoxChart.propTypes = {
 
 BoxChart.defaultProps = {
   column: 'value',
-  spacing: 1.0,
+  innerSpacing: 1.0,
+  outerSpacing: 2.0,
   infoStyle: {
     line: {
       stroke: '#999',

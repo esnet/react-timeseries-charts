@@ -8,9 +8,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import _ from 'underscore';
 import merge from 'merge';
 import React from 'react';
-import { TimeSeries } from 'pondjs';
+import { TimeSeries, Event } from 'pondjs';
 
 /**
  * Renders an event view that shows the supplied set of events along a time axis.
@@ -29,8 +30,21 @@ export default class EventChart extends React.Component {
   /**
    * Continues a hover event on a specific bar of the bar chart.
    */
-  handleMouseMove(e, event) {
+  onMouseOver(e, event) {
+    if (this.props.onMouseOver) {
+      this.props.onMouseOver(event);
+    }
     this.setState({ hover: event });
+  }
+
+  /**
+   * Handle mouse leave and calls onMouseLeave callback if one is provided
+   */
+  onMouseLeave() {
+    if (this.props.onMouseLeave) {
+      this.props.onMouseLeave(this.state.hover);
+    }
+    this.setState({ hover: null });
   }
 
   /**
@@ -45,12 +59,12 @@ export default class EventChart extends React.Component {
   }
 
   render() {
-    const series = this.props.series;
+    const { series, textOffsetX, textOffsetY, hoverMarkerWidth } = this.props;
     const scale = this.props.timeScale;
     const eventMarkers = [];
 
     // Create and array of markers, one for each event
-    let markerKey = 0;
+    let i = 0;
     for (const event of series.events()) {
       const begin = event.begin();
       const end = event.end();
@@ -60,8 +74,8 @@ export default class EventChart extends React.Component {
         scale(end) : this.props.width;
 
       const transform = `translate(${beginPos},0)`;
-
-      const isHover = this.state.hover ? event.data() === this.state.hover.data() : false;
+      const isHover = this.state.hover ?
+        Event.is(event, this.state.hover) : false;
 
       let state;
       if (isHover) {
@@ -77,10 +91,19 @@ export default class EventChart extends React.Component {
         barStyle = this.props.style(event, state);
       }
 
-      const label = this.props.label(event);
+      let label = '';
+      if (this.props.label) {
+        if (_.isString(this.props.label)) {
+          label = this.props.label;
+        } else if (_.isFunction(this.props.label)) {
+          label = this.props.label(event);
+        }
+      }
+
       const x = this.props.spacing;
       const y = 0;
-      const width = endPos - beginPos - (2 * this.props.spacing);
+      let width = endPos - beginPos - 2 * this.props.spacing;
+      width = width < 0 ? 0 : width;
       const height = this.props.size;
 
       const eventLabelStyle = {
@@ -94,12 +117,16 @@ export default class EventChart extends React.Component {
           <g>
             <rect
               className="eventchart-marker"
-              x={x} y={y} width={5} height={height + 4}
+              x={x}
+              y={y}
+              width={hoverMarkerWidth}
+              height={height + 4}
               style={merge(true, barNormalStyle, { pointerEvents: 'none' })}
             />
             <text
               style={{ pointerEvents: 'none', fill: '#444', ...eventLabelStyle }}
-              x={8} y={15}
+              x={8 + textOffsetX}
+              y={15 + textOffsetY}
             >
               {label}
             </text>
@@ -107,20 +134,21 @@ export default class EventChart extends React.Component {
         );
       }
 
-      markerKey += 1;
       eventMarkers.push(
-        <g transform={transform} key={markerKey}>
+        <g transform={transform} key={i}>
           <rect
             className="eventchart-marker"
             x={x} y={y} width={width} height={height}
             style={barStyle}
             onClick={e => this.handleClick(e, event)}
-            onMouseLeave={() => this.setState({ hover: null })}
-            onMouseMove={e => this.handleMouseMove(e, event)}
+            onMouseLeave={() => this.onMouseLeave()}
+            onMouseOver={e => this.onMouseOver(e, event)}
           />
-          {text}
+            {text}
         </g>
       );
+
+      i += 1;
     }
 
     return (
@@ -134,6 +162,9 @@ export default class EventChart extends React.Component {
 EventChart.defaultProps = {
   size: 30,
   spacing: 0,
+  textOffsetX: 0,
+  textOffsetY: 0,
+  hoverMarkerWidth: 5,
 };
 
 EventChart.propTypes = {
@@ -143,10 +174,13 @@ EventChart.propTypes = {
   series: React.PropTypes.instanceOf(TimeSeries).isRequired,
 
   /**
-   * Label of each event. This is a function that will be called so that you
-   * can return the label you want for the Event passed in.
+   * Set hover label text
+   * When label is function callback it will be called with current event.
    */
-  label: React.PropTypes.func,
+  label: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.func,
+  ]),
 
   /**
    * The height in pixels for the event bar
@@ -154,12 +188,24 @@ EventChart.propTypes = {
   size: React.PropTypes.number,
 
   /**
-   * Minimum width for an event
-   */
-  /**
    * The distance in pixels to inset the bar chart from its actual timerange
    */
   spacing: React.PropTypes.number,
+
+  /**
+   * Marker width on hover
+   */
+  hoverMarkerWidth: React.PropTypes.number,
+
+  /**
+   * Hover text offset position X
+   */
+  textOffsetX: React.PropTypes.number,
+
+  /**
+   * Hover text offset position Y
+   */
+  textOffsetY: React.PropTypes.number,
 
   /**
    * A function that should return the style of the event box
@@ -167,10 +213,19 @@ EventChart.propTypes = {
   style: React.PropTypes.func,
 
   /**
-   * Callback called when the selection of an Event changes. Will be called
-   * with the Event selected.
+   * Event selection on click. Will be called with selected event.
    */
   onSelectionChange: React.PropTypes.func,
+
+  /**
+   * Mouse leave at end of hover event
+   */
+  onMouseLeave: React.PropTypes.func,
+
+  /**
+   * Mouse over event callback
+   */
+  onMouseOver: React.PropTypes.func,
 
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer

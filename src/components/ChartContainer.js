@@ -23,14 +23,14 @@ import TimeMarker from './TimeMarker';
 
 const defaultTimeAxisStyle = {
   labels: {
-    labelColor: "#8B7E7E",
+    labelColor: '#8B7E7E',
     labelWeight: 100,
     labelSize: 11,
   },
   axis: {
-    axisColor: "#C0C0C0",
+    axisColor: '#C0C0C0',
     axisWidth: 1,
-  }
+  },
 };
 
 /**
@@ -40,8 +40,6 @@ const defaultTimeAxisStyle = {
  * charts, axes etc) and in addition it manages the overall time range of
  * the chart and so also is responsible for the time axis, which is always
  * shared by all the rows.
- *
- * ![ChartContainer](https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/docs/chartcontainer.png "ChartContainer")
  *
  * Here is an example:
  *
@@ -280,8 +278,8 @@ export default class ChartContainer extends React.Component {
     const xStyle = {
       stroke: this.props.timeAxisStyle.axis.axisColor,
       strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
-      fill: "none",
-      pointerEvents: "none"
+      fill: 'none',
+      pointerEvents: 'none',
     };
 
     const timeAxis = (
@@ -445,7 +443,7 @@ ChartContainer.propTypes = {
    * ```
    */
   timeAxisStyle: React.PropTypes.shape({
-    labels: React.PropTypes.object,
+    labels: React.PropTypes.object,  // eslint-disable-line
     axis: React.PropTypes.object,
   }),
 

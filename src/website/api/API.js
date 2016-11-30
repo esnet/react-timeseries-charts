@@ -98,7 +98,7 @@ export default React.createClass({
                 <div>API could not be found</div>
             );
         }
-        const title = docsFile[path].displayName;
+        const title = component;
         return (
             <div>
                 <h2>{title}</h2>
