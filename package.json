@@ -8,6 +8,7 @@
     "react",
     "timeseries"
   ],
+  "homepage": "http://software.es.net/react-timeseries-charts",
   "main": "lib/entry",
   "author": "ESnet Tools Team <tools@es.net>",
   "repository": "esnet/react-timeseries-charts",
