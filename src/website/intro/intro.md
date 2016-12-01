@@ -33,12 +33,12 @@ This library contains a set of modular charting components used for building fle
 
 This charts library was built using React from the ground up, specifically to visualize TimeSeries data and network traffic data in particular. We recognized early that we could combine the composability of React with the drawing primitives of d3, to meet our visualization needs. Other libraries have also come to the same conclusion.
 
-For us, key drivers in the build our own equation were:
+For us, initial key drivers in the build our own equation were:
 
- * time series use cases first, not an after thought
- * build on an underlying timeseries abstraction (pond.js)
- * ability to pan and zoom, with enough control to dynamically load in data
- * ability to visualize network data using stacked and up/down area charts
+ * Time series use cases first, not an after thought
+ * Built on an underlying timeseries abstraction (pond.js)
+ * Pan and zoom, with enough control to dynamically load in data
+ * Ability to visualize network traffic data using stacked and up/down area charts
 
 Since then the library has grown to form the basis of visualization throughout the public facing [ESnet Portal](http://my.es.net).
 
