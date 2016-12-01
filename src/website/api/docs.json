@@ -3547,7 +3547,7 @@
       },
       "timeScale": {
         "type": {
-          "name": "object"
+          "name": "func"
         },
         "required": true,
         "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"

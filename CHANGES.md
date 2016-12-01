@@ -1,4 +1,10 @@
+## v0.11.1
+> Dec 1, 2016
+
+- Fixes bad proptype in TimeRangeMarker (#107)
+
 ## v0.11.0
+> Nov 30, 2016
 
 **New**
 

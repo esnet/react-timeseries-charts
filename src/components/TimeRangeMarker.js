@@ -89,7 +89,7 @@ TimeRangeMarker.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.object.func.isRequired,
+  timeScale: React.PropTypes.func.isRequired,
 
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
