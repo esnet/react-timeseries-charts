@@ -32,9 +32,11 @@ export default class Resizable extends React.Component {
   }
 
   handleResize() {
-    this.setState({
-      width: this.container.offsetWidth,
-    });
+    if (this.container) {
+      this.setState({
+        width: this.container.offsetWidth,
+      });
+    }
   }
 
   render() {
