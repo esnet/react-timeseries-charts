@@ -361,9 +361,9 @@ BarChart.propTypes = {
    * Alternatively you can pass in a d3 format string. That will be applied
    * to the begin time of the Index range.
    */
-  infoTimeFormat: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.func
+  infoTimeFormat: React.PropTypes.oneOfType([ //eslint-disable-line
+    React.PropTypes.string, //eslint-disable-line
+    React.PropTypes.func //eslint-disable-line
   ]),
 
   /**

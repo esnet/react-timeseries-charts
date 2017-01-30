@@ -42,12 +42,12 @@ EventTime.propTypes = {
   time: React.PropTypes.instanceOf(Date),
   format: React.PropTypes.oneOfType([
     React.PropTypes.func,
-    React.PropTypes.string
-  ])
+    React.PropTypes.string,
+  ]),
 };
 EventTime.defaultProps = {
-    infoTimeFormat: '%m/%d/%y %X'
-}
+  infoTimeFormat: '%m/%d/%y %X',
+};
 
 const EventTimeRange = ({ timerange, format = '%m/%d/%y %X' }) => {
   const textStyle = {
@@ -81,12 +81,12 @@ EventTimeRange.propTypes = {
   timerange: React.PropTypes.instanceOf(TimeRange),
   format: React.PropTypes.oneOfType([
     React.PropTypes.func,
-    React.PropTypes.string
-  ])
+    React.PropTypes.string,
+  ]),
 };
 EventTimeRange.defaultProps = {
-    infoTimeFormat: '%m/%d/%y %X'
-}
+  infoTimeFormat: '%m/%d/%y %X',
+};
 
 const EventIndex = ({ index, format }) => {
   const textStyle = {
@@ -116,8 +116,8 @@ EventIndex.propTypes = {
   index: React.PropTypes.instanceOf(Index),
   format: React.PropTypes.oneOfType([
     React.PropTypes.func,
-    React.PropTypes.string
-  ])
+    React.PropTypes.string,
+  ]),
 };
 
 /**
@@ -322,8 +322,8 @@ EventMarker.propTypes = {
       React.PropTypes.shape({
         label: React.PropTypes.string, // eslint-disable-line
         value: React.PropTypes.string, // eslint-disable-line
-      })
-    )
+      }),
+    ),
   ]),
 
   /**
@@ -334,7 +334,7 @@ EventMarker.propTypes = {
    */
   infoTimeFormat: React.PropTypes.oneOfType([
     React.PropTypes.func,
-    React.PropTypes.string
+    React.PropTypes.string,
   ]),
 
   /**
