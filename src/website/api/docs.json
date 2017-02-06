@@ -491,6 +491,21 @@
           "computed": false
         }
       },
+      "infoTimeFormat": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "func"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Alter the format of the timestamp shown on the info box.\nThis may be either a function or a string. If you provide a function\nthat will be passed an Index and should return a string. For example:\n```\n    index => moment(index.begin()).format(\"Do MMM 'YY\")\n```\nAlternatively you can pass in a d3 format string. That will be applied\nto the begin time of the Index range."
+      },
       "info": {
         "type": {
           "name": "arrayOf",
@@ -2084,14 +2099,18 @@
       },
       "infoTimeFormat": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "func"
+            },
+            {
+              "name": "string"
+            }
+          ]
         },
         "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'%m/%d/%y %X'",
-          "computed": false
-        }
+        "description": "Alter the format of the timestamp shown on the info box. In the case\nof Events or TimeRange events this should be a d3 time format string.\nIn the case of IndexedEvents, this should a function that will be\npassed an Index and should return a string."
       },
       "markerRadius": {
         "type": {

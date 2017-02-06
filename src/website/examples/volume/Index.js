@@ -13,6 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import { format } from "d3-format";
+import moment from "moment";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -250,6 +251,7 @@ const volume = React.createClass({
                                             columns={["in"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
+                                            infoTimeFormat={index => moment(index.begin()).format("Do MMM 'YY")}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight => this.setState({highlight})}
                                             selected={this.state.selection}
@@ -293,6 +295,7 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             highlighted={this.state.highlight}
                                             info={infoValues}
+                                            infoTimeFormat="%m/%d/%y"
                                             onHighlightChange={highlight => this.setState({highlight})}
                                             selected={this.state.selection}
                                             onSelectionChange={selection => this.setState({selection})} />

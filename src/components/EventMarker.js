@@ -16,7 +16,7 @@ import { timeFormat } from 'd3-time-format';
 import Label from './Label';
 import ValueList from './ValueList';
 
-const EventTime = ({ time, format }) => {
+const EventTime = ({ time, format = '%m/%d/%y %X' }) => {
   const textStyle = {
     fontSize: 11,
     textAnchor: 'left',
@@ -24,21 +24,32 @@ const EventTime = ({ time, format }) => {
     pointerEvents: 'none',
   };
 
-  const fmt = timeFormat(format);
-  const dateStr = fmt(time);
+  let text;
+  if (_.isFunction(format)) {
+    text = format(time);
+  } else {
+    const fmt = timeFormat(format);
+    text = fmt(time);
+  }
 
   return (
     <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {dateStr}
+      {text}
     </text>
   );
 };
 EventTime.propTypes = {
   time: React.PropTypes.instanceOf(Date),
-  format: React.PropTypes.string,
+  format: React.PropTypes.oneOfType([
+    React.PropTypes.func,
+    React.PropTypes.string,
+  ]),
+};
+EventTime.defaultProps = {
+  infoTimeFormat: '%m/%d/%y %X',
 };
 
-const EventTimeRange = ({ timerange, format }) => {
+const EventTimeRange = ({ timerange, format = '%m/%d/%y %X' }) => {
   const textStyle = {
     fontSize: 11,
     textAnchor: 'left',
@@ -47,33 +58,66 @@ const EventTimeRange = ({ timerange, format }) => {
   };
   const d1 = timerange.begin();
   const d2 = timerange.end();
-  const fmt = timeFormat(format);
+
+  let beginText;
+  let endText;
+
+  if (_.isFunction(format)) {
+    beginText = format(d1);
+    endText = format(d2);
+  } else {
+    const fmt = timeFormat(format);
+    beginText = fmt(d1);
+    endText = fmt(d2);
+  }
+
   return (
     <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {`${fmt(d1)} to ${fmt(d2)}`}
+      {`${beginText} to ${endText}`}
     </text>
   );
 };
 EventTimeRange.propTypes = {
   timerange: React.PropTypes.instanceOf(TimeRange),
-  format: React.PropTypes.string,
+  format: React.PropTypes.oneOfType([
+    React.PropTypes.func,
+    React.PropTypes.string,
+  ]),
+};
+EventTimeRange.defaultProps = {
+  infoTimeFormat: '%m/%d/%y %X',
 };
 
-const EventIndex = ({ index }) => {
+const EventIndex = ({ index, format }) => {
   const textStyle = {
     fontSize: 11,
     textAnchor: 'left',
     fill: '#bdbdbd',
     pointerEvents: 'none',
   };
+
+  let text;
+  if (_.isFunction(format)) {
+    text = format(index);
+  } else if (_.isString(format)) {
+    const fmt = timeFormat(format);
+    text = fmt(index.begin());
+  } else {
+    text = index.toString();
+  }
+
   return (
     <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {index.toString()}
+      {text}
     </text>
   );
 };
 EventIndex.propTypes = {
   index: React.PropTypes.instanceOf(Index),
+  format: React.PropTypes.oneOfType([
+    React.PropTypes.func,
+    React.PropTypes.string,
+  ]),
 };
 
 /**
@@ -88,7 +132,7 @@ export default class EventMarker extends React.Component {
     if (event instanceof Event) {
       return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
     } else if (event instanceof IndexedEvent) {
-      return <EventIndex index={event.index()} />;
+      return <EventIndex index={event.index()} format={this.props.infoTimeFormat} />;
     } else if (event instanceof TimeRangeEvent) {
       return <EventTimeRange timerange={event.timerange()} format={this.props.infoTimeFormat} />;
     }
@@ -278,10 +322,20 @@ EventMarker.propTypes = {
       React.PropTypes.shape({
         label: React.PropTypes.string, // eslint-disable-line
         value: React.PropTypes.string, // eslint-disable-line
-      })
-    )]),
+      }),
+    ),
+  ]),
 
-  infoTimeFormat: React.PropTypes.string,
+  /**
+   * Alter the format of the timestamp shown on the info box. In the case
+   * of Events or TimeRange events this should be a d3 time format string.
+   * In the case of IndexedEvents, this should a function that will be
+   * passed an Index and should return a string.
+   */
+  infoTimeFormat: React.PropTypes.oneOfType([
+    React.PropTypes.func,
+    React.PropTypes.string,
+  ]),
 
   /**
    * The radius of the dot at the end of the marker
@@ -339,7 +393,6 @@ EventMarker.defaultProps = {
       fill: '#999',
     },
   },
-  infoTimeFormat: '%m/%d/%y %X',
   infoWidth: 90,
   infoHeight: 25,
   markerRadius: 2,

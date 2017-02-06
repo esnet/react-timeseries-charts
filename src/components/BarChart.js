@@ -352,6 +352,21 @@ BarChart.propTypes = {
   infoHeight: React.PropTypes.number,  //eslint-disable-line
 
   /**
+   * Alter the format of the timestamp shown on the info box.
+   * This may be either a function or a string. If you provide a function
+   * that will be passed an Index and should return a string. For example:
+   * ```
+   *     index => moment(index.begin()).format("Do MMM 'YY")
+   * ```
+   * Alternatively you can pass in a d3 format string. That will be applied
+   * to the begin time of the Index range.
+   */
+  infoTimeFormat: React.PropTypes.oneOfType([ //eslint-disable-line
+    React.PropTypes.string, //eslint-disable-line
+    React.PropTypes.func //eslint-disable-line
+  ]),
+
+  /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
