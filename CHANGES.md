@@ -1,3 +1,9 @@
+## v0.11.3
+> Feb 6, 2017
+
+- Fixes `infoTimeFormat` prop to work with BarCharts, so you can now format an IndexedEvent (#120)
+- Fixes missing curveMonotone curve type (now curveMonotoneX and curveMonotoneY) since the d3 API changed (#114)
+
 ## v0.11.1
 > Dec 1, 2016
 
