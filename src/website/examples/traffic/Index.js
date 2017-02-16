@@ -87,12 +87,6 @@ const traffic = React.createClass({
                         <Legend
                             type="swatch"
                             style={upDownStyle}
-                            highlight={this.state.highlight}
-                            onHighlightChange={highlight =>
-                                this.setState({ highlight })}
-                            selection={this.state.selection}
-                            onSelectionChange={selection =>
-                                this.setState({ selection })}
                             categories={[
                                 { key: "in", label: "Into Site" },
                                 { key: "out", label: "Out of site" }
@@ -132,12 +126,6 @@ const traffic = React.createClass({
                                                 down: ["out"]
                                             }}
                                             style={upDownStyle}
-                                            highlight={this.state.highlight}
-                                            onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
-                                            selection={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
                                         />
                                     </Charts>
                                     <YAxis

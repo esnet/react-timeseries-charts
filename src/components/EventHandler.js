@@ -53,6 +53,10 @@ export default class EventHandler extends React.Component {
   //
 
   handleScrollWheel(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.preventDefault();
 
     const SCALE_FACTOR = 0.001;
@@ -114,6 +118,10 @@ export default class EventHandler extends React.Component {
   }
 
   handleMouseDown(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.preventDefault();
 
     const x = e.pageX;
@@ -137,6 +145,10 @@ export default class EventHandler extends React.Component {
   }
 
   handleMouseUp(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.stopPropagation();
 
     document.removeEventListener("mouseover", this.handleMouseMove);
@@ -160,6 +172,10 @@ export default class EventHandler extends React.Component {
   }
 
   handleMouseOut(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.preventDefault();
 
     if (this.props.onMouseOut) {
@@ -244,6 +260,7 @@ EventHandler.propTypes = {
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node
   ]),
+  enablePanZoom: React.PropTypes.bool,
   scale: React.PropTypes.func.isRequired,
   width: React.PropTypes.number.isRequired,
   height: React.PropTypes.number.isRequired,
@@ -254,4 +271,8 @@ EventHandler.propTypes = {
   onMouseMove: React.PropTypes.func,
   onMouseOut: React.PropTypes.func,
   onMouseClick: React.PropTypes.func
+};
+
+EventHandler.defaultProps = {
+  enablePanZoom: false
 };
