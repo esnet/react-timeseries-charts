@@ -10,6 +10,7 @@
 
 export AreaChart from "./components/AreaChart";
 export BarChart from "./components/BarChart";
+export BoxChart from "./components/BoxChart";
 export Baseline from "./components/Baseline";
 export Brush from "./components/Brush";
 export ChartContainer from "./components/ChartContainer";
