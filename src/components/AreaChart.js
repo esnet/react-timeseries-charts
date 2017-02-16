@@ -8,30 +8,31 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import 'array.prototype.fill';
+import "array.prototype.fill";
 
-import _ from 'underscore';
-import d3Shape from 'd3-shape';
-import merge from 'merge';
-import React from 'react';
-import { TimeSeries } from 'pondjs';
+import _ from "underscore";
+import { area, line } from "d3-shape";
+import merge from "merge";
+import React from "react";
+import { TimeSeries } from "pondjs";
 
-import { scaleAsString } from '../js/util';
-import { Styler } from '../js/styler';
+import { scaleAsString } from "../js/util";
+import { Styler } from "../js/styler";
+import curves from "../js/curve";
 
 const defaultStyle = {
   line: {
-    normal: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
-    highlighted: { stroke: '#5a98cb', fill: 'none', strokeWidth: 1 },
-    selected: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
-    muted: { stroke: 'steelblue', fill: 'none', opacity: 0.4, strokeWidth: 1 },
+    normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
+    highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
+    selected: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
+    muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
   },
   area: {
-    normal: { fill: 'steelblue', stroke: 'none', opacity: 0.75 },
-    highlighted: { fill: '#5a98cb', stroke: 'none', opacity: 0.75 },
-    selected: { fill: 'steelblue', stroke: 'none', opacity: 0.75 },
-    muted: { fill: 'steelblue', stroke: 'none', opacity: 0.25 },
-  },
+    normal: { fill: "steelblue", stroke: "none", opacity: 0.75 },
+    highlighted: { fill: "#5a98cb", stroke: "none", opacity: 0.75 },
+    selected: { fill: "steelblue", stroke: "none", opacity: 0.75 },
+    muted: { fill: "steelblue", stroke: "none", opacity: 0.25 }
+  }
 };
 
 /**
@@ -81,7 +82,6 @@ const defaultStyle = {
  * rather than hard coding the width as in the above example.
  */
 export default class AreaChart extends React.Component {
-
   shouldComponentUpdate(nextProps) {
     const newSeries = nextProps.series;
     const oldSeries = this.props.series;
@@ -94,14 +94,17 @@ export default class AreaChart extends React.Component {
     const highlight = nextProps.highlight;
     const selection = nextProps.selection;
 
-    const widthChanged = (this.props.width !== width);
-    const timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
-    const yAxisScaleChanged = (this.props.yScale !== yScale);
-    const interpolationChanged = (this.props.interpolation !== interpolation);
-    const columnsChanged = (JSON.stringify(this.props.columns) !== JSON.stringify(columns));
-    const styleChanged = (JSON.stringify(this.props.style) !== JSON.stringify(style));
-    const highlightChanged = (this.props.highlight !== highlight);
-    const selectionChanged = (this.props.selection !== selection);
+    const widthChanged = this.props.width !== width;
+    const timeScaleChanged = scaleAsString(this.props.timeScale) !==
+      scaleAsString(timeScale);
+    const yAxisScaleChanged = this.props.yScale !== yScale;
+    const interpolationChanged = this.props.interpolation !== interpolation;
+    const columnsChanged = JSON.stringify(this.props.columns) !==
+      JSON.stringify(columns);
+    const styleChanged = JSON.stringify(this.props.style) !==
+      JSON.stringify(style);
+    const highlightChanged = this.props.highlight !== highlight;
+    const selectionChanged = this.props.selection !== selection;
 
     let seriesChanged = false;
     if (oldSeries.length !== newSeries.length) {
@@ -110,8 +113,7 @@ export default class AreaChart extends React.Component {
       seriesChanged = !TimeSeries.is(oldSeries, newSeries);
     }
 
-    return (
-      seriesChanged ||
+    return seriesChanged ||
       timeScaleChanged ||
       widthChanged ||
       interpolationChanged ||
@@ -119,8 +121,7 @@ export default class AreaChart extends React.Component {
       styleChanged ||
       yAxisScaleChanged ||
       highlightChanged ||
-      selectionChanged
-    );
+      selectionChanged;
   }
 
   handleHover(e, column) {
@@ -163,53 +164,71 @@ export default class AreaChart extends React.Component {
     let style;
 
     const styleMap = this.providedAreaStyleMap(column);
-    const isHighlighted = this.props.highlight && column === this.props.highlight;
+    const isHighlighted = this.props.highlight &&
+      column === this.props.highlight;
     const isSelected = this.props.selection && column === this.props.selection;
 
-    if (!_.has(styleMap, 'line')) {
-      console.error('Provided style for AreaChart does not define a style for the outline:', styleMap, column);
+    if (!_.has(styleMap, "line")) {
+      console.error(
+        "Provided style for AreaChart does not define a style for the outline:",
+        styleMap,
+        column
+      );
     }
 
-    if (!_.has(styleMap, 'area')) {
-      console.error('Provided style for AreaChart does not define a style for the area:', styleMap);
+    if (!_.has(styleMap, "area")) {
+      console.error(
+        "Provided style for AreaChart does not define a style for the area:",
+        styleMap
+      );
     }
 
     if (this.props.selection) {
       if (isSelected) {
-        style = merge(true,
-                      defaultStyle[type].selected,
-                      styleMap[type].selected ? styleMap[type].selected : {});
+        style = merge(
+          true,
+          defaultStyle[type].selected,
+          styleMap[type].selected ? styleMap[type].selected : {}
+        );
       } else if (isHighlighted) {
-        style = merge(true,
-                      defaultStyle[type].highlighted,
-                      styleMap[type].highlighted ? styleMap[type].highlighted : {});
+        style = merge(
+          true,
+          defaultStyle[type].highlighted,
+          styleMap[type].highlighted ? styleMap[type].highlighted : {}
+        );
       } else {
-        style = merge(true,
-                      defaultStyle[type].muted,
-                      styleMap[type].muted ? styleMap[type].muted : {});
+        style = merge(
+          true,
+          defaultStyle[type].muted,
+          styleMap[type].muted ? styleMap[type].muted : {}
+        );
       }
     } else if (isHighlighted) {
-      style = merge(true,
-                    defaultStyle[type].highlighted,
-                    styleMap[type].highlighted ? styleMap[type].highlighted : {});
+      style = merge(
+        true,
+        defaultStyle[type].highlighted,
+        styleMap[type].highlighted ? styleMap[type].highlighted : {}
+      );
     } else {
-      style = merge(true,
-                    defaultStyle[type].normal,
-                    styleMap[type].normal ? styleMap[type].normal : {});
+      style = merge(
+        true,
+        defaultStyle[type].normal,
+        styleMap[type].normal ? styleMap[type].normal : {}
+      );
     }
     return style;
   }
 
   pathStyle(column) {
-    return this.style(column, 'line');
+    return this.style(column, "line");
   }
 
   areaStyle(column) {
-    return this.style(column, 'area');
+    return this.style(column, "area");
   }
 
   renderPaths(columnList, direction) {
-    const dir = direction === 'up' ? 1 : -1;
+    const dir = direction === "up" ? 1 : -1;
     const size = this.props.series.size();
     const offsets = new Array(size).fill(0);
 
@@ -224,7 +243,7 @@ export default class AreaChart extends React.Component {
         data.push({
           x0: this.props.timeScale(seriesPoint.timestamp()),
           y0: this.props.yScale(offsets[j]),
-          y1: this.props.yScale(offsets[j] + (dir * seriesPoint.get(column))),
+          y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
         });
         if (this.props.stack) {
           offsets[j] += dir * seriesPoint.get(column);
@@ -232,22 +251,22 @@ export default class AreaChart extends React.Component {
       }
 
       // Use D3 to build an area generation function
-      const area = d3Shape.area()
-        .curve(d3Shape[this.props.interpolation])
+      const areaGenerator = area()
+        .curve(curves[this.props.interpolation])
         .x(d => d.x0)
         .y0(d => d.y0)
         .y1(d => d.y1);
 
       // Use the area generation function with our stacked data
       // to get an SVG path
-      const areaPath = area(data);
+      const areaPath = areaGenerator(data);
 
       // Outline the top of the curve
-      const lineFunction = d3Shape.line()
-        .curve(d3Shape[this.props.interpolation])
+      const lineGenerator = line()
+        .curve(curves[this.props.interpolation])
         .x(d => d.x0)
         .y(d => d.y1);
-      const outlinePath = lineFunction(data);
+      const outlinePath = lineGenerator(data);
 
       return (
         <g key={`area-${i}`}>
@@ -275,8 +294,8 @@ export default class AreaChart extends React.Component {
     const down = this.props.columns.down || [];
     return (
       <g>
-        {this.renderPaths(up, 'up')}
-        {this.renderPaths(down, 'down')}
+        {this.renderPaths(up, "up")}
+        {this.renderPaths(down, "down")}
       </g>
     );
   }
@@ -291,18 +310,15 @@ export default class AreaChart extends React.Component {
 }
 
 AreaChart.propTypes = {
-
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
   series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-
   /**
    * Reference to the axis which provides the vertical scale for ## drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired,       // eslint-disable-line
-
+  axis: React.PropTypes.string.isRequired, // eslint-disable-line
   /**
    * The series series columns mapped to stacking up and down.
    * Has the format:
@@ -315,11 +331,9 @@ AreaChart.propTypes = {
    */
   columns: React.PropTypes.shape({
     up: React.PropTypes.arrayOf(React.PropTypes.string),
-    down: React.PropTypes.arrayOf(React.PropTypes.string),
+    down: React.PropTypes.arrayOf(React.PropTypes.string)
   }),
-
   stack: React.PropTypes.bool,
-
   /**
    * The styles to apply to the underlying SVG lines. This is a mapping
    * of column names to objects with style attributes, in the following
@@ -364,72 +378,63 @@ AreaChart.propTypes = {
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
+    React.PropTypes.instanceOf(Styler)
   ]),
-
   /**
    * Any of D3's interpolation modes.
    */
   interpolation: React.PropTypes.oneOf([
-    'curveBasis',
-    'curveBasisOpen',
-    'curveBundle',
-    'curveCardinal',
-    'curveCardinalOpen',
-    'curveCatmullRom',
-    'curveCatmullRomOpen',
-    'curveLinear',
-    'curveMonotoneX',
-    'curveMonotoneY',
-    'curveNatural',
-    'curveRadial',
-    'curveStep',
-    'curveStepAfter',
-    'curveStepBefore',
+    "curveBasis",
+    "curveBasisOpen",
+    "curveBundle",
+    "curveCardinal",
+    "curveCardinalOpen",
+    "curveCatmullRom",
+    "curveCatmullRomOpen",
+    "curveLinear",
+    "curveMonotoneX",
+    "curveMonotoneY",
+    "curveNatural",
+    "curveRadial",
+    "curveStep",
+    "curveStepAfter",
+    "curveStepBefore"
   ]),
-
   /**
    * The currenly highlighted column
    */
   highlight: React.PropTypes.string,
-
   /**
    * Callback called when the highlight changes, i.e. hover event
    */
   onHighlightChange: React.PropTypes.func,
-
   /**
    * The currenly selected column
    */
   selection: React.PropTypes.string,
-
   /**
    * Callback called when the selection changes, i.e. area is clicked
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
   yScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
-
+  width: React.PropTypes.number
 };
 
 AreaChart.defaultProps = {
-  interpolation: 'curveLinear',
+  interpolation: "curveLinear",
   columns: {
-    up: ['value'],
-    down: [],
+    up: ["value"],
+    down: []
   },
-  stack: true,
+  stack: true
 };

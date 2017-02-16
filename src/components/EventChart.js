@@ -8,22 +8,22 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import merge from 'merge';
-import React from 'react';
-import { TimeSeries, Event } from 'pondjs';
+import _ from "underscore";
+import merge from "merge";
+import React from "react";
+import { TimeSeries, Event } from "pondjs";
 
 /**
  * Renders an event view that shows the supplied set of events along a time axis.
  * The events should be supplied as a Pond TimeSeries.
- * That series may contain regular Events, TimeRangeEvents or IndexedEvents.
+ * That series may contain regular TimeEvents, TimeRangeEvents
+ * or IndexedEvents.
  */
 export default class EventChart extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      hover: null,
+      hover: null
     };
   }
 
@@ -68,30 +68,31 @@ export default class EventChart extends React.Component {
     for (const event of series.events()) {
       const begin = event.begin();
       const end = event.end();
-      const beginPos = scale(begin) >= 0 ?
-        scale(begin) : 0;
-      const endPos = scale(end) <= this.props.width ?
-        scale(end) : this.props.width;
+      const beginPos = scale(begin) >= 0 ? scale(begin) : 0;
+      const endPos = scale(end) <= this.props.width
+        ? scale(end)
+        : this.props.width;
 
       const transform = `translate(${beginPos},0)`;
-      const isHover = this.state.hover ?
-        Event.is(event, this.state.hover) : false;
+      const isHover = this.state.hover
+        ? Event.is(event, this.state.hover)
+        : false;
 
       let state;
       if (isHover) {
-        state = 'hover';
+        state = "hover";
       } else {
-        state = 'normal';
+        state = "normal";
       }
 
       let barNormalStyle = {};
       let barStyle = {};
       if (this.props.style) {
-        barNormalStyle = this.props.style(event, 'normal');
+        barNormalStyle = this.props.style(event, "normal");
         barStyle = this.props.style(event, state);
       }
 
-      let label = '';
+      let label = "";
       if (this.props.label) {
         if (_.isString(this.props.label)) {
           label = this.props.label;
@@ -108,7 +109,7 @@ export default class EventChart extends React.Component {
 
       const eventLabelStyle = {
         fontWeight: 100,
-        fontSize: 11,
+        fontSize: 11
       };
 
       let text = null;
@@ -121,10 +122,14 @@ export default class EventChart extends React.Component {
               y={y}
               width={hoverMarkerWidth}
               height={height + 4}
-              style={merge(true, barNormalStyle, { pointerEvents: 'none' })}
+              style={merge(true, barNormalStyle, { pointerEvents: "none" })}
             />
             <text
-              style={{ pointerEvents: 'none', fill: '#444', ...eventLabelStyle }}
+              style={{
+                pointerEvents: "none",
+                fill: "#444",
+                ...eventLabelStyle
+              }}
               x={8 + textOffsetX}
               y={15 + textOffsetY}
             >
@@ -138,7 +143,10 @@ export default class EventChart extends React.Component {
         <g transform={transform} key={i}>
           <rect
             className="eventchart-marker"
-            x={x} y={y} width={width} height={height}
+            x={x}
+            y={y}
+            width={width}
+            height={height}
             style={barStyle}
             onClick={e => this.handleClick(e, event)}
             onMouseLeave={() => this.onMouseLeave()}
@@ -164,7 +172,7 @@ EventChart.defaultProps = {
   spacing: 0,
   textOffsetX: 0,
   textOffsetY: 0,
-  hoverMarkerWidth: 5,
+  hoverMarkerWidth: 5
 };
 
 EventChart.propTypes = {
@@ -172,69 +180,56 @@ EventChart.propTypes = {
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
   series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-
   /**
    * Set hover label text
    * When label is function callback it will be called with current event.
    */
   label: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.func,
+    React.PropTypes.func
   ]),
-
   /**
    * The height in pixels for the event bar
    */
   size: React.PropTypes.number,
-
   /**
    * The distance in pixels to inset the bar chart from its actual timerange
    */
   spacing: React.PropTypes.number,
-
   /**
    * Marker width on hover
    */
   hoverMarkerWidth: React.PropTypes.number,
-
   /**
    * Hover text offset position X
    */
   textOffsetX: React.PropTypes.number,
-
   /**
    * Hover text offset position Y
    */
   textOffsetY: React.PropTypes.number,
-
   /**
    * A function that should return the style of the event box
    */
   style: React.PropTypes.func,
-
   /**
    * Event selection on click. Will be called with selected event.
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * Mouse leave at end of hover event
    */
   onMouseLeave: React.PropTypes.func,
-
   /**
    * Mouse over event callback
    */
   onMouseOver: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
-
+  width: React.PropTypes.number
 };

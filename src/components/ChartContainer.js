@@ -8,29 +8,29 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import invariant from 'invariant';
-import React from 'react';
-import { scaleTime, scaleUtc } from 'd3-scale';
-import { TimeRange } from 'pondjs';
+import _ from "underscore";
+import invariant from "invariant";
+import React from "react";
+import { scaleTime, scaleUtc } from "d3-scale";
+import { TimeRange } from "pondjs";
 
-import Brush from './Brush';
-import ChartRow from './ChartRow';
-import Charts from './Charts';
-import EventHandler from './EventHandler';
-import TimeAxis from './TimeAxis';
-import TimeMarker from './TimeMarker';
+import Brush from "./Brush";
+import ChartRow from "./ChartRow";
+import Charts from "./Charts";
+import EventHandler from "./EventHandler";
+import TimeAxis from "./TimeAxis";
+import TimeMarker from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
   labels: {
-    labelColor: '#8B7E7E',
+    labelColor: "#8B7E7E",
     labelWeight: 100,
-    labelSize: 11,
+    labelSize: 11
   },
   axis: {
-    axisColor: '#C0C0C0',
-    axisWidth: 1,
-  },
+    axisColor: "#C0C0C0",
+    axisWidth: 1
+  }
 };
 
 /**
@@ -55,7 +55,6 @@ const defaultTimeAxisStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
-
   //
   // Event handlers
   //
@@ -129,7 +128,7 @@ export default class ChartContainer extends React.Component {
     //          left cols              right cols
     //
 
-    React.Children.forEach(this.props.children, (childRow) => {
+    React.Children.forEach(this.props.children, childRow => {
       if (childRow.type === ChartRow) {
         //
         // Within this row, count the number of columns that will be
@@ -140,44 +139,44 @@ export default class ChartContainer extends React.Component {
         let countLeft = 0;
         let countCharts = 0;
 
-        let align = 'left';
+        let align = "left";
 
-        React.Children.forEach(childRow.props.children, (child) => {
+        React.Children.forEach(childRow.props.children, child => {
           if (child.type === Charts) {
             countCharts += 1;
-            align = 'right';
+            align = "right";
           } else if (child.type !== Brush) {
-            if (align === 'left') {
+            if (align === "left") {
               countLeft += 1;
             }
           }
         });
 
         if (countCharts !== 1) {
-          const msg = 'ChartRow should have one and only one <Charts> tag within it';
-          invariant(false, msg,
-            childRow.constructor.name
-          );
+          const msg = "ChartRow should have one and only one <Charts> tag within it";
+          invariant(false, msg, childRow.constructor.name);
         }
 
-        align = 'left';
+        align = "left";
         let pos = countLeft - 1;
 
-        React.Children.forEach(childRow.props.children, (child) => {
+        React.Children.forEach(childRow.props.children, child => {
           if (child.type === Charts || child.type === Brush) {
             if (child.type === Charts) {
-              align = 'right';
+              align = "right";
               pos = 0;
             }
           } else {
             const width = Number(child.props.width) || 40;
-            if (align === 'left') {
-              leftAxisWidths[pos] = leftAxisWidths[pos] ?
-                Math.max(width, leftAxisWidths[pos]) : width;
+            if (align === "left") {
+              leftAxisWidths[pos] = leftAxisWidths[pos]
+                ? Math.max(width, leftAxisWidths[pos])
+                : width;
               pos -= 1;
-            } else if (align === 'right') {
-              rightAxisWidths[pos] = rightAxisWidths[pos] ?
-                Math.max(width, rightAxisWidths[pos]) : width;
+            } else if (align === "right") {
+              rightAxisWidths[pos] = rightAxisWidths[pos]
+                ? Math.max(width, rightAxisWidths[pos])
+                : width;
               pos += 1;
             }
           }
@@ -197,24 +196,24 @@ export default class ChartContainer extends React.Component {
     const timeAxisWidth = this.props.width - leftWidth - rightWidth;
 
     if (!this.props.timeRange) {
-      throw Error('Invalid timerange passed to ChartContainer');
+      throw Error("Invalid timerange passed to ChartContainer");
     }
 
-    const timeScale = this.props.utc ?
-      scaleUtc()
-        .domain(this.props.timeRange.toJSON())
-        .range([0, timeAxisWidth]) :
-      scaleTime()
-        .domain(this.props.timeRange.toJSON())
-        .range([0, timeAxisWidth]);
+    const timeScale = this.props.utc
+      ? scaleUtc()
+          .domain(this.props.timeRange.toJSON())
+          .range([0, timeAxisWidth])
+      : scaleTime()
+          .domain(this.props.timeRange.toJSON())
+          .range([0, timeAxisWidth]);
 
     let i = 0;
     let yPosition = 0;
-    React.Children.forEach(this.props.children, (child) => {
+    React.Children.forEach(this.props.children, child => {
       if (child.type === ChartRow) {
         const chartRow = child;
         const rowKey = `chart-row-row-${i}`;
-        const firstRow = (i === 0);
+        const firstRow = i === 0;
         const props = {
           timeScale,
           leftAxisWidths,
@@ -230,7 +229,7 @@ export default class ChartContainer extends React.Component {
           trackerTime: this.props.trackerPosition,
           trackerTimeFormat: this.props.format,
           onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
-          onTrackerChanged: t => this.handleTrackerChanged(t),
+          onTrackerChanged: t => this.handleTrackerChanged(t)
         };
         const transform = `translate(${-leftWidth},${yPosition})`;
         chartRows.push(
@@ -248,12 +247,14 @@ export default class ChartContainer extends React.Component {
 
     // Hover tracker line
     let tracker;
-    if (this.props.trackerPosition &&
-      this.props.timeRange.contains(this.props.trackerPosition)) {
+    if (
+      this.props.trackerPosition &&
+        this.props.timeRange.contains(this.props.trackerPosition)
+    ) {
       tracker = (
         <g
           key="tracker-group"
-          style={{ pointerEvents: 'none' }}
+          style={{ pointerEvents: "none" }}
           transform={`translate(${leftWidth},0)`}
         >
           <TimeMarker
@@ -278,14 +279,17 @@ export default class ChartContainer extends React.Component {
     const xStyle = {
       stroke: this.props.timeAxisStyle.axis.axisColor,
       strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
-      fill: 'none',
-      pointerEvents: 'none',
+      fill: "none",
+      pointerEvents: "none"
     };
 
     const timeAxis = (
       <g transform={`translate(${leftWidth},${chartsHeight})`}>
         <line
-          x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5}
+          x1={-leftWidth}
+          y1={0.5}
+          x2={this.props.width}
+          y2={0.5}
           style={xStyle}
         />
         <TimeAxis
@@ -334,7 +338,7 @@ export default class ChartContainer extends React.Component {
     const svgHeight = yPosition + timeAxisHeight;
 
     return (
-      <svg width={svgWidth} height={svgHeight} style={{ display: 'block' }}>
+      <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
         {rows}
         {tracker}
         {timeAxis}
@@ -344,25 +348,21 @@ export default class ChartContainer extends React.Component {
 }
 
 ChartContainer.propTypes = {
-
   /**
    * A Pond TimeRange representing the begin and end time of the chart.
    */
   timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
-
   /**
    * Should the time axis use a UTC scale or local
    */
   utc: React.PropTypes.bool,
-
   /**
    * Children of the ChartContainer should be ChartRows.
    */
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.element),
-    React.PropTypes.element,
+    React.PropTypes.element
   ]).isRequired,
-
   /**
    * The width of the chart. This library also includes a <Resizable> component
    * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
@@ -371,31 +371,26 @@ ChartContainer.propTypes = {
    * based on a responsive layout.
    */
   width: React.PropTypes.number,
-
   /**
    * Constrain the timerange to not move back in time further than this Date.
    */
   minTime: React.PropTypes.instanceOf(Date),
-
   /**
    * Constrain the timerange to not move forward in time than this Date. A
    * common example is setting this to the current time or the end time
    * of a fixed set of data.
    */
   maxTime: React.PropTypes.instanceOf(Date),
-
   /**
    * Boolean to turn on interactive pan and zoom behavior for the chart.
    */
   enablePanZoom: React.PropTypes.bool,
-
   /**
    * If this is set the timerange of the chart cannot be zoomed in further
    * than this duration, in milliseconds. This might be determined by the
    * resolution of your data.
    */
   minDuration: React.PropTypes.number,
-
   /**
    * Provides several options as to the format of the time axis labels.
    * In general the time axis will generate an appropriate time scale based
@@ -411,17 +406,14 @@ ChartContainer.propTypes = {
    * as an actual date/time.
    */
   format: React.PropTypes.string,
-
   /**
    * Time in milliseconds to transition from one Y-scale to the next
    */
   transition: React.PropTypes.number,
-
   /**
    * Show grid lines for each time marker
    */
   showGrid: React.PropTypes.bool,
-
   /**
    * Adjust the time axis style. This is an object of the
    * form { labels, axis } where "label" and "axis" are objects
@@ -443,20 +435,17 @@ ChartContainer.propTypes = {
    * ```
    */
   timeAxisStyle: React.PropTypes.shape({
-    labels: React.PropTypes.object,  // eslint-disable-line
-    axis: React.PropTypes.object,
+    labels: React.PropTypes.object, // eslint-disable-line
+    axis: React.PropTypes.object
   }),
-
   /**
    * The width of the tracker info box
    */
   trackerHintWidth: React.PropTypes.number,
-
   /**
    * The height of the tracker info box
    */
   trackerHintHeight: React.PropTypes.number,
-
   /**
    * Info box value or values to place next to the tracker line.
    * This is either an array of objects, with each object
@@ -465,13 +454,11 @@ ChartContainer.propTypes = {
    */
   trackerValues: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        label: React.PropTypes.string,  // eslint-disable-line
-        value: React.PropTypes.string,  // eslint-disable-line
-      })
-  )]),
-
+    React.PropTypes.arrayOf(React.PropTypes.shape({
+        label: React.PropTypes.string, // eslint-disable-line
+        value: React.PropTypes.string // eslint-disable-line
+      }))
+  ]),
   /**
    * A Date specifying the position of the tracker line on the chart. It is
    * common to take this from the onTrackerChanged callback so that the tracker
@@ -479,7 +466,6 @@ ChartContainer.propTypes = {
    * to the nearest minute, for example.
    */
   trackerPosition: React.PropTypes.instanceOf(Date),
-
   /**
    * Will be called when the user hovers over a chart. The callback will
    * be called with the timestamp (a Date object) of the position hovered
@@ -494,7 +480,6 @@ ChartContainer.propTypes = {
    * ```
    */
   onTrackerChanged: React.PropTypes.func,
-
   /**
    * This will be called if the user pans and/or zooms the chart. The callback
    * will be called with the new TimeRange. This can be fed into the timeRange
@@ -508,18 +493,15 @@ ChartContainer.propTypes = {
    * ```
    */
   onTimeRangeChanged: React.PropTypes.func,
-
   /**
    * Called when the size of the chart changes
    */
   onChartResize: React.PropTypes.func,
-
   /**
    * Called when the user clicks the background plane of the chart. This is
    * useful when deselecting elements.
    */
-  onBackgroundClick: React.PropTypes.func,
-
+  onBackgroundClick: React.PropTypes.func
 };
 
 ChartContainer.defaultProps = {
@@ -528,5 +510,5 @@ ChartContainer.defaultProps = {
   enablePanZoom: false,
   utc: false,
   showGrid: false,
-  timeAxisStyle: defaultTimeAxisStyle,
+  timeAxisStyle: defaultTimeAxisStyle
 };

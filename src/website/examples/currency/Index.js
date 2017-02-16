@@ -36,7 +36,7 @@ function buildPoints() {
     const audPoints = aud.widget[0].data.reverse();
     const euroPoints = euro.widget[0].data.reverse();
     let points = [];
-    for (let i=0; i < audPoints.length; i++) {
+    for (let i = 0; i < audPoints.length; i++) {
         points.push([audPoints[i][0], audPoints[i][1], euroPoints[i][1]]);
     }
     return points;
@@ -49,27 +49,23 @@ const currencySeries = new TimeSeries({
 });
 
 const style = styler([
-    {key: "aud", color: "steelblue", width: 1, dashed: true},
-    {key: "euro", color: "#F68B24", width: 2}
+    { key: "aud", color: "steelblue", width: 1, dashed: true },
+    { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
 const currency = React.createClass({
-
     getInitialState() {
         return {
             tracker: null,
             timerange: currencySeries.range()
         };
     },
-
     handleTrackerChanged(tracker) {
-        this.setState({tracker});
+        this.setState({ tracker });
     },
-
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        this.setState({ timerange });
     },
-
     render() {
         const f = format("$,.2f");
         const df = timeFormat("%b %d %Y %X");
@@ -90,7 +86,7 @@ const currency = React.createClass({
 
         return (
             <div>
-                <div className="row" style={{height: 28}}>
+                <div className="row" style={{ height: 28 }}>
                     <div className="col-md-6" style={timeStyle}>
                         {this.state.tracker ? `${df(this.state.tracker)}` : ""}
                     </div>
@@ -100,13 +96,16 @@ const currency = React.createClass({
                             align="right"
                             style={style}
                             highlight={this.state.highlight}
-                            onHighlightChange={highlight => this.setState({highlight})}
+                            onHighlightChange={highlight =>
+                                this.setState({ highlight })}
                             selection={this.state.selection}
-                            onSelectionChange={selection => this.setState({selection})}
+                            onSelectionChange={selection =>
+                                this.setState({ selection })}
                             categories={[
-                                {key: "aud", label: "AUD", value: audValue},
-                                {key: "euro", label: "Euro", value: euroValue}
-                            ]} />
+                                { key: "aud", label: "AUD", value: audValue },
+                                { key: "euro", label: "Euro", value: euroValue }
+                            ]}
+                        />
                     </div>
                 </div>
                 <hr />
@@ -119,10 +118,12 @@ const currency = React.createClass({
                                 minTime={currencySeries.range().begin()}
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
-                                onBackgroundClick={() => this.setState({selection: null})}
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
-                                minDuration={1000 * 60 * 60 * 24 * 30} >
+                                minDuration={1000 * 60 * 60 * 24 * 30}
+                            >
                                 <ChartRow height="500">
                                     <YAxis
                                         id="y"
@@ -131,7 +132,8 @@ const currency = React.createClass({
                                         max={1.5}
                                         width="60"
                                         type="linear"
-                                        format="$,.2f" />
+                                        format="$,.2f"
+                                    />
                                     <Charts>
                                         <LineChart
                                             axis="y"
@@ -141,14 +143,18 @@ const currency = React.createClass({
                                             style={style}
                                             interpolation="curveBasis"
                                             highlight={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selection={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                         <Baseline
                                             axis="y"
                                             value={1.0}
                                             label="USD Baseline"
-                                            position="right" />
+                                            position="right"
+                                        />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -163,4 +169,4 @@ const currency = React.createClass({
 // Export example
 import currency_docs from "raw!./currency_docs.md";
 import currency_thumbnail from "./currency_thumbnail.png";
-export default {currency, currency_docs, currency_thumbnail};
+export default { currency, currency_docs, currency_thumbnail };

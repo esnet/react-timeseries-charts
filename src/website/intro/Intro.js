@@ -17,18 +17,16 @@ import logo from "../img/charts.png";
 import text from "raw!./intro.md";
 
 export default React.createClass({
-
     mixins: [Highlighter],
-
     render() {
         return (
             <div>
                 <div className="row">
                     <div className="col-md-2">
-                        <img src={logo} alt="ESnet" width={120} height={120}/>
+                        <img src={logo} alt="ESnet" width={120} height={120} />
                     </div>
                     <div className="col-md-9">
-                        <Markdown source={text}/>
+                        <Markdown source={text} />
                     </div>
                 </div>
             </div>

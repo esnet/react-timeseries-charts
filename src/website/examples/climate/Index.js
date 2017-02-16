@@ -10,28 +10,28 @@
 
 /* eslint max-len:0 */
 
-import React from 'react';
-import _ from 'underscore';
+import React from "react";
+import _ from "underscore";
 
 // Pond
-import { TimeSeries } from 'pondjs';
+import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import Baseline from '../../../components/Baseline';
-import ChartContainer from '../../../components/ChartContainer';
-import ChartRow from '../../../components/ChartRow';
-import Charts from '../../../components/Charts';
-import YAxis from '../../../components/YAxis';
-import LineChart from '../../../components/LineChart';
-import Resizable from '../../../components/Resizable';
-import ScatterChart from '../../../components/ScatterChart';
-import styler from '../../../js/styler';
+import Baseline from "../../../components/Baseline";
+import ChartContainer from "../../../components/ChartContainer";
+import ChartRow from "../../../components/ChartRow";
+import Charts from "../../../components/Charts";
+import YAxis from "../../../components/YAxis";
+import LineChart from "../../../components/LineChart";
+import Resizable from "../../../components/Resizable";
+import ScatterChart from "../../../components/ScatterChart";
+import styler from "../../../js/styler";
 
 // Data
-const temperatures = require('./climate_data');
+const temperatures = require("./climate_data");
 
 const points = [];
-_.each(temperatures, (val) => {
+_.each(temperatures, val => {
   const index = `${val.year}`;
   const temperature = val.value;
   const fiveyear = val.fiveyr;
@@ -39,9 +39,9 @@ _.each(temperatures, (val) => {
 });
 
 const temperatureSeries = new TimeSeries({
-  name: 'temperature anomoly',
-  columns: ['index', 'temperature', 'five_year'],
-  points,
+  name: "temperature anomoly",
+  columns: ["index", "temperature", "five_year"],
+  points
 });
 
 //
@@ -50,36 +50,38 @@ const temperatureSeries = new TimeSeries({
 
 const baselineStyle = {
   line: {
-    stroke: 'gray',
-    strokeWidth: 1,
-  },
+    stroke: "gray",
+    strokeWidth: 1
+  }
 };
 
 const style = styler([
-  { key: 'temperature', color: '#ccc', width: 1 },
-  { key: 'five_year', color: 'black', width: 2 },
+  { key: "temperature", color: "#ccc", width: 1 },
+  { key: "five_year", color: "black", width: 2 }
 ]);
 
 const climate = React.createClass({
-
   renderChart() {
     const min = -0.5;
     const max = 1.0;
 
     const axisStyle = {
       labels: {
-        labelColor: 'grey', // Default label color
+        labelColor: "grey", // Default label color
         labelWeight: 100,
-        labelSize: 11,
+        labelSize: 11
       },
       axis: {
-        axisColor: 'grey',
-        axisWidth: 1,
-      },
+        axisColor: "grey",
+        axisWidth: 1
+      }
     };
 
     return (
-      <ChartContainer timeRange={temperatureSeries.range()} timeAxisStyle={axisStyle}>
+      <ChartContainer
+        timeRange={temperatureSeries.range()}
+        timeAxisStyle={axisStyle}
+      >
         <ChartRow height="300">
           <YAxis
             id="axis"
@@ -97,19 +99,19 @@ const climate = React.createClass({
             <LineChart
               axis="axis"
               series={temperatureSeries}
-              columns={['temperature']}
+              columns={["temperature"]}
               style={style}
             />
             <ScatterChart
               axis="axis"
               series={temperatureSeries}
-              columns={['temperature']}
+              columns={["temperature"]}
               style={style}
             />
             <LineChart
               axis="axis"
               series={temperatureSeries}
-              columns={['five_year']}
+              columns={["five_year"]}
               style={style}
               interpolation="curveBasis"
             />
@@ -124,7 +126,6 @@ const climate = React.createClass({
       </ChartContainer>
     );
   },
-
   render() {
     return (
       <div>
@@ -137,10 +138,10 @@ const climate = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 });
 
 // Export example
 import climate_docs from "raw!./climate_docs.md";
 import climate_thumbnail from "./climate_thumbnail.png";
-export default {climate, climate_docs, climate_thumbnail};
+export default { climate, climate_docs, climate_thumbnail };

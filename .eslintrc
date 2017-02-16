@@ -1,16 +1,3 @@
 {
-  "extends": "airbnb",
-  "globals": {
-    "window": true,
-    "document": true
-  },
-  "rules": {
-    "no-mixed-operators": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-  },
-  "parserOptions":{
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
-  },
+  "extends": "react-app"
 }

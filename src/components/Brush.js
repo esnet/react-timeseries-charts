@@ -8,22 +8,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import merge from 'merge';
-import React from 'react';
-import { TimeRange } from 'pondjs';
+import merge from "merge";
+import React from "react";
+import { TimeRange } from "pondjs";
 
-import { getElementOffset } from '../js/util';
+import { getElementOffset } from "../js/util";
 
 /**
  * Renders a brush with the range defined in the prop `timeRange`.
  */
 export default class Brush extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      isBrushing: false,
+      isBrushing: false
     };
 
     this.handleBrushMouseDown = this.handleBrushMouseDown.bind(this);
@@ -55,10 +54,10 @@ export default class Brush extends React.Component {
 
     this.setState({
       isBrushing: true,
-      brushingInitializationSite: 'brush',
+      brushingInitializationSite: "brush",
       initialBrushBeginTime: begin,
       initialBrushEndTime: end,
-      initialBrushXYPosition: xy0,
+      initialBrushXYPosition: xy0
     });
   }
 
@@ -70,10 +69,10 @@ export default class Brush extends React.Component {
     const t = this.props.timeScale.invert(x).getTime();
     this.setState({
       isBrushing: true,
-      brushingInitializationSite: 'overlay',
+      brushingInitializationSite: "overlay",
       initialBrushBeginTime: t,
       initialBrushEndTime: t,
-      initialBrushXYPosition: null,
+      initialBrushXYPosition: null
     });
   }
 
@@ -85,30 +84,30 @@ export default class Brush extends React.Component {
     const begin = this.props.timeRange.begin().getTime();
     const end = this.props.timeRange.end().getTime();
 
-    document.addEventListener('mouseover', this.handleMouseMove);
-    document.addEventListener('mouseup', this.handleMouseUp);
+    document.addEventListener("mouseover", this.handleMouseMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
 
     this.setState({
       isBrushing: true,
       brushingInitializationSite: `handle-${handle}`,
       initialBrushBeginTime: begin,
       initialBrushEndTime: end,
-      initialBrushXYPosition: xy0,
+      initialBrushXYPosition: xy0
     });
   }
 
   handleMouseUp(e) {
     e.preventDefault();
 
-    document.removeEventListener('mouseover', this.handleMouseMove);
-    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener("mouseover", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
 
     this.setState({
       isBrushing: false,
       brushingInitializationSite: null,
       initialBrushBeginTime: null,
       initialBrushEndTime: null,
-      initialBrushXYPosition: null,
+      initialBrushXYPosition: null
     });
   }
 
@@ -140,7 +139,7 @@ export default class Brush extends React.Component {
       const tb = this.state.initialBrushBeginTime;
       const te = this.state.initialBrushEndTime;
 
-      if (this.state.brushingInitializationSite === 'overlay') {
+      if (this.state.brushingInitializationSite === "overlay") {
         const offset = getElementOffset(this.overlay);
         const xx = e.pageX - offset.left;
         const t = this.props.timeScale.invert(xx).getTime();
@@ -153,8 +152,7 @@ export default class Brush extends React.Component {
         }
       } else {
         const xy0 = this.state.initialBrushXYPosition;
-        let timeOffset =
-          this.props.timeScale.invert(xy0[0]).getTime() -
+        let timeOffset = this.props.timeScale.invert(xy0[0]).getTime() -
           this.props.timeScale.invert(xy[0]).getTime();
 
         // Constrain
@@ -165,14 +163,14 @@ export default class Brush extends React.Component {
           timeOffset = te - viewport.end().getTime();
         }
 
-        newBegin =
-          this.state.brushingInitializationSite === 'brush' ||
-          this.state.brushingInitializationSite === 'handle-left' ?
-            parseInt(tb - timeOffset, 10) : tb;
-        newEnd =
-          this.state.brushingInitializationSite === 'brush' ||
-          this.state.brushingInitializationSite === 'handle-right' ?
-            parseInt(te - timeOffset, 10) : te;
+        newBegin = this.state.brushingInitializationSite === "brush" ||
+          this.state.brushingInitializationSite === "handle-left"
+          ? parseInt(tb - timeOffset, 10)
+          : tb;
+        newEnd = this.state.brushingInitializationSite === "brush" ||
+          this.state.brushingInitializationSite === "handle-right"
+          ? parseInt(te - timeOffset, 10)
+          : te;
 
         // Swap if needed
         if (newBegin > newEnd) [newBegin, newEnd] = [newEnd, newBegin];
@@ -193,27 +191,31 @@ export default class Brush extends React.Component {
 
     let cursor;
     switch (this.state.brushingInitializationSite) {
-      case 'handle-right':
-      case 'handle-left':
-        cursor = 'ew-resize';
+      case "handle-right":
+      case "handle-left":
+        cursor = "ew-resize";
         break;
-      case 'brush':
-        cursor = 'move';
+      case "brush":
+        cursor = "move";
         break;
       default:
-        cursor = 'crosshair';
+        cursor = "crosshair";
     }
 
     const overlayStyle = {
-      fill: 'white',
+      fill: "white",
       opacity: 0,
-      cursor,
+      cursor
     };
     return (
       <rect
-        ref={(c) => { this.overlay = c; }}
-        x={0} y={0}
-        width={width} height={height}
+        ref={c => {
+          this.overlay = c;
+        }}
+        x={0}
+        y={0}
+        width={width}
+        height={height}
         style={overlayStyle}
         onMouseDown={this.handleOverlayMouseDown}
         onMouseUp={this.handleMouseUp}
@@ -226,31 +228,29 @@ export default class Brush extends React.Component {
     const { timeRange, timeScale, height, style } = this.props;
 
     if (!timeRange) {
-      return (
-        <g />
-      );
+      return <g />;
     }
 
     let cursor;
     switch (this.state.brushingInitializationSite) {
-      case 'handle-right':
-      case 'handle-left':
-        cursor = 'ew-resize';
+      case "handle-right":
+      case "handle-left":
+        cursor = "ew-resize";
         break;
-      case 'overlay':
-        cursor = 'crosshair';
+      case "overlay":
+        cursor = "crosshair";
         break;
       default:
-        cursor = 'move';
+        cursor = "move";
     }
 
     // Style of the brush area
     const brushDefaultStyle = {
-      fill: '#777',
+      fill: "#777",
       fillOpacity: 0.3,
-      stroke: '#fff',
-      shapeRendering: 'crispEdges',
-      cursor,
+      stroke: "#fff",
+      shapeRendering: "crispEdges",
+      cursor
     };
     const brushStyle = merge(true, brushDefaultStyle, style);
 
@@ -277,25 +277,21 @@ export default class Brush extends React.Component {
         />
       );
     }
-    return (
-      <g />
-    );
+    return <g />;
   }
 
   renderHandles() {
     const { timeRange, timeScale, height } = this.props;
 
     if (!timeRange) {
-      return (
-        <g />
-      );
+      return <g />;
     }
 
     // Style of the handles
     const handleStyle = {
-      fill: 'white',
+      fill: "white",
       opacity: 0,
-      cursor: 'ew-resize',
+      cursor: "ew-resize"
     };
 
     if (!this.viewport().disjoint(timeRange)) {
@@ -311,10 +307,13 @@ export default class Brush extends React.Component {
 
       const handleSize = this.props.handleSize;
 
-      const leftHandleBounds =
-        { x: x - 1, y, width: handleSize, height };
-      const rightHandleBounds =
-        { x: x + (width - handleSize), y, width: handleSize + 1, height };
+      const leftHandleBounds = { x: x - 1, y, width: handleSize, height };
+      const rightHandleBounds = {
+        x: x + (width - handleSize),
+        y,
+        width: handleSize + 1,
+        height
+      };
 
       return (
         <g>
@@ -322,22 +321,20 @@ export default class Brush extends React.Component {
             {...leftHandleBounds}
             style={handleStyle}
             pointerEvents="all"
-            onMouseDown={e => this.handleHandleMouseDown(e, 'left')}
+            onMouseDown={e => this.handleHandleMouseDown(e, "left")}
             onMouseUp={this.handleMouseUp}
           />
           <rect
             {...rightHandleBounds}
             style={handleStyle}
             pointerEvents="all"
-            onMouseDown={e => this.handleHandleMouseDown(e, 'right')}
+            onMouseDown={e => this.handleHandleMouseDown(e, "right")}
             onMouseUp={this.handleMouseUp}
           />
         </g>
       );
     }
-    return (
-      <g />
-    );
+    return <g />;
   }
 
   render() {
@@ -352,7 +349,6 @@ export default class Brush extends React.Component {
 }
 
 Brush.propTypes = {
-
   /**
    * The timerange for the brush. Typically you would maintain this
    * as state on the surrounding page, since it would likely control
@@ -363,20 +359,16 @@ Brush.propTypes = {
    * Takes a Pond TimeRange object.
    */
   timeRange: React.PropTypes.instanceOf(TimeRange),
-
   /**
    * The brush is rendered as an SVG rect. You can specify the style
    * of this rect using this prop.
    */
   style: React.PropTypes.object, //eslint-disable-line
-
   /**
    * The size of the invisible side handles. Defaults to 6 pixels.
    */
   handleSize: React.PropTypes.number,
-
   allowSelectionClear: React.PropTypes.bool,
-
   /**
    * A callback which will be called if the brush range is changed by
    * the user. It is called with a Pond TimeRange object. Note that if
@@ -386,25 +378,21 @@ Brush.propTypes = {
    * use this to reset the selection, perhaps to some initial range.
    */
   onTimeRangeChanged: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
   width: React.PropTypes.number,
-
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number,
-
+  height: React.PropTypes.number
 };
 
 Brush.defaultProps = {
   handleSize: 6,
-  allowSelectionClear: false,
+  allowSelectionClear: false
 };

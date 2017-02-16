@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  *
@@ -56,11 +56,8 @@ import React from 'react';
  * A the width your chart will render into
  */
 export default class Charts extends React.Component {
-
-  render() {
-    return (
-      `${this.constructor.name} elements are for configuration only
-and should not be rendered`
-    );
-  }
+    render() {
+        return `${this.constructor.name} elements are for configuration only
+and should not be rendered`;
+    }
 }

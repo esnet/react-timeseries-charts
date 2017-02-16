@@ -8,19 +8,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import merge from 'merge';
-import React from 'react';
-import { TimeSeries, IndexedEvent, Event } from 'pondjs';
+import _ from "underscore";
+import merge from "merge";
+import React from "react";
+import { TimeSeries, IndexedEvent, Event } from "pondjs";
 
-import EventMarker from './EventMarker';
-import { Styler } from '../js/styler';
+import EventMarker from "./EventMarker";
+import { Styler } from "../js/styler";
 
 const defaultStyle = {
-  normal: { fill: 'steelblue', opacity: 0.8 },
-  highlighted: { fill: 'steelblue', opacity: 1.0 },
-  selected: { fill: 'steelblue', opacity: 1.0 },
-  muted: { fill: 'steelblue', opacity: 0.4 },
+  normal: { fill: "steelblue", opacity: 0.8 },
+  highlighted: { fill: "steelblue", opacity: 1.0 },
+  selected: { fill: "steelblue", opacity: 1.0 },
+  muted: { fill: "steelblue", opacity: 0.4 }
 };
 
 /**
@@ -79,7 +79,6 @@ const defaultStyle = {
  * be a simple string or an array of {label, value} pairs.
  */
 export default class BarChart extends React.Component {
-
   handleHover(e, event, column) {
     const bar = { event, column };
     if (this.props.onHighlightChange) {
@@ -122,38 +121,46 @@ export default class BarChart extends React.Component {
     let style;
     const styleMap = this.providedStyleMap(column);
 
-    const isHighlighted =
-      this.props.highlighted &&
+    const isHighlighted = this.props.highlighted &&
       column === this.props.highlighted.column &&
       Event.is(this.props.highlighted.event, event);
 
-    const isSelected =
-      this.props.selected &&
+    const isSelected = this.props.selected &&
       column === this.props.selected.column &&
       Event.is(this.props.selected.event, event);
 
     if (this.props.selected) {
       if (isSelected) {
-        style = merge(true,
-                defaultStyle.selected,
-                styleMap.selected ? styleMap.selected : {});
+        style = merge(
+          true,
+          defaultStyle.selected,
+          styleMap.selected ? styleMap.selected : {}
+        );
       } else if (isHighlighted) {
-        style = merge(true,
-                defaultStyle.highlighted,
-                styleMap.highlighted ? styleMap.highlighted : {});
+        style = merge(
+          true,
+          defaultStyle.highlighted,
+          styleMap.highlighted ? styleMap.highlighted : {}
+        );
       } else {
-        style = merge(true,
-                defaultStyle.muted,
-                styleMap.muted ? styleMap.muted : {});
+        style = merge(
+          true,
+          defaultStyle.muted,
+          styleMap.muted ? styleMap.muted : {}
+        );
       }
     } else if (isHighlighted) {
-      style = merge(true,
-              defaultStyle.highlighted,
-              styleMap.highlighted ? styleMap.highlighted : {});
+      style = merge(
+        true,
+        defaultStyle.highlighted,
+        styleMap.highlighted ? styleMap.highlighted : {}
+      );
     } else {
-      style = merge(true,
-              defaultStyle.normal,
-              styleMap.normal ? styleMap.normal : {});
+      style = merge(
+        true,
+        defaultStyle.normal,
+        styleMap.normal ? styleMap.normal : {}
+      );
     }
 
     return style;
@@ -165,7 +172,7 @@ export default class BarChart extends React.Component {
     const series = this.props.series;
     const timeScale = this.props.timeScale;
     const yScale = this.props.yScale;
-    const columns = this.props.columns || ['value'];
+    const columns = this.props.columns || ["value"];
 
     const bars = [];
     let eventMarker;
@@ -189,8 +196,9 @@ export default class BarChart extends React.Component {
 
       let x;
       if (this.props.size) {
-        const center = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
-        x = center - (this.props.size / 2) + offset;
+        const center = timeScale(begin) +
+          (timeScale(end) - timeScale(begin)) / 2;
+        x = center - this.props.size / 2 + offset;
       } else {
         x = timeScale(begin) + spacing + offset;
       }
@@ -214,8 +222,8 @@ export default class BarChart extends React.Component {
 
           // Event marker if info provided and hovering
           const isHighlighted = this.props.highlighted &&
-                      column === this.props.highlighted.column &&
-                      Event.is(this.props.highlighted.event, event);
+            column === this.props.highlighted.column &&
+            Event.is(this.props.highlighted.event, event);
           if (isHighlighted && this.props.info) {
             eventMarker = (
               <EventMarker
@@ -239,9 +247,7 @@ export default class BarChart extends React.Component {
             barProps.onMouseLeave = () => this.handleHoverLeave();
           }
 
-          bars.push(
-            <rect {...barProps} />
-          );
+          bars.push(<rect {...barProps} />);
 
           if (positiveBar) {
             yposPositive -= height;
@@ -274,25 +280,19 @@ BarChart.propTypes = {
    * data to visualize
    */
   series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-
   /**
    * The distance in pixels to inset the bar chart from its actual timerange
    */
   spacing: React.PropTypes.number,
-
   /**
    * The distance in pixels to offset the bar from its center position within the timerange
    * it represents
    */
   offset: React.PropTypes.number,
-
   /**
    * A list of columns within the series that will be stacked on top of each other
    */
-  columns: React.PropTypes.arrayOf(
-    React.PropTypes.string
-  ),
-
+  columns: React.PropTypes.arrayOf(React.PropTypes.string),
   /**
    * The style of the bar chart drawing (using SVG CSS properties).
    * This is an object with a key for each column which is being drawn,
@@ -333,24 +333,20 @@ BarChart.propTypes = {
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
+    React.PropTypes.instanceOf(Styler)
   ]),
-
   /**
    * The style of the info box and connecting lines
    */
-  infoStyle: React.PropTypes.object,  //eslint-disable-line
-
+  infoStyle: React.PropTypes.object, //eslint-disable-line
   /**
    * The width of the hover info box
    */
-  infoWidth: React.PropTypes.number,  //eslint-disable-line
-
+  infoWidth: React.PropTypes.number, //eslint-disable-line
   /**
    * The height of the hover info box
    */
-  infoHeight: React.PropTypes.number,  //eslint-disable-line
-
+  infoHeight: React.PropTypes.number, //eslint-disable-line
   /**
    * Alter the format of the timestamp shown on the info box.
    * This may be either a function or a string. If you provide a function
@@ -365,25 +361,20 @@ BarChart.propTypes = {
     React.PropTypes.string, //eslint-disable-line
     React.PropTypes.func //eslint-disable-line
   ]),
-
   /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-      label: React.PropTypes.string,  //eslint-disable-line
-      value: React.PropTypes.string,  //eslint-disable-line
-    })
-  ),
-
+  info: React.PropTypes.arrayOf(React.PropTypes.shape({
+      label: React.PropTypes.string, //eslint-disable-line
+      value: React.PropTypes.string //eslint-disable-line
+    })),
   /**
    * If size is specified, then the bar will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
   size: React.PropTypes.number,
-
   /**
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
@@ -392,15 +383,13 @@ BarChart.propTypes = {
    */
   selected: React.PropTypes.shape({
     event: React.PropTypes.instanceOf(IndexedEvent),
-    column: React.PropTypes.string,
+    column: React.PropTypes.string
   }),
-
   /**
    * A callback that will be called when the selection changes. It will be called
    * with an object containing the event and column.
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
@@ -408,47 +397,43 @@ BarChart.propTypes = {
    */
   highlighted: React.PropTypes.shape({
     event: React.PropTypes.instanceOf(IndexedEvent),
-    column: React.PropTypes.string,
+    column: React.PropTypes.string
   }),
-
   /**
    * A callback that will be called when the hovered over bar changes.
    * It will be called with an object containing the event and column.
    */
   onHighlightChange: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
-
+  yScale: React.PropTypes.func
 };
 
 BarChart.defaultProps = {
-  columns: ['value'],
+  columns: ["value"],
   spacing: 1.0,
   offset: 0,
   infoStyle: {
     line: {
-      stroke: '#999',
-      cursor: 'crosshair',
-      pointerEvents: 'none',
+      stroke: "#999",
+      cursor: "crosshair",
+      pointerEvents: "none"
     },
     box: {
-      fill: 'white',
+      fill: "white",
       opacity: 0.90,
-      stroke: '#999',
-      pointerEvents: 'none',
+      stroke: "#999",
+      pointerEvents: "none"
     },
     dot: {
-      fill: '#999',
-    },
+      fill: "#999"
+    }
   },
   infoWidth: 90,
-  infoHeight: 30,
+  infoHeight: 30
 };

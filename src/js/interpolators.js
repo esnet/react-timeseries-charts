@@ -8,12 +8,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
+import _ from "underscore";
 
 export default class ScaleInterpolator {
-
   constructor(transition, ease, observer) {
-    this.id = _.uniqueId('scaler');
+    this.id = _.uniqueId("scaler");
     this.ease = ease;
     this.transitionTime = transition;
     this.observer = observer;
@@ -30,12 +29,12 @@ export default class ScaleInterpolator {
     if (!this.initialTimestamp) {
       this.initialTimestamp = window.performance.now();
     } else {
-      animationTime = (window.performance.now() - this.initialTimestamp);
+      animationTime = window.performance.now() - this.initialTimestamp;
     }
 
-    const animationPosition = this.transitionTime ?
-      Math.min(animationTime / this.transitionTime, 1.0) :
-      1.0;
+    const animationPosition = this.transitionTime
+      ? Math.min(animationTime / this.transitionTime, 1.0)
+      : 1.0;
 
     if (!this.targetScale) {
       return;
@@ -45,7 +44,7 @@ export default class ScaleInterpolator {
       const func1 = this.sourceScale;
       const func2 = this.targetScale;
       const te = this.ease(animationPosition);
-      const scaler = (x) => {
+      const scaler = x => {
         const a = func1(x);
         const b = func2(x);
         return a + (b - a) * te;

@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  * Renders a list of values in svg
@@ -18,25 +18,25 @@ import React from 'react';
  *      | Avg 26 Gbps    |
  *      +----------------+
  */
-const ValueList = (props) => {
+const ValueList = props => {
   const { align, style, width, height } = props;
 
   const textStyle = {
     fontSize: 11,
-    textAnchor: 'left',
-    fill: '#b0b0b0',
-    pointerEvents: 'none',
+    textAnchor: "left",
+    fill: "#b0b0b0",
+    pointerEvents: "none"
   };
 
   const textStyleCentered = {
     fontSize: 11,
-    textAnchor: 'middle',
-    fill: '#bdbdbd',
-    pointerEvents: 'none',
+    textAnchor: "middle",
+    fill: "#bdbdbd",
+    pointerEvents: "none"
   };
 
   const values = props.values.map((item, i) => {
-    if (align === 'left') {
+    if (align === "left") {
       return (
         <g key={i}>
           <text x={10} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyle}>
@@ -50,7 +50,12 @@ const ValueList = (props) => {
     const posx = parseInt(props.width / 2, 10);
     return (
       <g key={i}>
-        <text x={posx} y={5} dy={`${(i + 1) * 1.2}em`} style={textStyleCentered}>
+        <text
+          x={posx}
+          y={5}
+          dy={`${(i + 1) * 1.2}em`}
+          style={textStyleCentered}
+        >
           <tspan style={{ fontWeight: 700 }}>{`${item.label}: `}</tspan>
           <tspan>{`${item.value}`}</tspan>
         </text>
@@ -58,9 +63,7 @@ const ValueList = (props) => {
     );
   });
 
-  const box = (
-    <rect style={style} x={0} y={0} width={width} height={height} />
-  );
+  const box = <rect style={style} x={0} y={0} width={width} height={height} />;
 
   return (
     <g>
@@ -71,44 +74,37 @@ const ValueList = (props) => {
 };
 
 ValueList.defaultProps = {
-  align: 'center',
+  align: "center",
   width: 100,
   height: 100,
-  pointerEvents: 'none',
-  style: { fill: '#FEFEFE', stroke: '#DDD', opacity: 0.8 },
+  pointerEvents: "none",
+  style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
 };
 
 ValueList.propTypes = {
-
-  align: React.PropTypes.oneOf(['center', 'left']),
-
+  align: React.PropTypes.oneOf(["center", "left"]),
   /**
    * An array of label value pairs to render
    */
-  values: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-      label: React.PropTypes.string,      // eslint-disable-line
-      value: React.PropTypes.oneOfType([  // eslint-disable-line
+  values: React.PropTypes.arrayOf(React.PropTypes.shape({
+      label: React.PropTypes.string, // eslint-disable-line
+      value: React.PropTypes.oneOfType([ // eslint-disable-line
         React.PropTypes.number,
-        React.PropTypes.string,
-      ]),
-    })
-  ).isRequired,
-
+        React.PropTypes.string
+      ])
+    })).isRequired,
   /**
    * CSS object to be applied to the ValueList surrounding box
    */
-  style: React.PropTypes.object,          // eslint-disable-line
-
+  style: React.PropTypes.object, // eslint-disable-line
   /**
    * The width of the rectangle to render into
    */
   width: React.PropTypes.number,
-
   /**
    * The height of the rectangle to render into
    */
-  height: React.PropTypes.number,
+  height: React.PropTypes.number
 };
 
 export default ValueList;

@@ -37,16 +37,14 @@ const Example = React.createClass({
         const name = example.key;
         const imgName = `${name}_thumbnail`;
         const img = Examples[imgName];
-        const link = (
-            <Link to={`example/${name}`}>{example.value.title}</Link>
-        );
+        const link = <Link to={`example/${name}`}>{example.value.title}</Link>;
         return (
-            <FlexItem minWidth="220px" >
+            <FlexItem minWidth="220px">
                 <div style={style}>
-                    <img src={img} alt={`${name}`}/>
+                    <img src={img} alt={`${name}`} />
                 </div>
-                <div style={{paddingLeft: 5, fontSize: "smaller"}}>
-                {link}
+                <div style={{ paddingLeft: 5, fontSize: "smaller" }}>
+                    {link}
                 </div>
             </FlexItem>
         );
@@ -59,44 +57,36 @@ const TaggedExamples = React.createClass({
         _.forEach(Meta, (value, key) => {
             const tags = value.tags;
             if (_.contains(tags, this.props.tag)) {
-                exampleList.push({key, value});
+                exampleList.push({ key, value });
             }
         });
         const examples = exampleList.map((example, i) => {
-            return (
-                <Example key={i} example={example} />
-            );
+            return <Example key={i} example={example} />;
         });
-        
+
         if (examples.length > 0) {
             return (
                 <div>
-                <h3>Examples</h3>
-                <Flexbox flexDirection="row" flexWrap="wrap">
-                    {examples}
-                </Flexbox>
+                    <h3>Examples</h3>
+                    <Flexbox flexDirection="row" flexWrap="wrap">
+                        {examples}
+                    </Flexbox>
                 </div>
             );
         } else {
-            return (
-                <div />
-            );
+            return <div />;
         }
     }
 });
 
 export default React.createClass({
-
     mixins: [Highlighter],
-
     render() {
         const component = this.props.params.component;
         const path = `src/components/${component}.js`;
 
         if (!_.has(docsFile, path)) {
-            return (
-                <div>API could not be found</div>
-            );
+            return <div>API could not be found</div>;
         }
         const title = component;
         return (
@@ -110,7 +100,7 @@ export default React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-12">
-                        <APIDoc file={path}/>
+                        <APIDoc file={path} />
                     </div>
                 </div>
             </div>

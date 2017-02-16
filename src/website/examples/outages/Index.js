@@ -38,7 +38,8 @@ const outageEvents = [
         esnet_ticket: "ESNET-20150302-002",
         organization: "ANL",
         type: "Planned"
-    }, {
+    },
+    {
         startTime: "2015-04-01T03:30:00Z",
         endTime: "2015-04-02T16:50:00Z",
         title: "STAR-CR5 < 100 ge 06519 > ANL  - Outage",
@@ -48,7 +49,8 @@ const outageEvents = [
         esnet_ticket: "ESNET-20150421-013",
         organization: "Internet2 / Level 3",
         type: "Unplanned"
-    }, {
+    },
+    {
         startTime: "2015-04-22T03:30:00Z",
         endTime: "2015-04-22T13:00:00Z",
         description: "At 13:33 pacific circuit 06519 went down.",
@@ -65,10 +67,14 @@ const outageEvents = [
 // Turn data into TimeSeries
 //
 
-const events = outageEvents.map(({startTime, endTime, ...data}) =>
-    new TimeRangeEvent(new TimeRange(new Date(startTime),new Date(endTime)), data)
+const events = outageEvents.map(
+    ({ startTime, endTime, ...data }) =>
+        new TimeRangeEvent(
+            new TimeRange(new Date(startTime), new Date(endTime)),
+            data
+        )
 );
-const series = new TimeSeries({name: "outages", events});
+const series = new TimeSeries({ name: "outages", events });
 
 //
 // Render event chart
@@ -91,27 +97,23 @@ function outageEventStyleFunc(event, state) {
                 fill: color
             };
         default:
-            //pass
+        //pass
     }
 }
 
 const outages = React.createClass({
-
     getInitialState() {
         return {
             tracker: null,
             timerange: series.timerange()
         };
     },
-
     handleTrackerChanged(tracker) {
-        this.setState({tracker});
+        this.setState({ tracker });
     },
-
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        this.setState({ timerange });
     },
-
     render() {
         return (
             <div>
@@ -121,7 +123,8 @@ const outages = React.createClass({
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 enablePanZoom={true}
-                                onTimeRangeChanged={this.handleTimeRangeChange}>
+                                onTimeRangeChanged={this.handleTimeRangeChange}
+                            >
                                 <ChartRow height="30">
                                     <LabelAxis
                                         hideScale={true}
@@ -132,14 +135,16 @@ const outages = React.createClass({
                                         max={0}
                                         width={140}
                                         type="linear"
-                                        format=",.1f"/>
+                                        format=",.1f"
+                                    />
                                     <Charts>
                                         <EventChart
                                             axis="outages"
                                             series={series}
                                             size={45}
                                             style={outageEventStyleFunc}
-                                            label={e => e.get("title")} />
+                                            label={e => e.get("title")}
+                                        />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -154,4 +159,4 @@ const outages = React.createClass({
 // Export example
 import outages_docs from "raw!./outages_docs.md";
 import outages_thumbnail from "./outages_thumbnail.png";
-export default {outages, outages_docs, outages_thumbnail};
+export default { outages, outages_docs, outages_thumbnail };

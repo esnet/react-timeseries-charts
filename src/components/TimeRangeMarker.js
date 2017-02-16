@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { TimeRange } from 'pondjs';
+import React from "react";
+import { TimeRange } from "pondjs";
 
 /**
  * Renders a band with extents defined by the supplied TimeRange. This
@@ -22,7 +22,6 @@ import { TimeRange } from 'pondjs';
  * resize interactively.
  */
 export default class TimeRangeMarker extends React.Component {
-
   renderBand() {
     const timerange = this.props.timerange;
     const timeScale = this.props.timeScale;
@@ -36,7 +35,7 @@ export default class TimeRangeMarker extends React.Component {
     if (this.props.style) {
       bandStyle = this.props.style;
     } else {
-      bandStyle = { fill: 'steelblue' };
+      bandStyle = { fill: "steelblue" };
     }
 
     if (!viewport.disjoint(timerange)) {
@@ -59,9 +58,7 @@ export default class TimeRangeMarker extends React.Component {
         />
       );
     }
-    return (
-      <g />
-    );
+    return <g />;
   }
 
   render() {
@@ -74,37 +71,31 @@ export default class TimeRangeMarker extends React.Component {
 }
 
 TimeRangeMarker.propTypes = {
-
   /**
    * The timerange to mark. This is in the form of a Pond TimeRange.
    */
   timerange: React.PropTypes.instanceOf(TimeRange).isRequired,
-
   /**
    * The style of the rect that will be rendered as a SVG <Rect>. This
    * object is the inline CSS for that rect.
    */
-  style: React.PropTypes.object,  // eslint-disable-line
-
+  style: React.PropTypes.object, // eslint-disable-line
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func.isRequired,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
   width: React.PropTypes.number.isRequired,
-
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number.isRequired,
-
+  height: React.PropTypes.number.isRequired
 };
 
 TimeRangeMarker.defaultProps = {
   spacing: 1,
   offset: 0,
-  style: { fill: 'rgba(70, 130, 180, 0.25);' },
+  style: { fill: "rgba(70, 130, 180, 0.25);" }
 };

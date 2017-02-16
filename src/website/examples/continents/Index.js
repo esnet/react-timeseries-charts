@@ -15,7 +15,6 @@ import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
 
-
 // Pond
 import { TimeSeries } from "pondjs";
 
@@ -51,7 +50,7 @@ for (let i = 0; i < numPoints; i++) {
     points.push(point);
 }
 
-const series = new TimeSeries({name, columns, points});
+const series = new TimeSeries({ name, columns, points });
 
 //
 // Style
@@ -72,13 +71,11 @@ const styler = styler(columnNames.map((c, i) => ({
 })));
 */
 
-
 //
 // Build area chart style
 //
 
 const continents = React.createClass({
-
     getInitialState() {
         return {
             highlight: null,
@@ -86,20 +83,20 @@ const continents = React.createClass({
             scheme: "Paired"
         };
     },
-
-    handleSchemeChange({value}) {
-        this.setState({scheme: value});
+    handleSchemeChange({ value }) {
+        this.setState({ scheme: value });
     },
-
     render() {
-        const cols = {up: columnNames, down: []};
+        const cols = { up: columnNames, down: [] };
         const min = 0;
         const max = 130;
         const axisType = "linear";
         const interpolationType = "curveBasis";
-        const options = Object.keys(colorbrewer).map(c => ({ value: c, label: c }));
+        const options = Object
+            .keys(colorbrewer)
+            .map(c => ({ value: c, label: c }));
         const style = styler(columnNames, this.state.scheme);
-        const legendCategories = columnNames.map(d => ({key: d, label: d}));
+        const legendCategories = columnNames.map(d => ({ key: d, label: d }));
 
         return (
             <div>
@@ -110,10 +107,15 @@ const continents = React.createClass({
                             value={this.state.scheme}
                             options={options}
                             clearable={false}
-                            onChange={this.handleSchemeChange} />
+                            onChange={this.handleSchemeChange}
+                        />
                     </div>
                     <div className="col-md-9">
-                        <Legend categories={legendCategories} style={style} type="dot"/>
+                        <Legend
+                            categories={legendCategories}
+                            style={style}
+                            type="dot"
+                        />
                     </div>
                 </div>
                 <hr />
@@ -122,13 +124,17 @@ const continents = React.createClass({
                         <Resizable>
                             <ChartContainer
                                 timeRange={series.range()}
-                                onBackgroundClick={() => this.setState({selection: null})} >
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                            >
                                 <ChartRow height="350">
                                     <YAxis
                                         id="value"
-                                        min={min} max={max}
+                                        min={min}
+                                        max={max}
                                         width="60"
-                                        type={axisType}/>
+                                        type={axisType}
+                                    />
                                     <Charts>
                                         <AreaChart
                                             axis="value"
@@ -138,9 +144,12 @@ const continents = React.createClass({
                                             fillOpacity={0.4}
                                             interpolation={interpolationType}
                                             highlight={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selection={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -155,4 +164,4 @@ const continents = React.createClass({
 // Export example
 import continents_docs from "raw!./continents_docs.md";
 import continents_thumbnail from "./continents_thumbnail.png";
-export default {continents, continents_docs, continents_thumbnail};
+export default { continents, continents_docs, continents_thumbnail };

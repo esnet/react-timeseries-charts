@@ -53,22 +53,18 @@ const baselineStyleLite = {
 };
 
 const baselines = React.createClass({
-
     getInitialState() {
         return {
             tracker: null,
             timerange: series.range()
         };
     },
-
     handleTrackerChanged(tracker) {
-        this.setState({tracker});
+        this.setState({ tracker });
     },
-
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        this.setState({ timerange });
     },
-
     render() {
         return (
             <Resizable>
@@ -77,15 +73,48 @@ const baselines = React.createClass({
                         <YAxis
                             id="price"
                             label="Price ($)"
-                            min={series.min()} max={series.max()}
-                            width="60" format="$,.2f"/>
+                            min={series.min()}
+                            max={series.max()}
+                            width="60"
+                            format="$,.2f"
+                        />
                         <Charts>
-                            <LineChart axis="price" series={series} style={style}/>
-                            <Baseline axis="price" style={baselineStyleLite} value={series.max()} label="Max" position="right" />
-                            <Baseline axis="price" style={baselineStyleLite} value={series.min()} label="Min" position="right" />
-                            <Baseline axis="price" style={baselineStyleLite} value={series.avg() - series.stdev()} />
-                            <Baseline axis="price" style={baselineStyleLite} value={series.avg() + series.stdev()} />
-                            <Baseline axis="price" style={baselineStyle} value={series.avg()} label="Avg" position="right" />
+                            <LineChart
+                                axis="price"
+                                series={series}
+                                style={style}
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.max()}
+                                label="Max"
+                                position="right"
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.min()}
+                                label="Min"
+                                position="right"
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.avg() - series.stdev()}
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.avg() + series.stdev()}
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyle}
+                                value={series.avg()}
+                                label="Avg"
+                                position="right"
+                            />
                         </Charts>
                     </ChartRow>
                 </ChartContainer>
@@ -97,4 +126,4 @@ const baselines = React.createClass({
 // Export example
 import baselines_docs from "raw!./baselines_docs.md";
 import baselines_thumbnail from "./baselines_thumbnail.png";
-export default {baselines, baselines_docs, baselines_thumbnail};
+export default { baselines, baselines_docs, baselines_thumbnail };

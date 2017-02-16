@@ -8,32 +8,32 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import merge from 'merge';
-import React from 'react';
-import { Flexbox, FlexItem } from 'flexbox-react';
+import _ from "underscore";
+import merge from "merge";
+import React from "react";
+import Flexbox from "flexbox-react";
 
-import { Styler } from '../js/styler';
+import { Styler } from "../js/styler";
 
 const defaultStyle = {
   symbol: {
-    normal: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
-    highlighted: { stroke: '#5a98cb', fill: 'none', strokeWidth: 1 },
-    selected: { stroke: 'steelblue', fill: 'none', strokeWidth: 2 },
-    muted: { stroke: 'steelblue', fill: 'none', opacity: 0.4, strokeWidth: 1 },
+    normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
+    highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
+    selected: { stroke: "steelblue", fill: "none", strokeWidth: 2 },
+    muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
   },
   label: {
-    normal: { fontSize: 'normal', color: '#333' },
-    highlighted: { fontSize: 'normal', color: '#222' },
-    selected: { fontSize: 'normal', color: '#333' },
-    muted: { fontSize: 'normal', color: '#333', opacity: 0.4 },
+    normal: { fontSize: "normal", color: "#333" },
+    highlighted: { fontSize: "normal", color: "#222" },
+    selected: { fontSize: "normal", color: "#333" },
+    muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
   },
   value: {
-    normal: { fontSize: 'normal', color: '#333' },
-    highlighted: { fontSize: 'normal', color: '#222' },
-    selected: { fontSize: 'normal', color: '#333' },
-    muted: { fontSize: 'normal', color: '#333', opacity: 0.4 },
-  },
+    normal: { fontSize: "normal", color: "#333" },
+    highlighted: { fontSize: "normal", color: "#222" },
+    selected: { fontSize: "normal", color: "#333" },
+    muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
+  }
 };
 
 /**
@@ -135,7 +135,6 @@ const defaultStyle = {
  * containing symbol, label and value styles.
  */
 export default class Legend extends React.Component {
-
   handleClick(e, key) {
     e.stopPropagation();
     if (this.props.onSelectionChange) {
@@ -170,23 +169,25 @@ export default class Legend extends React.Component {
   }
 
   styleMode(category) {
-    const isHighlighted = this.props.highlight && category.key === this.props.highlight;
-    const isSelected = this.props.selection && category.key === this.props.selection;
+    const isHighlighted = this.props.highlight &&
+      category.key === this.props.highlight;
+    const isSelected = this.props.selection &&
+      category.key === this.props.selection;
     const isDisabled = category.disabled;
 
-    let mode = 'normal';
+    let mode = "normal";
     if (this.props.selection) {
       if (isSelected) {
-        mode = 'selected';
+        mode = "selected";
       } else if (isHighlighted) {
-        mode = 'highlighted';
+        mode = "highlighted";
       } else {
-        mode = 'muted';
+        mode = "muted";
       }
     } else if (isHighlighted) {
-      mode = 'highlighted';
+      mode = "highlighted";
     } else if (isDisabled) {
-      mode = 'muted';
+      mode = "muted";
     }
     return mode;
   }
@@ -194,35 +195,43 @@ export default class Legend extends React.Component {
   symbolStyle(category) {
     const styleMap = this.providedStyle(category, this.props.type);
     const styleMode = this.styleMode(category);
-    return merge(true,
-           defaultStyle[styleMode],
-           styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {});
+    return merge(
+      true,
+      defaultStyle[styleMode],
+      styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {}
+    );
   }
 
   labelStyle(category) {
     const styleMap = this.providedStyle(category);
     const styleMode = this.styleMode(category);
-    return merge(true,
-           defaultStyle[styleMode],
-           styleMap.label[styleMode] ? styleMap.label[styleMode] : {});
+    return merge(
+      true,
+      defaultStyle[styleMode],
+      styleMap.label[styleMode] ? styleMap.label[styleMode] : {}
+    );
   }
 
   valueStyle(category) {
     const styleMap = this.providedStyle(category);
     const styleMode = this.styleMode(category);
-    return merge(true,
-           defaultStyle[styleMode],
-           styleMap.value[styleMode] ? styleMap.value[styleMode] : {});
+    return merge(
+      true,
+      defaultStyle[styleMode],
+      styleMap.value[styleMode] ? styleMap.value[styleMode] : {}
+    );
   }
 
   renderLine(style) {
     const { width, height } = this.props;
     return (
-      <svg style={{ float: 'left' }} height={height} width={width} >
+      <svg style={{ float: "left" }} height={height} width={width}>
         <line
           style={style}
-          x1={0} y1={parseInt(width / 2, 10)}
-          x2={width} y2={parseInt(width / 2, 10)}
+          x1={0}
+          y1={parseInt(width / 2, 10)}
+          x2={width}
+          y2={parseInt(width / 2, 10)}
           stroke="black"
           strokeWidth="2"
         />
@@ -233,14 +242,15 @@ export default class Legend extends React.Component {
   renderSwatch(style) {
     const { width, height } = this.props;
     return (
-      <svg style={{ float: 'left' }} height={height} width={width} >
+      <svg style={{ float: "left" }} height={height} width={width}>
         <rect
           style={style}
           x={2}
           y={2}
           width={width - 4}
           height={height - 4}
-          rx={2} ry={2}
+          rx={2}
+          ry={2}
         />
       </svg>
     );
@@ -249,28 +259,30 @@ export default class Legend extends React.Component {
   renderDot(style) {
     const { width, height } = this.props;
     return (
-      <svg style={{ float: 'left' }} height={height} width={width} >
+      <svg style={{ float: "left" }} height={height} width={width}>
         <ellipse
           style={style}
-          cx={parseInt(width / 2, 10) + 2} cy={parseInt(height / 2, 10) + 1}
-          rx={parseInt(width / 2, 10) - 2} ry={parseInt(height / 2, 10) - 2}
+          cx={parseInt(width / 2, 10) + 2}
+          cy={parseInt(height / 2, 10) + 1}
+          rx={parseInt(width / 2, 10) - 2}
+          ry={parseInt(height / 2, 10) - 2}
         />
       </svg>
     );
   }
 
   render() {
-    const items = this.props.categories.map((category) => {
+    const items = this.props.categories.map(category => {
       const symbolStyle = this.symbolStyle(category);
       const labelStyle = this.labelStyle(category);
       const valueStyle = this.valueStyle(category);
 
       let symbol;
-      if (this.props.type === 'swatch') {
+      if (this.props.type === "swatch") {
         symbol = this.renderSwatch(symbolStyle);
-      } else if (this.props.type === 'line') {
+      } else if (this.props.type === "line") {
         symbol = this.renderLine(symbolStyle);
-      } else if (this.props.type === 'dot') {
+      } else if (this.props.type === "dot") {
         symbol = this.renderDot(symbolStyle);
       }
 
@@ -285,20 +297,20 @@ export default class Legend extends React.Component {
             onMouseLeave={() => this.handleHoverLeave()}
           >
             <Flexbox flexDirection="row">
-              <FlexItem width="20px">
+              <Flexbox width="20px">
                 {symbol}
-              </FlexItem>
+              </Flexbox>
               <Flexbox flexDirection="column">
-                <FlexItem>
+                <Flexbox>
                   <div style={labelStyle}>
                     {category.label}
                   </div>
-                </FlexItem>
-                <FlexItem>
+                </Flexbox>
+                <Flexbox>
                   <div style={valueStyle}>
                     {category.value}
                   </div>
-                </FlexItem>
+                </Flexbox>
               </Flexbox>
             </Flexbox>
           </div>
@@ -306,7 +318,7 @@ export default class Legend extends React.Component {
       );
     });
 
-    const align = this.props.align === 'left' ? 'flex-start' : 'flex-end';
+    const align = this.props.align === "left" ? "flex-start" : "flex-end";
 
     return (
       <Flexbox justifyContent={align}>
@@ -317,31 +329,20 @@ export default class Legend extends React.Component {
 }
 
 Legend.propTypes = {
-
   /**
    * The overall style of the legend items, either a color "swatch", a
    * colored "line", or a "dot".
    */
-  type: React.PropTypes.oneOf([
-    'swatch',
-    'line',
-    'dot',
-  ]),
-
+  type: React.PropTypes.oneOf(["swatch", "line", "dot"]),
   /**
    * Alignment of the legend within the available space. Either left or right.
    */
-  align: React.PropTypes.oneOf([
-    'left',
-    'right',
-  ]),
-
+  align: React.PropTypes.oneOf(["left", "right"]),
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
+    React.PropTypes.instanceOf(Styler)
   ]).isRequired,
-
   /**
    * The categories array specifies details and style for each item in the legend. For each item:
    *  * "key" - (required) the name by which the legend will be known
@@ -360,54 +361,46 @@ Legend.propTypes = {
    * ];
    * ```
    */
-  categories: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-      key: React.PropTypes.string.isRequired,    // eslint-disable-line
-      label: React.PropTypes.string.isRequired,  // eslint-disable-line
-      disabled: React.PropTypes.bool,            // eslint-disable-line
-      style: React.PropTypes.object,             // eslint-disable-line
-      labelStyle: React.PropTypes.object         // eslint-disable-line
-    })
-  ).isRequired,
-
+  categories: React.PropTypes.arrayOf(React.PropTypes.shape({
+      key: React.PropTypes.string.isRequired, // eslint-disable-line
+      label: React.PropTypes.string.isRequired, // eslint-disable-line
+      disabled: React.PropTypes.bool, // eslint-disable-line
+      style: React.PropTypes.object, // eslint-disable-line
+      labelStyle: React.PropTypes.object // eslint-disable-line
+    })).isRequired,
   /**
    * The width of the legend symbol
    */
   width: React.PropTypes.number,
-
   /**
    * The height of the legend symbol
    */
   height: React.PropTypes.number,
-
   /**
    * Which item, specified by its key, should be rendered as highlighted
    */
   highlight: React.PropTypes.string,
-
   /**
    * Which item, specified by its key, should be rendered as selected
    */
   selection: React.PropTypes.string,
-
   /**
    * Callback will be called with a legend item is selected (i.e. it is clicked
    * on by the user)
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * Callback will be called with a legend item is highlighted (i.e. it is hovered
    * over by the user)
    */
-  onHighlightChange: React.PropTypes.func,
+  onHighlightChange: React.PropTypes.func
 };
 
 Legend.defaultProps = {
   style: {},
   labelStyle: {},
-  type: 'swatch', // or "line" or "dot"
-  align: 'left',
+  type: "swatch", // or "line" or "dot"
+  align: "left",
   width: 16,
-  height: 16,
+  height: 16
 };
