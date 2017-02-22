@@ -4,6 +4,11 @@
         "description": "This example demonstrates using the pond.js library in conjunction with the charts library to do client side time series processing.",
         "tags": ["Realtime", "BarChart", "ScatterChart", "pondjs"]
     },
+    "barchart": {
+        "title": "Simple BarChart",
+        "description": "This example shows a simple BarChart.",
+        "tags": ["BarChart", "pondjs"]
+    },
     "baselines": {
         "title": "Baseline demo",
         "description": "This example demonstrates drawing multiple Baselines across a LineChart.",
@@ -17,7 +22,7 @@
     "currency": {
         "title": "Currency example",
         "description": "This example demonstrates plotting multiple LineCharts on top of each other. The LineCharts are selectable and the time scale can be panned and zoomed.",
-        "tags": ["LineChart", "Baseline", "lLegend", "styler", "panzoom", "selectable"]
+        "tags": ["LineChart", "Baseline", "Legend", "styler", "panzoom", "selectable"]
     },
     "cycling": {
         "title": "Cycling example",
@@ -29,11 +34,6 @@
         "description": "A LineChart example featuring scale transitions and an interactive legend",
         "tags": ["LineChart", "Legend", "styler"]
     },
-    "interfaces": {
-        "title": "Traffic breakdown",
-        "description": "Combining a Horizontal BarChart with an AreaChart to visualize relative contribution.",
-        "tags": ["HorizontalBarChart", "AreaChart"]
-    },
     "outages": {
         "title": "Outage events",
         "description": "Example showing the experimental EventChart.",
@@ -42,7 +42,7 @@
     "stockchart": {
         "title": "Stockchart",
         "description": "Example in progress to build a stock chart. Demonstrates log to linear scale transitions.",
-        "tags": ["LineChart", "AreaChart", "panzoom"]
+        "tags": ["LineChart", "BarChart", "panzoom"]
     },
     "traffic": {
         "title": "Network Traffic example",

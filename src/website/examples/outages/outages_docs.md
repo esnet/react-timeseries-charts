@@ -1,32 +1,20 @@
 This example shows a short list of network outages as an `EventChart`. `EventCharts` are currently experimental and don't yet conform to the style guidelines.
 
-Here we build an `EventChart` alongside a `LabelAxis`.
+Here we build an `EventChart`.
 
     <ChartContainer
         timeRange={this.state.timerange}
         enablePanZoom={true}
         onTimeRangeChanged={this.handleTimeRangeChange}>
         <ChartRow height="35">
-            <LabelAxis
-                hideScale={true}
-                id="outages"
-                label="Outages"
-                min={0} max={0}
-                width={140}
-                type="linear" format=",.1f"/>
             <Charts>
                 <EventChart
-                    axis="outages"
                     series={series}
                     style={(outageEventStyleCB)}
                     label={e => e.get("title")} />
             </Charts>
         </ChartRow>
     </ChartContainer>
-
-### Labels
-
-Labels for each event are set via a callback function that maps the event to the label. In this case we return the `title` of our event.
 
 ### Styling
 

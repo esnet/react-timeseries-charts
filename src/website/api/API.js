@@ -13,7 +13,7 @@
 import React from "react";
 import { Link } from "react-router";
 import _ from "underscore";
-import { Flexbox, FlexItem } from "flexbox-react";
+import Flexbox from "flexbox-react";
 
 import Highlighter from "../components/highlighter";
 import APIDoc from "./APIDoc";
@@ -39,14 +39,14 @@ const Example = React.createClass({
         const img = Examples[imgName];
         const link = <Link to={`example/${name}`}>{example.value.title}</Link>;
         return (
-            <FlexItem minWidth="220px">
+            <Flexbox flexDirection="column" minWidth="220px">
                 <div style={style}>
                     <img src={img} alt={`${name}`} />
                 </div>
                 <div style={{ paddingLeft: 5, fontSize: "smaller" }}>
                     {link}
                 </div>
-            </FlexItem>
+            </Flexbox>
         );
     }
 });

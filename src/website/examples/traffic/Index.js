@@ -116,7 +116,7 @@ const traffic = React.createClass({
                                     this.setState({ selection: null })}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                             >
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow height="250" debug={false}>
                                     <Charts>
                                         <AreaChart
                                             axis="traffic"

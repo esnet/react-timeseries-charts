@@ -55,7 +55,8 @@ const defaultStyle = {
  *                      <AreaChart
  *                          axis="traffic"
  *                          series={trafficSeries}
- *                          columns={{up: ["in"], down: ["out"]}}/>
+ *                          columns={{up: ["in"], down: ["out"]}}
+ *                       />
  *                  </Charts>
  *                  <YAxis
  *                      id="traffic"
@@ -63,7 +64,8 @@ const defaultStyle = {
  *                      min={-max} max={max}
  *                      absolute={true}
  *                      width="60"
- *                      type="linear"/>
+ *                      type="linear"
+ *                  />
  *              </ChartRow>
  *          </ChartContainer>
  *          ...

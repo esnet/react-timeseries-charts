@@ -52,14 +52,12 @@ export default class TimeAxis extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { scale, utc } = nextProps;
-    if (
-      scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-        this.props.utc !== utc
-    ) {
-      this.renderTimeAxis(scale);
-    }
-  }
+     const { scale, utc, format } = nextProps;
+     if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+       this.props.utc !== utc) {
+       this.renderTimeAxis(scale, format);
+     }
+   }
 
   // Force the component not to update because d3 will control the
   // DOM from this point down.
@@ -67,28 +65,28 @@ export default class TimeAxis extends React.Component {
     return false;
   }
 
-  renderTimeAxis(scale) {
+  renderTimeAxis(scale, format) {
     let axis;
 
     const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
     const utc = this.props.utc;
 
-    if (this.props.format === "day") {
+    if (format === "day") {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcDay : timeDay, 1])
         .tickFormat(timeFormat("%d"))
         .tickSizeOuter(0);
-    } else if (this.props.format === "month") {
+    } else if (format === "month") {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcMonth : timeMonth, 1])
         .tickFormat(timeFormat("%B"))
         .tickSizeOuter(0);
-    } else if (this.props.format === "year") {
+    } else if (format === "year") {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcYear : timeYear, 1])
         .tickFormat(timeFormat("%Y"))
         .tickSizeOuter(0);
-    } else if (this.props.format === "relative") {
+    } else if (format === "relative") {
       axis = axisBottom(scale)
         .tickFormat(d => moment.duration(+d).format())
         .tickSizeOuter(0);
@@ -116,7 +114,6 @@ export default class TimeAxis extends React.Component {
     //
     // Draw the new axis
     //
-    // XXX
     select(ReactDOM.findDOMNode(this)) // eslint-disable-line
       .append("g")
       .attr("class", "x axis")
@@ -125,20 +122,17 @@ export default class TimeAxis extends React.Component {
       .style("font-weight", labelWeight)
       .style("font-size", labelSize)
       .call(axis.tickSize(tickSize));
-    // XXX
     select(ReactDOM.findDOMNode(this)) // eslint-disable-line
       .select("g")
       .selectAll(".tick")
       .select("text")
       .style("fill", labelColor)
       .style("stroke", "none");
-    // XXX
     select(ReactDOM.findDOMNode(this)) // eslint-disable-line
       .select("g")
       .selectAll(".tick")
       .select("line")
       .style("stroke", axisColor);
-    // XXX
     select(ReactDOM.findDOMNode(this)).select("g").select("path").remove(); // eslint-disable-line
   }
 

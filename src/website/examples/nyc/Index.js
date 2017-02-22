@@ -106,6 +106,7 @@ const nyc = React.createClass({ //eslint-disable-line
               <ChartContainer
                 utc={false}
                 timeRange={this.state.timerange}
+                enablePanZoom={true}
                 onBackgroundClick={() => this.setState({ selection: null })}
                 onTimeRangeChanged={this.handleTimeRangeChange}
               >

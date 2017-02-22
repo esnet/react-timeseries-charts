@@ -13,6 +13,7 @@
 //
 
 import baselines from "./baselines/Index";
+import barchart from "./barchart/Index";
 import realtime from "./realtime/Index";
 import continents from "./continents/Index";
 import currency from "./currency/Index";
@@ -27,9 +28,11 @@ import volume from "./volume/Index";
 import nyc from "./nyc/Index";
 import climate from "./climate/Index";
 
+
 export default {
   ...realtime,
   ...baselines,
+  ...barchart,
   ...continents,
   ...currency,
   ...cycling,

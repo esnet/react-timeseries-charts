@@ -193,7 +193,7 @@ EventChart.propTypes = {
    */
   size: React.PropTypes.number,
   /**
-   * The distance in pixels to inset the bar chart from its actual timerange
+   * The distance in pixels to inset the event bar from its actual timerange
    */
   spacing: React.PropTypes.number,
   /**

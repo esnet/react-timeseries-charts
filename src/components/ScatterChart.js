@@ -208,7 +208,10 @@ export default class ScatterChart extends React.Component {
     this.props.columns.forEach(column => {
       let key = 1;
       for (const event of series.events()) {
-        const t = event.timestamp();
+        const t = new Date(
+          event.begin().getTime() +
+            (event.end().getTime() - event.begin().getTime()) / 2
+        );
         const value = event.get(column);
         const style = this.style(column, event);
 
@@ -286,26 +289,6 @@ export default class ScatterChart extends React.Component {
     );
   }
 }
-
-ScatterChart.defaultProps = {
-  columns: ["value"],
-  radius: 2.0,
-  infoStyle: {
-    line: {
-      stroke: "#999",
-      cursor: "crosshair",
-      pointerEvents: "none"
-    },
-    box: {
-      fill: "white",
-      opacity: 0.90,
-      stroke: "#999",
-      pointerEvents: "none"
-    }
-  },
-  infoWidth: 90,
-  infoHeight: 30
-};
 
 ScatterChart.propTypes = {
   /**
@@ -407,7 +390,7 @@ ScatterChart.propTypes = {
   info: React.PropTypes.arrayOf(React.PropTypes.shape({
       label: React.PropTypes.string, // eslint-disable-line
       value: React.PropTypes.string // eslint-disable-line
-    })),
+  })),
   /**
    * The selected dot, which will be rendered in the "selected" style.
    * If a dot is selected, all other dots will be rendered in the "muted" style.
@@ -451,4 +434,26 @@ ScatterChart.propTypes = {
    * [Internal] The height supplied by the surrounding ChartContainer
    */
   height: React.PropTypes.number
+};
+
+
+ScatterChart.defaultProps = {
+  columns: ["value"],
+  radius: 2.0,
+  infoStyle: {
+    stroke: "#999",
+    fill: "white",
+    opacity: 0.90,
+    pointerEvents: "none"
+  },
+  stemStyle: {
+    stroke: "#999",
+    cursor: "crosshair",
+    pointerEvents: "none"
+  },
+  markerStyle: {
+    fill: "#999"
+  },
+  infoWidth: 90,
+  infoHeight: 30
 };

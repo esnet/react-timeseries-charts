@@ -25,6 +25,8 @@ import YAxis from "../../../components/YAxis";
 import LineChart from "../../../components/LineChart";
 import Resizable from "../../../components/Resizable";
 import ScatterChart from "../../../components/ScatterChart";
+import EventMarker from "../../../components/EventMarker";
+
 import styler from "../../../js/styler";
 
 // Data
@@ -61,6 +63,22 @@ const style = styler([
 ]);
 
 const climate = React.createClass({
+  getInitialState() {
+    return {
+      tracker: null,
+      trackerValue: "-- °C",
+      trackerEvent: null
+    };
+  },
+  handleTrackerChanged(t) {
+    const e = temperatureSeries.atTime(t);
+    const eventTime = new Date(
+      e.begin().getTime() + (e.end().getTime() - e.begin().getTime()) / 2
+    );
+    const eventValue = e.get("temperature");
+    const v = `${eventValue > 0 ? "+" : ""}${eventValue}°C`;
+    this.setState({ tracker: eventTime, trackerValue: v, trackerEvent: e });
+  },
   renderChart() {
     const min = -0.5;
     const max = 1.0;
@@ -77,12 +95,23 @@ const climate = React.createClass({
       }
     };
 
+    // trackerPosition={this.state.tracker}
+    // onTrackerChanged={this.handleTrackerChanged}
     return (
       <ChartContainer
         timeRange={temperatureSeries.range()}
         timeAxisStyle={axisStyle}
+        trackerPosition={this.state.tracker}
+        onTrackerChanged={this.handleTrackerChanged}
       >
-        <ChartRow height="300">
+        <ChartRow
+          height="300"
+          trackerInfoValues={[
+            { label: "Anomaly", value: this.state.trackerValue }
+          ]}
+          trackerInfoTimeFormat="%Y"
+          trackerInfoWidth={120}
+        >
           <YAxis
             id="axis"
             label="Temperature Anomaly (°C)"
@@ -120,6 +149,16 @@ const climate = React.createClass({
               value={0.0}
               label="1951-1980 average"
               style={baselineStyle}
+            />
+            <EventMarker
+              type="point"
+              axis="axis"
+              event={this.state.trackerEvent}
+              column="temperature"
+              markerLabel={this.state.trackerValue}
+              markerLabelStyle={{ fill: "red" }}
+              markerRadius={3}
+              markerStyle={{ fill: "#2db3d1" }}
             />
           </Charts>
         </ChartRow>

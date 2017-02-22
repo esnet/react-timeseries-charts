@@ -22,8 +22,6 @@ import {
   TimeRange
 } from "pondjs";
 
-console.log("TimeEvent", TimeEvent);
-
 // Imports from the charts library
 import ChartContainer from "../../../components/ChartContainer";
 import ChartRow from "../../../components/ChartRow";

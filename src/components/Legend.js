@@ -134,6 +134,127 @@ const defaultStyle = {
  * be called with the columnName and you should return the map
  * containing symbol, label and value styles.
  */
+
+class LegendItem extends React.Component {
+  handleClick(e, key) {
+    e.stopPropagation();
+    if (this.props.onSelectionChange) {
+      this.props.onSelectionChange(key);
+    }
+  }
+
+  handleHover(e, key) {
+    if (this.props.onHighlightChange) {
+      this.props.onHighlightChange(key);
+    }
+  }
+
+  handleHoverLeave() {
+    if (this.props.onHighlightChange) {
+      this.props.onHighlightChange(null);
+    }
+  }
+
+  renderLine(style) {
+    const { symbolWidth, symbolHeight } = this.props;
+    return (
+      <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
+        <line
+          style={style}
+          x1={0}
+          y1={parseInt(symbolWidth / 2, 10)}
+          x2={symbolWidth}
+          y2={parseInt(symbolWidth / 2, 10)}
+          stroke="black"
+          strokeWidth="2"
+        />
+      </svg>
+    );
+  }
+
+  renderSwatch(style) {
+    const { symbolWidth, symbolHeight } = this.props;
+    return (
+      <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
+        <rect
+          style={style}
+          x={2}
+          y={2}
+          width={symbolWidth - 4}
+          height={symbolHeight - 4}
+          rx={2}
+          ry={2}
+        />
+      </svg>
+    );
+  }
+
+  renderDot(style) {
+    const { symbolWidth, symbolHeight } = this.props;
+    return (
+      <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
+        <ellipse
+          style={style}
+          cx={parseInt(symbolWidth / 2, 10) + 2}
+          cy={parseInt(symbolHeight / 2, 10) + 1}
+          rx={parseInt(symbolWidth / 2, 10) - 2}
+          ry={parseInt(symbolHeight / 2, 10) - 2}
+        />
+      </svg>
+    );
+  }
+
+  render() {
+    const {symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
+
+    let symbol;
+    switch (this.props.type) {
+      case "swatch":
+        symbol = this.renderSwatch(symbolStyle);
+        break;
+      case "line":
+        symbol = this.renderLine(symbolStyle);
+        break;
+      case "dot":
+        symbol = this.renderDot(symbolStyle);
+        break;
+      default:
+        //pass
+    }
+
+    // TODO: We shouldn't be adding interactions to a element like this.
+    //       The alternative it to put it on a <a> or something?
+
+    return (
+      <Flexbox flexDirection="column" key={itemKey}>
+        <div
+          onClick={e => this.handleClick(e, itemKey)}
+          onMouseMove={e => this.handleHover(e, itemKey)}
+          onMouseLeave={() => this.handleHoverLeave()}
+        >
+          <Flexbox flexDirection="row">
+            <Flexbox width="20px">
+              {symbol}
+            </Flexbox>
+            <Flexbox flexDirection="column">
+              <Flexbox>
+                <div style={labelStyle}>
+                  {this.props.label}
+                </div>
+              </Flexbox>
+              <Flexbox>
+                <div style={valueStyle}>
+                  {this.props.value}
+                </div>
+              </Flexbox>
+            </Flexbox>
+          </Flexbox>
+        </div>
+      </Flexbox>
+    );
+  }
+}
+
 export default class Legend extends React.Component {
   handleClick(e, key) {
     e.stopPropagation();
@@ -154,6 +275,14 @@ export default class Legend extends React.Component {
     }
   }
 
+  /**
+   * For each category item we get the users stle preference. This
+   * can be supplied in a number of ways:
+   *  * Typically you would get the legend stle from a Style instance
+   *  * Alternatively, you can pass in a style object which has your
+   *    category in it and the associated style
+   *  * Finally, the provided style can also be a function
+   */
   providedStyle(category) {
     let style = {};
     if (this.props.style) {
@@ -168,6 +297,12 @@ export default class Legend extends React.Component {
     return style;
   }
 
+  /**
+   * For each category this function takes the current
+   * selected and highlighted item, along with the disabled
+   * state of the item, and returns the mode it should be
+   * rendered in: normal, selected, highlighted, or muted
+   */
   styleMode(category) {
     const isHighlighted = this.props.highlight &&
       category.key === this.props.highlight;
@@ -222,99 +357,26 @@ export default class Legend extends React.Component {
     );
   }
 
-  renderLine(style) {
-    const { width, height } = this.props;
-    return (
-      <svg style={{ float: "left" }} height={height} width={width}>
-        <line
-          style={style}
-          x1={0}
-          y1={parseInt(width / 2, 10)}
-          x2={width}
-          y2={parseInt(width / 2, 10)}
-          stroke="black"
-          strokeWidth="2"
-        />
-      </svg>
-    );
-  }
-
-  renderSwatch(style) {
-    const { width, height } = this.props;
-    return (
-      <svg style={{ float: "left" }} height={height} width={width}>
-        <rect
-          style={style}
-          x={2}
-          y={2}
-          width={width - 4}
-          height={height - 4}
-          rx={2}
-          ry={2}
-        />
-      </svg>
-    );
-  }
-
-  renderDot(style) {
-    const { width, height } = this.props;
-    return (
-      <svg style={{ float: "left" }} height={height} width={width}>
-        <ellipse
-          style={style}
-          cx={parseInt(width / 2, 10) + 2}
-          cy={parseInt(height / 2, 10) + 1}
-          rx={parseInt(width / 2, 10) - 2}
-          ry={parseInt(height / 2, 10) - 2}
-        />
-      </svg>
-    );
-  }
-
   render() {
+    const { type, symbolWidth, symbolHeight } = this.props;
     const items = this.props.categories.map(category => {
+      const {key, label, value} = category;
       const symbolStyle = this.symbolStyle(category);
       const labelStyle = this.labelStyle(category);
       const valueStyle = this.valueStyle(category);
-
-      let symbol;
-      if (this.props.type === "swatch") {
-        symbol = this.renderSwatch(symbolStyle);
-      } else if (this.props.type === "line") {
-        symbol = this.renderLine(symbolStyle);
-      } else if (this.props.type === "dot") {
-        symbol = this.renderDot(symbolStyle);
-      }
-
-      // TODO: We shouldn't be adding interactions to a element like this.
-      //       The alternative it to put it on a <a> or something?
-
       return (
-        <Flexbox flexDirection="column" key={category.key}>
-          <div //eslint-disable-line
-            onClick={e => this.handleClick(e, category.key)}
-            onMouseMove={e => this.handleHover(e, category.key)}
-            onMouseLeave={() => this.handleHoverLeave()}
-          >
-            <Flexbox flexDirection="row">
-              <Flexbox width="20px">
-                {symbol}
-              </Flexbox>
-              <Flexbox flexDirection="column">
-                <Flexbox>
-                  <div style={labelStyle}>
-                    {category.label}
-                  </div>
-                </Flexbox>
-                <Flexbox>
-                  <div style={valueStyle}>
-                    {category.value}
-                  </div>
-                </Flexbox>
-              </Flexbox>
-            </Flexbox>
-          </div>
-        </Flexbox>
+        <LegendItem
+          type={type}
+          itemKey={key}
+          label={label}
+          value={value}
+          symbolWidth={symbolWidth}
+          symbolHeight={symbolHeight}
+          symbolStyle={symbolStyle}
+          labelStyle={labelStyle}
+          valueStyle={valueStyle}
+          onSelectionChange={this.props.onSelectionChange}
+          onHighlightChange={this.props.onHighlightChange} />
       );
     });
 
@@ -371,11 +433,11 @@ Legend.propTypes = {
   /**
    * The width of the legend symbol
    */
-  width: React.PropTypes.number,
+  symbolWidth: React.PropTypes.number,
   /**
    * The height of the legend symbol
    */
-  height: React.PropTypes.number,
+  symbolHeight: React.PropTypes.number,
   /**
    * Which item, specified by its key, should be rendered as highlighted
    */
@@ -401,6 +463,6 @@ Legend.defaultProps = {
   labelStyle: {},
   type: "swatch", // or "line" or "dot"
   align: "left",
-  width: 16,
-  height: 16
+  symbolWidth: 16,
+  symbolHeight: 16
 };

@@ -127,10 +127,34 @@ EventIndex.propTypes = {
 };
 
 /**
- * Renders a marker at a specific event on the chart. You can also
- * override either the x or y position, so this allows you to position
- * a timestamped label or timestamped list of label/value pairs anywhere
- * on a chart.
+ * Renders a marker at a specific event on the chart.
+ *
+ * To explain how EventMarkers work, it's useful to explain a little
+ * terminology used here. A marker has several parts:
+ *
+ *  * the "marker" itself which appears at the (value, time) of the event.
+ *    This is a dot which whose radius is defined by markerRadius, and
+ *    whose style is set with markerStyle
+ *  * the "markerLabel" which is a string that will be rendered next to
+ *    the marker. The label can be aligned with markerAlign and also
+ *    styled with markerLabelStyle
+ *  * the "info box" which is a box containing values that hovers that the
+ *    top of the chart. Optionally it can show the time above the box.
+ *    The values themselves are supplied as an array of objects using
+ *    the `info` prop. The info box can be styled with `infoStyle`,
+ *    sized with `infoWidth` and `infoHeight`, and the time formatted
+ *    with `infoTimeFormat`
+ *  * the "stem" which is a connector between the marker and the
+ *    info box to visually link the two
+ *
+ * Combining these attributes, Event markers fall into two flavors, either
+ * you want to omit the infoBox and mark the event with a dot and optionally
+ * a label, or you want to omit the label (and perhaps marker dot) and show
+ * a flag style marker with the infoBox connected to the event with the stem.
+ *
+ * As with other IndexedEvents or TimeRangeEvents, the marker will appear at
+ * the center of the timerange represented by that event. You can, however,
+ * override either the x or y position by a number of pixels.
  */
 export default class EventMarker extends React.Component {
   renderTime(event) {
@@ -182,7 +206,7 @@ export default class EventMarker extends React.Component {
 
     const infoBoxProps = {
       align: "left",
-      style: this.props.infoStyle.box,
+      style: this.props.infoStyle,
       width: this.props.infoWidth,
       height: this.props.infoHeight
     };
@@ -190,105 +214,158 @@ export default class EventMarker extends React.Component {
     const w = this.props.infoWidth;
     const lineBottom = posy - 10;
 
-    let verticalConnector;
-    let horizontalConnector;
+    let verticalStem;
+    let horizontalStem;
     let dot;
     let infoBox;
     let transform;
+    let label;
 
     if (info) {
-      infoBox = _.isString(this.props.info)
-        ? <Label {...infoBoxProps} label={info} />
-        : <ValueList {...infoBoxProps} values={info} />;
+      if (_.isString(this.props.info)) {
+        infoBox = (
+          <Label {...infoBoxProps} label={info} />
+        );
+      } else {
+        infoBox = (
+          <ValueList {...infoBoxProps} values={info} />
+        );
+      }
     }
 
     //
     // Marker on right of event
     //
 
-    if (posx + 10 + w < this.props.width * 3 / 4) {
-      if (info) {
-        verticalConnector = (
-          <line
-            pointerEvents="none"
-            style={this.props.infoStyle.line}
-            x1={-10}
-            y1={lineBottom}
-            x2={-10}
-            y2={20}
-          />
-        );
-        horizontalConnector = (
-          <line
-            pointerEvents="none"
-            style={this.props.infoStyle.line}
-            x1={-10}
-            y1={20}
-            x2={-2}
-            y2={20}
-          />
-        );
-      }
-      dot = (
-        <circle
-          cx={-10}
-          cy={lineBottom}
-          r={this.props.markerRadius}
-          pointerEvents="none"
-          style={this.props.infoStyle.dot}
-        />
-      );
-      transform = `translate(${posx + 10},${10})`;
-    } else {
-      if (info) {
-        verticalConnector = (
-          <line
-            pointerEvents="none"
-            style={this.props.infoStyle.line}
-            x1={w + 10}
-            y1={lineBottom}
-            x2={w + 10}
-            y2={20}
-          />
-        );
-        horizontalConnector = (
-          <line
-            pointerEvents="none"
-            style={this.props.infoStyle.line}
-            x1={w + 10}
-            y1={20}
-            x2={w + 2}
-            y2={20}
-          />
-        );
-      }
-      dot = (
-        <circle
-          cx={w + 10}
-          cy={lineBottom}
-          r={this.props.markerRadius}
-          pointerEvents="none"
-          style={this.props.infoStyle.dot}
-        />
-      );
-      transform = `translate(${posx - w - 10},${10})`;
-    }
+    if (this.props.type === "point") {
+      const textStyle = {
+        fontSize: 11,
+        textAnchor: "left",
+        fill: "#b0b0b0",
+        pointerEvents: "none",
+        alignmentBaseline: "central"
+      };
 
-    return (
-      <g transform={transform}>
-        {verticalConnector}
-        {horizontalConnector}
-        {dot}
-        {this.renderTime(event)}
-        <g transform={`translate(0,${20})`}>
-          {infoBox}
+      const textStyleCentered = {
+        fontSize: 11,
+        textAnchor: "middle",
+        fill: "#bdbdbd",
+        pointerEvents: "none"
+      };
+
+      const tstyle = this.props.markerLabelAlign === "center"
+        ? textStyleCentered
+        : textStyle;
+      dot = (
+        <circle
+          cx={posx}
+          cy={posy}
+          r={this.props.markerRadius}
+          pointerEvents="none"
+          style={this.props.markerStyle}
+        />
+      );
+      label = (
+        <text x={posx} y={posy} dx="5px" style={tstyle}>
+          {this.props.markerLabel}
+        </text>
+      );
+
+      return (
+        <g>
+          {dot}
+          {label}
         </g>
-      </g>
-    );
+      );
+    } else {
+      if (posx + 10 + w < this.props.width * 3 / 4) {
+        if (info) {
+          verticalStem = (
+            <line
+              pointerEvents="none"
+              style={this.props.stemStyle}
+              x1={-10}
+              y1={lineBottom}
+              x2={-10}
+              y2={20}
+            />
+          );
+          horizontalStem = (
+            <line
+              pointerEvents="none"
+              style={this.props.stemStyle}
+              x1={-10}
+              y1={20}
+              x2={-2}
+              y2={20}
+            />
+          );
+        }
+        dot = (
+          <circle
+            cx={-10}
+            cy={lineBottom}
+            r={this.props.markerRadius}
+            pointerEvents="none"
+            style={this.props.markerStyle}
+          />
+        );
+        transform = `translate(${posx + 10},${10})`;
+      } else {
+        if (info) {
+          verticalStem = (
+            <line
+              pointerEvents="none"
+              style={this.props.stemStyle}
+              x1={w + 10}
+              y1={lineBottom}
+              x2={w + 10}
+              y2={20}
+            />
+          );
+          horizontalStem = (
+            <line
+              pointerEvents="none"
+              style={this.props.stemStyle}
+              x1={w + 10}
+              y1={20}
+              x2={w + 2}
+              y2={20}
+            />
+          );
+        }
+        dot = (
+          <circle
+            cx={w + 10}
+            cy={lineBottom}
+            r={this.props.markerRadius}
+            pointerEvents="none"
+            style={this.props.markerStyle}
+          />
+        );
+        transform = `translate(${posx - w - 10},${10})`;
+      }
+
+      return (
+        <g transform={transform}>
+          {verticalStem}
+          {horizontalStem}
+          {dot}
+          {this.renderTime(event)}
+          <g transform={`translate(0,${20})`}>
+            {infoBox}
+          </g>
+        </g>
+      );
+
+    }
   }
 
   render() {
     const { event, column, info } = this.props;
+    if (!event) {
+      return <g />;
+    }
     return (
       <g>
         {this.renderMarker(event, column, info)}
@@ -298,6 +375,8 @@ export default class EventMarker extends React.Component {
 }
 
 EventMarker.propTypes = {
+  type: React.PropTypes.oneOf(["point", "flag"]),
+
   /**
    * What [Pond Event](http://software.es.net/pond#event) to mark
    */
@@ -305,33 +384,16 @@ EventMarker.propTypes = {
     React.PropTypes.instanceOf(TimeEvent),
     React.PropTypes.instanceOf(IndexedEvent),
     React.PropTypes.instanceOf(TimeRangeEvent)
-  ]).isRequired,
+  ]),
   /**
    * Which column in the Event to use
    */
   column: React.PropTypes.string,
   /**
-   * The style of the info box and connecting lines. The object
-   * should contain the "line", "box" and "dot" properties. Each of those
-   * is the inline CSS for that element.
-   */
-  infoStyle: React.PropTypes.shape({
-    line: React.PropTypes.object, // eslint-disable-line
-    box: React.PropTypes.object, // eslint-disable-line
-    dot: React.PropTypes.object // eslint-disable-line
-  }),
-  /**
-   * The width of the hover info box
-   */
-  infoWidth: React.PropTypes.number,
-  /**
-   * The height of the hover info box
-   */
-  infoHeight: React.PropTypes.number,
-  /**
    * The values to show in the info box. This is either an array of
    * objects, with each object specifying the label and value
-   * to be shown in the info box, or a simple string label
+   * to be shown in the info box, or a simple string label. If this
+   * prop is not supplied, no infoBox will be displayed.
    */
   info: React.PropTypes.oneOfType([
     React.PropTypes.string,
@@ -341,19 +403,44 @@ EventMarker.propTypes = {
       }))
   ]),
   /**
-   * Alter the format of the timestamp shown on the info box. In the case
-   * of Events or TimeRange events this should be a d3 time format string.
-   * In the case of IndexedEvents, this should a function that will be
-   * passed an Index and should return a string.
+   * The style of the info box itself. Typically you'd want to
+   * specify a fill color, and stroke color/width here.
+   */
+  infoStyle: React.PropTypes.object,
+  /**
+   * The width of the info box
+   */
+  infoWidth: React.PropTypes.number,
+  /**
+   * The height of the info box
+   */
+  infoHeight: React.PropTypes.number,
+  /**
+   * Alter the format of the timestamp shown on the info box.
+   * This may be either a function or a string. If you provide a function
+   * that will be passed an Index and should return a string. For example:
+   * ```
+   *     index => moment(index.begin()).format("Do MMM 'YY")
+   * ```
+   * Alternatively you can pass in a d3 format string. That will be applied
+   * to the begin time of the Index range.
    */
   infoTimeFormat: React.PropTypes.oneOfType([
     React.PropTypes.func,
     React.PropTypes.string
   ]),
   /**
+   * Show a label to the left or right of the marker
+   */
+  markerLabelAlign: React.PropTypes.oneOf(["left", "right", "top"]),
+  /**
    * The radius of the dot at the end of the marker
    */
   markerRadius: React.PropTypes.number,
+  /**
+   * The style of the event marker dot
+   */
+  markerStyle: React.PropTypes.object,
   /**
    * The y value is calculated by the column and event, but if
    * this prop is provided this will be used instead.
@@ -370,38 +457,41 @@ EventMarker.propTypes = {
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func.isRequired,
+  timeScale: React.PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func.isRequired,
+  yScale: React.PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired
+  width: React.PropTypes.number
 };
 
 EventMarker.defaultProps = {
+  type: "flag",
   column: "value",
-  infoStyle: {
-    line: {
-      stroke: "#999",
-      cursor: "crosshair",
-      pointerEvents: "none"
-    },
-    box: {
-      fill: "white",
-      opacity: 0.90,
-      stroke: "#999",
-      pointerEvents: "none"
-    },
-    dot: {
-      fill: "#999"
-    }
-  },
   infoWidth: 90,
   infoHeight: 25,
+  infoStyle: {
+    fill: "white",
+    opacity: 0.90,
+    stroke: "#999",
+    pointerEvents: "none"
+  },
+  stemStyle: {
+    stroke: "#999",
+    cursor: "crosshair",
+    pointerEvents: "none"
+  },
+  markerStyle: {
+    fill: "#999"
+  },
   markerRadius: 2,
+  markerLabelAlign: "left",
+  markerLabelStyle: {
+    fill: "#999"
+  },
   offsetX: 0,
   offsetY: 0
 };

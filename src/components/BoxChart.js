@@ -777,21 +777,20 @@ BoxChart.defaultProps = {
   innerSpacing: 1.0,
   outerSpacing: 2.0,
   infoStyle: {
-    line: {
-      stroke: "#999",
-      cursor: "crosshair",
-      pointerEvents: "none"
-    },
-    box: {
-      fill: "white",
-      opacity: 0.90,
-      stroke: "#999",
-      pointerEvents: "none"
-    },
-    dot: {
-      fill: "#999"
-    }
+    stroke: "#999",
+    fill: "red",
+    opacity: 0.90,
+    pointerEvents: "none"
   },
+  stemStyle: {
+    stroke: "#999",
+    cursor: "crosshair",
+    pointerEvents: "none"
+  },
+  markerStyle: {
+    fill: "#999"
+  },
+  markerRadius: 2,
   infoWidth: 90,
   infoHeight: 30
 };

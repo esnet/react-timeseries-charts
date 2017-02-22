@@ -1,15 +1,15 @@
 
-## Markers
+## Annotations
 
 ---
 
-This section describes how you can use different types of overlay markers to communicate to your users. Markers in this context are anything you can add on top of your charts to describe some additional feature. For example, a BaseLine lets you draw a labeled horizontal line that you might use to indicate the average of the charts values, or a threshold that you expect the chart to not cross. We'll talk about the different options below, but this is an evolving list, so more capabilities will likely be added in the future.
+This section describes how you can use different types of annotations to communicate to your users. Annotations in this context are anything you can add on top of your charts to describe or highlight some additional feature. For example, a BaseLine lets you draw a labeled horizontal line that you might use to indicate the average of the charts values, or a threshold that you expect the chart to not cross. We'll talk about the different options below, but this is an evolving list, so more capabilities will likely be added in the future.
 
 ### Tracker
 
-The charts themselves provide a marker mechanism in the form of their tracker. A tracker, at it's simplest, is a vertical line showing the hovered over time. You can specify this time as a prop on the `ChartContainer`. We use this mechanism a lot, because we tend to use the hovered position to drive display of information elsewhere on the page.
+The charts themselves provide a annotation mechanism in the form of their built-in tracker. A tracker, at its simplest, is a vertical line marking the hovered over time. You can specify this time as a prop on the `ChartContainer`. We use this mechanism a lot, because we tend to use the hovered position to drive display of information elsewhere on the page.
 
-To use the tracker, specify the `trackerPosition` prop in the `ChartContainer`. This prop should be a JS Date. In the example below we are keeping this time in the component state as `this.state.tracker`.
+To use the tracker, specify the `trackerPosition` prop in the `ChartContainer`. This prop should be a regular Javascript Date. In the example below we are keeping this time in the component state as `this.state.tracker`.
 
     <ChartContainer
         timeRange={this.state.timerange}
@@ -29,7 +29,7 @@ As a second prop, we add a callback `handleTrackerChanged()` to the `onTrackerCh
         this.setState({tracker: t});
     },
 
-Using this mechanism allows us to display additional data outside of the chart. For instance we can use the Date stored in `this.state.tracker` to lookup the values at that time, or to synchronize the trackers of multiple charts.
+Using this mechanism allows us to display additional data outside of the chart. For instance we can use the Date stored in `this.state.tracker` to lookup the values at that time, to synchronize the trackers of multiple charts, or adjust the tracker time to snap to specific times or events.
 
 ### Advanced tracker
 
@@ -65,9 +65,20 @@ Within the Charts you can also overlay a TimeMarker. This is essentially what is
         ...
     </Charts>
 
-### Other types of trackers
+### EventMarker
 
-This simple tracker works well in our experience for AreaChart and LineCharts. However, for BarCharts and ScatterCharts we need to be more precise with the info overlay we provide as the user explores the data with their cursor. For this reason these charts provide their own specialized overlays. For example a ScatterChart
+While the above annotations mark a time on the chart, you can also mark a specific event with the EventMarker. EventMarkers look much the same as a TimeMarker (and the tracker), but the stem of the marker is connected to a specific point or event on the chart. This is helpful in the case of sparse data where you want to highlight particular points as the user hovers over the chart.
+
+These types of markers consist of several pieces which can be selectively disabled. As mentioned the vertical connector is the stem of the marker. The event end may be marked with a dot, which is the marker itself. There may also be an infoBox containing label/value pairs.
+
+Combining these attributes, Event markers fall into two flavors, either
+you want to omit the infoBox and mark the event with a dot and optionally
+a simple label, or you want to omit the label (and perhaps marker dot) and show
+a flag style marker with the infoBox connected to the event with the stem.
+
+### Scatter and Barchart
+
+The simple tracker-style markers works well in our experience for AreaChart and LineCharts. However, for BarCharts and ScatterCharts we need to be more precise with the info overlay we provide as the user explores the data with their cursor. For this reason these charts provide their own specialized overlays. For example a ScatterChart:
 
     <ScatterChart
         axis="wind-gust"
@@ -75,6 +86,7 @@ This simple tracker works well in our experience for AreaChart and LineCharts. H
         columns={["station1", "station2"]}
         ...
         info={infoValues}
-        infoHeight={28} infoWidth={110}
+        infoHeight={28}
+        infoWidth={110}
         ... />
 

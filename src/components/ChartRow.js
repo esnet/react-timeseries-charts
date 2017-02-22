@@ -317,15 +317,32 @@ export default class ChartRow extends React.Component {
       if (child.type === Charts) {
         const charts = child;
         React.Children.forEach(charts.props.children, chart => {
+          let scale = null;
+          if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {
+            scale = this.state.yAxisScalerMap[chart.props.axis];
+          }
+
+          let ytransition = null;
+          if (_.has(this.scaleMap, chart.props.axis)) {
+            ytransition = this.scaleMap[chart.props.axis];
+          }
+
           const chartProps = {
             key: keyCount,
             width: chartWidth,
             height: innerHeight,
             timeScale: this.props.timeScale,
             timeFormat: this.props.timeFormat,
-            yScale: this.state.yAxisScalerMap[chart.props.axis],
-            transition: this.scaleMap[chart.props.axis].transition()
           };
+
+          if (scale) {
+            chartProps.yScale = scale;
+          }
+
+          if (ytransition) {
+            chartProps.transition = ytransition;
+          }
+
           chartList.push(React.cloneElement(chart, chartProps));
           keyCount += 1;
         });
@@ -389,17 +406,18 @@ export default class ChartRow extends React.Component {
     if (this.props.trackerTime) {
       const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
       const timeMarkerProps = {
+        timeFormat,
         showLine: false,
         showTime: this.props.trackerShowTime,
         time: this.props.trackerTime,
-        timeFormat,
         timeScale: this.props.timeScale,
         width: chartWidth
       };
       if (this.props.trackerInfoValues) {
         timeMarkerProps.infoWidth = this.props.trackerInfoWidth;
         timeMarkerProps.infoHeight = this.props.trackerInfoHeight;
-        timeMarkerProps.info = this.props.trackerInfoValues;
+        timeMarkerProps.infoValues = this.props.trackerInfoValues;
+        timeMarkerProps.timeFormat = this.props.trackerInfoTimeFormat;
       }
       const trackerStyle = {
         pointerEvents: "none"

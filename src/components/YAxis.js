@@ -85,7 +85,7 @@ export default class YAxis extends React.Component {
       this.props.align,
       this.props.scale,
       +this.props.width,
-      this.props.absolute, // eslint-disable-line
+      this.props.absolute,
       this.props.format
     );
   }
@@ -303,6 +303,10 @@ YAxis.propTypes = {
    * Maxium value, which combined with "min,"" define the scale of the axis.
    */
   max: React.PropTypes.number.isRequired, // eslint-disable-line
+  /**
+   * Render all ticks on the axis as positive values.
+   */
+  absolute: React.PropTypes.boolean, // eslint-disable-line
   /**
    * Object specifying the available parameters by which the axis can be
    * styled. The object can contain: "labels" and "axis". Each of these

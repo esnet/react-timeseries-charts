@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+import "babel-polyfill";
 
 import "./App.css";
 
@@ -89,6 +90,11 @@ class App extends Component {
                             <li>
                                 <Link to="/example/baselines">
                                     Baselines demo
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/example/barchart">
+                                    Simple BarChart example
                                 </Link>
                             </li>
                             <li>
