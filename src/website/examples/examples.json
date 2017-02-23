@@ -72,6 +72,6 @@
     "climate": {
         "title": "Climate temperature data",
         "description": "Change in global surface temperature relative to 1951-1980 average temperatures",
-        "tags": ["Baseline", "LineChart", "ScatterChart", "Climate"]
+        "tags": ["Baseline", "LineChart", "ScatterChart", "EventMarker"]
     }
 }

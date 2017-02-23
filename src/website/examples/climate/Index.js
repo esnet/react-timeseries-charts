@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2016, The Regents of the University of California,
+ *  Copyright (c) 2016-2017, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -67,18 +67,59 @@ const climate = React.createClass({
     return {
       tracker: null,
       trackerValue: "-- °C",
-      trackerEvent: null
+      trackerEvent: null,
+      markerMode: "flag"
     };
   },
   handleTrackerChanged(t) {
-    const e = temperatureSeries.atTime(t);
-    const eventTime = new Date(
-      e.begin().getTime() + (e.end().getTime() - e.begin().getTime()) / 2
-    );
-    const eventValue = e.get("temperature");
-    const v = `${eventValue > 0 ? "+" : ""}${eventValue}°C`;
-    this.setState({ tracker: eventTime, trackerValue: v, trackerEvent: e });
+    if (t) {
+      const e = temperatureSeries.atTime(t);
+      const eventTime = new Date(
+        e.begin().getTime() + (e.end().getTime() - e.begin().getTime()) / 2
+      );
+      const eventValue = e.get("temperature");
+      const v = `${eventValue > 0 ? "+" : ""}${eventValue}°C`;
+      this.setState({ tracker: eventTime, trackerValue: v, trackerEvent: e });
+    } else {
+      this.setState({ tracker: null, trackerValue: null, trackerEvent: null });
+    }
   },
+
+  renderMarker() {
+    if (!this.state.tracker) {
+      return <g />
+    }
+    if (this.state.markerMode === "flag") {
+      return (
+        <EventMarker
+          type="flag"
+          axis="axis"
+          event={this.state.trackerEvent}
+          column="temperature"
+          info={[
+            { label: "Anomaly", value: this.state.trackerValue }
+          ]}
+          infoTimeFormat="%Y"
+          infoWidth={120}
+          markerRadius={2}
+          markerStyle={{ fill: "black" }} />
+      );
+    } else {
+      return (
+        <EventMarker
+          type="point"
+          axis="axis"
+          event={this.state.trackerEvent}
+          column="temperature"
+          markerLabel={this.state.trackerValue}
+          markerLabelAlign="left"
+          markerLabelStyle={{ fill: "#2db3d1", stroke: "white" }}
+          markerRadius={3}
+          markerStyle={{ fill: "#2db3d1" }} />
+      );
+    }
+  },
+
   renderChart() {
     const min = -0.5;
     const max = 1.0;
@@ -95,23 +136,13 @@ const climate = React.createClass({
       }
     };
 
-    // trackerPosition={this.state.tracker}
-    // onTrackerChanged={this.handleTrackerChanged}
     return (
       <ChartContainer
         timeRange={temperatureSeries.range()}
         timeAxisStyle={axisStyle}
-        trackerPosition={this.state.tracker}
         onTrackerChanged={this.handleTrackerChanged}
       >
-        <ChartRow
-          height="300"
-          trackerInfoValues={[
-            { label: "Anomaly", value: this.state.trackerValue }
-          ]}
-          trackerInfoTimeFormat="%Y"
-          trackerInfoWidth={120}
-        >
+        <ChartRow height="300" >
           <YAxis
             id="axis"
             label="Temperature Anomaly (°C)"
@@ -150,24 +181,43 @@ const climate = React.createClass({
               label="1951-1980 average"
               style={baselineStyle}
             />
-            <EventMarker
-              type="point"
-              axis="axis"
-              event={this.state.trackerEvent}
-              column="temperature"
-              markerLabel={this.state.trackerValue}
-              markerLabelStyle={{ fill: "red" }}
-              markerRadius={3}
-              markerStyle={{ fill: "#2db3d1" }}
-            />
+            {this.renderMarker()}
           </Charts>
         </ChartRow>
       </ChartContainer>
     );
   },
   render() {
+    const linkStyle = {
+      fontWeight: 600,
+      color: "grey",
+      cursor: "default"
+    };
+
+    const linkStyleActive = {
+      color: "steelblue",
+      cursor: "pointer"
+    };
     return (
       <div>
+        <div className="row">
+          <div className="col-md-12" style={{ fontSize: 14, color: "#777" }}>
+            <span
+              style={this.state.markerMode !== "point" ? linkStyleActive : linkStyle}
+              onClick={() => this.setState({ markerMode: "point" })}
+            >
+              Point marker
+            </span>
+            <span> | </span>
+            <span
+              style={this.state.markerMode !== "flag" ? linkStyleActive : linkStyle}
+              onClick={() => this.setState({ markerMode: "flag" })}
+            >
+              Flag marker
+            </span>
+          </div>
+        </div>
+        <hr />
         <div className="row">
           <div className="col-md-12">
             <Resizable>

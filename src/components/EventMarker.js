@@ -10,6 +10,7 @@
 
 import _ from "underscore";
 import React from "react";
+import merge from "merge";
 import {
   TimeEvent,
   TimeRangeEvent,
@@ -238,24 +239,46 @@ export default class EventMarker extends React.Component {
     //
 
     if (this.props.type === "point") {
-      const textStyle = {
+      let textDefaultStyle = {
         fontSize: 11,
-        textAnchor: "left",
-        fill: "#b0b0b0",
         pointerEvents: "none",
-        alignmentBaseline: "central"
-      };
+        paintOrder: "stroke",
+        fill: "#b0b0b0",
+        strokeWidth: 2,
+        strokeLinecap: "butt",
+        strokeLinejoin: "miter",
+        fontWeight: 800
+      }
 
-      const textStyleCentered = {
-        fontSize: 11,
-        textAnchor: "middle",
-        fill: "#bdbdbd",
-        pointerEvents: "none"
-      };
+      let dx = 0;
+      let dy = 0;
+      switch (this.props.markerLabelAlign) {
+        case "left":
+          dx = 5;
+          textDefaultStyle.textAnchor = "start";
+          textDefaultStyle.alignmentBaseline = "central";
+        break;
+        case "right":
+          dx = -5;
+          textDefaultStyle.textAnchor = "end";
+          textDefaultStyle.alignmentBaseline = "central";
+        break;
+        case "top":
+          dy = -5;
+          textDefaultStyle.textAnchor = "middle";
+          textDefaultStyle.alignmentBaseline = "bottom";
+        break;
+        case "bottom":
+          dy = 5;
+          textDefaultStyle.textAnchor = "middle";
+          textDefaultStyle.alignmentBaseline = "hanging";
+        break;
+        default:
+          //pass
+      }
 
-      const tstyle = this.props.markerLabelAlign === "center"
-        ? textStyleCentered
-        : textStyle;
+      const tstyle = merge(true, textDefaultStyle, this.props.markerLabelStyle);
+
       dot = (
         <circle
           cx={posx}
@@ -266,7 +289,7 @@ export default class EventMarker extends React.Component {
         />
       );
       label = (
-        <text x={posx} y={posy} dx="5px" style={tstyle}>
+        <text x={posx} y={posy} dx={dx} dy={dy} style={tstyle}>
           {this.props.markerLabel}
         </text>
       );
@@ -432,7 +455,7 @@ EventMarker.propTypes = {
   /**
    * Show a label to the left or right of the marker
    */
-  markerLabelAlign: React.PropTypes.oneOf(["left", "right", "top"]),
+  markerLabelAlign: React.PropTypes.oneOf(["left", "right", "top", "bottom"]),
   /**
    * The radius of the dot at the end of the marker
    */

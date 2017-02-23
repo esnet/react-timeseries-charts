@@ -172,10 +172,6 @@ export default class EventHandler extends React.Component {
   }
 
   handleMouseOut(e) {
-    if (!this.props.enablePanZoom) {
-      return;
-    }
-
     e.preventDefault();
 
     if (this.props.onMouseOut) {
