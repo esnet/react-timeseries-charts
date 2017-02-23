@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  * Renders a simple label surrounded by a box within in svg
@@ -22,34 +22,24 @@ import React from 'react';
 const Label = ({ label, style, align, width, height }) => {
   const textStyle = {
     fontSize: 11,
-    textAnchor: 'left',
-    fill: '#b0b0b0',
-    pointerEvents: 'none',
+    textAnchor: "left",
+    fill: "#b0b0b0",
+    pointerEvents: "none"
   };
 
   const textStyleCentered = {
     fontSize: 11,
-    textAnchor: 'middle',
-    fill: '#bdbdbd',
-    pointerEvents: 'none',
+    textAnchor: "middle",
+    fill: "#bdbdbd",
+    pointerEvents: "none"
   };
 
-  const tstyle = align === 'center' ? textStyleCentered : textStyle;
-  const posx = align === 'center' ? parseInt(width / 2, 10) : 10;
+  const tstyle = align === "center" ? textStyleCentered : textStyle;
+  const posx = align === "center" ? parseInt(width / 2, 10) : 10;
 
-  const text = (
-    <text x={posx} y={5} dy="1.2em" style={tstyle}>{label}</text>
-  );
+  const text = <text x={posx} y={5} dy="1.2em" style={tstyle}>{label}</text>;
 
-  const box = (
-    <rect
-      x={0}
-      y={0}
-      style={style}
-      width={width}
-      height={height}
-    />
-  );
+  const box = <rect x={0} y={0} style={style} width={width} height={height} />;
 
   return (
     <g>
@@ -60,38 +50,32 @@ const Label = ({ label, style, align, width, height }) => {
 };
 
 Label.defaultProps = {
-  align: 'center',
+  align: "center",
   width: 100,
   height: 100,
-  pointerEvents: 'none',
-  style: { fill: '#FEFEFE', stroke: '#DDD', opacity: 0.8 },
+  pointerEvents: "none",
+  style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
 };
 
 Label.propTypes = {
-
-  align: React.PropTypes.oneOf(['center', 'left']),
-
+  align: React.PropTypes.oneOf(["center", "left"]),
   /**
    * The label to render
    */
   label: React.PropTypes.string.isRequired,
-
   /**
    * The style of the label. This is the inline CSS applied directly
    * to the label box
    */
-  style: React.PropTypes.object,  // eslint-disable-line
-
+  style: React.PropTypes.object, // eslint-disable-line
   /**
    * The width of the rectangle to render into
    */
   width: React.PropTypes.number,
-
   /**
    * The height of the rectangle to render into
    */
-  height: React.PropTypes.number,
-
+  height: React.PropTypes.number
 };
 
 export default Label;

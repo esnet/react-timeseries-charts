@@ -8,31 +8,32 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import merge from 'merge';
-import React from 'react';
+import _ from "underscore";
+import merge from "merge";
+import React from "react";
 import {
-  TimeSeries,
-  IndexedEvent,
   Event,
-  min,
+  TimeEvent,
+  IndexedEvent,
   max,
-  percentile,
   median,
-} from 'pondjs';
+  min,
+  percentile,
+  TimeSeries
+} from "pondjs";
 
-import EventMarker from './EventMarker';
-import { Styler } from '../js/styler';
-import { scaleAsString } from '../js/util';
+import EventMarker from "./EventMarker";
+import { Styler } from "../js/styler";
+import { scaleAsString } from "../js/util";
 
 const defaultFillStyle = {
-  fill: 'steelblue',
-  stroke: 'none',
+  fill: "steelblue",
+  stroke: "none"
 };
 
 const defaultMutedStyle = {
-  fill: 'grey',
-  stroke: 'none',
+  fill: "grey",
+  stroke: "none"
 };
 
 const defaultStyle = [
@@ -40,33 +41,33 @@ const defaultStyle = [
     normal: { ...defaultFillStyle, opacity: 0.2 },
     highlighted: { ...defaultFillStyle, opacity: 0.3 },
     selected: { ...defaultFillStyle, opacity: 0.3 },
-    muted: { ...defaultMutedStyle, opacity: 0.1 },
+    muted: { ...defaultMutedStyle, opacity: 0.1 }
   },
   {
     normal: { ...defaultFillStyle, opacity: 0.5 },
     highlighted: { ...defaultFillStyle, opacity: 0.6 },
     selected: { ...defaultFillStyle, opacity: 0.6 },
-    muted: { ...defaultMutedStyle, opacity: 0.2 },
+    muted: { ...defaultMutedStyle, opacity: 0.2 }
   },
   {
     normal: { ...defaultFillStyle, opacity: 0.9 },
     highlighted: { ...defaultFillStyle, opacity: 1.0 },
     selected: { ...defaultFillStyle, opacity: 1.0 },
-    muted: { ...defaultMutedStyle, opacity: 0.2 },
-  },
+    muted: { ...defaultMutedStyle, opacity: 0.2 }
+  }
 ];
 
 const defaultAggregation = {
-  size: '5m',
+  size: "5m",
   reducers: {
     outer: [min(), max()],
     inner: [percentile(25), percentile(75)],
-    center: median(),
-  },
+    center: median()
+  }
 };
 
 function getSeries(series, column) {
-  return series.map((e) => {
+  return series.map(e => {
     const v = e.get(column);
     const d = {};
     switch (v.length) {
@@ -96,7 +97,7 @@ function getSeries(series, column) {
         d.outerMax = v[4];
         break;
       default:
-        console.error('Tried to make boxchart from invalid array');
+        console.error("Tried to make boxchart from invalid array");
     }
     const ee = new IndexedEvent(e.index(), d);
     return ee;
@@ -131,7 +132,7 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
 
   return series.fixedWindowRollup({
     windowSize: size,
-    aggregation: fixedWindowAggregation,
+    aggregation: fixedWindowAggregation
   });
 }
 
@@ -207,16 +208,18 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
  * specification you will get events for the rollup, not your original data.
  */
 export default class BoxChart extends React.Component {
-
   constructor(props) {
     super(props);
-    if (props.series._collection._type === Event) {  // eslint-disable-line
-      this.series = getAggregatedSeries(props.series,
-                                        props.column,
-                                        props.aggregation);
+    if (
+      props.series._collection._type === TimeEvent // eslint-disable-line
+    ) {
+      this.series = getAggregatedSeries(
+        props.series,
+        props.column,
+        props.aggregation
+      );
     } else {
-      this.series = getSeries(props.series,
-                              props.column);
+      this.series = getSeries(props.series, props.column);
     }
   }
 
@@ -235,9 +238,11 @@ export default class BoxChart extends React.Component {
     }
 
     if (aggregationChanged) {
-      this.series = getAggregatedSeries(nextProps.series,
-                                        nextProps.column,
-                                        nextProps.aggregation);
+      this.series = getAggregatedSeries(
+        nextProps.series,
+        nextProps.column,
+        nextProps.aggregation
+      );
     }
   }
 
@@ -253,11 +258,13 @@ export default class BoxChart extends React.Component {
     const highlighted = nextProps.highlighted;
     const selected = nextProps.selected;
 
-    const widthChanged = (this.props.width !== width);
-    const timeScaleChanged = (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
-    const yAxisScaleChanged = (this.props.yScale !== yScale);
+    const widthChanged = this.props.width !== width;
+    const timeScaleChanged = scaleAsString(this.props.timeScale) !==
+      scaleAsString(timeScale);
+    const yAxisScaleChanged = this.props.yScale !== yScale;
     const columnChanged = this.props.column !== column;
-    const styleChanged = (JSON.stringify(this.props.style) !== JSON.stringify(style));
+    const styleChanged = JSON.stringify(this.props.style) !==
+      JSON.stringify(style);
     const highlightedChanged = this.props.highlighted !== highlighted;
     const selectedChanged = this.props.selected !== selected;
 
@@ -279,8 +286,7 @@ export default class BoxChart extends React.Component {
       seriesChanged = !TimeSeries.is(oldSeries, newSeries);
     }
 
-    return (
-      seriesChanged ||
+    return seriesChanged ||
       timeScaleChanged ||
       widthChanged ||
       columnChanged ||
@@ -288,8 +294,7 @@ export default class BoxChart extends React.Component {
       yAxisScaleChanged ||
       aggregationChanged ||
       highlightedChanged ||
-      selectedChanged
-    );
+      selectedChanged;
   }
 
   handleHover(e, event) {
@@ -334,19 +339,20 @@ export default class BoxChart extends React.Component {
       this.providedStyle = this.providedStyleArray(this.props.column);
     }
 
-    if (!_.isNull(this.providedStyle) &&
-      (!_.isArray(this.providedStyle) ||
-        this.providedStyle.length !== 3)) {
-      console.warn('Provided style to BoxChart should be an array of 3 objects');
+    if (
+      !_.isNull(this.providedStyle) &&
+        (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)
+    ) {
+      console.warn(
+        "Provided style to BoxChart should be an array of 3 objects"
+      );
       return defaultStyle;
     }
 
-    const isHighlighted =
-      this.props.highlighted &&
+    const isHighlighted = this.props.highlighted &&
       Event.is(this.props.highlighted, event);
 
-    const isSelected =
-      this.props.selected &&
+    const isSelected = this.props.selected &&
       Event.is(this.props.selected, event);
 
     if (this.props.selected) {
@@ -355,10 +361,13 @@ export default class BoxChart extends React.Component {
           if (!this.selectedStyle) {
             this.selectedStyle = [];
           }
-          this.selectedStyle[level] = merge(true,
-                defaultStyle[level].selected,
-                this.providedStyle[level].selected ?
-                this.providedStyle[level].selected : {});
+          this.selectedStyle[level] = merge(
+            true,
+            defaultStyle[level].selected,
+            this.providedStyle[level].selected
+              ? this.providedStyle[level].selected
+              : {}
+          );
         }
         style = this.selectedStyle[level];
       } else if (isHighlighted) {
@@ -366,10 +375,13 @@ export default class BoxChart extends React.Component {
           if (!this.highlightedStyle) {
             this.highlightedStyle = [];
           }
-          this.highlightedStyle[level] = merge(true,
-                  defaultStyle[level].highlighted,
-                  this.providedStyle[level].highlighted ?
-                  this.providedStyle[level].highlighted : {});
+          this.highlightedStyle[level] = merge(
+            true,
+            defaultStyle[level].highlighted,
+            this.providedStyle[level].highlighted
+              ? this.providedStyle[level].highlighted
+              : {}
+          );
         }
         style = this.highlightedStyle[level];
       } else {
@@ -377,26 +389,36 @@ export default class BoxChart extends React.Component {
           this.mutedStyle = [];
         }
         if (!this.mutedStyle[level]) {
-          this.mutedStyle[level] = merge(true,
-                                         defaultStyle[level].muted,
-                                         this.providedStyle[level].muted ?
-                                         this.providedStyle[level].muted : {});
+          this.mutedStyle[level] = merge(
+            true,
+            defaultStyle[level].muted,
+            this.providedStyle[level].muted
+              ? this.providedStyle[level].muted
+              : {}
+          );
         }
         style = this.mutedStyle[level];
       }
     } else if (isHighlighted) {
-      style = merge(true,
-              defaultStyle[level].highlighted,
-              this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
+      style = merge(
+        true,
+        defaultStyle[level].highlighted,
+        this.providedStyle[level].highlighted
+          ? this.providedStyle[level].highlighted
+          : {}
+      );
     } else {
       if (!this.normalStyle) {
         this.normalStyle = [];
       }
       if (!this.normalStyle[level]) {
-        this.normalStyle[level] = merge(true,
-                                        defaultStyle[level].normal,
-                                        this.providedStyle[level].normal ?
-                                        this.providedStyle[level].normal : {});
+        this.normalStyle[level] = merge(
+          true,
+          defaultStyle[level].normal,
+          this.providedStyle[level].normal
+            ? this.providedStyle[level].normal
+            : {}
+        );
       }
       style = this.normalStyle[level];
     }
@@ -407,7 +429,7 @@ export default class BoxChart extends React.Component {
     const {
       timeScale,
       yScale,
-      column,
+      column
     } = this.props;
 
     const innerSpacing = +this.props.innerSpacing;
@@ -444,12 +466,12 @@ export default class BoxChart extends React.Component {
 
       let xInner = timeScale(begin) + innerSpacing;
       if (innerSize) {
-        xInner = c - (innerSize / 2);
+        xInner = c - innerSize / 2;
       }
 
       let xOuter = timeScale(begin) + outerSpacing;
       if (outerSize) {
-        xOuter = c - (outerSize / 2);
+        xOuter = c - outerSize / 2;
       }
 
       const styles = [];
@@ -457,11 +479,11 @@ export default class BoxChart extends React.Component {
       styles[1] = this.style(column, event, 1);
       styles[2] = this.style(column, event, 2);
 
-      const innerMin = d.has('innerMin') ? yScale(event.get('innerMin')) : null;
-      const innerMax = d.has('innerMax') ? yScale(event.get('innerMax')) : null;
-      const outerMin = d.has('outerMin') ? yScale(event.get('outerMin')) : null;
-      const outerMax = d.has('outerMax') ? yScale(event.get('outerMax')) : null;
-      const center = d.has('center') ? yScale(event.get('center')) : null;
+      const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
+      const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
+      const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
+      const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
+      const center = d.has("center") ? yScale(event.get("center")) : null;
 
       let hasInner = true;
       let hasOuter = true;
@@ -492,9 +514,13 @@ export default class BoxChart extends React.Component {
           width: outerWidth,
           height: outerMin - outerMax,
           rx: 2,
-          ry: 2,
+          ry: 2
         };
-        const barOuterProps = { key: keyOuter, ...boxOuter, style: styles[level] };
+        const barOuterProps = {
+          key: keyOuter,
+          ...boxOuter,
+          style: styles[level]
+        };
         if (this.props.onSelectionChange) {
           barOuterProps.onClick = e => this.handleClick(e, event);
         }
@@ -502,10 +528,8 @@ export default class BoxChart extends React.Component {
           barOuterProps.onMouseMove = e => this.handleHover(e, event);
           barOuterProps.onMouseLeave = () => this.handleHoverLeave();
         }
-        bars.push(
-          <rect {...barOuterProps} />
-        );
-        ymax = 'outerMax';
+        bars.push(<rect {...barOuterProps} />);
+        ymax = "outerMax";
       }
 
       if (hasInner) {
@@ -520,9 +544,13 @@ export default class BoxChart extends React.Component {
           width: innerWidth,
           height: innerMin - innerMax,
           rx: 1,
-          ry: 1,
+          ry: 1
         };
-        const barInnerProps = { key: keyInner, ...boxInner, style: styles[level] };
+        const barInnerProps = {
+          key: keyInner,
+          ...boxInner,
+          style: styles[level]
+        };
         if (this.props.onSelectionChange) {
           barInnerProps.onClick = e => this.handleClick(e, event);
         }
@@ -530,10 +558,8 @@ export default class BoxChart extends React.Component {
           barInnerProps.onMouseMove = e => this.handleHover(e, event);
           barInnerProps.onMouseLeave = () => this.handleHoverLeave();
         }
-        bars.push(
-          <rect {...barInnerProps} />
-        );
-        ymax = ymax || 'innerMax';
+        bars.push(<rect {...barInnerProps} />);
+        ymax = ymax || "innerMax";
       }
 
       if (hasCenter) {
@@ -543,9 +569,13 @@ export default class BoxChart extends React.Component {
           x: xInner,
           y: center,
           width: innerWidth,
-          height: 1,
+          height: 1
         };
-        const barCenterProps = { key: keyCenter, ...boxCenter, style: styles[level] };
+        const barCenterProps = {
+          key: keyCenter,
+          ...boxCenter,
+          style: styles[level]
+        };
         if (this.props.onSelectionChange) {
           barCenterProps.onClick = e => this.handleClick(e, event);
         }
@@ -553,15 +583,13 @@ export default class BoxChart extends React.Component {
           barCenterProps.onMouseMove = e => this.handleHover(e, event);
           barCenterProps.onMouseLeave = () => this.handleHoverLeave();
         }
-        bars.push(
-          <rect {...barCenterProps} />
-        );
-        ymax = ymax || 'center';
+        bars.push(<rect {...barCenterProps} />);
+        ymax = ymax || "center";
       }
 
       // Event marker if info provided and hovering
       const isHighlighted = this.props.highlighted &&
-                            Event.is(this.props.highlighted, event);
+        Event.is(this.props.highlighted, event);
       if (isHighlighted && this.props.info) {
         eventMarker = (
           <EventMarker
@@ -603,7 +631,9 @@ BoxChart.propTypes = {
   series: (props, propName, componentName) => {
     const value = props[propName];
     if (!(value instanceof TimeSeries)) {
-      return new Error(`A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`);
+      return new Error(
+        `A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`
+      );
     }
 
     // TODO: Better detection of errors
@@ -611,13 +641,11 @@ BoxChart.propTypes = {
     // everything ok
     return null;
   },
-
   /**
    * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
    * works on just a single column.
    */
   column: React.PropTypes.string,
-
   /**
    * The aggregation specification. This object should contain:
    *   - innerMax
@@ -647,10 +675,9 @@ BoxChart.propTypes = {
     reducers: React.PropTypes.shape({
       inner: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
       outer: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
-      center: React.PropTypes.func,                         // eslint-disable-line
-    }),
+      center: React.PropTypes.func // eslint-disable-line
+    })
   }), // eslint-disable-line
-
   /**
    * The style of the box chart drawing (using SVG CSS properties) or
    * a styler object. It is recommended to user the styler unless you need
@@ -659,36 +686,31 @@ BoxChart.propTypes = {
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
+    React.PropTypes.instanceOf(Styler)
   ]),
-
   /**
    * The style of the info box and connecting lines
    */
-  infoStyle: React.PropTypes.object,  //eslint-disable-line
-
+  infoStyle: React.PropTypes.object, //eslint-disable-line
   /**
    * The width of the hover info box
    */
-  infoWidth: React.PropTypes.number,  //eslint-disable-line
-
+  infoWidth: React.PropTypes.number, //eslint-disable-line
   /**
    * The height of the hover info box
    */
-  infoHeight: React.PropTypes.number,  //eslint-disable-line
-
+  infoHeight: React.PropTypes.number, //eslint-disable-line
   /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: React.PropTypes.arrayOf(      //eslint-disable-line
-    React.PropTypes.shape({
-      label: React.PropTypes.string,  //eslint-disable-line
-      value: React.PropTypes.string,  //eslint-disable-line
+  info: React.PropTypes.arrayOf(
+    React.PropTypes.shape({ //eslint-disable-line
+      label: React.PropTypes.string, //eslint-disable-line
+      value: React.PropTypes.string //eslint-disable-line
     })
   ),
-
   /**
    * If spacing is specified, then the boxes will be separated from the
    * timerange boundary by this number of pixels. Use this to space out
@@ -696,7 +718,6 @@ BoxChart.propTypes = {
    * separately.
    */
   innerSpacing: React.PropTypes.number,
-
   /**
    * If spacing is specified, then the boxes will be separated from the
    * timerange boundary by this number of pixels. Use this to space out
@@ -704,19 +725,16 @@ BoxChart.propTypes = {
    * separately.
    */
   outerSpacing: React.PropTypes.number,
-
   /**
    * If size is specified, then the innerBox will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
   innerSize: React.PropTypes.number,
-
   /**
    * If size is specified, then the outer box will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
   outerSize: React.PropTypes.number,
-
   /**
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
@@ -724,62 +742,55 @@ BoxChart.propTypes = {
    * See also `onSelectionChange`
    */
   selected: React.PropTypes.instanceOf(IndexedEvent),
-
   /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
   highlighted: React.PropTypes.instanceOf(IndexedEvent),
-
   /**
    * A callback that will be called when the selection changes. It will be called
    * with the event corresponding to the box clicked as its only arg.
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * A callback that will be called when the hovered over box changes.
    * It will be called with the event corresponding to the box hovered over.
    */
   onHighlightChange: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
   yScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
+  width: React.PropTypes.number
 };
 
 BoxChart.defaultProps = {
-  column: 'value',
+  column: "value",
   innerSpacing: 1.0,
   outerSpacing: 2.0,
   infoStyle: {
-    line: {
-      stroke: '#999',
-      cursor: 'crosshair',
-      pointerEvents: 'none',
-    },
-    box: {
-      fill: 'white',
-      opacity: 0.90,
-      stroke: '#999',
-      pointerEvents: 'none',
-    },
-    dot: {
-      fill: '#999',
-    },
+    stroke: "#999",
+    fill: "red",
+    opacity: 0.90,
+    pointerEvents: "none"
   },
+  stemStyle: {
+    stroke: "#999",
+    cursor: "crosshair",
+    pointerEvents: "none"
+  },
+  markerStyle: {
+    fill: "#999"
+  },
+  markerRadius: 2,
   infoWidth: 90,
-  infoHeight: 30,
+  infoHeight: 30
 };

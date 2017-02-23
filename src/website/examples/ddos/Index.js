@@ -59,12 +59,11 @@ const requestsSeries = new TimeSeries({
 //
 
 const style = styler([
-    {key: "connections", color: "#2ca02c", width: 1},
-    {key: "requests", color: "#9467bd", width: 2}
+    { key: "connections", color: "#2ca02c", width: 1 },
+    { key: "requests", color: "#9467bd", width: 2 }
 ]);
 
 const ddos = React.createClass({
-
     getInitialState() {
         return {
             active: {
@@ -73,7 +72,6 @@ const ddos = React.createClass({
             }
         };
     },
-
     renderChart() {
         let charts = [];
         let max = 100;
@@ -87,7 +85,8 @@ const ddos = React.createClass({
                     series={requestsSeries}
                     columns={["requests"]}
                     style={style}
-                    interpolation="curveBasis" />
+                    interpolation="curveBasis"
+                />
             );
         }
         if (this.state.active.connections) {
@@ -100,7 +99,8 @@ const ddos = React.createClass({
                     series={connectionsSeries}
                     columns={["connections"]}
                     style={style}
-                    interpolation="curveBasis" />
+                    interpolation="curveBasis"
+                />
             );
         }
 
@@ -116,11 +116,22 @@ const ddos = React.createClass({
             }
         };
 
-        const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
-        const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
+        const requestsAxisStyle = merge(
+            true,
+            axisStyle,
+            style.axisStyle("requests")
+        );
+        const connectionsAxisStyle = merge(
+            true,
+            axisStyle,
+            style.axisStyle("connections")
+        );
 
         return (
-            <ChartContainer timeRange={requestsSeries.range()} timeAxisStyle={axisStyle}>
+            <ChartContainer
+                timeRange={requestsSeries.range()}
+                timeAxisStyle={axisStyle}
+            >
                 <ChartRow height="300">
                     <YAxis
                         id="axis1"
@@ -128,10 +139,12 @@ const ddos = React.createClass({
                         transition={300}
                         style={requestsAxisStyle}
                         labelOffset={-10}
-                        min={0} max={max}
+                        min={0}
+                        max={max}
                         format=",.0f"
                         width="60"
-                        type="linear" />
+                        type="linear"
+                    />
                     <Charts>
                         {charts}
                     </Charts>
@@ -145,25 +158,25 @@ const ddos = React.createClass({
                         format=",.0f"
                         max={max}
                         width="80"
-                        type="linear" />
+                        type="linear"
+                    />
                 </ChartRow>
             </ChartContainer>
         );
     },
-
     handleActiveChange(key) {
         const active = this.state.active;
         active[key] = !active[key];
-        this.setState({active});
+        this.setState({ active });
     },
-
     render() {
         const legend = [
             {
                 key: "requests",
                 label: "Requests",
                 disabled: !this.state.active.requests
-            },{
+            },
+            {
                 key: "connections",
                 label: "Connections",
                 disabled: !this.state.active.connections
@@ -178,11 +191,12 @@ const ddos = React.createClass({
                             type="line"
                             style={style}
                             categories={legend}
-                            onSelectionChange={this.handleActiveChange} />
+                            onSelectionChange={this.handleActiveChange}
+                        />
                     </div>
                 </div>
 
-                <hr/>
+                <hr />
 
                 <div className="row">
                     <div className="col-md-12">
@@ -199,4 +213,4 @@ const ddos = React.createClass({
 // Export example
 import ddos_docs from "raw!./ddos_docs.md";
 import ddos_thumbnail from "./ddos_thumbnail.png";
-export default {ddos, ddos_docs, ddos_thumbnail};
+export default { ddos, ddos_docs, ddos_thumbnail };

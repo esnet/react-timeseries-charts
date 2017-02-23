@@ -8,18 +8,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import moment from 'moment';
-import React from 'react';
-import { timeFormat } from 'd3-time-format';
+import _ from "underscore";
+import moment from "moment";
+import React from "react";
+import { timeFormat } from "d3-time-format";
 
-import 'moment-duration-format';
+import "moment-duration-format";
 
-import ValueList from './ValueList';
-import Label from './Label';
+import ValueList from "./ValueList";
+import Label from "./Label";
 
 export default class TimeMarker extends React.Component {
-
   renderLine(posx) {
     return (
       <line
@@ -35,21 +34,21 @@ export default class TimeMarker extends React.Component {
   renderTimeMarker(d) {
     const textStyle = {
       fontSize: 11,
-      textAnchor: 'left',
-      fill: '#bdbdbd',
+      textAnchor: "left",
+      fill: "#bdbdbd"
     };
 
     let dateStr = `${d}`;
-    if (this.props.timeFormat === 'day') {
-      const formatter = timeFormat('%d');
+    if (this.props.timeFormat === "day") {
+      const formatter = timeFormat("%d");
       dateStr = formatter(d);
-    } else if (this.props.timeFormat === 'month') {
-      const formatter = timeFormat('%B');
+    } else if (this.props.timeFormat === "month") {
+      const formatter = timeFormat("%B");
       dateStr = formatter(d);
-    } else if (this.props.timeFormat === 'year') {
-      const formatter = timeFormat('%Y');
+    } else if (this.props.timeFormat === "year") {
+      const formatter = timeFormat("%Y");
       dateStr = formatter(d);
-    } else if (this.props.timeFormat === 'relative') {
+    } else if (this.props.timeFormat === "relative") {
       dateStr = moment.duration(+d).format();
     } else {
       const formatter = timeFormat(this.props.timeFormat);
@@ -67,24 +66,23 @@ export default class TimeMarker extends React.Component {
     const w = this.props.infoWidth;
 
     const infoBoxProps = {
-      align: 'left',
+      align: "left",
       style: this.props.infoStyle.box,
       width: this.props.infoWidth,
-      height: this.props.infoHeight,
+      height: this.props.infoHeight
     };
 
     if (this.props.infoValues) {
-      const infoBox = _.isString(this.props.infoValues) ? (
-        <Label {...infoBoxProps} label={this.props.infoValues} />
-      ) : (
-        <ValueList {...infoBoxProps} values={this.props.infoValues} />
-      );
+      const infoBox = _.isString(this.props.infoValues)
+        ? <Label {...infoBoxProps} label={this.props.infoValues} />
+        : <ValueList {...infoBoxProps} values={this.props.infoValues} />;
 
       if (posx + 10 + w < this.props.width - 50) {
         return (
           <g transform={`translate(${posx + 10},${5})`}>
-            {this.props.showTime ?
-              this.renderTimeMarker(this.props.time) : null}
+            {this.props.showTime
+              ? this.renderTimeMarker(this.props.time)
+              : null}
             <g transform={`translate(0,${this.props.showTime ? 20 : 0})`}>
               {infoBox}
             </g>
@@ -93,17 +91,14 @@ export default class TimeMarker extends React.Component {
       }
       return (
         <g transform={`translate(${posx - w - 10},${5})`}>
-          {this.props.showTime ?
-            this.renderTimeMarker(this.props.time) : null}
+          {this.props.showTime ? this.renderTimeMarker(this.props.time) : null}
           <g transform={`translate(0,${this.props.showTime ? 20 : 0})`}>
             {infoBox}
           </g>
         </g>
       );
     }
-    return (
-      <g />
-    );
+    return <g />;
   }
 
   render() {
@@ -122,7 +117,6 @@ export default class TimeMarker extends React.Component {
 
 TimeMarker.propTypes = {
   time: React.PropTypes.instanceOf(Date),
-
   /**
    * The values to show in the info box. This is either an array of
    * objects, with each object specifying the label and value
@@ -130,13 +124,11 @@ TimeMarker.propTypes = {
    */
   infoValues: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        label: React.PropTypes.string,      // eslint-disable-line
-        value: React.PropTypes.string,      // eslint-disable-line
-      })
-    )]),
-
+    React.PropTypes.arrayOf(React.PropTypes.shape({
+        label: React.PropTypes.string, // eslint-disable-line
+        value: React.PropTypes.string // eslint-disable-line
+      }))
+  ]),
   /**
    * The style of the info box and connecting lines. This is an
    * object of the form { line, box, dot }. Line, box and dot
@@ -144,27 +136,23 @@ TimeMarker.propTypes = {
    * the pieces of the info marker.
    */
   infoStyle: React.PropTypes.shape({
-    line: React.PropTypes.object,      // eslint-disable-line
-    box: React.PropTypes.object,       // eslint-disable-line
-    dot: React.PropTypes.object,       // eslint-disable-line
+    line: React.PropTypes.object, // eslint-disable-line
+    box: React.PropTypes.object, // eslint-disable-line
+    dot: React.PropTypes.object // eslint-disable-line
   }),
-
   /**
    * The width of the hover info box
    */
   infoWidth: React.PropTypes.number,
-
   /**
    * The height of the hover info box
    */
   infoHeight: React.PropTypes.number,
-
   /**
    * Display the info box at all. If you don't have any values to show and just
    * want a line and a time (for example), you can set this to false.
    */
   showInfoBox: React.PropTypes.bool,
-
   /**
    * You can show the info box without the corresponding time marker. Why would
    * you do this? I don't know. Actually, I do. You might use the ChartContainer
@@ -172,33 +160,27 @@ TimeMarker.propTypes = {
    * selectively to each row.
    */
   showLine: React.PropTypes.bool,
-
   /**
    * You can hide the time displayed above the info box. You might do this because
    * it is already displayed elsewhere in your UI. Or maybe you just don't like it.
    */
   showTime: React.PropTypes.bool,
-
   /**
    * The time format (d3 time format) used for display of the time above the info box.
    */
   timeFormat: React.PropTypes.string,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
   width: React.PropTypes.number,
-
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number,
-
+  height: React.PropTypes.number
 };
 
 TimeMarker.defaultProps = {
@@ -207,20 +189,20 @@ TimeMarker.defaultProps = {
   showTime: true,
   infoStyle: {
     line: {
-      stroke: '#999',
-      cursor: 'crosshair',
-      pointerEvents: 'none',
+      stroke: "#999",
+      cursor: "crosshair",
+      pointerEvents: "none"
     },
     box: {
-      fill: 'white',
+      fill: "white",
       opacity: 0.90,
-      stroke: '#999',
-      pointerEvents: 'none',
+      stroke: "#999",
+      pointerEvents: "none"
     },
     dot: {
-      fill: '#999',
-    },
+      fill: "#999"
+    }
   },
   infoWidth: 90,
-  infoHeight: 25,
+  infoHeight: 25
 };

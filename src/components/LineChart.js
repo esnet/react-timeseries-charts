@@ -8,20 +8,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import d3Shape from 'd3-shape';
-import merge from 'merge';
-import React from 'react';
-import { TimeSeries } from 'pondjs';
+import _ from "underscore";
+import { line } from "d3-shape";
+import merge from "merge";
+import React from "react";
+import { TimeSeries } from "pondjs";
 
-import { Styler } from '../js/styler';
-import { scaleAsString } from '../js/util';
+import { Styler } from "../js/styler";
+import { scaleAsString } from "../js/util";
+import curves from "../js/curve";
 
 const defaultStyle = {
-  normal: { stroke: 'steelblue', fill: 'none', strokeWidth: 1 },
-  highlighted: { stroke: '#5a98cb', fill: 'none', strokeWidth: 1 },
-  selected: { stroke: 'steelblue', fill: 'none', strokeWidth: 2 },
-  muted: { stroke: 'steelblue', fill: 'none', opacity: 0.4, strokeWidth: 1 },
+  normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
+  highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
+  selected: { stroke: "steelblue", fill: "none", strokeWidth: 2 },
+  muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
 };
 
 /**
@@ -51,7 +52,6 @@ const defaultStyle = {
  * ```
  */
 export default class LineChart extends React.Component {
-
   shouldComponentUpdate(nextProps) {
     const newSeries = nextProps.series;
     const oldSeries = this.props.series;
@@ -65,20 +65,14 @@ export default class LineChart extends React.Component {
     const columns = nextProps.columns;
 
     // What changed?
-    const widthChanged =
-      (this.props.width !== width);
-    const timeScaleChanged =
-      (scaleAsString(this.props.timeScale) !== scaleAsString(timeScale));
-    const yAxisScaleChanged =
-      (this.props.yScale !== yScale);
-    const interpolationChanged =
-      (this.props.interpolation !== interpolation);
-    const highlightChanged =
-      (this.props.highlight !== highlight);
-    const selectionChanged =
-      (this.props.selection !== selection);
-    const columnsChanged =
-      (this.props.columns !== columns);
+    const widthChanged = this.props.width !== width;
+    const timeScaleChanged = scaleAsString(this.props.timeScale) !==
+      scaleAsString(timeScale);
+    const yAxisScaleChanged = this.props.yScale !== yScale;
+    const interpolationChanged = this.props.interpolation !== interpolation;
+    const highlightChanged = this.props.highlight !== highlight;
+    const selectionChanged = this.props.selection !== selection;
+    const columnsChanged = this.props.columns !== columns;
 
     let seriesChanged = false;
     if (oldSeries.length !== newSeries.length) {
@@ -87,16 +81,14 @@ export default class LineChart extends React.Component {
       seriesChanged = !TimeSeries.is(oldSeries, newSeries);
     }
 
-    return (
-      widthChanged ||
+    return widthChanged ||
       seriesChanged ||
       timeScaleChanged ||
       yAxisScaleChanged ||
       interpolationChanged ||
       highlightChanged ||
       selectionChanged ||
-      columnsChanged
-    );
+      columnsChanged;
   }
 
   handleHover(e, column) {
@@ -139,45 +131,58 @@ export default class LineChart extends React.Component {
     let style;
 
     const styleMap = this.providedPathStyleMap(column);
-    const isHighlighted = this.props.highlight && column === this.props.highlight;
+    const isHighlighted = this.props.highlight &&
+      column === this.props.highlight;
     const isSelected = this.props.selection && column === this.props.selection;
 
     if (this.props.selection) {
       if (isSelected) {
-        style = merge(true, defaultStyle.selected, styleMap.selected ? styleMap.selected : {});
+        style = merge(
+          true,
+          defaultStyle.selected,
+          styleMap.selected ? styleMap.selected : {}
+        );
       } else if (isHighlighted) {
-        style = merge(true,
-                    defaultStyle.highlighted,
-                      styleMap.highlighted ? styleMap.highlighted : {});
+        style = merge(
+          true,
+          defaultStyle.highlighted,
+          styleMap.highlighted ? styleMap.highlighted : {}
+        );
       } else {
-        style = merge(true, defaultStyle.muted, styleMap.muted ? styleMap.muted : {});
+        style = merge(
+          true,
+          defaultStyle.muted,
+          styleMap.muted ? styleMap.muted : {}
+        );
       }
     } else if (isHighlighted) {
-      style = merge(true,
-              defaultStyle.highlighted,
-              styleMap.highlighted ? styleMap.highlighted : {});
+      style = merge(
+        true,
+        defaultStyle.highlighted,
+        styleMap.highlighted ? styleMap.highlighted : {}
+      );
     } else {
       style = merge(true, defaultStyle.normal, styleMap.normal);
     }
 
-    style.pointerEvents = 'none';
+    style.pointerEvents = "none";
 
     return style;
   }
 
   renderPath(data, column, key) {
     const hitStyle = {
-      stroke: 'white',
-      fill: 'none',
+      stroke: "white",
+      fill: "none",
       opacity: 0.0,
       strokeWidth: 7,
-      cursor: 'crosshair',
-      pointerEvents: 'stroke',
+      cursor: "crosshair",
+      pointerEvents: "stroke"
     };
 
     // D3 generates each path
-    const path = d3Shape.line()
-      .curve(d3Shape[this.props.interpolation])
+    const path = line()
+      .curve(curves[this.props.interpolation])
       .x(d => this.props.timeScale(d.x))
       .y(d => this.props.yScale(d.y))(data);
 
@@ -206,9 +211,13 @@ export default class LineChart extends React.Component {
       // Remove nulls and NaNs from the line by generating a break in the line
       let currentPoints = null;
       for (const d of this.props.series.events()) {
-        const timestamp = d.timestamp();
+        const timestamp = new Date(
+          d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
+        );
         const value = d.get(column);
-        const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+        const badPoint = _.isNull(value) ||
+          _.isNaN(value) ||
+          !_.isFinite(value);
         if (!badPoint) {
           if (!currentPoints) currentPoints = [];
           currentPoints.push({ x: timestamp, y: value });
@@ -228,9 +237,13 @@ export default class LineChart extends React.Component {
       // Ignore nulls and NaNs in the line
       const cleanedPoints = [];
       for (const d of this.props.series.events()) {
-        const timestamp = d.timestamp();
+        const timestamp = new Date(
+          d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
+        );
         const value = d.get(column);
-        const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+        const badPoint = _.isNull(value) ||
+          _.isNaN(value) ||
+          !_.isFinite(value);
         if (!badPoint) {
           cleanedPoints.push({ x: timestamp, y: value });
         }
@@ -257,24 +270,20 @@ export default class LineChart extends React.Component {
 }
 
 LineChart.propTypes = {
-
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
   series: React.PropTypes.instanceOf(TimeSeries).isRequired,
-
   /**
    * Reference to the axis which provides the vertical scale for drawing.
    * e.g. specifying `axis="trafficRate"` would refer the y-scale of the YAxis
    * with id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired,  // eslint-disable-line
-
+  axis: React.PropTypes.string.isRequired, // eslint-disable-line
   /**
    * Which columns from the series to draw.
    */
   columns: React.PropTypes.arrayOf(React.PropTypes.string),
-
   /**
    * The styles to apply to the underlying SVG lines. This is a mapping
    * of column names to objects with style attributes, in the following
@@ -311,30 +320,28 @@ LineChart.propTypes = {
   style: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler),
+    React.PropTypes.instanceOf(Styler)
   ]),
-
   /**
    * Any of D3's interpolation modes.
    */
   interpolation: React.PropTypes.oneOf([
-    'curveBasis',
-    'curveBasisOpen',
-    'curveBundle',
-    'curveCardinal',
-    'curveCardinalOpen',
-    'curveCatmullRom',
-    'curveCatmullRomOpen',
-    'curveLinear',
-    'curveMonotoneX',
-    'curveMonotoneY',
-    'curveNatural',
-    'curveRadial',
-    'curveStep',
-    'curveStepAfter',
-    'curveStepBefore',
+    "curveBasis",
+    "curveBasisOpen",
+    "curveBundle",
+    "curveCardinal",
+    "curveCardinalOpen",
+    "curveCatmullRom",
+    "curveCatmullRomOpen",
+    "curveLinear",
+    "curveMonotoneX",
+    "curveMonotoneY",
+    "curveNatural",
+    "curveRadial",
+    "curveStep",
+    "curveStepAfter",
+    "curveStepBefore"
   ]),
-
   /**
    * The determines how to handle bad/missing values in the supplied
    * TimeSeries. A missing value can be null or NaN. If breakLine
@@ -343,7 +350,6 @@ LineChart.propTypes = {
    * are simply removed and the adjoining points are connected.
    */
   breakLine: React.PropTypes.bool,
-
   /**
    * The selected item, which will be rendered in the "selected" style.
    * If a line is selected, all other lines will be rendered in the "muted" style.
@@ -351,46 +357,39 @@ LineChart.propTypes = {
    * See also `onSelectionChange`
    */
   selection: React.PropTypes.string,
-
   /**
    * A callback that will be called when the selection changes. It will be called
    * with the column corresponding to the line being clicked.
    */
   onSelectionChange: React.PropTypes.func,
-
   /**
    * The highlighted column, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
   highlight: React.PropTypes.string,
-
   /**
    * A callback that will be called when the hovered over line changes.
    * It will be called with the corresponding column.
    */
   onHighlightChange: React.PropTypes.func,
-
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
   timeScale: React.PropTypes.func,
-
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
   yScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
-
+  width: React.PropTypes.number
 };
 
 LineChart.defaultProps = {
-  columns: ['value'],
+  columns: ["value"],
   smooth: true,
-  interpolation: 'curveLinear',
-  breakLine: true,
+  interpolation: "curveLinear",
+  breakLine: true
 };

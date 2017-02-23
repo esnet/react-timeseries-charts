@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  * Renders a 'axis' that display a label for a current tracker value
@@ -21,23 +21,24 @@ import React from 'react';
  */
 const ValueAxis = ({ width, height, value, detail }) => {
   const labelStyle = {
-    fill: '#666',
+    fill: "#666",
     fontSize: 20,
-    textAnchor: 'middle',
+    textAnchor: "middle"
   };
   const detailStyle = {
     fontSize: 12,
-    textAnchor: 'middle',
-    fill: '#9a9a9a',
+    textAnchor: "middle",
+    fill: "#9a9a9a"
   };
   return (
     <g>
       <rect
         key="background"
-        x="0" y="0"
+        x="0"
+        y="0"
         width={width}
         height={height}
-        style={{ fill: 'none', stroke: 'none' }}
+        style={{ fill: "none", stroke: "none" }}
       />
       <text
         key="value"
@@ -50,7 +51,8 @@ const ValueAxis = ({ width, height, value, detail }) => {
       <text
         key="detail"
         x={parseInt(width / 2, 10)}
-        y={height / 2} dy="1.2em"
+        y={height / 2}
+        dy="1.2em"
         style={detailStyle}
       >
         {detail}
@@ -65,24 +67,20 @@ ValueAxis.propTypes = {
    */
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.number,
+    React.PropTypes.number
   ]),
-
   /**
    * If values are numbers, use this format string
    */
   detail: React.PropTypes.string,
-
   /**
    * The width of the axis
    */
   width: React.PropTypes.number,
-
   /**
    * The height of the axis
    */
-  height: React.PropTypes.number,
-
+  height: React.PropTypes.number
 };
 
 export default ValueAxis;

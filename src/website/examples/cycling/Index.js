@@ -11,42 +11,35 @@
 /* eslint max-len:0 */
 /* eslint-disable react/prefer-es6-class */
 
-import 'moment-duration-format';
-import moment from 'moment';
-import React from 'react';
-import { format } from 'd3-format';
+import "moment-duration-format";
+import moment from "moment";
+import React from "react";
+import { format } from "d3-format";
 
 // Pond
-import {
-  TimeSeries,
-  TimeRange,
-  avg,
-  filter,
-  percentile,
-  median,
-} from 'pondjs';
+import { TimeSeries, TimeRange, avg, filter, percentile, median } from "pondjs";
 
 // Imports from the charts library
-import AreaChart from '../../../components/AreaChart';
-import Baseline from '../../../components/Baseline';
-import BoxChart from '../../../components/BoxChart';
-import Brush from '../../../components/Brush';
-import ChartContainer from '../../../components/ChartContainer';
-import ChartRow from '../../../components/ChartRow';
-import Charts from '../../../components/Charts';
-import LabelAxis from '../../../components/LabelAxis';
-import LineChart from '../../../components/LineChart';
-import Resizable from '../../../components/Resizable';
-import TimeMarker from '../../../components/TimeMarker';
-import ValueAxis from '../../../components/ValueAxis';
-import YAxis from '../../../components/YAxis';
-import styler from '../../../js/styler';
+import AreaChart from "../../../components/AreaChart";
+import Baseline from "../../../components/Baseline";
+import BoxChart from "../../../components/BoxChart";
+import Brush from "../../../components/Brush";
+import ChartContainer from "../../../components/ChartContainer";
+import ChartRow from "../../../components/ChartRow";
+import Charts from "../../../components/Charts";
+import LabelAxis from "../../../components/LabelAxis";
+import LineChart from "../../../components/LineChart";
+import Resizable from "../../../components/Resizable";
+import TimeMarker from "../../../components/TimeMarker";
+import ValueAxis from "../../../components/ValueAxis";
+import YAxis from "../../../components/YAxis";
+import styler from "../../../js/styler";
 
 //
 // Build TimeSeries from our data file
 //
 
-const data = require('./bike.json');
+const data = require("./bike.json");
 
 const pacePoints = [];
 const speedPoints = [];
@@ -61,11 +54,10 @@ for (let i = 0; i < data.time.length; i += 1) {
       hrPoints.push([time - 1000, null]);
     }
     const speed = (data.distance[i] - data.distance[i - 1]) /
-            (data.time[i] - data.time[i - 1]);  // meters/sec
-    const speedMph = 2.236941 * speed;  // convert m/s to miles/hr
+      (data.time[i] - data.time[i - 1]); // meters/sec
+    const speedMph = 2.236941 * speed; // convert m/s to miles/hr
     const hr = data.heartrate[i];
     const altitude = data.altitude[i] * 3.28084; // convert m to ft
-
     speedPoints.push([time, speedMph]);
     pacePoints.push([time, speedMph]);
     hrPoints.push([time, hr]);
@@ -74,92 +66,89 @@ for (let i = 0; i < data.time.length; i += 1) {
 }
 
 const pace = new TimeSeries({
-  name: 'Pace',
-  columns: ['time', 'pace'],
-  points: pacePoints,
+  name: "Pace",
+  columns: ["time", "pace"],
+  points: pacePoints
 });
 
 const hr = new TimeSeries({
-  name: 'Heartrate',
-  columns: ['time', 'hr'],
-  points: hrPoints,
+  name: "Heartrate",
+  columns: ["time", "hr"],
+  points: hrPoints
 });
 
 const altitude = new TimeSeries({
-  name: 'Altitude',
-  columns: ['time', 'altitude'],
-  points: altitudePoints,
+  name: "Altitude",
+  columns: ["time", "altitude"],
+  points: altitudePoints
 });
 
 const speed = new TimeSeries({
-  name: 'Speed',
-  columns: ['time', 'speed'],
-  points: speedPoints,
+  name: "Speed",
+  columns: ["time", "speed"],
+  points: speedPoints
 });
 
-const speedSmoothed =
-  speed.fixedWindowRollup({
-    windowSize: '1m',
-    aggregation: {
-      speed5mAvg: { speed: avg(filter.ignoreMissing) } },
-    toEvents: true,
-  });
+const speedSmoothed = speed.fixedWindowRollup({
+  windowSize: "1m",
+  aggregation: {
+    speed5mAvg: { speed: avg(filter.ignoreMissing) }
+  },
+  toEvents: true
+});
 
 //
 // Styling
 //
 
 const style = styler([
-  { key: 'speed', color: 'steelblue', width: 1, opacity: 0.5 },
-  { key: 'speed5mAvg', color: '#34ACE4', width: 1 },
-  { key: 'hr', color: '#DD0447', width: 1 },
-  { key: 'altitude', color: '#e2e2e2' },
+  { key: "speed", color: "steelblue", width: 1, opacity: 0.5 },
+  { key: "speed5mAvg", color: "#34ACE4", width: 1 },
+  { key: "hr", color: "#DD0447", width: 1 },
+  { key: "altitude", color: "#e2e2e2" }
 ]);
 
 const baselineStyles = {
   speed: {
-    stroke: 'steelblue',
+    stroke: "steelblue",
     opacity: 0.5,
-    width: 0.25,
+    width: 0.25
   },
   hr: {
-    stroke: 'red',
+    stroke: "red",
     opacity: 0.5,
-    width: 0.25,
-  },
+    width: 0.25
+  }
 };
 
-const speedFormat = format('.1f');
+const speedFormat = format(".1f");
 
 // Max and Avg HR values to show in the LabelAxis
 const hrSummaryValues = [
-  { label: 'Max', value: parseInt(hr.max('hr'), 10) },
-  { label: 'Avg', value: parseInt(hr.avg('hr'), 10) },
+  { label: "Max", value: parseInt(hr.max("hr"), 10) },
+  { label: "Avg", value: parseInt(hr.avg("hr"), 10) }
 ];
 
 // Max and Avg Speed values to show in the LabelAxis
 const speedSummaryValues = [
-  { label: 'Max', value: speedFormat(speed.max('speed')) },
-  { label: 'Avg', value: speedFormat(speed.avg('speed')) },
+  { label: "Max", value: speedFormat(speed.max("speed")) },
+  { label: "Avg", value: speedFormat(speed.avg("speed")) }
 ];
 
 const cycling = React.createClass({
-
   getInitialState() {
     const initialRange = new TimeRange([75 * 60 * 1000, 125 * 60 * 1000]);
     return {
-      mode: 'channels',
-      rollup: '1m',
+      mode: "channels",
+      rollup: "1m",
       tracker: null,
       timerange: initialRange,
-      brushrange: initialRange,
+      brushrange: initialRange
     };
   },
-
   handleTrackerChanged(t) {
     this.setState({ tracker: t });
   },
-
   // Handles when the brush changes the timerange
   handleTimeRangeChange(timerange) {
     if (timerange) {
@@ -168,45 +157,42 @@ const cycling = React.createClass({
       this.setState({ timerange: altitude.range(), brushrange: null });
     }
   },
-
   handleChartResize(width) {
     this.state({ width });
   },
-
   renderChart() {
-    if (this.state.mode === 'multiaxis') {
+    if (this.state.mode === "multiaxis") {
       return this.renderMultiAxisChart();
-    } else if (this.state.mode === 'channels') {
+    } else if (this.state.mode === "channels") {
       return this.renderChannelsChart();
-    } else if (this.state.mode === 'rollup') {
+    } else if (this.state.mode === "rollup") {
       return this.renderBoxChart();
     }
 
-    return (
-      <div>No chart</div>
-    );
+    return <div>No chart</div>;
   },
-
   renderChannelsChart() {
     const tr = this.state.timerange;
     const speedCropped = speed.crop(tr);
     const hrCropped = hr.crop(tr);
 
     // Get the speed at the current tracker position
-    let speedValue = '--';
+    let speedValue = "--";
     if (this.state.tracker) {
-      const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
-      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get('speed');
+      const speedIndexAtTracker = speedCropped.bisect(new Date(
+        this.state.tracker
+      ));
+      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get("speed");
       if (speedAtTracker) {
         speedValue = speedFormat(speedAtTracker);
       }
     }
 
     // Get the heartrate value at the current tracker position
-    let hrValue = '--';
+    let hrValue = "--";
     if (this.state.tracker) {
       const hrIndexAtTracker = hrCropped.bisect(new Date(this.state.tracker));
-      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get('hr');
+      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get("hr");
       if (hrAtTracker) {
         hrValue = parseInt(hrAtTracker, 10);
       }
@@ -231,7 +217,8 @@ const cycling = React.createClass({
             id="speedaxis"
             label="Speed"
             values={speedSummaryValues}
-            min={0} max={35}
+            min={0}
+            max={35}
             width={140}
             type="linear"
             format=",.1f"
@@ -240,7 +227,7 @@ const cycling = React.createClass({
             <LineChart
               axis="speedaxis"
               series={speedSmoothed}
-              columns={['speed5mAvg']}
+              columns={["speed5mAvg"]}
               interpolation="curveBasis"
               style={style}
               breakLine={false}
@@ -248,14 +235,14 @@ const cycling = React.createClass({
             <LineChart
               axis="speedaxis"
               series={speedCropped}
-              columns={['speed']}
+              columns={["speed"]}
               style={style}
               breakLine
             />
             <Baseline
               style={baselineStyles.speed}
               axis="speedaxis"
-              value={speed.avg('speed')}
+              value={speed.avg("speed")}
             />
           </Charts>
           <ValueAxis
@@ -282,14 +269,14 @@ const cycling = React.createClass({
             <LineChart
               axis="hraxis"
               series={hrCropped}
-              columns={['hr']}
+              columns={["hr"]}
               style={style}
               breakLine
             />
             <Baseline
               axis="hraxis"
               style={baselineStyles.hr}
-              value={hr.avg('hr')}
+              value={hr.avg("hr")}
             />
           </Charts>
           <ValueAxis
@@ -304,27 +291,28 @@ const cycling = React.createClass({
       </ChartContainer>
     );
   },
-
   renderBoxChart() {
     const tr = this.state.timerange;
     const speedCropped = speed.crop(tr);
     const hrCropped = hr.crop(tr);
 
     // Get the speed at the current tracker position
-    let speedValue = '--';
+    let speedValue = "--";
     if (this.state.tracker) {
-      const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
-      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get('speed');
+      const speedIndexAtTracker = speedCropped.bisect(new Date(
+        this.state.tracker
+      ));
+      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get("speed");
       if (speedAtTracker) {
         speedValue = speedFormat(speedAtTracker);
       }
     }
 
     // Get the heartrate value at the current tracker position
-    let hrValue = '--';
+    let hrValue = "--";
     if (this.state.tracker) {
       const hrIndexAtTracker = hrCropped.bisect(new Date(this.state.tracker));
-      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get('hr');
+      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get("hr");
       if (hrAtTracker) {
         hrValue = parseInt(hrAtTracker, 10);
       }
@@ -349,7 +337,8 @@ const cycling = React.createClass({
             id="speedaxis"
             label="Speed"
             values={speedSummaryValues}
-            min={0} max={35}
+            min={0}
+            max={35}
             width={140}
             type="linear"
             format=",.1f"
@@ -365,8 +354,8 @@ const cycling = React.createClass({
                 reducers: {
                   outer: [percentile(5), percentile(95)],
                   inner: [percentile(25), percentile(75)],
-                  center: median(),
-                },
+                  center: median()
+                }
               }}
             />
           </Charts>
@@ -401,8 +390,8 @@ const cycling = React.createClass({
                 reducers: {
                   outer: [percentile(5), percentile(95)],
                   inner: [percentile(25), percentile(75)],
-                  center: median(),
-                },
+                  center: median()
+                }
               }}
             />
           </Charts>
@@ -418,7 +407,6 @@ const cycling = React.createClass({
       </ChartContainer>
     );
   },
-
   renderMultiAxisChart() {
     const tr = this.state.timerange;
     const speedBegin = speed.bisect(tr.begin());
@@ -430,27 +418,29 @@ const cycling = React.createClass({
     const hrCropped = hr.slice(hrBegin, hrEnd);
 
     // Get the speed at the current tracker position
-    let speedValue = '--';
+    let speedValue = "--";
     if (this.state.tracker) {
-      const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
-      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get('speed');
+      const speedIndexAtTracker = speedCropped.bisect(new Date(
+        this.state.tracker
+      ));
+      const speedAtTracker = speedCropped.at(speedIndexAtTracker).get("speed");
       if (speedAtTracker) {
         speedValue = speedFormat(speedAtTracker);
       }
     }
 
     // Get the heartrate value at the current tracker position
-    let hrValue = '--';
+    let hrValue = "--";
     if (this.state.tracker) {
       const hrIndexAtTracker = hrCropped.bisect(new Date(this.state.tracker));
-      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get('hr');
+      const hrAtTracker = hrCropped.at(hrIndexAtTracker).get("hr");
       if (hrAtTracker) {
         hrValue = parseInt(hrAtTracker, 10);
       }
     }
     const trackerInfoValues = [
-      { label: 'Speed', value: speedValue },
-      { label: 'HR', value: hrValue },
+      { label: "Speed", value: speedValue },
+      { label: "HR", value: hrValue }
     ];
 
     return (
@@ -473,7 +463,8 @@ const cycling = React.createClass({
           <YAxis
             id="axis1"
             label="Speed (mph)"
-            min={0} max={35}
+            min={0}
+            max={35}
             width={70}
             type="linear"
             format=",.1f"
@@ -491,21 +482,21 @@ const cycling = React.createClass({
             <LineChart
               axis="axis1"
               series={speedCropped}
-              columns={['speed']}
+              columns={["speed"]}
               style={style}
               breakLine
             />
             <LineChart
               axis="axis2"
               series={hrCropped}
-              columns={['hr']}
+              columns={["hr"]}
               style={style}
               breakLine
             />
             <TimeMarker
               axis="axis1"
               time={new Date(1000 * 60 * 94 + 51 * 1000)}
-              infoStyle={{ line: { strokeWidth: '2px', stroke: '#83C2FC' } }}
+              infoStyle={{ line: { strokeWidth: "2px", stroke: "#83C2FC" } }}
               infoValues="Chalk Hill"
             />
           </Charts>
@@ -513,7 +504,6 @@ const cycling = React.createClass({
       </ChartContainer>
     );
   },
-
   renderBrush() {
     return (
       <ChartContainer
@@ -530,14 +520,17 @@ const cycling = React.createClass({
           <YAxis
             id="axis1"
             label="Altitude (ft)"
-            min={0} max={altitude.max('altitude')}
-            width={70} type="linear" format="d"
+            min={0}
+            max={altitude.max("altitude")}
+            width={70}
+            type="linear"
+            format="d"
           />
           <Charts>
             <AreaChart
               axis="axis1"
               style={style.areaChartStyle()}
-              columns={{ up: ['altitude'], down: [] }}
+              columns={{ up: ["altitude"], down: [] }}
               series={altitude}
             />
           </Charts>
@@ -545,111 +538,102 @@ const cycling = React.createClass({
       </ChartContainer>
     );
   },
-
   renderMode() {
     const linkStyle = {
       fontWeight: 600,
-      color: 'grey',
-      cursor: 'default',
+      color: "grey",
+      cursor: "default"
     };
 
     const linkStyleActive = {
-      color: 'steelblue',
-      cursor: 'pointer',
+      color: "steelblue",
+      cursor: "pointer"
     };
 
     return (
-      <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
+      <div className="col-md-6" style={{ fontSize: 14, color: "#777" }}>
         <span
-          style={this.state.mode !== 'multiaxis' ? linkStyleActive : linkStyle}
-          onClick={() => this.setState({ mode: 'multiaxis' })}
+          style={this.state.mode !== "multiaxis" ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: "multiaxis" })}
         >
-            Multi-axis
+          Multi-axis
         </span>
         <span> | </span>
         <span
-          style={this.state.mode !== 'channels' ? linkStyleActive : linkStyle}
-          onClick={() => this.setState({ mode: 'channels' })}
+          style={this.state.mode !== "channels" ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: "channels" })}
         >
-            Channels
+          Channels
         </span>
         <span> | </span>
         <span
-          style={this.state.mode !== 'rollup' ? linkStyleActive : linkStyle}
-          onClick={() => this.setState({ mode: 'rollup' })}
+          style={this.state.mode !== "rollup" ? linkStyleActive : linkStyle}
+          onClick={() => this.setState({ mode: "rollup" })}
         >
-            Rollups
+          Rollups
         </span>
         <hr />
       </div>
     );
   },
-
   renderModeOptions() {
     const linkStyle = {
       fontWeight: 600,
-      color: 'grey',
-      cursor: 'default',
+      color: "grey",
+      cursor: "default"
     };
 
     const linkStyleActive = {
-      color: 'steelblue',
-      cursor: 'pointer',
+      color: "steelblue",
+      cursor: "pointer"
     };
 
-    if (this.state.mode === 'multiaxis') {
+    if (this.state.mode === "multiaxis") {
+      return <div />;
+    } else if (this.state.mode === "channels") {
+      return <div />;
+    } else if (this.state.mode === "rollup") {
       return (
-        <div />
-      );
-    } else if (this.state.mode === 'channels') {
-      return (
-        <div />
-      );
-    } else if (this.state.mode === 'rollup') {
-      return (
-        <div className="col-md-6" style={{ fontSize: 14, color: '#777' }}>
+        <div className="col-md-6" style={{ fontSize: 14, color: "#777" }}>
           <span
-            style={this.state.rollup !== '1m' ? linkStyleActive : linkStyle}
-            onClick={() => this.setState({ rollup: '1m' })}
+            style={this.state.rollup !== "1m" ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: "1m" })}
           >
-              1m
+            1m
           </span>
           <span> | </span>
           <span
-            style={this.state.rollup !== '5m' ? linkStyleActive : linkStyle}
-            onClick={() => this.setState({ rollup: '5m' })}
+            style={this.state.rollup !== "5m" ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: "5m" })}
           >
-              5m
+            5m
           </span>
           <span> | </span>
           <span
-            style={this.state.rollup !== '15m' ? linkStyleActive : linkStyle}
-            onClick={() => this.setState({ rollup: '15m' })}
+            style={this.state.rollup !== "15m" ? linkStyleActive : linkStyle}
+            onClick={() => this.setState({ rollup: "15m" })}
           >
-              15m
+            15m
           </span>
           <hr />
         </div>
       );
     }
-    return (
-      <div />
-    );
+    return <div />;
   },
-
   render() {
     const chartStyle = {
-      borderStyle: 'solid',
+      borderStyle: "solid",
       borderWidth: 1,
-      borderColor: '#DDD',
+      borderColor: "#DDD",
       paddingTop: 10,
-      marginBottom: 10,
+      marginBottom: 10
     };
 
     const brushStyle = {
-      boxShadow: 'inset 0px 2px 5px -2px rgba(189, 189, 189, 0.75)',
-      background: '#FEFEFE',
-      paddingTop: 10,
+      boxShadow: "inset 0px 2px 5px -2px rgba(189, 189, 189, 0.75)",
+      background: "#FEFEFE",
+      paddingTop: 10
     };
 
     return (
@@ -663,12 +647,14 @@ const cycling = React.createClass({
             className="col-md-12"
             style={{
               fontSize: 12,
-              color: '#777',
-              textAlign: 'right',
-              marginRight: 50,
+              color: "#777",
+              textAlign: "right",
+              marginRight: 50
             }}
           >
-            {this.state.tracker ? `${moment.duration(+this.state.tracker).format()}` : '-:--:--'}
+            {this.state.tracker
+              ? `${moment.duration(+this.state.tracker).format()}`
+              : "-:--:--"}
             <hr />
           </div>
         </div>
@@ -689,10 +675,10 @@ const cycling = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 });
 
 // Export example
-import cycling_docs from 'raw!./cycling_docs.md';
-import cycling_thumbnail from './cycling_thumbnail.png';
+import cycling_docs from "raw!./cycling_docs.md";
+import cycling_thumbnail from "./cycling_thumbnail.png";
 export default { cycling, cycling_docs, cycling_thumbnail };

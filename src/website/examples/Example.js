@@ -15,9 +15,7 @@ import Examples from "./index.js";
 import Meta from "./examples.json";
 
 export default React.createClass({
-
     mixins: [Highlighter],
-
     render() {
         const tagStyle = {
             background: "#EEE",
@@ -44,7 +42,9 @@ export default React.createClass({
                                 </p>
                                 <div>
                                     {ExampleMetaData.tags.map(tag => (
-                                        <span style={tagStyle} key={tag}>{tag}</span>
+                                        <span style={tagStyle} key={tag}>
+                                            {tag}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
@@ -52,9 +52,9 @@ export default React.createClass({
                         <hr />
                         <Component />
                         <hr />
-                         <div className="row">
+                        <div className="row">
                             <div className="col-md-12">
-                                <Markdown source={docs}/>
+                                <Markdown source={docs} />
                             </div>
                         </div>
                     </div>

@@ -47,27 +47,23 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
 });
 
 const upDownStyle = styler([
-    {key: "in", color: "#C8D5B8"},
-    {key: "out", color: "#9BB8D7"}
+    { key: "in", color: "#C8D5B8" },
+    { key: "out", color: "#9BB8D7" }
 ]);
 
 const traffic = React.createClass({
-
     getInitialState() {
         return {
             tracker: null,
             timerange: trafficSeries.range()
         };
     },
-
     handleTrackerChanged(t) {
-        this.setState({tracker: t});
+        this.setState({ tracker: t });
     },
-
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        this.setState({ timerange });
     },
-
     render() {
         const dateStyle = {
             fontSize: 12,
@@ -91,14 +87,11 @@ const traffic = React.createClass({
                         <Legend
                             type="swatch"
                             style={upDownStyle}
-                            highlight={this.state.highlight}
-                            onHighlightChange={highlight => this.setState({highlight})}
-                            selection={this.state.selection}
-                            onSelectionChange={selection => this.setState({selection})}
                             categories={[
-                                {key: "in", label: "Into Site"},
-                                {key: "out", label: "Out of site"}
-                            ]} />
+                                { key: "in", label: "Into Site" },
+                                { key: "out", label: "Out of site" }
+                            ]}
+                        />
                     </div>
                     <div className="col-md-8">
                         <span style={dateStyle}>{tracker}</span>
@@ -119,21 +112,32 @@ const traffic = React.createClass({
                                 maxTime={trafficSeries.range().end()}
                                 minTime={trafficSeries.range().begin()}
                                 minDuration={1000 * 60 * 60}
-                                onBackgroundClick={() => this.setState({selection: null})}
-                                onTimeRangeChanged={this.handleTimeRangeChange} >
-                                <ChartRow height="150" debug={false}>
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                                onTimeRangeChanged={this.handleTimeRangeChange}
+                            >
+                                <ChartRow height="250" debug={false}>
                                     <Charts>
                                         <AreaChart
                                             axis="traffic"
                                             series={trafficSeries}
-                                            columns={{up: ["in"], down: ["out"]}}
+                                            columns={{
+                                                up: ["in"],
+                                                down: ["out"]
+                                            }}
                                             style={upDownStyle}
-                                            highlight={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
-                                            selection={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                        />
                                     </Charts>
-                                    <YAxis id="traffic" label="Traffic (bps)" labelOffset={0} min={-max} max={max} absolute={true} width="60" type={axistype}/>
+                                    <YAxis
+                                        id="traffic"
+                                        label="Traffic (bps)"
+                                        labelOffset={0}
+                                        min={-max}
+                                        max={max}
+                                        absolute={true}
+                                        width="60"
+                                        type={axistype}
+                                    />
                                 </ChartRow>
                             </ChartContainer>
 
@@ -148,4 +152,4 @@ const traffic = React.createClass({
 // Export example
 import traffic_docs from "raw!./traffic_docs.md";
 import traffic_thumbnail from "./traffic_thumbnail.png";
-export default {traffic, traffic_docs, traffic_thumbnail};
+export default { traffic, traffic_docs, traffic_thumbnail };

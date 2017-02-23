@@ -66,7 +66,11 @@ max /= 100;
 //
 
 const netTrafficPoints = [];
-const interfaceKeys = [ "lbl-mr2::xe-8_3_0.911::standard", "pnwg-cr5::111-10_1_4-814::sap", "denv-cr5::to_denv-frgp(as14041)::standard" ];
+const interfaceKeys = [
+    "lbl-mr2::xe-8_3_0.911::standard",
+    "pnwg-cr5::111-10_1_4-814::sap",
+    "denv-cr5::to_denv-frgp(as14041)::standard"
+];
 const octoberDays = interfacesJSON[interfaceKeys[0]].days;
 
 let maxTotalTraffic = 0;
@@ -76,7 +80,7 @@ _.each(octoberDays, (ignoreValue, day) => {
     const netTrafficForDay = [`2014-10-${dayOfMonth}`];
     let maxDay = 0;
     let minDay = 0;
-    _.each(interfaceKeys, (interfaceKey) => {
+    _.each(interfaceKeys, interfaceKey => {
         let value = interfacesJSON[interfaceKey].days[dayOfMonth];
         let netTraffic = value.out - value.in;
         netTrafficForDay.push(netTraffic);
@@ -92,7 +96,7 @@ _.each(octoberDays, (ignoreValue, day) => {
 });
 
 const netTrafficColumnNames = ["index"];
-_.each(interfaceKeys, (interfaceKey) => {
+_.each(interfaceKeys, interfaceKey => {
     netTrafficColumnNames.push(interfaceKey.split(":")[0]);
 });
 
@@ -112,7 +116,7 @@ minTotalTraffic /= 10;
 //
 
 const routerData = {};
-_.each(monthlyJSON, (router) => {
+_.each(monthlyJSON, router => {
     const routerName = router["Router"];
     if (routerName) {
         routerData[routerName] = {
@@ -134,20 +138,16 @@ _.each(monthlyJSON, (router) => {
 });
 
 const volume = React.createClass({
-
     displayName: "VolumeExample",
-
     getInitialState() {
         return {
             timerange: octoberTrafficSeries.range(),
             selection: null
         };
     },
-
     handleTimeRangeChange(timerange) {
-        this.setState({timerange});
+        this.setState({ timerange });
     },
-
     render() {
         /*
         
@@ -188,27 +188,48 @@ const volume = React.createClass({
         */
 
         const style = styler([
-            {key: "in", color: "#A5C8E1", selected: "#2CB1CF"},
-            {key: "out", color: "#FFCC9E", selected: "#2CB1CF"},
-            {key: netTrafficColumnNames[1], color: "#A5C8E1", selected: "#2CB1CF"},
-            {key: netTrafficColumnNames[2], color: "#FFCC9E", selected: "#2CB1CF"},
-            {key: netTrafficColumnNames[3], color: "#DEB887", selected: "#2CB1CF"}
+            { key: "in", color: "#A5C8E1", selected: "#2CB1CF" },
+            { key: "out", color: "#FFCC9E", selected: "#2CB1CF" },
+            {
+                key: netTrafficColumnNames[1],
+                color: "#A5C8E1",
+                selected: "#2CB1CF"
+            },
+            {
+                key: netTrafficColumnNames[2],
+                color: "#FFCC9E",
+                selected: "#2CB1CF"
+            },
+            {
+                key: netTrafficColumnNames[3],
+                color: "#DEB887",
+                selected: "#2CB1CF"
+            }
         ]);
 
         const formatter = format(".2s");
-        const selectedDate = this.state.selection ?
-            this.state.selection.event.index().toNiceString() : "--";
-        const selectedValue = this.state.selection ?
-            `${formatter(+this.state.selection.event.value(this.state.selection.column))}b` : "--";
-
+        const selectedDate = this.state.selection
+            ? this.state.selection.event.index().toNiceString()
+            : "--";
+        const selectedValue = this.state.selection
+            ? `${formatter(
+                    +this.state.selection.event.value(
+                        this.state.selection.column
+                    )
+                )}b`
+            : "--";
 
         const highlight = this.state.highlight;
         let infoValues = [];
         let infoNetValues = [];
         if (highlight) {
-            const trafficText = `${formatter(highlight.event.get(highlight.column))}`;
-            infoValues = [{label: "Traffic", value: trafficText}];
-            infoNetValues = [{label: "Traffic " + highlight.column, value: trafficText}];
+            const trafficText = `${formatter(
+                highlight.event.get(highlight.column)
+            )}`;
+            infoValues = [{ label: "Traffic", value: trafficText }];
+            infoNetValues = [
+                { label: "Traffic " + highlight.column, value: trafficText }
+            ];
         }
 
         return (
@@ -217,7 +238,7 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <b>October 2014 Total Traffic</b>
-                        <p style={{color: "#808080"}}>
+                        <p style={{ color: "#808080" }}>
                             Selected: {selectedDate} - {selectedValue}
                         </p>
                     </div>
@@ -234,16 +255,20 @@ const volume = React.createClass({
                                 format="day"
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
-                                onBackgroundClick={() => this.setState({selection: null})}
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
                                 maxTime={new Date(1414827330868)}
                                 minTime={new Date(1412143472795)}
-                                minDuration={1000 * 60 * 60 * 24 * 5} >
+                                minDuration={1000 * 60 * 60 * 24 * 5}
+                            >
                                 <ChartRow height="150">
                                     <YAxis
                                         id="traffic"
                                         label="Traffic In (B)"
-                                        min={0} max={max}
-                                        width="70" />
+                                        min={0}
+                                        max={max}
+                                        width="70"
+                                    />
                                     <Charts>
                                         <BarChart
                                             axis="traffic"
@@ -251,17 +276,25 @@ const volume = React.createClass({
                                             columns={["in"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
-                                            infoTimeFormat={index => moment(index.begin()).format("Do MMM 'YY")}
+                                            infoTimeFormat={index =>
+                                                moment(index.begin()).format(
+                                                    "Do MMM 'YY"
+                                                )}
                                             highlighted={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                     </Charts>
                                     <YAxis
                                         id="traffic-rate"
                                         label="Avg Traffic Rate In (bps)"
-                                        min={0} max={max / (24 * 60 * 60) * 8}
-                                        width="70" />
+                                        min={0}
+                                        max={max / (24 * 60 * 60) * 8}
+                                        width="70"
+                                    />
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
@@ -271,6 +304,7 @@ const volume = React.createClass({
                     <div className="col-md-12">
                         <hr />
                         Alternatively we can display bars side by side using the 'spacing' and 'offset' props:
+
                         <hr />
                     </div>
                 </div>
@@ -281,10 +315,19 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() => this.setState({selection: null})}>
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                            >
                                 <ChartRow height="150">
-                                    <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
-                                           min={0} max={max} width="70" type="linear"/>
+                                    <YAxis
+                                        id="traffic-volume"
+                                        label="Traffic (B)"
+                                        classed="traffic-in"
+                                        min={0}
+                                        max={max}
+                                        width="70"
+                                        type="linear"
+                                    />
                                     <Charts>
                                         <BarChart
                                             axis="traffic-volume"
@@ -296,9 +339,12 @@ const volume = React.createClass({
                                             highlighted={this.state.highlight}
                                             info={infoValues}
                                             infoTimeFormat="%m/%d/%y"
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                         <BarChart
                                             axis="traffic-volume"
                                             style={style}
@@ -308,9 +354,12 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             info={infoValues}
                                             highlighted={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
 
                                     </Charts>
                                 </ChartRow>
@@ -333,10 +382,19 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() => this.setState({selection: null})}>
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                            >
                                 <ChartRow height="150">
-                                    <YAxis id="traffic-volume" label="Traffic (B)" classed="traffic-in"
-                                           min={0} max={max} width="70" type="linear"/>
+                                    <YAxis
+                                        id="traffic-volume"
+                                        label="Traffic (B)"
+                                        classed="traffic-in"
+                                        min={0}
+                                        max={max}
+                                        width="70"
+                                        type="linear"
+                                    />
                                     <Charts>
                                         <BarChart
                                             axis="traffic-volume"
@@ -346,11 +404,14 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             info={infoValues}
                                             highlighted={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                     </Charts>
-                                 </ChartRow>
+                                </ChartRow>
                             </ChartContainer>
                         </Resizable>
                     </div>
@@ -360,8 +421,11 @@ const volume = React.createClass({
                     <div className="col-md-12">
                         <hr />
                         BarChart can display negative values as well, as shown below for a stacked format.
+
                         Note that all bars representing positive values are stacked together above the
+
                         x-axis and the bars for negative values are stacked below the x-axis.
+
                         <hr />
                     </div>
                 </div>
@@ -372,25 +436,40 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberNetTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() => this.setState({selection: null})}>
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                            >
                                 <ChartRow height="150">
-                                    <YAxis id="net-traffic-volume" label="Net Traffic (B)" classed="traffic-in"
-                                           min={minTotalTraffic} max={maxTotalTraffic} width="70" type="linear"/>
+                                    <YAxis
+                                        id="net-traffic-volume"
+                                        label="Net Traffic (B)"
+                                        classed="traffic-in"
+                                        min={minTotalTraffic}
+                                        max={maxTotalTraffic}
+                                        width="70"
+                                        type="linear"
+                                    />
                                     <Charts>
                                         <BarChart
                                             axis="net-traffic-volume"
                                             style={style}
                                             spacing={3}
-                                            columns={netTrafficColumnNames.slice(1, netTrafficColumnNames.length)}
+                                            columns={netTrafficColumnNames.slice(
+                                                1,
+                                                netTrafficColumnNames.length
+                                            )}
                                             series={octoberNetTrafficSeries}
                                             info={infoNetValues}
                                             infoWidth={140}
                                             highlighted={this.state.highlight}
-                                            onHighlightChange={highlight => this.setState({highlight})}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection => this.setState({selection})} />
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
                                     </Charts>
-                                 </ChartRow>
+                                </ChartRow>
                             </ChartContainer>
                         </Resizable>
                     </div>
@@ -403,4 +482,4 @@ const volume = React.createClass({
 // Export example
 import volume_docs from "raw!./volume_docs.md";
 import volume_thumbnail from "./volume_thumbnail.png";
-export default {volume, volume_docs, volume_thumbnail};
+export default { volume, volume_docs, volume_thumbnail };

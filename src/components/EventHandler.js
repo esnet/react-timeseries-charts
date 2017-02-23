@@ -8,11 +8,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom'; // eslint-disable-line
-import { TimeRange } from 'pondjs';
+import React from "react";
+import ReactDOM from "react-dom"; // eslint-disable-line
+import { TimeRange } from "pondjs";
 
-import { getElementOffset } from '../js/util';
+import { getElementOffset } from "../js/util";
 
 /**
  * Internal component which provides the top level event catcher for the charts.
@@ -23,7 +23,6 @@ import { getElementOffset } from '../js/util';
  * and hover actions.
  */
 export default class EventHandler extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -31,7 +30,7 @@ export default class EventHandler extends React.Component {
       isPanning: false,
       initialPanBegin: null,
       initialPanEnd: null,
-      initialPanPosition: null,
+      initialPanPosition: null
     };
 
     this.handleScrollWheel = this.handleScrollWheel.bind(this);
@@ -54,6 +53,10 @@ export default class EventHandler extends React.Component {
   //
 
   handleScrollWheel(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.preventDefault();
 
     const SCALE_FACTOR = 0.001;
@@ -80,16 +83,14 @@ export default class EventHandler extends React.Component {
     if (this.props.minDuration) {
       const minDuration = parseInt(this.props.minDuration, 10);
       if (duration < this.props.minDuration) {
-        beginScaled = center - (center - begin) /
-          (end - begin) * minDuration;
-        endScaled = center + (end - center) /
-          (end - begin) * minDuration;
+        beginScaled = center - (center - begin) / (end - begin) * minDuration;
+        endScaled = center + (end - center) / (end - begin) * minDuration;
       }
     }
 
     if (this.props.minTime && this.props.maxTime) {
       const maxDuration = this.props.maxTime.getTime() -
-                this.props.minTime.getTime();
+        this.props.minTime.getTime();
       if (duration > maxDuration) {
         duration = maxDuration;
       }
@@ -117,6 +118,10 @@ export default class EventHandler extends React.Component {
   }
 
   handleMouseDown(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.preventDefault();
 
     const x = e.pageX;
@@ -126,29 +131,35 @@ export default class EventHandler extends React.Component {
     const begin = this.props.scale.domain()[0].getTime();
     const end = this.props.scale.domain()[1].getTime();
 
-    document.addEventListener('mouseover', this.handleMouseMove);
-    document.addEventListener('mouseup', this.handleMouseUp);
+    document.addEventListener("mouseover", this.handleMouseMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
 
     this.setState({
       isPanning: true,
       initialPanBegin: begin,
       initialPanEnd: end,
-      initialPanPosition: xy0,
+      initialPanPosition: xy0
     });
 
     return false;
   }
 
   handleMouseUp(e) {
+    if (!this.props.enablePanZoom) {
+      return;
+    }
+
     e.stopPropagation();
 
-    document.removeEventListener('mouseover', this.handleMouseMove);
-    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener("mouseover", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
 
     const x = e.pageX;
-    if (this.props.onMouseClick &&
-      this.state.initialPanPosition &&
-      Math.abs(x - this.state.initialPanPosition[0]) < 2) {
+    if (
+      this.props.onMouseClick &&
+        this.state.initialPanPosition &&
+        Math.abs(x - this.state.initialPanPosition[0]) < 2
+    ) {
       this.props.onMouseClick();
     }
 
@@ -156,7 +167,7 @@ export default class EventHandler extends React.Component {
       isPanning: false,
       initialPanBegin: null,
       initialPanEnd: null,
-      initialPanPosition: null,
+      initialPanPosition: null
     });
   }
 
@@ -178,11 +189,12 @@ export default class EventHandler extends React.Component {
       const timeOffset = this.props.scale.invert(xy[0]).getTime() -
         this.props.scale.invert(xy0[0]).getTime();
 
-      let newBegin = parseInt(this.state.initialPanBegin -
-        timeOffset, 10);
+      let newBegin = parseInt(this.state.initialPanBegin - timeOffset, 10);
       let newEnd = parseInt(this.state.initialPanEnd - timeOffset, 10);
-      const duration = parseInt(this.state.initialPanEnd -
-        this.state.initialPanBegin, 10);
+      const duration = parseInt(
+        this.state.initialPanEnd - this.state.initialPanBegin,
+        10
+      );
 
       if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
         newBegin = this.props.minTime.getTime();
@@ -212,21 +224,24 @@ export default class EventHandler extends React.Component {
   //
 
   render() {
-    const cursor = this.state.isPanning ? '-webkit-grabbing' : 'default';
+    const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
     const handlers = {
       onWheel: this.handleScrollWheel,
       onMouseDown: this.handleMouseDown,
       onMouseMove: this.handleMouseMove,
       onMouseOut: this.handleMouseOut,
-      onMouseUp: this.handleMouseUp,
+      onMouseUp: this.handleMouseUp
     };
     return (
-      <g pointerEvents="all" {...handlers} >
+      <g pointerEvents="all" {...handlers}>
         <rect
           key="handler-hit-rect"
-          ref={(c) => { this.eventRect = c; }}
+          ref={c => {
+            this.eventRect = c;
+          }}
           style={{ opacity: 0.0, cursor }}
-          x={0} y={0}
+          x={0}
+          y={0}
           width={this.props.width}
           height={this.props.height}
         />
@@ -239,8 +254,9 @@ export default class EventHandler extends React.Component {
 EventHandler.propTypes = {
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+    React.PropTypes.node
   ]),
+  enablePanZoom: React.PropTypes.bool,
   scale: React.PropTypes.func.isRequired,
   width: React.PropTypes.number.isRequired,
   height: React.PropTypes.number.isRequired,
@@ -250,5 +266,9 @@ EventHandler.propTypes = {
   onZoom: React.PropTypes.func,
   onMouseMove: React.PropTypes.func,
   onMouseOut: React.PropTypes.func,
-  onMouseClick: React.PropTypes.func,
+  onMouseClick: React.PropTypes.func
+};
+
+EventHandler.defaultProps = {
+  enablePanZoom: false
 };

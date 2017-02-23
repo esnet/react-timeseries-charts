@@ -8,8 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'underscore';
-import colorbrewer from 'colorbrewer';
+import _ from "underscore";
+import colorbrewer from "colorbrewer";
 
 /**
  * For our Style we want to represent two things:
@@ -38,7 +38,6 @@ import colorbrewer from 'colorbrewer';
  *
  */
 export class Styler {
-
   /**
    * The columns define the style associated with a particular
    * quantity, such as "inTraffic" or "temperature". The columns
@@ -57,10 +56,10 @@ export class Styler {
    * will come from the scheme.
    *
    */
-  constructor(columns, scheme = 'Paired') {
+  constructor(columns, scheme = "Paired") {
     this.columnStyles = {};
     if (_.isArray(columns)) {
-      columns.forEach((column) => {
+      columns.forEach(column => {
         if (_.isString(column)) {
           this.columnStyles[column] = { key: column };
         } else if (_.isObject(column)) {
@@ -69,13 +68,15 @@ export class Styler {
         }
       });
     }
-    this.columnNames = _.map(columns, (c) => {
+    this.columnNames = _.map(columns, c => {
       const cc = _.isString(c) ? c : c.key;
       return cc;
     });
 
     if (scheme && !_.has(colorbrewer, scheme)) {
-      throw new Error(`Unknown scheme '${scheme}' supplied to Style constructor`);
+      throw new Error(
+        `Unknown scheme '${scheme}' supplied to Style constructor`
+      );
     }
     this.colorScheme = scheme;
   }
@@ -93,8 +94,12 @@ export class Styler {
    */
   colorLookup(columnCount) {
     const maxSchemeSize = _.max(_.keys(colorbrewer[this.colorScheme]));
-    const colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
-    return this.colorScheme ? colorbrewer[this.colorScheme][colorLookupSize] : [];
+    const colorLookupSize = columnCount > maxSchemeSize
+      ? maxSchemeSize
+      : columnCount;
+    return this.colorScheme
+      ? colorbrewer[this.colorScheme][colorLookupSize]
+      : [];
   }
 
   /**
@@ -108,55 +113,55 @@ export class Styler {
     const c = color || colorLookup[i % colorLookup.length];
 
     let styleSymbol = {};
-    if (type === 'swatch' || type === 'dot') {
+    if (type === "swatch" || type === "dot") {
       styleSymbol = {
         fill: c,
         opacity: 0.9,
         stroke: c,
-        cursor: 'pointer',
+        cursor: "pointer"
       };
-    } else if (type === 'line') {
+    } else if (type === "line") {
       styleSymbol = {
         opacity: 0.9,
         stroke: c,
         strokeWidth: width,
-        cursor: 'pointer',
+        cursor: "pointer"
       };
       if (dashed) {
-        styleSymbol.strokeDasharray = '4,2';
+        styleSymbol.strokeDasharray = "4,2";
       }
     }
 
     const labelStyle = {
-      fontSize: 'normal',
-      color: '#333',
+      fontSize: "normal",
+      color: "#333",
       paddingRight: 10,
-      cursor: 'pointer',
+      cursor: "pointer"
     };
     const valueStyle = {
-      fontSize: 'smaller',
-      color: '#999',
-      cursor: 'pointer',
+      fontSize: "smaller",
+      color: "#999",
+      cursor: "pointer"
     };
     const legendStyle = {
       symbol: {
         normal: { ...styleSymbol, opacity: 0.7 },
         highlighted: { ...styleSymbol, opacity: 0.8 },
         selected: { ...styleSymbol, opacity: 0.8 },
-        muted: { ...styleSymbol, opacity: 0.2 },
+        muted: { ...styleSymbol, opacity: 0.2 }
       },
       label: {
         normal: { ...labelStyle, opacity: 0.7 },
         highlighted: { ...labelStyle, opacity: 0.8 },
         selected: { ...labelStyle, opacity: 0.8 },
-        muted: { ...labelStyle, opacity: 0.5 },
+        muted: { ...labelStyle, opacity: 0.5 }
       },
       value: {
         normal: { ...valueStyle, opacity: 0.7 },
         highlighted: { ...valueStyle, opacity: 0.8 },
         selected: { ...valueStyle, opacity: 0.8 },
-        muted: { ...valueStyle, opacity: 0.5 },
-      },
+        muted: { ...valueStyle, opacity: 0.5 }
+      }
     };
     return legendStyle;
   }
@@ -168,46 +173,48 @@ export class Styler {
     const colorLookup = this.colorLookup(numColumns);
 
     let i = 0;
-    _.forEach(this.columnStyles,
-      ({ color, selected, width = 1, dashed = false }, column) => {
-        const c = color || colorLookup[i % colorLookup.length];
-        const styleLine = {
-          stroke: c,
-          fill: 'none',
-          strokeWidth: width,
-        };
-        const styleSelectedLine = {
-          stroke: selected || color,
-          fill: 'none',
-          strokeWidth: width,
-        };
-        if (dashed) {
-          styleLine.strokeDasharray = '4,2';
+    _.forEach(this.columnStyles, (
+      { color, selected, width = 1, dashed = false },
+      column
+    ) => {
+      const c = color || colorLookup[i % colorLookup.length];
+      const styleLine = {
+        stroke: c,
+        fill: "none",
+        strokeWidth: width
+      };
+      const styleSelectedLine = {
+        stroke: selected || color,
+        fill: "none",
+        strokeWidth: width
+      };
+      if (dashed) {
+        styleLine.strokeDasharray = "4,2";
+      }
+      const styleArea = {
+        fill: c,
+        stroke: "none"
+      };
+      const styleSelectedArea = {
+        fill: selected || color,
+        stroke: "none"
+      };
+      style[column] = {
+        line: {
+          normal: { ...styleLine, opacity: 0.9 },
+          highlighted: { ...styleLine, opacity: 1.0 },
+          selected: { ...styleSelectedLine, opacity: 1.0 },
+          muted: { ...styleLine, opacity: 0.4 }
+        },
+        area: {
+          normal: { ...styleArea, opacity: 0.7 },
+          highlighted: { ...styleArea, opacity: 0.8 },
+          selected: { ...styleSelectedArea, opacity: 0.8 },
+          muted: { ...styleArea, opacity: 0.2 }
         }
-        const styleArea = {
-          fill: c,
-          stroke: 'none',
-        };
-        const styleSelectedArea = {
-          fill: selected || color,
-          stroke: 'none',
-        };
-        style[column] = {
-          line: {
-            normal: { ...styleLine, opacity: 0.9 },
-            highlighted: { ...styleLine, opacity: 1.0 },
-            selected: { ...styleSelectedLine, opacity: 1.0 },
-            muted: { ...styleLine, opacity: 0.4 },
-          },
-          area: {
-            normal: { ...styleArea, opacity: 0.7 },
-            highlighted: { ...styleArea, opacity: 0.8 },
-            selected: { ...styleSelectedArea, opacity: 0.8 },
-            muted: { ...styleArea, opacity: 0.2 },
-          },
-        };
-        i += 1;
-      });
+      };
+      i += 1;
+    });
     return style;
   }
 
@@ -215,29 +222,31 @@ export class Styler {
     const numColumns = this.numColumns();
     const colorLookup = this.colorLookup(numColumns);
     const style = {};
-    _.forEach(this.columnStyles,
-    ({ color, selected, width = 1, dashed = false }, column) => {
+    _.forEach(this.columnStyles, (
+      { color, selected, width = 1, dashed = false },
+      column
+    ) => {
       const i = _.indexOf(this.columnNames, column);
       const c = color || colorLookup[i % colorLookup.length];
       const styleLine = {
         stroke: c,
         strokeWidth: width,
-        fill: 'none',
+        fill: "none"
       };
       const styleSelectedLine = {
         stroke: selected || c,
         strokeWidth: width,
-        fill: 'none',
+        fill: "none"
       };
 
       if (dashed) {
-        styleLine.strokeDasharray = '4,2';
+        styleLine.strokeDasharray = "4,2";
       }
       style[column] = {
         normal: { ...styleLine, opacity: 0.8, strokeWidth: width },
         highlighted: { ...styleLine, opacity: 1.0, strokeWidth: width },
         selected: { ...styleSelectedLine, opacity: 1.0, strokeWidth: width },
-        muted: { ...styleLine, opacity: 0.2, strokeWidth: width },
+        muted: { ...styleLine, opacity: 0.2, strokeWidth: width }
       };
     });
     return style;
@@ -251,16 +260,16 @@ export class Styler {
       const i = _.indexOf(this.columnNames, column);
       const c = color || colorLookup[i % colorLookup.length];
       const fillStyle = {
-        fill: c,
+        fill: c
       };
       const selectedStyle = {
-        fill: selected || c,
+        fill: selected || c
       };
       style[column] = {
         normal: { ...fillStyle, opacity: 0.8 },
         highlighted: { ...fillStyle, opacity: 1.0 },
         selected: { ...selectedStyle, opacity: 1.0 },
-        muted: { ...fillStyle, opacity: 0.2 },
+        muted: { ...fillStyle, opacity: 0.2 }
       };
     });
     return style;
@@ -274,16 +283,16 @@ export class Styler {
       const i = _.indexOf(this.columnNames, column);
       const c = color || colorLookup[i % colorLookup.length];
       const fillStyle = {
-        fill: c,
+        fill: c
       };
       const selectedStyle = {
-        fill: selected || c,
+        fill: selected || c
       };
       style[column] = {
         normal: { ...fillStyle, opacity: 0.8 },
         highlighted: { ...fillStyle, opacity: 1.0 },
         selected: { ...selectedStyle, opacity: 1.0 },
-        muted: { ...fillStyle, opacity: 0.2 },
+        muted: { ...fillStyle, opacity: 0.2 }
       };
     });
     return style;
@@ -297,7 +306,7 @@ export class Styler {
     const { color } = this.columnStyles[columnName];
     const c = color || colorLookup[i % colorLookup.length];
     return {
-      labelColor: c,
+      labelColor: c
     };
   }
 
@@ -308,39 +317,38 @@ export class Styler {
     const colorLookup = this.colorLookup(numColumns);
 
     let i = 0;
-    _.forEach(this.columnStyles,
-      ({ color, selected }, column) => {
-        const c = color || colorLookup[i % colorLookup.length];
-        const styleArea = {
-          fill: c,
-          stroke: 'none',
-        };
-        const styleSelectedArea = {
-          fill: selected || color,
-          stroke: 'none',
-        };
-        style[column] = [
-          {
-            normal: { ...styleArea, opacity: 0.2 },
-            highlighted: { ...styleArea, opacity: 0.3 },
-            selected: { ...styleSelectedArea, opacity: 0.3 },
-            muted: { ...styleArea, opacity: 0.1 },
-          },
-          {
-            normal: { ...styleArea, opacity: 0.5 },
-            highlighted: { ...styleArea, opacity: 0.6 },
-            selected: { ...styleSelectedArea, opacity: 0.6 },
-            muted: { ...styleArea, opacity: 0.2 },
-          },
-          {
-            normal: { ...styleArea, opacity: 0.9 },
-            highlighted: { ...styleArea, opacity: 1.0 },
-            selected: { ...styleSelectedArea, opacity: 1.0 },
-            muted: { ...styleArea, opacity: 0.2 },
-          },
-        ];
-        i += 1;
-      });
+    _.forEach(this.columnStyles, ({ color, selected }, column) => {
+      const c = color || colorLookup[i % colorLookup.length];
+      const styleArea = {
+        fill: c,
+        stroke: "none"
+      };
+      const styleSelectedArea = {
+        fill: selected || color,
+        stroke: "none"
+      };
+      style[column] = [
+        {
+          normal: { ...styleArea, opacity: 0.2 },
+          highlighted: { ...styleArea, opacity: 0.3 },
+          selected: { ...styleSelectedArea, opacity: 0.3 },
+          muted: { ...styleArea, opacity: 0.1 }
+        },
+        {
+          normal: { ...styleArea, opacity: 0.5 },
+          highlighted: { ...styleArea, opacity: 0.6 },
+          selected: { ...styleSelectedArea, opacity: 0.6 },
+          muted: { ...styleArea, opacity: 0.2 }
+        },
+        {
+          normal: { ...styleArea, opacity: 0.9 },
+          highlighted: { ...styleArea, opacity: 1.0 },
+          selected: { ...styleSelectedArea, opacity: 1.0 },
+          muted: { ...styleArea, opacity: 0.2 }
+        }
+      ];
+      i += 1;
+    });
     return style;
   }
 }

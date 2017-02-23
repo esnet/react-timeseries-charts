@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
@@ -16,35 +16,40 @@ import React from 'react';
  * a chart or other svg diagram and have this drive the chart width.
  */
 export default class Resizable extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = { width: 0 };
   }
 
   componentDidMount() {
-    window.addEventListener('resize', () => this.handleResize());
+    window.addEventListener("resize", () => this.handleResize());
     this.handleResize();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', () => this.handleResize());
+    window.removeEventListener("resize", () => this.handleResize());
   }
 
   handleResize() {
     if (this.container) {
       this.setState({
-        width: this.container.offsetWidth,
+        width: this.container.offsetWidth
       });
     }
   }
 
   render() {
     const child = React.Children.only(this.props.children);
-    const childElement = this.state.width ?
-      React.cloneElement(child, { width: this.state.width }) : null;
+    const childElement = this.state.width
+      ? React.cloneElement(child, { width: this.state.width })
+      : null;
     return (
-      <div ref={(c) => { this.container = c; }} {...this.props}>
+      <div
+        ref={c => {
+          this.container = c;
+        }}
+        {...this.props}
+      >
         {childElement}
       </div>
     );
@@ -52,5 +57,5 @@ export default class Resizable extends React.Component {
 }
 
 Resizable.propTypes = {
-  children: React.PropTypes.node,
+  children: React.PropTypes.node
 };

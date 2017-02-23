@@ -45,9 +45,13 @@ _.each(weatherJSON, readings => {
     const time = new Moment(readings.Time).toDate().getTime();
     const tempReading = readings.TemperatureF;
     const pressureReading = readings["PressureIn"];
-    const windReading = readings["WindSpeedMPH"] === "Calm" ? 0 : readings["WindSpeedMPH"];
+    const windReading = readings["WindSpeedMPH"] === "Calm"
+        ? 0
+        : readings["WindSpeedMPH"];
     const gustReading = readings["WindSpeedGustMPH"];
-    const rainReading = readings["HourlyPrecipIn"] === "N/A" ? 0 : readings["HourlyPrecipIn"];
+    const rainReading = readings["HourlyPrecipIn"] === "N/A"
+        ? 0
+        : readings["HourlyPrecipIn"];
     const rainAccumReading = readings["dailyrainin"];
 
     temperaturePoints.push([time, tempReading]);
@@ -56,7 +60,11 @@ _.each(weatherJSON, readings => {
     // Somewhat fake the wind speed...
     windPoints.push([time, windReading * 5]);
     if (gustReading !== "-" && gustReading !== 0) {
-        gustPoints.push([time, gustReading * 5 + Math.random() * 2.5 - 2.5, gustReading / 3]);
+        gustPoints.push([
+            time,
+            gustReading * 5 + Math.random() * 2.5 - 2.5,
+            gustReading / 3
+        ]);
     }
     rainPoints.push([time, rainReading]);
     rainAccumPoints.push([time, rainAccumReading]);
@@ -69,12 +77,33 @@ _.each(weatherJSON, readings => {
 const tempSeries = new TimeSeries({
     name: "Temperature",
     columns: ["time", "temp"],
-    points: temperaturePoints});
-const pressureSeries = new TimeSeries({name: "Pressure", columns: ["time", "pressure"], points: pressurePoints});
-const windSeries = new TimeSeries({name: "Wind", columns: ["time", "wind"], points: windPoints});
-const gustSeries = new TimeSeries({name: "Gust", columns: ["time", "gust", "radius"], points: gustPoints});
-const rainSeries = new TimeSeries({name: "Rain", columns: ["time", "rain"], points: rainPoints});
-const rainAccumSeries = new TimeSeries({name: "Rain Accum", columns: ["time", "rainAccum"], points: rainAccumPoints});
+    points: temperaturePoints
+});
+const pressureSeries = new TimeSeries({
+    name: "Pressure",
+    columns: ["time", "pressure"],
+    points: pressurePoints
+});
+const windSeries = new TimeSeries({
+    name: "Wind",
+    columns: ["time", "wind"],
+    points: windPoints
+});
+const gustSeries = new TimeSeries({
+    name: "Gust",
+    columns: ["time", "gust", "radius"],
+    points: gustPoints
+});
+const rainSeries = new TimeSeries({
+    name: "Rain",
+    columns: ["time", "rain"],
+    points: rainPoints
+});
+const rainAccumSeries = new TimeSeries({
+    name: "Rain Accum",
+    columns: ["time", "rainAccum"],
+    points: rainAccumPoints
+});
 
 //
 // Color scheme
@@ -90,12 +119,12 @@ const scheme = {
 };
 
 const style = styler([
-    {key: "temp", color: "#CA4040"},
-    {key: "pressure", color: "#9467bd"},
-    {key: "wind", color: "#987951"},
-    {key: "gust", color: "#CC862A"},
-    {key: "rain", color: "#C3CBD4"},
-    {key: "rainAccum", color: "#333"}
+    { key: "temp", color: "#CA4040" },
+    { key: "pressure", color: "#9467bd" },
+    { key: "wind", color: "#987951" },
+    { key: "gust", color: "#CC862A" },
+    { key: "rain", color: "#C3CBD4" },
+    { key: "rainAccum", color: "#333" }
 ]);
 
 const linkStyle = {
@@ -114,29 +143,40 @@ const linkStyleActive = {
 //
 
 const weather = React.createClass({
-
     getInitialState() {
         return {
             tracker: null,
             mode: "local"
         };
     },
-
     render() {
         return (
             <div>
                 <div className="row">
-                    <div className="col-md-12" style={{fontSize: 14, color: "#777"}}>
+                    <div
+                        className="col-md-12"
+                        style={{ fontSize: 14, color: "#777" }}
+                    >
                         <span
-                            style={this.state.mode === "local" ? linkStyleActive : linkStyle}
-                            onClick={() => this.setState({mode: "utc"})}>
-                                UTC
+                            style={
+                                this.state.mode === "local"
+                                    ? linkStyleActive
+                                    : linkStyle
+                            }
+                            onClick={() => this.setState({ mode: "utc" })}
+                        >
+                            UTC
                         </span>
                         <span> | </span>
                         <span
-                            style={this.state.mode === "utc" ? linkStyleActive : linkStyle}
-                            onClick={() => this.setState({mode: "local"})}>
-                                Local
+                            style={
+                                this.state.mode === "utc"
+                                    ? linkStyleActive
+                                    : linkStyle
+                            }
+                            onClick={() => this.setState({ mode: "local" })}
+                        >
+                            Local
                         </span>
                     </div>
                 </div>
@@ -152,31 +192,62 @@ const weather = React.createClass({
                                 showGrid={true}
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
-                                onTrackerChanged={(tracker) => this.setState({tracker})} >
+                                onTrackerChanged={tracker =>
+                                    this.setState({ tracker })}
+                            >
 
-                                <ChartRow height="150" >
-                                    <YAxis id="temp" label="Temperature (°F)" labelOffset={-5} style={style.axisStyle("temp")}
-                                           min={50} max={70} width="80" type="linear" format=",.1f"/>
+                                <ChartRow height="150">
+                                    <YAxis
+                                        id="temp"
+                                        label="Temperature (°F)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("temp")}
+                                        min={50}
+                                        max={70}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
                                     <Charts>
                                         <LineChart
                                             axis="temp"
                                             series={tempSeries}
                                             columns={["temp"]}
-                                            style={style} />
+                                            style={style}
+                                        />
                                         <LineChart
                                             axis="pressure"
                                             series={pressureSeries}
                                             columns={["pressure"]}
-                                            style={style} />
+                                            style={style}
+                                        />
                                     </Charts>
-                                    <YAxis id="pressure" label="Pressure (in)" labelOffset={5} style={style.axisStyle("pressure")}
-                                           min={29.5} max={30.0} width="80" type="linear" format=",.1f"/>
+                                    <YAxis
+                                        id="pressure"
+                                        label="Pressure (in)"
+                                        labelOffset={5}
+                                        style={style.axisStyle("pressure")}
+                                        min={29.5}
+                                        max={30.0}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
 
                                 </ChartRow>
 
-                                <ChartRow height="150" >
-                                    <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5} style={style.axisStyle("gust")}
-                                           min={0} max={50} width="80" type="linear" format=",.1f"/>
+                                <ChartRow height="150">
+                                    <YAxis
+                                        id="wind-gust"
+                                        label="Wind gust (mph)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("gust")}
+                                        min={0}
+                                        max={50}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
 
                                     <Charts>
                                         <LineChart
@@ -184,37 +255,71 @@ const weather = React.createClass({
                                             series={windSeries}
                                             columns={["wind"]}
                                             interpolation="curveStepBefore"
-                                            style={style}/>
+                                            style={style}
+                                        />
                                         <ScatterChart
                                             axis="wind-gust"
                                             series={gustSeries}
                                             columns={["gust"]}
                                             style={style}
-                                            radius={event => { return event.get("radius"); }}/>
+                                            radius={event => {
+                                                return event.get("radius");
+                                            }}
+                                        />
                                     </Charts>
 
-                                    <YAxis id="wind" label="Wind (mph)" labelOffset={5} style={{labelColor: scheme.wind}}
-                                           min={0} max={50} width="80" type="linear" format=",.1f"/>
+                                    <YAxis
+                                        id="wind"
+                                        label="Wind (mph)"
+                                        labelOffset={5}
+                                        style={{ labelColor: scheme.wind }}
+                                        min={0}
+                                        max={50}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
                                 </ChartRow>
 
                                 <ChartRow height="150">
-                                    <YAxis id="total-rain" label="Total Precipitation (in)" style={style.axisStyle("rainAccum")} labelOffset={-5} min={0} max={rainAccumSeries.max("rainAccum")} width="80" type="linear" format=",.2f"/>
+                                    <YAxis
+                                        id="total-rain"
+                                        label="Total Precipitation (in)"
+                                        style={style.axisStyle("rainAccum")}
+                                        labelOffset={-5}
+                                        min={0}
+                                        max={rainAccumSeries.max("rainAccum")}
+                                        width="80"
+                                        type="linear"
+                                        format=",.2f"
+                                    />
                                     <Charts>
                                         <AreaChart
                                             axis="rain"
                                             series={rainSeries}
-                                            columns={{up: ["rain"]}}
+                                            columns={{ up: ["rain"] }}
                                             style={style}
                                             interpolation="curveBasis"
-                                            fillOpacity={0.4} />
+                                            fillOpacity={0.4}
+                                        />
                                         <LineChart
                                             axis="total-rain"
                                             series={rainAccumSeries}
                                             columns={["rainAccum"]}
-                                            style={style} />
+                                            style={style}
+                                        />
                                     </Charts>
-                                    <YAxis id="rain" label="Precipitation (in)" labelOffset={5} style={style.axisStyle("rain")}
-                                           min={0} max={rainSeries.max("rain")} width="80" type="linear" format=",.2f"/>
+                                    <YAxis
+                                        id="rain"
+                                        label="Precipitation (in)"
+                                        labelOffset={5}
+                                        style={style.axisStyle("rain")}
+                                        min={0}
+                                        max={rainSeries.max("rain")}
+                                        width="80"
+                                        type="linear"
+                                        format=",.2f"
+                                    />
                                 </ChartRow>
 
                             </ChartContainer>
@@ -229,5 +334,4 @@ const weather = React.createClass({
 // Export example
 import weather_docs from "raw!./weather_docs.md";
 import weather_thumbnail from "./weather_thumbnail.png";
-export default {weather, weather_docs, weather_thumbnail};
-
+export default { weather, weather_docs, weather_thumbnail };

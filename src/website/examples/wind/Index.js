@@ -56,13 +56,11 @@ const series = new TimeSeries({
     points
 });
 
-
 //
 // Render scatter chart
 //
 
 const wind = React.createClass({
-
     getInitialState() {
         return {
             hover: null,
@@ -71,39 +69,50 @@ const wind = React.createClass({
             timerange: series.range()
         };
     },
-
     handleSelectionChanged(point) {
         this.setState({
             selection: point
         });
     },
-
     handleMouseNear(point) {
         this.setState({
             highlight: point
         });
     },
-
     render() {
         const highlight = this.state.highlight;
         const formatter = format(".2f");
         let text = `Speed: - mph, time: -:--`;
         let infoValues = [];
         if (highlight) {
-            const speedText = `${formatter(highlight.event.get(highlight.column))} mph`;
+            const speedText = `${formatter(
+                highlight.event.get(highlight.column)
+            )} mph`;
             text = `
                 Speed: ${speedText},
-                time: ${this.state.highlight.event.timestamp().toLocaleTimeString()}
+                time: ${this.state.highlight.event
+                .timestamp()
+                .toLocaleTimeString()}
             `;
-            infoValues = [{label: "Speed", value: speedText}];
+            infoValues = [{ label: "Speed", value: speedText }];
         }
 
-        const heat = ["#a50026","#d73027","#f46d43","#fdae61",
-                      "#fee08b","#ffffbf","#d9ef8b","#a6d96a",
-                      "#66bd63","#1a9850","#006837"]
+        const heat = [
+            "#023858",
+            "#045a8d",
+            "#0570b0",
+            "#3690c0",
+            "#74a9cf",
+            "#a6bddb",
+            "#d0d1e6",
+            "#ece7f2",
+            "#fff7fb"
+        ];
 
         const perEventStyle = (column, event) => {
-            const color = heat[Math.floor((1 - event.get("station1")/40) * 11)];
+            const color = heat[
+                Math.floor((1 - event.get("station1") / 40) * 9)
+            ];
             return {
                 normal: {
                     fill: color,
@@ -125,7 +134,7 @@ const wind = React.createClass({
                     opacity: 0.4,
                     fill: color
                 }
-            }
+            };
         };
 
         return (
@@ -145,11 +154,22 @@ const wind = React.createClass({
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 enablePanZoom={true}
-                                onBackgroundClick={() => this.setState({selection: null})}
-                                onTimeRangeChanged={(timerange) => this.setState({timerange})}>
+                                onBackgroundClick={() =>
+                                    this.setState({ selection: null })}
+                                onTimeRangeChanged={timerange =>
+                                    this.setState({ timerange })}
+                            >
                                 <ChartRow height="150" debug={false}>
-                                    <YAxis id="wind-gust" label="Wind gust (mph)" labelOffset={-5}
-                                           min={0} max={series.max("station1")} width="70" type="linear" format=",.1f"/>
+                                    <YAxis
+                                        id="wind-gust"
+                                        label="Wind gust (mph)"
+                                        labelOffset={-5}
+                                        min={0}
+                                        max={series.max("station1")}
+                                        width="70"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
                                     <Charts>
                                         <ScatterChart
                                             axis="wind-gust"
@@ -157,13 +177,22 @@ const wind = React.createClass({
                                             columns={["station1", "station2"]}
                                             style={perEventStyle}
                                             info={infoValues}
-                                            infoHeight={28} infoWidth={110}
+                                            infoHeight={28}
+                                            infoWidth={110}
+                                            infoStyle={{
+                                                fill: "black",
+                                                color: "#DDD"
+                                            }}
                                             format=".1f"
                                             selection={this.state.selection}
-                                            onSelectionChange={this.handleSelectionChanged}
-                                            onMouseNear={this.handleMouseNear}
+                                            onSelectionChange={
+                                                (p) => this.handleSelectionChanged(p)
+                                            }
+                                            onMouseNear={(p) => this.handleMouseNear(p)}
                                             highlight={this.state.highlight}
-                                            radius={(event, column) => column === "station1" ? 3 : 2}/>
+                                            radius={(event, column) =>
+                                                column === "station1" ? 3 : 2}
+                                        />
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -179,4 +208,4 @@ const wind = React.createClass({
 // Export example
 import wind_docs from "raw!./wind_docs.md";
 import wind_thumbnail from "./wind_thumbnail.png";
-export default {wind, wind_docs, wind_thumbnail};
+export default { wind, wind_docs, wind_thumbnail };

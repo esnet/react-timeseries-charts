@@ -8,23 +8,23 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import merge from 'merge';
-import React from 'react';
-import _ from 'underscore';
+import merge from "merge";
+import React from "react";
+import _ from "underscore";
 
 const defaultStyle = {
   label: {
-    fill: '#8B7E7E', // Default label color
+    fill: "#8B7E7E", // Default label color
     fontWeight: 100,
     fontSize: 11,
-    pointerEvents: 'none',
+    pointerEvents: "none"
   },
   line: {
-    stroke: '#626262',
+    stroke: "#626262",
     strokeWidth: 1,
-    strokeDasharray: '5,3',
-    pointerEvents: 'none',
-  },
+    strokeDasharray: "5,3",
+    pointerEvents: "none"
+  }
 };
 
 /**
@@ -54,7 +54,6 @@ const defaultStyle = {
  * ```
  */
 export default class Baseline extends React.Component {
-
   render() {
     if (!this.props.yScale || _.isUndefined(this.props.value)) {
       return null;
@@ -68,34 +67,43 @@ export default class Baseline extends React.Component {
 
     const textPositionY = -3;
 
-    if (this.props.position === 'left') {
-      textAnchor = 'start';
+    if (this.props.position === "left") {
+      textAnchor = "start";
       textPositionX = 5;
     }
-    if (this.props.position === 'right') {
-      textAnchor = 'end';
+    if (this.props.position === "right") {
+      textAnchor = "end";
       textPositionX = this.props.width - 5;
     }
 
-    pts.push('0 0');
+    pts.push("0 0");
     pts.push(`${this.props.width} 0`);
-    const points = pts.join(' ');
+    const points = pts.join(" ");
 
     //
     // Style
     //
 
-    const labelStyle = merge(true,
-                 defaultStyle.label,
-                 this.props.style.label ? this.props.style.label : {});
-    const lineStyle = merge(true,
-                defaultStyle.line,
-                this.props.style.line ? this.props.style.line : {});
+    const labelStyle = merge(
+      true,
+      defaultStyle.label,
+      this.props.style.label ? this.props.style.label : {}
+    );
+    const lineStyle = merge(
+      true,
+      defaultStyle.line,
+      this.props.style.line ? this.props.style.line : {}
+    );
 
     return (
       <g className="baseline" transform={transform}>
         <polyline points={points} style={lineStyle} />
-        <text style={labelStyle} x={textPositionX} y={textPositionY} textAnchor={textAnchor}>
+        <text
+          style={labelStyle}
+          x={textPositionX}
+          y={textPositionY}
+          textAnchor={textAnchor}
+        >
           {this.props.label}
         </text>
       </g>
@@ -105,9 +113,9 @@ export default class Baseline extends React.Component {
 
 Baseline.defaultProps = {
   value: 0,
-  label: '',
-  position: 'left',
-  style: defaultStyle,
+  label: "",
+  position: "left",
+  style: defaultStyle
 };
 
 Baseline.propTypes = {
@@ -115,40 +123,34 @@ Baseline.propTypes = {
    * Reference to the axis which provides the vertical scale for drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired,   // eslint-disable-line
-
+  axis: React.PropTypes.string.isRequired, // eslint-disable-line
   /**
    * An object describing the style of the baseline of the form
    * { label, line }. "label" and "line" are both objects containing
    * the inline CSS for that part of the baseline.
    */
   style: React.PropTypes.shape({
-    label: React.PropTypes.object,        // eslint-disable-line
-    line: React.PropTypes.object,         // eslint-disable-line
+    label: React.PropTypes.object, // eslint-disable-line
+    line: React.PropTypes.object // eslint-disable-line
   }),
-
   /**
    * The y-value to display the line at.
    */
   value: React.PropTypes.number,
-
   /**
    * The label to display with the axis.
    */
   label: React.PropTypes.string,
-
   /**
    * Whether to display the label on the "left" or "right".
    */
-  position: React.PropTypes.oneOf(['left', 'right']),
-
+  position: React.PropTypes.oneOf(["left", "right"]),
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
   yScale: React.PropTypes.func,
-
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
+  width: React.PropTypes.number
 };

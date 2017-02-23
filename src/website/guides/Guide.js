@@ -15,9 +15,7 @@ import Index from "./index";
 import logo from "../img/charts.png";
 
 export default React.createClass({
-
     mixins: [Highlighter],
-
     render() {
         const doc = this.props.params.doc;
         const text = Index[doc];
@@ -25,10 +23,10 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-2">
-                        <img src={logo} alt="ESnet" width={120} height={120}/>
+                        <img src={logo} alt="ESnet" width={120} height={120} />
                     </div>
                     <div className="col-md-9">
-                        <Markdown source={text}/>
+                        <Markdown source={text} />
                     </div>
                 </div>
             </div>
