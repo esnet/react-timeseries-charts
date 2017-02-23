@@ -306,7 +306,7 @@ YAxis.propTypes = {
   /**
    * Render all ticks on the axis as positive values.
    */
-  absolute: React.PropTypes.boolean, // eslint-disable-line
+  absolute: React.PropTypes.bool, // eslint-disable-line
   /**
    * Object specifying the available parameters by which the axis can be
    * styled. The object can contain: "labels" and "axis". Each of these

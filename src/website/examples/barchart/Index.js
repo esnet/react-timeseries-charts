@@ -11,7 +11,6 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import _ from "underscore";
 
 // Pond
 import { TimeSeries } from "pondjs";

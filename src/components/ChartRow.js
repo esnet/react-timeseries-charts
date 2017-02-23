@@ -94,8 +94,8 @@ export default class ChartRow extends React.Component {
     const rangeBottom = innerHeight - AXIS_MARGIN;
     React.Children.forEach(this.props.children, child => {
       if (
-        child.type === YAxis ||
-          _.has(child.props, "min") && _.has(child.props, "max")
+        (child.type === YAxis ||
+          _.has(child.props, "min")) && _.has(child.props, "max")
       ) {
         const { id, max, min, transition = 0, type = "linear" } = child.props;
         const initialScale = createScale(
@@ -139,8 +139,8 @@ export default class ChartRow extends React.Component {
     // target on it.
     React.Children.forEach(nextProps.children, child => {
       if (
-        child.type === YAxis ||
-          _.has(child.props, "min") && _.has(child.props, "max")
+        (child.type === YAxis ||
+          _.has(child.props, "min")) && _.has(child.props, "max")
       ) {
         const { id, max, min, transition = 0, type = "linear" } = child.props;
 
@@ -197,8 +197,8 @@ export default class ChartRow extends React.Component {
         const id = child.props.id;
         // Check to see if we think this 'axis' is actually an axis
         if (
-          child.type === YAxis ||
-            _.has(child.props, "min") && _.has(child.props, "max")
+          (child.type === YAxis ||
+            _.has(child.props, "min")) && _.has(child.props, "max")
         ) {
           const yaxis = child;
 

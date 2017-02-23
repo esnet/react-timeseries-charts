@@ -360,12 +360,13 @@ export default class Legend extends React.Component {
   render() {
     const { type, symbolWidth, symbolHeight } = this.props;
     const items = this.props.categories.map(category => {
-      const {key, label, value} = category;
+      const { key, label, value } = category;
       const symbolStyle = this.symbolStyle(category);
       const labelStyle = this.labelStyle(category);
       const valueStyle = this.valueStyle(category);
       return (
         <LegendItem
+          key={key}
           type={type}
           itemKey={key}
           label={label}
