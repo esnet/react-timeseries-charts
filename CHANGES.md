@@ -1,3 +1,32 @@
+## v0.12.0
+> Feb 23, 2017
+
+**Dependency updates:**
+ * Update to latest version of d3 dependencies (i.e. v1.0 releases)
+ * Updates peer dependency to Pond 0.8.x. If you use Pond directly, especially events, there are some breaking changes in this version. Of particular note: `new Event()` is likely now `new TimeEvent()`. Static methods are still on the base class `Event`, however.
+
+**Enhancements and API changes**
+ * `EventMarker`s now support a simple label attached to the marker, in addition to the flag style marker seen in the tracker. This allows some new options for annotations.
+
+![markers](https://cloud.githubusercontent.com/assets/1288813/23275412/4c24c3b0-f9bb-11e6-9ca6-d45a44f7613f.gif)
+
+ * Charts no longer need a corresponding axis if you pass in the `yScale` directly (or if the chart doesn't need a y scale at all). This is nice for overlaying errors, or making an `EventChart` without having to create a bogus y-scale.
+ * Change to `Legend` to clean up that code: props `width` and `height` are now `symbolWidth` and `symbolHeight`, which is clearer about what they do.
+ * `EventMarker` `infoStyle` (and use within `BarCharts` and `ScatterCharts`) is broken into `infoStyle` (for the infoBox), `stemStyle` and `markerStyle`.
+ * `LineCharts` or `ScatterChart` of `IndexedEvent`s or `TimeRangeEvent`s plot points in the center of their time range, not the beginning as they did before. This way markers do not have to take this into account.
+
+**Bug fixes:**
+ * Disable all mouse pan/zoom related event handling when `enablePanZoom=false` ([#121](https://github.com/esnet/react-timeseries-charts/pull/121)) and [#96](https://github.com/esnet/react-timeseries-charts/pull/96)))
+ * Fixes issue where the `BoxChart` is not re-rendering on `TimeSeries` change ([#126](https://github.com/esnet/react-timeseries-charts/pull/126)))
+ * Fixes bug resulting in stale format in `TimeAxis` (Fixes [#128](https://github.com/esnet/react-timeseries-charts/pull/128)))
+ * Missing propType in `YAxis`
+
+**Website changes:**
+ * Adds babel-polyfill import to the examples page for IE support (untested) (Fixes [#111](https://github.com/esnet/react-timeseries-charts/pull/111)))
+ * `BarChart` docs improvements: new simple example and better explanation of `IndexedEvent` requirement in API docs. ([#125](https://github.com/esnet/react-timeseries-charts/pull/125)))
+ 
+<img width="1090" alt="screen shot 2017-02-23 at 11 24 19 am" src="https://cloud.githubusercontent.com/assets/1288813/23275473/809f3fda-f9bb-11e6-8060-5ade2eb58d20.png">
+
 ## v0.11.3
 > Feb 6, 2017
 
