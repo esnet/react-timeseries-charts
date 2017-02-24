@@ -778,7 +778,7 @@ BoxChart.defaultProps = {
   outerSpacing: 2.0,
   infoStyle: {
     stroke: "#999",
-    fill: "red",
+    fill: "white",
     opacity: 0.90,
     pointerEvents: "none"
   },

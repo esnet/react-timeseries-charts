@@ -885,7 +885,7 @@
         "required": false,
         "description": "The style of the info box and connecting lines",
         "defaultValue": {
-          "value": "{\n  stroke: \"#999\",\n  fill: \"red\",\n  opacity: 0.90,\n  pointerEvents: \"none\"\n}",
+          "value": "{\n  stroke: \"#999\",\n  fill: \"white\",\n  opacity: 0.90,\n  pointerEvents: \"none\"\n}",
           "computed": false
         }
       },
@@ -2194,6 +2194,10 @@
             },
             {
               "value": "\"top\"",
+              "computed": false
+            },
+            {
+              "value": "\"bottom\"",
               "computed": false
             }
           ]
@@ -3967,8 +3971,7 @@
       },
       "absolute": {
         "type": {
-          "name": "custom",
-          "raw": "React.PropTypes.boolean"
+          "name": "bool"
         },
         "required": false,
         "description": "Render all ticks on the axis as positive values.",
