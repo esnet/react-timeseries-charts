@@ -286,7 +286,8 @@ export default class BoxChart extends React.Component {
       seriesChanged = !TimeSeries.is(oldSeries, newSeries);
     }
 
-    // Added this to make it work
+    // If the series changes we need to rebuild this.series with
+    // the incoming props
     if (seriesChanged) {
       if (
         nextProps.series._collection._type === TimeEvent // eslint-disable-line
