@@ -1,3 +1,15 @@
+#Changelog
+
+## v0.12.2
+> Feb 24, 2017
+
+ * Fixes issue where the `BoxChart` is not re-rendering on `TimeSeries` change ([#126](https://github.com/esnet/react-timeseries-charts/pull/126)))
+
+## v0.12.1
+> Feb 24, 2017
+
+ * Fixed default color for BoxChart infoBox
+
 ## v0.12.0
 > Feb 23, 2017
 
@@ -17,7 +29,6 @@
 
 **Bug fixes:**
  * Disable all mouse pan/zoom related event handling when `enablePanZoom=false` ([#121](https://github.com/esnet/react-timeseries-charts/pull/121)) and [#96](https://github.com/esnet/react-timeseries-charts/pull/96)))
- * Fixes issue where the `BoxChart` is not re-rendering on `TimeSeries` change ([#126](https://github.com/esnet/react-timeseries-charts/pull/126)))
  * Fixes bug resulting in stale format in `TimeAxis` (Fixes [#128](https://github.com/esnet/react-timeseries-charts/pull/128)))
  * Missing propType in `YAxis`
 
