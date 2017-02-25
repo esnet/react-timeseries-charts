@@ -1,6 +1,6 @@
 #Changelog
 
-## v0.12.2
+## v0.12.3
 > Feb 24, 2017
 
  * Fixes issue where the `BoxChart` is not re-rendering on `TimeSeries` change ([#126](https://github.com/esnet/react-timeseries-charts/pull/126)))
