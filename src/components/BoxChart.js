@@ -289,15 +289,15 @@ export default class BoxChart extends React.Component {
     // Added this to make it work
     if (seriesChanged) {
       if (
-        this.props.series._collection._type === TimeEvent // eslint-disable-line
+        nextProps._collection._type === TimeEvent // eslint-disable-line
       ) {
         this.series = getAggregatedSeries(
-          this.props.series,
-          this.props.column,
-          this.props.aggregation
+          nextProps.series,
+          nextProps.column,
+          nextProps.aggregation
         );
       } else {
-        this.series = getSeries(this.props.series, this.props.column);
+        this.series = getSeries(nextProps.series, nextProps.column);
       }
     }
 
