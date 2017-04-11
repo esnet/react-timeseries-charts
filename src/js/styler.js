@@ -173,10 +173,12 @@ export class Styler {
     const colorLookup = this.colorLookup(numColumns);
 
     let i = 0;
-    _.forEach(this.columnStyles, (
-      { color, selected, width = 1, dashed = false },
-      column
-    ) => {
+    _.forEach(this.columnStyles, ({
+      color,
+      selected,
+      width = 1,
+      dashed = false
+    }, column) => {
       const c = color || colorLookup[i % colorLookup.length];
       const styleLine = {
         stroke: c,
@@ -222,10 +224,12 @@ export class Styler {
     const numColumns = this.numColumns();
     const colorLookup = this.colorLookup(numColumns);
     const style = {};
-    _.forEach(this.columnStyles, (
-      { color, selected, width = 1, dashed = false },
-      column
-    ) => {
+    _.forEach(this.columnStyles, ({
+      color,
+      selected,
+      width = 1,
+      dashed = false
+    }, column) => {
       const i = _.indexOf(this.columnNames, column);
       const c = color || colorLookup[i % colorLookup.length];
       const styleLine = {

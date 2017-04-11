@@ -846,15 +846,7 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
-babel-polyfill@^6.22.0, babel-polyfill@^6.9.1:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.22.0.tgz#1ac99ebdcc6ba4db1e2618c387b2084a82154a3b"
-  dependencies:
-    babel-runtime "^6.22.0"
-    core-js "^2.4.0"
-    regenerator-runtime "^0.10.0"
-
-babel-polyfill@^6.23.0:
+babel-polyfill@^6.22.0, babel-polyfill@^6.23.0, babel-polyfill@^6.9.1:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
   dependencies:
@@ -1594,6 +1586,10 @@ d3-array@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.0.2.tgz#174237bf356a852fadd6af87743d928631de7655"
 
+d3-array@~0.7.0:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-0.7.1.tgz#a321c21558459d994eb4ad47b478240e64933942"
+
 d3-axis@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/d3-axis/-/d3-axis-1.0.4.tgz#bdfdcf5e859824062e0f17ad920f76236e72512c"
@@ -1602,9 +1598,17 @@ d3-collection@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/d3-collection/-/d3-collection-1.0.2.tgz#df5acb5400443e9eabe9c1379896c67e52426b39"
 
+d3-collection@~0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/d3-collection/-/d3-collection-0.2.0.tgz#0a7cf362d823f0c65057cc075f4e441c31c300fa"
+
 d3-color@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/d3-color/-/d3-color-1.0.2.tgz#83cb4b3a9474e40795f009d97e97a15649830bbc"
+
+d3-color@~0.4.0:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/d3-color/-/d3-color-0.4.2.tgz#df013e789d9bfef0f8ea3986c92340cdf340d8a0"
 
 d3-dispatch@1:
   version "1.0.2"
@@ -1626,11 +1630,21 @@ d3-format@1, d3-format@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-1.0.2.tgz#138618320b4bbeb43b5c0ff30519079fbbd7375e"
 
+d3-format@^0.5.1, d3-format@~0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-0.5.1.tgz#9447d7c95c84b15d34c138975dbf0489a412e405"
+
 d3-interpolate@1, d3-interpolate@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.1.3.tgz#e119c91b6be4941e581675ca3e1279bb92bd2c9b"
   dependencies:
     d3-color "1"
+
+d3-interpolate@~0.8.0:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-0.8.3.tgz#a8e564a60f6dc384ef112c206e51a19e6d884981"
+  dependencies:
+    d3-color "~0.4.0"
 
 d3-path@1:
   version "1.0.3"
@@ -1641,6 +1655,18 @@ d3-scale-chromatic@^1.1.0:
   resolved "https://registry.yarnpkg.com/d3-scale-chromatic/-/d3-scale-chromatic-1.1.0.tgz#eddcc50c4fd48d98560105f349bf5bc921476da1"
   dependencies:
     d3-interpolate "1"
+
+d3-scale@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-0.7.2.tgz#6b2cd8b9f4fb82b8d4a6c6879a1ef89077961105"
+  dependencies:
+    d3-array "~0.7.0"
+    d3-collection "~0.2.0"
+    d3-color "~0.4.0"
+    d3-format "~0.5.0"
+    d3-interpolate "~0.8.0"
+    d3-time "~0.2.0"
+    d3-time-format "~0.3.0"
 
 d3-scale@^1.0.4:
   version "1.0.4"
@@ -1670,9 +1696,19 @@ d3-time-format@2, d3-time-format@^2.0.3:
   dependencies:
     d3-time "1"
 
+d3-time-format@~0.3.0:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-0.3.2.tgz#9c30e90a4078f93fac15e27b2016865488c007c1"
+  dependencies:
+    d3-time "~0.2.0"
+
 d3-time@1, d3-time@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.4.tgz#2ceba09a76b7450c992a1ded4e10fc6195e69649"
+
+d3-time@~0.2.0:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-0.2.6.tgz#587553e9ea9e055462d419c7aa94e9477be15cb0"
 
 d3-timer@1:
   version "1.0.4"
@@ -3296,7 +3332,13 @@ moment-duration-format@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/moment-duration-format/-/moment-duration-format-1.3.0.tgz#541771b5f87a049cc65540475d3ad966737d6908"
 
-moment@^2.8.4, moment@^2.9.0:
+moment-timezone@^0.5.10:
+  version "0.5.13"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.13.tgz#99ce5c7d827262eb0f1f702044177f60745d7b90"
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.15.2, moment@^2.8.4, moment@^2.9.0:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -4016,6 +4058,25 @@ rc@~1.1.6:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~1.0.4"
+
+react-addons-css-transition-group@^15.3.1:
+  version "15.5.0"
+  resolved "https://registry.yarnpkg.com/react-addons-css-transition-group/-/react-addons-css-transition-group-15.5.0.tgz#3a0757d4de986a69b8a90ba79a13105430fc8af1"
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
+react-axis@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/react-axis/-/react-axis-0.2.2.tgz#40d977001024811846ee876b828c507843491ad5"
+  dependencies:
+    d3-format "^0.5.1"
+    d3-scale "^0.7.2"
+    merge "^1.2.0"
+    moment "^2.15.2"
+    moment-timezone "^0.5.10"
+    react-addons-css-transition-group "^15.3.1"
+    underscore "^1.8.3"
 
 react-docgen@^2.9.1:
   version "2.13.0"
@@ -4757,7 +4818,7 @@ uid-number@~0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
-underscore@^1.7.0, underscore@^1.8.2:
+underscore@^1.7.0, underscore@^1.8.2, underscore@^1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 

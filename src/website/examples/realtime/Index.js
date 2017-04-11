@@ -40,7 +40,7 @@ const realtime = React.createClass({
     displayName: "AggregatorDemo",
     getInitialState() {
         return {
-            time: new Date(2015, 0, 1),
+            time: new Date(0),
             events: new Ring(200),
             percentile50Out: new Ring(100),
             percentile90Out: new Ring(100)
@@ -147,7 +147,7 @@ const realtime = React.createClass({
         });
 
         // Timerange for the chart axis
-        const initialBeginTime = new Date(2015, 0, 1);
+        const initialBeginTime = new Date(0);
         const timeWindow = 3 * hours;
 
         let beginTime;
@@ -174,11 +174,7 @@ const realtime = React.createClass({
                     style={fiveMinuteStyle}
                     columns={["value"]}
                 />
-                <ScatterChart
-                    axis="y"
-                    series={eventSeries}
-                    style={scatterStyle}
-                />
+                <ScatterChart axis="y" series={eventSeries} style={scatterStyle} />
             </Charts>
         );
 
@@ -223,7 +219,7 @@ const realtime = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={timeRange}>
+                            <ChartContainer timeRange={timeRange} format="duration">
                                 <ChartRow height="150">
                                     <YAxis
                                         id="y"
