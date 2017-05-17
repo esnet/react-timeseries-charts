@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * Renders a list of values in svg
@@ -82,29 +83,29 @@ ValueList.defaultProps = {
 };
 
 ValueList.propTypes = {
-  align: React.PropTypes.oneOf(["center", "left"]),
+  align: PropTypes.oneOf(["center", "left"]),
   /**
    * An array of label value pairs to render
    */
-  values: React.PropTypes.arrayOf(React.PropTypes.shape({
-      label: React.PropTypes.string, // eslint-disable-line
-      value: React.PropTypes.oneOfType([ // eslint-disable-line
-        React.PropTypes.number,
-        React.PropTypes.string
+  values: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string, // eslint-disable-line
+      value: PropTypes.oneOfType([ // eslint-disable-line
+        PropTypes.number,
+        PropTypes.string
       ])
     })).isRequired,
   /**
    * CSS object to be applied to the ValueList surrounding box
    */
-  style: React.PropTypes.object, // eslint-disable-line
+  style: PropTypes.object, // eslint-disable-line
   /**
    * The width of the rectangle to render into
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * The height of the rectangle to render into
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 export default ValueList;

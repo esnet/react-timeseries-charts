@@ -11,6 +11,7 @@
 import _ from "underscore";
 import invariant from "invariant";
 import React from "react";
+import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
 
@@ -351,17 +352,17 @@ ChartContainer.propTypes = {
   /**
    * A Pond TimeRange representing the begin and end time of the chart.
    */
-  timeRange: React.PropTypes.instanceOf(TimeRange).isRequired,
+  timeRange: PropTypes.instanceOf(TimeRange).isRequired,
   /**
    * Should the time axis use a UTC scale or local
    */
-  utc: React.PropTypes.bool,
+  utc: PropTypes.bool,
   /**
    * Children of the ChartContainer should be ChartRows.
    */
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.element),
-    React.PropTypes.element
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.element
   ]).isRequired,
   /**
    * The width of the chart. This library also includes a <Resizable> component
@@ -370,27 +371,27 @@ ChartContainer.propTypes = {
    * surrounding element. This is very handy when you need the chart to resize
    * based on a responsive layout.
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * Constrain the timerange to not move back in time further than this Date.
    */
-  minTime: React.PropTypes.instanceOf(Date),
+  minTime: PropTypes.instanceOf(Date),
   /**
    * Constrain the timerange to not move forward in time than this Date. A
    * common example is setting this to the current time or the end time
    * of a fixed set of data.
    */
-  maxTime: React.PropTypes.instanceOf(Date),
+  maxTime: PropTypes.instanceOf(Date),
   /**
    * Boolean to turn on interactive pan and zoom behavior for the chart.
    */
-  enablePanZoom: React.PropTypes.bool,
+  enablePanZoom: PropTypes.bool,
   /**
    * If this is set the timerange of the chart cannot be zoomed in further
    * than this duration, in milliseconds. This might be determined by the
    * resolution of your data.
    */
-  minDuration: React.PropTypes.number,
+  minDuration: PropTypes.number,
   /**
    * Provides several options as to the format of the time axis labels.
    * In general the time axis will generate an appropriate time scale based
@@ -405,15 +406,15 @@ ChartContainer.propTypes = {
    * is good for data that is specified relative to its start time, rather than
    * as an actual date/time.
    */
-  format: React.PropTypes.string,
+  format: PropTypes.string,
   /**
    * Time in milliseconds to transition from one Y-scale to the next
    */
-  transition: React.PropTypes.number,
+  transition: PropTypes.number,
   /**
    * Show grid lines for each time marker
    */
-  showGrid: React.PropTypes.bool,
+  showGrid: PropTypes.bool,
   /**
    * Adjust the time axis style. This is an object of the
    * form { labels, axis } where "label" and "axis" are objects
@@ -434,29 +435,29 @@ ChartContainer.propTypes = {
    *  };
    * ```
    */
-  timeAxisStyle: React.PropTypes.shape({
-    labels: React.PropTypes.object, // eslint-disable-line
-    axis: React.PropTypes.object
+  timeAxisStyle: PropTypes.shape({
+    labels: PropTypes.object, // eslint-disable-line
+    axis: PropTypes.object
   }),
   /**
    * The width of the tracker info box
    */
-  trackerHintWidth: React.PropTypes.number,
+  trackerHintWidth: PropTypes.number,
   /**
    * The height of the tracker info box
    */
-  trackerHintHeight: React.PropTypes.number,
+  trackerHintHeight: PropTypes.number,
   /**
    * Info box value or values to place next to the tracker line.
    * This is either an array of objects, with each object
    * specifying the label and value to be shown in the info box,
    * or a simple string label.
    */
-  trackerValues: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.shape({
-        label: React.PropTypes.string, // eslint-disable-line
-        value: React.PropTypes.string // eslint-disable-line
+  trackerValues: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string, // eslint-disable-line
+        value: PropTypes.string // eslint-disable-line
       }))
   ]),
   /**
@@ -465,7 +466,7 @@ ChartContainer.propTypes = {
    * followers the user's cursor, but it could be modified to snap to a point or
    * to the nearest minute, for example.
    */
-  trackerPosition: React.PropTypes.instanceOf(Date),
+  trackerPosition: PropTypes.instanceOf(Date),
   /**
    * Will be called when the user hovers over a chart. The callback will
    * be called with the timestamp (a Date object) of the position hovered
@@ -479,7 +480,7 @@ ChartContainer.propTypes = {
    *     ... />
    * ```
    */
-  onTrackerChanged: React.PropTypes.func,
+  onTrackerChanged: PropTypes.func,
   /**
    * This will be called if the user pans and/or zooms the chart. The callback
    * will be called with the new TimeRange. This can be fed into the timeRange
@@ -492,16 +493,16 @@ ChartContainer.propTypes = {
    *     ... />
    * ```
    */
-  onTimeRangeChanged: React.PropTypes.func,
+  onTimeRangeChanged: PropTypes.func,
   /**
    * Called when the size of the chart changes
    */
-  onChartResize: React.PropTypes.func,
+  onChartResize: PropTypes.func,
   /**
    * Called when the user clicks the background plane of the chart. This is
    * useful when deselecting elements.
    */
-  onBackgroundClick: React.PropTypes.func
+  onBackgroundClick: PropTypes.func
 };
 
 ChartContainer.defaultProps = {

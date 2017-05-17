@@ -14,6 +14,7 @@ import _ from "underscore";
 import { area, line } from "d3-shape";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import { TimeSeries } from "pondjs";
 
 import { scaleAsString } from "../js/util";
@@ -315,12 +316,12 @@ AreaChart.propTypes = {
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  series: PropTypes.instanceOf(TimeSeries).isRequired,
   /**
    * Reference to the axis which provides the vertical scale for ## drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired, // eslint-disable-line
+  axis: PropTypes.string.isRequired, // eslint-disable-line
   /**
    * The series series columns mapped to stacking up and down.
    * Has the format:
@@ -331,11 +332,11 @@ AreaChart.propTypes = {
    *  }
    *  ```
    */
-  columns: React.PropTypes.shape({
-    up: React.PropTypes.arrayOf(React.PropTypes.string),
-    down: React.PropTypes.arrayOf(React.PropTypes.string)
+  columns: PropTypes.shape({
+    up: PropTypes.arrayOf(PropTypes.string),
+    down: PropTypes.arrayOf(PropTypes.string)
   }),
-  stack: React.PropTypes.bool,
+  stack: PropTypes.bool,
   /**
    * The styles to apply to the underlying SVG lines. This is a mapping
    * of column names to objects with style attributes, in the following
@@ -377,15 +378,15 @@ AreaChart.propTypes = {
    *
    * ```
    */
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler)
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+    PropTypes.instanceOf(Styler)
   ]),
   /**
    * Any of D3's interpolation modes.
    */
-  interpolation: React.PropTypes.oneOf([
+  interpolation: PropTypes.oneOf([
     "curveBasis",
     "curveBasisOpen",
     "curveBundle",
@@ -405,31 +406,31 @@ AreaChart.propTypes = {
   /**
    * The currenly highlighted column
    */
-  highlight: React.PropTypes.string,
+  highlight: PropTypes.string,
   /**
    * Callback called when the highlight changes, i.e. hover event
    */
-  onHighlightChange: React.PropTypes.func,
+  onHighlightChange: PropTypes.func,
   /**
    * The currenly selected column
    */
-  selection: React.PropTypes.string,
+  selection: PropTypes.string,
   /**
    * Callback called when the selection changes, i.e. area is clicked
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };
 
 AreaChart.defaultProps = {

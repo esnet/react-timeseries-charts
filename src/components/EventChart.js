@@ -11,6 +11,7 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import { TimeSeries, Event } from "pondjs";
 
 /**
@@ -179,57 +180,57 @@ EventChart.propTypes = {
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  series: PropTypes.instanceOf(TimeSeries).isRequired,
   /**
    * Set hover label text
    * When label is function callback it will be called with current event.
    */
-  label: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.func
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
   ]),
   /**
    * The height in pixels for the event bar
    */
-  size: React.PropTypes.number,
+  size: PropTypes.number,
   /**
    * The distance in pixels to inset the event bar from its actual timerange
    */
-  spacing: React.PropTypes.number,
+  spacing: PropTypes.number,
   /**
    * Marker width on hover
    */
-  hoverMarkerWidth: React.PropTypes.number,
+  hoverMarkerWidth: PropTypes.number,
   /**
    * Hover text offset position X
    */
-  textOffsetX: React.PropTypes.number,
+  textOffsetX: PropTypes.number,
   /**
    * Hover text offset position Y
    */
-  textOffsetY: React.PropTypes.number,
+  textOffsetY: PropTypes.number,
   /**
    * A function that should return the style of the event box
    */
-  style: React.PropTypes.func,
+  style: PropTypes.func,
   /**
    * Event selection on click. Will be called with selected event.
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * Mouse leave at end of hover event
    */
-  onMouseLeave: React.PropTypes.func,
+  onMouseLeave: PropTypes.func,
   /**
    * Mouse over event callback
    */
-  onMouseOver: React.PropTypes.func,
+  onMouseOver: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };

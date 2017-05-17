@@ -11,6 +11,7 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import Flexbox from "flexbox-react";
 
 import { Styler } from "../js/styler";
@@ -396,15 +397,15 @@ Legend.propTypes = {
    * The overall style of the legend items, either a color "swatch", a
    * colored "line", or a "dot".
    */
-  type: React.PropTypes.oneOf(["swatch", "line", "dot"]),
+  type: PropTypes.oneOf(["swatch", "line", "dot"]),
   /**
    * Alignment of the legend within the available space. Either left or right.
    */
-  align: React.PropTypes.oneOf(["left", "right"]),
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler)
+  align: PropTypes.oneOf(["left", "right"]),
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+    PropTypes.instanceOf(Styler)
   ]).isRequired,
   /**
    * The categories array specifies details and style for each item in the legend. For each item:
@@ -424,39 +425,39 @@ Legend.propTypes = {
    * ];
    * ```
    */
-  categories: React.PropTypes.arrayOf(React.PropTypes.shape({
-      key: React.PropTypes.string.isRequired, // eslint-disable-line
-      label: React.PropTypes.string.isRequired, // eslint-disable-line
-      disabled: React.PropTypes.bool, // eslint-disable-line
-      style: React.PropTypes.object, // eslint-disable-line
-      labelStyle: React.PropTypes.object // eslint-disable-line
+  categories: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired, // eslint-disable-line
+      label: PropTypes.string.isRequired, // eslint-disable-line
+      disabled: PropTypes.bool, // eslint-disable-line
+      style: PropTypes.object, // eslint-disable-line
+      labelStyle: PropTypes.object // eslint-disable-line
     })).isRequired,
   /**
    * The width of the legend symbol
    */
-  symbolWidth: React.PropTypes.number,
+  symbolWidth: PropTypes.number,
   /**
    * The height of the legend symbol
    */
-  symbolHeight: React.PropTypes.number,
+  symbolHeight: PropTypes.number,
   /**
    * Which item, specified by its key, should be rendered as highlighted
    */
-  highlight: React.PropTypes.string,
+  highlight: PropTypes.string,
   /**
    * Which item, specified by its key, should be rendered as selected
    */
-  selection: React.PropTypes.string,
+  selection: PropTypes.string,
   /**
    * Callback will be called with a legend item is selected (i.e. it is clicked
    * on by the user)
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * Callback will be called with a legend item is highlighted (i.e. it is hovered
    * over by the user)
    */
-  onHighlightChange: React.PropTypes.func
+  onHighlightChange: PropTypes.func
 };
 
 Legend.defaultProps = {

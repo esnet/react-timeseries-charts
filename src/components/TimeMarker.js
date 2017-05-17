@@ -11,6 +11,7 @@
 import _ from "underscore";
 import moment from "moment";
 import React from "react";
+import PropTypes from "prop-types";
 import { timeFormat } from "d3-time-format";
 
 import "moment-duration-format";
@@ -116,17 +117,17 @@ export default class TimeMarker extends React.Component {
 }
 
 TimeMarker.propTypes = {
-  time: React.PropTypes.instanceOf(Date),
+  time: PropTypes.instanceOf(Date),
   /**
    * The values to show in the info box. This is either an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box, or a simple string label
    */
-  infoValues: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.shape({
-        label: React.PropTypes.string, // eslint-disable-line
-        value: React.PropTypes.string // eslint-disable-line
+  infoValues: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string, // eslint-disable-line
+        value: PropTypes.string // eslint-disable-line
       }))
   ]),
   /**
@@ -135,52 +136,52 @@ TimeMarker.propTypes = {
    * are themselves objects representing inline CSS for each of
    * the pieces of the info marker.
    */
-  infoStyle: React.PropTypes.shape({
-    line: React.PropTypes.object, // eslint-disable-line
-    box: React.PropTypes.object, // eslint-disable-line
-    dot: React.PropTypes.object // eslint-disable-line
+  infoStyle: PropTypes.shape({
+    line: PropTypes.object, // eslint-disable-line
+    box: PropTypes.object, // eslint-disable-line
+    dot: PropTypes.object // eslint-disable-line
   }),
   /**
    * The width of the hover info box
    */
-  infoWidth: React.PropTypes.number,
+  infoWidth: PropTypes.number,
   /**
    * The height of the hover info box
    */
-  infoHeight: React.PropTypes.number,
+  infoHeight: PropTypes.number,
   /**
    * Display the info box at all. If you don't have any values to show and just
    * want a line and a time (for example), you can set this to false.
    */
-  showInfoBox: React.PropTypes.bool,
+  showInfoBox: PropTypes.bool,
   /**
    * You can show the info box without the corresponding time marker. Why would
    * you do this? I don't know. Actually, I do. You might use the ChartContainer
    * tracker mechanism to show the line across multiple rows, then add a TimeMarker
    * selectively to each row.
    */
-  showLine: React.PropTypes.bool,
+  showLine: PropTypes.bool,
   /**
    * You can hide the time displayed above the info box. You might do this because
    * it is already displayed elsewhere in your UI. Or maybe you just don't like it.
    */
-  showTime: React.PropTypes.bool,
+  showTime: PropTypes.bool,
   /**
    * The time format (d3 time format) used for display of the time above the info box.
    */
-  timeFormat: React.PropTypes.string,
+  timeFormat: PropTypes.string,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 TimeMarker.defaultProps = {

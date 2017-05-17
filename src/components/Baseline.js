@@ -10,6 +10,7 @@
 
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "underscore";
 
 const defaultStyle = {
@@ -123,34 +124,34 @@ Baseline.propTypes = {
    * Reference to the axis which provides the vertical scale for drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired, // eslint-disable-line
+  axis: PropTypes.string.isRequired, // eslint-disable-line
   /**
    * An object describing the style of the baseline of the form
    * { label, line }. "label" and "line" are both objects containing
    * the inline CSS for that part of the baseline.
    */
-  style: React.PropTypes.shape({
-    label: React.PropTypes.object, // eslint-disable-line
-    line: React.PropTypes.object // eslint-disable-line
+  style: PropTypes.shape({
+    label: PropTypes.object, // eslint-disable-line
+    line: PropTypes.object // eslint-disable-line
   }),
   /**
    * The y-value to display the line at.
    */
-  value: React.PropTypes.number,
+  value: PropTypes.number,
   /**
    * The label to display with the axis.
    */
-  label: React.PropTypes.string,
+  label: PropTypes.string,
   /**
    * Whether to display the label on the "left" or "right".
    */
-  position: React.PropTypes.oneOf(["left", "right"]),
+  position: PropTypes.oneOf(["left", "right"]),
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };

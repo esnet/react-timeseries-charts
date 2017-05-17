@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * Renders a 'axis' that display a label for a current tracker value
@@ -65,22 +66,22 @@ ValueAxis.propTypes = {
   /**
    * If values are numbers, use this format string
    */
-  value: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
   ]),
   /**
    * If values are numbers, use this format string
    */
-  detail: React.PropTypes.string,
+  detail: PropTypes.string,
   /**
    * The width of the axis
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * The height of the axis
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 export default ValueAxis;

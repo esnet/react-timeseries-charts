@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 import { format } from "d3-format";
 
 import ValueList from "./ValueList";
@@ -106,47 +107,47 @@ LabelAxis.propTypes = {
   /**
    * The label to show as the axis.
    */
-  label: React.PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   /**
    * Show or hide the max/min values that appear alongside the label
    */
-  hideScale: React.PropTypes.bool,
+  hideScale: PropTypes.bool,
   /**
    * Supply a list of label value pairs to render within the LabelAxis.
    * This expects an array of objects. Each object is of the form:
    *     {label: "Speed", value: "26.2 mph"}.
    */
-  values: React.PropTypes.arrayOf(React.PropTypes.shape({
-      label: React.PropTypes.string, // eslint-disable-line
-      value: React.PropTypes.oneOfType([ // eslint-disable-line
-        React.PropTypes.number,
-        React.PropTypes.string
+  values: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string, // eslint-disable-line
+      value: PropTypes.oneOfType([ // eslint-disable-line
+        PropTypes.number,
+        PropTypes.string
       ])
     })).isRequired,
   /**
    * Width to provide the values
    */
-  valWidth: React.PropTypes.number,
+  valWidth: PropTypes.number,
   /**
    * Max value of the axis scale
    */
-  max: React.PropTypes.number.isRequired,
+  max: PropTypes.number.isRequired,
   /**
    * Min value of the axis scale
    */
-  min: React.PropTypes.number.isRequired,
+  min: PropTypes.number.isRequired,
   /**
    * If values are numbers, use this format string
    */
-  format: React.PropTypes.string,
+  format: PropTypes.string,
   /**
    * The width of the axis
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * The height of the axis
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 LabelAxis.defaultProps = {

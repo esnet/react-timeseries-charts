@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
@@ -57,5 +58,5 @@ export default class Resizable extends React.Component {
 }
 
 Resizable.propTypes = {
-  children: React.PropTypes.node
+  children: PropTypes.node
 };

@@ -10,6 +10,7 @@
 
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import { TimeRange } from "pondjs";
 
 import { getElementOffset } from "../js/util";
@@ -358,17 +359,17 @@ Brush.propTypes = {
    *
    * Takes a Pond TimeRange object.
    */
-  timeRange: React.PropTypes.instanceOf(TimeRange),
+  timeRange: PropTypes.instanceOf(TimeRange),
   /**
    * The brush is rendered as an SVG rect. You can specify the style
    * of this rect using this prop.
    */
-  style: React.PropTypes.object, //eslint-disable-line
+  style: PropTypes.object, //eslint-disable-line
   /**
    * The size of the invisible side handles. Defaults to 6 pixels.
    */
-  handleSize: React.PropTypes.number,
-  allowSelectionClear: React.PropTypes.bool,
+  handleSize: PropTypes.number,
+  allowSelectionClear: PropTypes.bool,
   /**
    * A callback which will be called if the brush range is changed by
    * the user. It is called with a Pond TimeRange object. Note that if
@@ -377,19 +378,19 @@ Brush.propTypes = {
    * this case it will be called with null as the TimeRange. You can
    * use this to reset the selection, perhaps to some initial range.
    */
-  onTimeRangeChanged: React.PropTypes.func,
+  onTimeRangeChanged: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 Brush.defaultProps = {

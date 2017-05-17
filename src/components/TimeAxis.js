@@ -12,6 +12,7 @@ import merge from "merge";
 import moment from "moment";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
+import PropTypes from "prop-types";
 import { axisBottom } from "d3-axis";
 import { select } from "d3-selection";
 import {
@@ -147,13 +148,13 @@ TimeAxis.defaultProps = {
 };
 
 TimeAxis.propTypes = {
-  scale: React.PropTypes.func.isRequired,
-  showGrid: React.PropTypes.bool,
-  gridHeight: React.PropTypes.number,
-  format: React.PropTypes.string,
-  utc: React.PropTypes.bool,
-  style: React.PropTypes.shape({
-    labels: React.PropTypes.object, // eslint-disable-line
-    axis: React.PropTypes.object // eslint-disable-line
+  scale: PropTypes.func.isRequired,
+  showGrid: PropTypes.bool,
+  gridHeight: PropTypes.number,
+  format: PropTypes.string,
+  utc: PropTypes.bool,
+  style: PropTypes.shape({
+    labels: PropTypes.object, // eslint-disable-line
+    axis: PropTypes.object // eslint-disable-line
   })
 };

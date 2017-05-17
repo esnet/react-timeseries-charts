@@ -12,6 +12,7 @@ import _ from "underscore";
 import { line } from "d3-shape";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import { TimeSeries } from "pondjs";
 
 import { Styler } from "../js/styler";
@@ -273,17 +274,17 @@ LineChart.propTypes = {
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  series: PropTypes.instanceOf(TimeSeries).isRequired,
   /**
    * Reference to the axis which provides the vertical scale for drawing.
    * e.g. specifying `axis="trafficRate"` would refer the y-scale of the YAxis
    * with id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired, // eslint-disable-line
+  axis: PropTypes.string.isRequired, // eslint-disable-line
   /**
    * Which columns from the series to draw.
    */
-  columns: React.PropTypes.arrayOf(React.PropTypes.string),
+  columns: PropTypes.arrayOf(PropTypes.string),
   /**
    * The styles to apply to the underlying SVG lines. This is a mapping
    * of column names to objects with style attributes, in the following
@@ -317,15 +318,15 @@ LineChart.propTypes = {
    *
    * ```
    */
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler)
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+    PropTypes.instanceOf(Styler)
   ]),
   /**
    * Any of D3's interpolation modes.
    */
-  interpolation: React.PropTypes.oneOf([
+  interpolation: PropTypes.oneOf([
     "curveBasis",
     "curveBasisOpen",
     "curveBundle",
@@ -349,42 +350,42 @@ LineChart.propTypes = {
    * the bad value(s). If breakLine is false (the default) bad values
    * are simply removed and the adjoining points are connected.
    */
-  breakLine: React.PropTypes.bool,
+  breakLine: PropTypes.bool,
   /**
    * The selected item, which will be rendered in the "selected" style.
    * If a line is selected, all other lines will be rendered in the "muted" style.
    *
    * See also `onSelectionChange`
    */
-  selection: React.PropTypes.string,
+  selection: PropTypes.string,
   /**
    * A callback that will be called when the selection changes. It will be called
    * with the column corresponding to the line being clicked.
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * The highlighted column, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
-  highlight: React.PropTypes.string,
+  highlight: PropTypes.string,
   /**
    * A callback that will be called when the hovered over line changes.
    * It will be called with the corresponding column.
    */
-  onHighlightChange: React.PropTypes.func,
+  onHighlightChange: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };
 
 LineChart.defaultProps = {
