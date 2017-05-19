@@ -12,6 +12,7 @@ import "d3-transition";
 import merge from "merge";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
+import PropTypes from "prop-types";
 import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
@@ -286,27 +287,27 @@ YAxis.propTypes = {
    * A name for the axis which can be used by a chart to reference the axis.
    * This is used by the ChartRow to match charts to this axis.
    */
-  id: React.PropTypes.string.isRequired, // eslint-disable-line
+  id: PropTypes.string.isRequired, // eslint-disable-line
   /**
    * The label to be displayed alongside the axis.
    */
-  label: React.PropTypes.string,
+  label: PropTypes.string,
   /**
    * The scale type: linear, power, or log.
    */
-  type: React.PropTypes.oneOf(["linear", "power", "log"]),
+  type: PropTypes.oneOf(["linear", "power", "log"]),
   /**
    * Minium value, which combined with "max", define the scale of the axis.
    */
-  min: React.PropTypes.number.isRequired, // eslint-disable-line
+  min: PropTypes.number.isRequired, // eslint-disable-line
   /**
    * Maxium value, which combined with "min,"" define the scale of the axis.
    */
-  max: React.PropTypes.number.isRequired, // eslint-disable-line
+  max: PropTypes.number.isRequired, // eslint-disable-line
   /**
    * Render all ticks on the axis as positive values.
    */
-  absolute: React.PropTypes.bool, // eslint-disable-line
+  absolute: PropTypes.bool, // eslint-disable-line
   /**
    * Object specifying the available parameters by which the axis can be
    * styled. The object can contain: "labels" and "axis". Each of these
@@ -316,25 +317,25 @@ YAxis.propTypes = {
    * In addition the axis label itself can be styled with: "labelColor",
    * "labelFont", "labelWidth" and "labelSize".
    */
-  style: React.PropTypes.shape({
-    labels: React.PropTypes.object, // eslint-disable-line
-    axis: React.PropTypes.object, // eslint-disable-line
-    labelColor: React.PropTypes.string,
-    labelFont: React.PropTypes.string,
-    labelWeight: React.PropTypes.string,
-    labelSize: React.PropTypes.string,
-    width: React.PropTypes.number
+  style: PropTypes.shape({
+    labels: PropTypes.object, // eslint-disable-line
+    axis: PropTypes.object, // eslint-disable-line
+    labelColor: PropTypes.string,
+    labelFont: PropTypes.string,
+    labelWeight: PropTypes.string,
+    labelSize: PropTypes.string,
+    width: PropTypes.number
   }),
   /**
    * The transition time for moving from one scale to another
    */
-  transition: React.PropTypes.number,
+  transition: PropTypes.number,
   /**
    * The width of the axis
    */
-  width: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
   ]),
   /**
    * Offset the axis label from its default position. This allows you to
@@ -342,22 +343,22 @@ YAxis.propTypes = {
    * scale and how much room the tick labels take up. Maybe positive or
    * negative.
    */
-  labelOffset: React.PropTypes.number,
+  labelOffset: PropTypes.number,
   /**
    * d3.format for the axis labels. e.g. `format="$,.2f"`
    */
-  format: React.PropTypes.string,
+  format: PropTypes.string,
   /**
    * If the chart should be rendered to with the axis on the left or right.
    * If you are using the axis in a ChartRow, you do not need to provide this.
    */
-  align: React.PropTypes.string,
+  align: PropTypes.string,
   /**
    * [Internal] The scale supplied by the ChartRow
    */
-  scale: React.PropTypes.func,
+  scale: PropTypes.func,
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };

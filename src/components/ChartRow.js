@@ -9,6 +9,7 @@
  */
 
 import _ from "underscore";
+import PropTypes from "prop-types";
 import React from "react";
 import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
@@ -457,44 +458,44 @@ ChartRow.propTypes = {
   /**
    * The height of the row.
    */
-  height: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
   ]),
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
   ]),
-  leftAxisWidths: React.PropTypes.arrayOf(React.PropTypes.number),
-  rightAxisWidths: React.PropTypes.arrayOf(React.PropTypes.number),
-  width: React.PropTypes.number,
-  timeScale: React.PropTypes.func,
-  trackerTimeFormat: React.PropTypes.string,
-  timeFormat: React.PropTypes.string,
-  trackerTime: React.PropTypes.instanceOf(Date),
+  leftAxisWidths: PropTypes.arrayOf(PropTypes.number),
+  rightAxisWidths: PropTypes.arrayOf(PropTypes.number),
+  width: PropTypes.number,
+  timeScale: PropTypes.func,
+  trackerTimeFormat: PropTypes.string,
+  timeFormat: PropTypes.string,
+  trackerTime: PropTypes.instanceOf(Date),
   /**
    * Should the time be shown on top of the tracker info box
    */
-  trackerShowTime: React.PropTypes.bool,
+  trackerShowTime: PropTypes.bool,
   /**
    * The width of the tracker info box
    */
-  trackerInfoWidth: React.PropTypes.number,
+  trackerInfoWidth: PropTypes.number,
   /**
    * The height of the tracker info box
    */
-  trackerInfoHeight: React.PropTypes.number,
+  trackerInfoHeight: PropTypes.number,
   /**
    * Info box value or values to place next to the tracker line
    * This is either an array of objects, with each object
    * specifying the label (a string) and value (also a string)
    * to be shown in the info box, or a simple string label.
    */
-  trackerInfoValues: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.shape({
-        label: React.PropTypes.string, // eslint-disable-line
-        value: React.PropTypes.string // eslint-disable-line
+  trackerInfoValues: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string, // eslint-disable-line
+        value: PropTypes.string // eslint-disable-line
       }))
   ])
 };

@@ -10,6 +10,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
+import PropTypes from "prop-types";
 import { TimeRange } from "pondjs";
 
 import { getElementOffset } from "../js/util";
@@ -252,21 +253,21 @@ export default class EventHandler extends React.Component {
 }
 
 EventHandler.propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
   ]),
-  enablePanZoom: React.PropTypes.bool,
-  scale: React.PropTypes.func.isRequired,
-  width: React.PropTypes.number.isRequired,
-  height: React.PropTypes.number.isRequired,
-  maxTime: React.PropTypes.instanceOf(Date),
-  minTime: React.PropTypes.instanceOf(Date),
-  minDuration: React.PropTypes.number,
-  onZoom: React.PropTypes.func,
-  onMouseMove: React.PropTypes.func,
-  onMouseOut: React.PropTypes.func,
-  onMouseClick: React.PropTypes.func
+  enablePanZoom: PropTypes.bool,
+  scale: PropTypes.func.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  maxTime: PropTypes.instanceOf(Date),
+  minTime: PropTypes.instanceOf(Date),
+  minDuration: PropTypes.number,
+  onZoom: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOut: PropTypes.func,
+  onMouseClick: PropTypes.func
 };
 
 EventHandler.defaultProps = {

@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * Renders a simple label surrounded by a box within in svg
@@ -58,24 +59,24 @@ Label.defaultProps = {
 };
 
 Label.propTypes = {
-  align: React.PropTypes.oneOf(["center", "left"]),
+  align: PropTypes.oneOf(["center", "left"]),
   /**
    * The label to render
    */
-  label: React.PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   /**
    * The style of the label. This is the inline CSS applied directly
    * to the label box
    */
-  style: React.PropTypes.object, // eslint-disable-line
+  style: PropTypes.object, // eslint-disable-line
   /**
    * The width of the rectangle to render into
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * The height of the rectangle to render into
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 export default Label;

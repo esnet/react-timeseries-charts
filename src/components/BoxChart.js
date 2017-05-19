@@ -11,6 +11,7 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Event,
   TimeEvent,
@@ -642,7 +643,7 @@ BoxChart.propTypes = {
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
    * data to visualize. See general notes on the BoxChart.
    */
-  // series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  // series: PropTypes.instanceOf(TimeSeries).isRequired,
 
   series: (props, propName, componentName) => {
     const value = props[propName];
@@ -661,7 +662,7 @@ BoxChart.propTypes = {
    * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
    * works on just a single column.
    */
-  column: React.PropTypes.string,
+  column: PropTypes.string,
   /**
    * The aggregation specification. This object should contain:
    *   - innerMax
@@ -686,12 +687,12 @@ BoxChart.propTypes = {
    *     }
    * ```
    */
-  aggregation: React.PropTypes.shape({
-    size: React.PropTypes.string,
-    reducers: React.PropTypes.shape({
-      inner: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
-      outer: React.PropTypes.arrayOf(React.PropTypes.func), // eslint-disable-line
-      center: React.PropTypes.func // eslint-disable-line
+  aggregation: PropTypes.shape({
+    size: PropTypes.string,
+    reducers: PropTypes.shape({
+      inner: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
+      outer: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
+      center: PropTypes.func // eslint-disable-line
     })
   }), // eslint-disable-line
   /**
@@ -699,32 +700,32 @@ BoxChart.propTypes = {
    * a styler object. It is recommended to user the styler unless you need
    * detailed customization.
    */
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler)
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+    PropTypes.instanceOf(Styler)
   ]),
   /**
    * The style of the info box and connecting lines
    */
-  infoStyle: React.PropTypes.object, //eslint-disable-line
+  infoStyle: PropTypes.object, //eslint-disable-line
   /**
    * The width of the hover info box
    */
-  infoWidth: React.PropTypes.number, //eslint-disable-line
+  infoWidth: PropTypes.number, //eslint-disable-line
   /**
    * The height of the hover info box
    */
-  infoHeight: React.PropTypes.number, //eslint-disable-line
+  infoHeight: PropTypes.number, //eslint-disable-line
   /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: React.PropTypes.arrayOf(
-    React.PropTypes.shape({ //eslint-disable-line
-      label: React.PropTypes.string, //eslint-disable-line
-      value: React.PropTypes.string //eslint-disable-line
+  info: PropTypes.arrayOf(
+    PropTypes.shape({ //eslint-disable-line
+      label: PropTypes.string, //eslint-disable-line
+      value: PropTypes.string //eslint-disable-line
     })
   ),
   /**
@@ -733,59 +734,59 @@ BoxChart.propTypes = {
    * the boxes from each other. Inner and outer boxes are controlled
    * separately.
    */
-  innerSpacing: React.PropTypes.number,
+  innerSpacing: PropTypes.number,
   /**
    * If spacing is specified, then the boxes will be separated from the
    * timerange boundary by this number of pixels. Use this to space out
    * the boxes from each other. Inner and outer boxes are controlled
    * separately.
    */
-  outerSpacing: React.PropTypes.number,
+  outerSpacing: PropTypes.number,
   /**
    * If size is specified, then the innerBox will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  innerSize: React.PropTypes.number,
+  innerSize: PropTypes.number,
   /**
    * If size is specified, then the outer box will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  outerSize: React.PropTypes.number,
+  outerSize: PropTypes.number,
   /**
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
    *
    * See also `onSelectionChange`
    */
-  selected: React.PropTypes.instanceOf(IndexedEvent),
+  selected: PropTypes.instanceOf(IndexedEvent),
   /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
-  highlighted: React.PropTypes.instanceOf(IndexedEvent),
+  highlighted: PropTypes.instanceOf(IndexedEvent),
   /**
    * A callback that will be called when the selection changes. It will be called
    * with the event corresponding to the box clicked as its only arg.
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * A callback that will be called when the hovered over box changes.
    * It will be called with the event corresponding to the box hovered over.
    */
-  onHighlightChange: React.PropTypes.func,
+  onHighlightChange: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };
 
 BoxChart.defaultProps = {

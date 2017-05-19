@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 import { TimeRange } from "pondjs";
 
 /**
@@ -74,24 +75,24 @@ TimeRangeMarker.propTypes = {
   /**
    * The timerange to mark. This is in the form of a Pond TimeRange.
    */
-  timerange: React.PropTypes.instanceOf(TimeRange).isRequired,
+  timerange: PropTypes.instanceOf(TimeRange).isRequired,
   /**
    * The style of the rect that will be rendered as a SVG <Rect>. This
    * object is the inline CSS for that rect.
    */
-  style: React.PropTypes.object, // eslint-disable-line
+  style: PropTypes.object, // eslint-disable-line
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func.isRequired,
+  timeScale: PropTypes.func.isRequired,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number.isRequired
+  height: PropTypes.number.isRequired
 };
 
 TimeRangeMarker.defaultProps = {

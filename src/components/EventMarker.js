@@ -10,6 +10,7 @@
 
 import _ from "underscore";
 import React from "react";
+import PropTypes from "prop-types";
 import merge from "merge";
 import {
   TimeEvent,
@@ -46,10 +47,10 @@ const EventTime = ({ time, format = "%m/%d/%y %X" }) => {
   );
 };
 EventTime.propTypes = {
-  time: React.PropTypes.instanceOf(Date),
-  format: React.PropTypes.oneOfType([
-    React.PropTypes.func,
-    React.PropTypes.string
+  time: PropTypes.instanceOf(Date),
+  format: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.string
   ])
 };
 EventTime.defaultProps = {
@@ -85,10 +86,10 @@ const EventTimeRange = ({ timerange, format = "%m/%d/%y %X" }) => {
   );
 };
 EventTimeRange.propTypes = {
-  timerange: React.PropTypes.instanceOf(TimeRange),
-  format: React.PropTypes.oneOfType([
-    React.PropTypes.func,
-    React.PropTypes.string
+  timerange: PropTypes.instanceOf(TimeRange),
+  format: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.string
   ])
 };
 EventTimeRange.defaultProps = {
@@ -120,10 +121,10 @@ const EventIndex = ({ index, format }) => {
   );
 };
 EventIndex.propTypes = {
-  index: React.PropTypes.instanceOf(Index),
-  format: React.PropTypes.oneOfType([
-    React.PropTypes.func,
-    React.PropTypes.string
+  index: PropTypes.instanceOf(Index),
+  format: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.string
   ])
 };
 
@@ -398,46 +399,46 @@ export default class EventMarker extends React.Component {
 }
 
 EventMarker.propTypes = {
-  type: React.PropTypes.oneOf(["point", "flag"]),
+  type: PropTypes.oneOf(["point", "flag"]),
 
   /**
    * What [Pond Event](http://software.es.net/pond#event) to mark
    */
-  event: React.PropTypes.oneOfType([
-    React.PropTypes.instanceOf(TimeEvent),
-    React.PropTypes.instanceOf(IndexedEvent),
-    React.PropTypes.instanceOf(TimeRangeEvent)
+  event: PropTypes.oneOfType([
+    PropTypes.instanceOf(TimeEvent),
+    PropTypes.instanceOf(IndexedEvent),
+    PropTypes.instanceOf(TimeRangeEvent)
   ]),
   /**
    * Which column in the Event to use
    */
-  column: React.PropTypes.string,
+  column: PropTypes.string,
   /**
    * The values to show in the info box. This is either an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box, or a simple string label. If this
    * prop is not supplied, no infoBox will be displayed.
    */
-  info: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.shape({
-        label: React.PropTypes.string, // eslint-disable-line
-        value: React.PropTypes.string // eslint-disable-line
+  info: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string, // eslint-disable-line
+        value: PropTypes.string // eslint-disable-line
       }))
   ]),
   /**
    * The style of the info box itself. Typically you'd want to
    * specify a fill color, and stroke color/width here.
    */
-  infoStyle: React.PropTypes.object,
+  infoStyle: PropTypes.object,
   /**
    * The width of the info box
    */
-  infoWidth: React.PropTypes.number,
+  infoWidth: PropTypes.number,
   /**
    * The height of the info box
    */
-  infoHeight: React.PropTypes.number,
+  infoHeight: PropTypes.number,
   /**
    * Alter the format of the timestamp shown on the info box.
    * This may be either a function or a string. If you provide a function
@@ -448,47 +449,47 @@ EventMarker.propTypes = {
    * Alternatively you can pass in a d3 format string. That will be applied
    * to the begin time of the Index range.
    */
-  infoTimeFormat: React.PropTypes.oneOfType([
-    React.PropTypes.func,
-    React.PropTypes.string
+  infoTimeFormat: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.string
   ]),
   /**
    * Show a label to the left or right of the marker
    */
-  markerLabelAlign: React.PropTypes.oneOf(["left", "right", "top", "bottom"]),
+  markerLabelAlign: PropTypes.oneOf(["left", "right", "top", "bottom"]),
   /**
    * The radius of the dot at the end of the marker
    */
-  markerRadius: React.PropTypes.number,
+  markerRadius: PropTypes.number,
   /**
    * The style of the event marker dot
    */
-  markerStyle: React.PropTypes.object,
+  markerStyle: PropTypes.object,
   /**
    * The y value is calculated by the column and event, but if
    * this prop is provided this will be used instead.
    */
-  yValueFunc: React.PropTypes.func,
+  yValueFunc: PropTypes.func,
   /**
    * Offset the marker position in the x direction.
    */
-  offsetX: React.PropTypes.number,
+  offsetX: PropTypes.number,
   /**
    * Offset the marker position in the y direction
    */
-  offsetY: React.PropTypes.number,
+  offsetY: PropTypes.number,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number
+  width: PropTypes.number
 };
 
 EventMarker.defaultProps = {

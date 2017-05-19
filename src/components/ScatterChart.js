@@ -11,6 +11,7 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
+import PropTypes from "prop-types";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import { TimeSeries, Event } from "pondjs";
 
@@ -297,16 +298,16 @@ ScatterChart.propTypes = {
   /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
    */
-  series: React.PropTypes.instanceOf(TimeSeries).isRequired,
+  series: PropTypes.instanceOf(TimeSeries).isRequired,
   /**
    * Which columns of the series to render
    */
-  columns: React.PropTypes.arrayOf(React.PropTypes.string),
+  columns: PropTypes.arrayOf(PropTypes.string),
   /**
    * Reference to the axis which provides the vertical scale for drawing. e.g.
    * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
    */
-  axis: React.PropTypes.string.isRequired, // eslint-disable-line
+  axis: PropTypes.string.isRequired, // eslint-disable-line
   /**
    * The radius of the points in the scatter chart.
    *
@@ -323,10 +324,10 @@ ScatterChart.propTypes = {
    * }
    * ```
    */
-  radius: React.PropTypes.oneOfType([
-    React.PropTypes.number,
-    React.PropTypes.func,
-    React.PropTypes.instanceOf(Styler)
+  radius: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.instanceOf(Styler)
   ]),
   /**
    * The style of the scatter chart drawing (using SVG CSS properties).
@@ -364,35 +365,35 @@ ScatterChart.propTypes = {
    * 4 states (normal, highlighted, selected and muted) and the corresponding
    * CSS properties.
    */
-  style: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func
   ]),
   /**
    * The style of the info box and connecting lines. The style should
    * be an object of the form { line, box }. Line and box are both objects
    * containing the inline CSS for those elements of the info tracker.
    */
-  infoStyle: React.PropTypes.shape({
-    line: React.PropTypes.object, // eslint-disable-line
-    box: React.PropTypes.object // eslint-disable-line
+  infoStyle: PropTypes.shape({
+    line: PropTypes.object, // eslint-disable-line
+    box: PropTypes.object // eslint-disable-line
   }),
   /**
    * The width of the hover info box
    */
-  infoWidth: React.PropTypes.number, // eslint-disable-line
+  infoWidth: PropTypes.number, // eslint-disable-line
   /**
    * The height of the hover info box
    */
-  infoHeight: React.PropTypes.number, // eslint-disable-line
+  infoHeight: PropTypes.number, // eslint-disable-line
   /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: React.PropTypes.arrayOf(React.PropTypes.shape({
-      label: React.PropTypes.string, // eslint-disable-line
-      value: React.PropTypes.string // eslint-disable-line
+  info: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string, // eslint-disable-line
+      value: PropTypes.string // eslint-disable-line
   })),
   /**
    * The selected dot, which will be rendered in the "selected" style.
@@ -400,43 +401,43 @@ ScatterChart.propTypes = {
    *
    * See also `onSelectionChange`
    */
-  selected: React.PropTypes.string,
+  selected: PropTypes.string,
   /**
    * A callback that will be called when the selection changes. It will be called
    * with an object containing the event and column.
    */
-  onSelectionChange: React.PropTypes.func,
+  onSelectionChange: PropTypes.func,
   /**
    * The highlighted dot, as an object containing the { event, column },
    * which will be rendered in the "highlighted" style.
    *
    * See also the prop `onMouseNear`.
    */
-  highlight: React.PropTypes.shape({
-    event: React.PropTypes.instanceOf(Event),
-    column: React.PropTypes.string
+  highlight: PropTypes.shape({
+    event: PropTypes.instanceOf(Event),
+    column: PropTypes.string
   }),
   /**
    * Will be called with the nearest point to the cursor. The callback
    * will contain the point, which is a map of { event, column }.
    */
-  onMouseNear: React.PropTypes.func,
+  onMouseNear: PropTypes.func,
   /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: React.PropTypes.func,
+  timeScale: PropTypes.func,
   /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: React.PropTypes.func,
+  yScale: PropTypes.func,
   /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: React.PropTypes.number,
+  width: PropTypes.number,
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: React.PropTypes.number
+  height: PropTypes.number
 };
 
 

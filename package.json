@@ -43,12 +43,13 @@
     "d3-time": "^1.0.4",
     "d3-time-format": "^2.0.3",
     "d3-transition": "^1.0.3",
-    "flexbox-react": "^4.2.1",
+    "flexbox-react": "^4.3.3",
     "invariant": "^2.1.1",
     "merge": "^1.2.0",
     "moment": "^2.8.4",
     "moment-duration-format": "^1.3.0",
     "pond": "^0.2.0",
+    "prop-types": "^15.5.10",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
