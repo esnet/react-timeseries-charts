@@ -86,7 +86,7 @@ Here is the render code:
                         color: "#DDD"
                     }}
                     format=".1f"
-                    selection={this.state.selection}
+                    selected={this.state.selection}
                     onSelectionChange={
                         this.handleSelectionChanged
                     }

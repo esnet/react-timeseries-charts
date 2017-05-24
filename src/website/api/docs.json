@@ -3288,7 +3288,18 @@
       },
       "selected": {
         "type": {
-          "name": "string"
+          "name": "shape",
+          "value": {
+            "event": {
+              "name": "instanceOf",
+              "value": "Event",
+              "required": false
+            },
+            "column": {
+              "name": "string",
+              "required": false
+            }
+          }
         },
         "required": false,
         "description": "The selected dot, which will be rendered in the \"selected\" style.\nIf a dot is selected, all other dots will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
