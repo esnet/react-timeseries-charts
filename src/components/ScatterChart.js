@@ -401,7 +401,10 @@ ScatterChart.propTypes = {
    *
    * See also `onSelectionChange`
    */
-  selected: PropTypes.string,
+  selected: PropTypes.arrayOf(PropTypes.shape({
+    event: PropTypes.instanceOf(Event),
+    column: PropTypes.string
+  })),
   /**
    * A callback that will be called when the selection changes. It will be called
    * with an object containing the event and column.

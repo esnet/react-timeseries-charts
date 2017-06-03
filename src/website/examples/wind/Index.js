@@ -184,7 +184,7 @@ const wind = React.createClass({
                                                 color: "#DDD"
                                             }}
                                             format=".1f"
-                                            selection={this.state.selection}
+                                            selected={this.state.selection}
                                             onSelectionChange={
                                                 (p) => this.handleSelectionChanged(p)
                                             }
