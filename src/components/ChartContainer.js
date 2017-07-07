@@ -299,6 +299,7 @@ export default class ChartContainer extends React.Component {
           style={this.props.timeAxisStyle}
           format={this.props.format}
           showGrid={this.props.showGrid}
+          showGridPosition={this.props.showGridPosition}
           gridHeight={chartsHeight}
         />
       </g>
@@ -338,11 +339,17 @@ export default class ChartContainer extends React.Component {
     const svgWidth = this.props.width;
     const svgHeight = yPosition + timeAxisHeight;
 
-    return (
+    return ( this.props.showGridPosition === "over" ?
       <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
         {rows}
         {tracker}
         {timeAxis}
+      </svg>
+      : 
+      <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
+        {timeAxis}
+        {rows}
+        {tracker}
       </svg>
     );
   }
@@ -415,6 +422,10 @@ ChartContainer.propTypes = {
    * Show grid lines for each time marker
    */
   showGrid: PropTypes.bool,
+  /**
+   * Defines whether Grid is overlayed or underlayed
+   */
+  showGridPosition: PropTypes.oneOf(["over", "under"]),
   /**
    * Adjust the time axis style. This is an object of the
    * form { labels, axis } where "label" and "axis" are objects
@@ -511,5 +522,6 @@ ChartContainer.defaultProps = {
   enablePanZoom: false,
   utc: false,
   showGrid: false,
+  showGridPosition: "over",
   timeAxisStyle: defaultTimeAxisStyle
 };
