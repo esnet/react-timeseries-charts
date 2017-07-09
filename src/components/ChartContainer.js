@@ -299,7 +299,6 @@ export default class ChartContainer extends React.Component {
           style={this.props.timeAxisStyle}
           format={this.props.format}
           showGrid={this.props.showGrid}
-          showGridPosition={this.props.showGridPosition}
           gridHeight={chartsHeight}
         />
       </g>

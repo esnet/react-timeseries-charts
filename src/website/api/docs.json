@@ -3441,27 +3441,6 @@
           "computed": false
         }
       },
-      "showGridPosition": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "\"over\"",
-              "computed": false
-            },
-            {
-              "value": "\"under\"",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "\"over\"",
-          "computed": false
-        }
-      },
       "gridHeight": {
         "type": {
           "name": "number"

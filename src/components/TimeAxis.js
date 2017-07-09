@@ -144,14 +144,12 @@ export default class TimeAxis extends React.Component {
 
 TimeAxis.defaultProps = {
   showGrid: false,
-  showGridPosition: "over",
   style: defaultStyle
 };
 
 TimeAxis.propTypes = {
   scale: PropTypes.func.isRequired,
   showGrid: PropTypes.bool,
-  showGridPosition: PropTypes.oneOf(["over", "under"]),
   gridHeight: PropTypes.number,
   format: PropTypes.string,
   utc: PropTypes.bool,
