@@ -222,7 +222,9 @@ export default class ChartContainer extends React.Component {
                     enablePanZoom: this.props.enablePanZoom,
                     minDuration: this.props.minDuration,
                     timeFormat: this.props.format,
-                    trackerShowTime: firstRow,
+                    trackerShowTime: _.isUndefined(this.props.trackerShowTime)
+                        ? firstRow
+                        : this.props.trackerShowTime,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
                     onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),

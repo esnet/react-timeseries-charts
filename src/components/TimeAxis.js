@@ -48,7 +48,6 @@ export default class TimeAxis extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { scale, utc, format } = nextProps;
-        console.log(nextProps);
         if (scaleAsString(this.props.scale) !== scaleAsString(scale) || this.props.utc !== utc) {
             this.renderTimeAxis(scale, format);
         }
@@ -63,8 +62,6 @@ export default class TimeAxis extends React.Component {
 
     renderTimeAxis(scale, format) {
         let axis;
-
-        console.log(format);
 
         const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
         const utc = this.props.utc;
@@ -87,7 +84,6 @@ export default class TimeAxis extends React.Component {
         } else if (format === "relative") {
             axis = axisBottom(scale).tickFormat(d => moment.duration(+d).format()).tickSizeOuter(0);
         } else if (_.isString(format)) {
-            console.log("case");
             axis = axisBottom(scale).tickFormat(timeFormat(format)).tickSizeOuter(0);
         } else if (_.isFunction(format)) {
             axis = axisBottom(scale).tickFormat(format).tickSizeOuter(0);
