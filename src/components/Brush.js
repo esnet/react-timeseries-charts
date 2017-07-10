@@ -157,20 +157,22 @@ export default class Brush extends React.Component {
           this.props.timeScale.invert(xy[0]).getTime();
 
         // Constrain
+        let startOffsetConstraint = timeOffset;
+        let endOffsetConstrain = timeOffset;
         if (tb - timeOffset < viewport.begin()) {
-          timeOffset = tb - viewport.begin().getTime();
+          startOffsetConstraint = tb - viewport.begin().getTime();
         }
         if (te - timeOffset > viewport.end()) {
-          timeOffset = te - viewport.end().getTime();
+          endOffsetConstrain = te - viewport.end().getTime();
         }
 
         newBegin = this.state.brushingInitializationSite === "brush" ||
           this.state.brushingInitializationSite === "handle-left"
-          ? parseInt(tb - timeOffset, 10)
+          ? parseInt(tb - startOffsetConstraint, 10)
           : tb;
         newEnd = this.state.brushingInitializationSite === "brush" ||
           this.state.brushingInitializationSite === "handle-right"
-          ? parseInt(te - timeOffset, 10)
+          ? parseInt(te - endOffsetConstrain, 10)
           : te;
 
         // Swap if needed
