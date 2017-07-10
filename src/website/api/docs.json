@@ -4132,6 +4132,13 @@
         },
         "required": false,
         "description": "[Internal] The height supplied by the surrounding ChartContainer"
+      },
+      "tickCount": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The number of ticks"
       }
     }
   }
