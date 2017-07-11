@@ -459,11 +459,20 @@ ChartRow.propTypes = {
     /**
    * The height of the tracker info box
    */
-    trackerInfoHeight: PropTypes.number
+    trackerInfoHeight: PropTypes.number,
     /**
    * Info box value or values to place next to the tracker line
    * This is either an array of objects, with each object
    * specifying the label (a string) and value (also a string)
    * to be shown in the info box, or a simple string label.
    */
+    trackerInfoValues: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.arrayOf(
+            PropTypes.shape({
+                label: PropTypes.string, // eslint-disable-line
+                value: PropTypes.string // eslint-disable-line
+            })
+        )
+    ])
 };
