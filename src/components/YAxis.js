@@ -128,24 +128,40 @@ export default class YAxis extends React.Component {
 
     let axisGenerator;
     if (type === "linear" || type === "power") {
-      if (this.props.height <= 200) {
-        axisGenerator = axis(scale).ticks(5).tickFormat(d => {
-          if (absolute) {
-            return yformat(Math.abs(d));
+        if (this.props.ticksCount > 0) {
+            if (this.props.labelsText.length > 0)  {
+              let that = this
+              axisGenerator = axis(scale).ticks(this.props.labelsText.length - 1).tickFormat(function (d) {
+              return that.props.labelsText[d]
+            }).tickSizeOuter(0);
+          } else {
+              axisGenerator = axis(scale).ticks(this.props.ticksCount - 1).tickFormat(function (d) {
+              if (absolute) {
+                return yformat(Math.abs(d));
+              }
+              return yformat(d);
+            }).tickSizeOuter(0); 
           }
-          return yformat(d);
-        });
-      } else {
-        axisGenerator = axis(scale).tickFormat(d => {
-          if (absolute) {
-            return yformat(Math.abs(d));
+        } else {
+            if (this.props.height <= 200) {
+              axisGenerator = axis(scale).ticks(5).tickFormat(function (d) {
+                if (absolute) {
+                  return yformat(Math.abs(d));
+                }
+                return yformat(d);
+              }).tickSizeOuter(0);
+        } else {
+            axisGenerator = axis(scale).tickFormat(function (d) {
+              if (absolute) {
+                return yformat(Math.abs(d));
+              }
+              return yformat(d);
+            }).tickSizeOuter(0);
           }
-          return yformat(d);
-        });
+        }
+      } else if (type === "log") {
+        axisGenerator = axis(scale).ticks(10, ".2s");
       }
-    } else if (type === "log") {
-      axisGenerator = axis(scale).ticks(10, ".2s");
-    }
 
     select(ReactDOM.findDOMNode(this))
       .select(".yaxis")
@@ -360,5 +376,13 @@ YAxis.propTypes = {
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: PropTypes.number
+  height: PropTypes.number,
+  /**
+   * Number of axis ticks labels
+   */
+  ticksCount: _react2.default.PropTypes.number,
+  /**
+   * Custom labels string
+   */
+  labelsText: _react2.default.PropTypes.array
 };
