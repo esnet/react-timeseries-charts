@@ -380,9 +380,9 @@ YAxis.propTypes = {
   /**
    * Number of axis ticks labels
    */
-  ticksCount: _react2.default.PropTypes.number,
+  ticksCount: PropTypes.number,
   /**
    * Custom labels string
    */
-  labelsText: _react2.default.PropTypes.array
+  labelsText: PropTypes.array
 };
