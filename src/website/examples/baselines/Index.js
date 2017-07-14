@@ -68,7 +68,7 @@ const baselines = React.createClass({
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()}>
+                <ChartContainer timeRange={series.range()} format="%b '%y">
                     <ChartRow height="150">
                         <YAxis
                             id="price"
@@ -79,11 +79,7 @@ const baselines = React.createClass({
                             format="$,.2f"
                         />
                         <Charts>
-                            <LineChart
-                                axis="price"
-                                series={series}
-                                style={style}
-                            />
+                            <LineChart axis="price" series={series} style={style} />
                             <Baseline
                                 axis="price"
                                 style={baselineStyleLite}
