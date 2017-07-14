@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.12.6
+> July 14, 2017
+
+ * Improves formatting option to the time axis, it can either be a d3 time format string or a callback function (#86, #164)
+ * Cleanup of formatting code, and mirror change into the TimeTracker code so that it works the same. (#164).
+ * Fixes the undefined time that would sometimes be seen above the tracker info box (#147)
+ * Fixes issue where the format specified on the ChartContainer would become stale (#140)
+ * Fixes problem when the brush would get stuck if fully expanded (#141)
+ * Adds ability to control the tick size (#150)
+ * Docs provide link to source code for examples (#133)
+
 ## v0.12.5
 > Jun 15, 2017
 
