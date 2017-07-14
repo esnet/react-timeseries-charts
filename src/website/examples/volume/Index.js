@@ -212,24 +212,16 @@ const volume = React.createClass({
             ? this.state.selection.event.index().toNiceString()
             : "--";
         const selectedValue = this.state.selection
-            ? `${formatter(
-                    +this.state.selection.event.value(
-                        this.state.selection.column
-                    )
-                )}b`
+            ? `${formatter(+this.state.selection.event.value(this.state.selection.column))}b`
             : "--";
 
         const highlight = this.state.highlight;
         let infoValues = [];
         let infoNetValues = [];
         if (highlight) {
-            const trafficText = `${formatter(
-                highlight.event.get(highlight.column)
-            )}`;
+            const trafficText = `${formatter(highlight.event.get(highlight.column))}`;
             infoValues = [{ label: "Traffic", value: trafficText }];
-            infoNetValues = [
-                { label: "Traffic " + highlight.column, value: trafficText }
-            ];
+            infoNetValues = [{ label: "Traffic " + highlight.column, value: trafficText }];
         }
 
         return (
@@ -255,8 +247,7 @@ const volume = React.createClass({
                                 format="day"
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                                 maxTime={new Date(1414827330868)}
                                 minTime={new Date(1412143472795)}
                                 minDuration={1000 * 60 * 60 * 24 * 5}
@@ -277,9 +268,7 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             info={infoValues}
                                             infoTimeFormat={index =>
-                                                moment(index.begin()).format(
-                                                    "Do MMM 'YY"
-                                                )}
+                                                moment(index.begin()).format("Do MMM 'YY")}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
@@ -315,8 +304,7 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
                                     <YAxis
@@ -382,8 +370,7 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
                                     <YAxis
@@ -436,8 +423,7 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberNetTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
                                     <YAxis

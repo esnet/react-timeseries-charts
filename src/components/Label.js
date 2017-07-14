@@ -21,62 +21,62 @@ import PropTypes from "prop-types";
  */
 
 const Label = ({ label, style, align, width, height }) => {
-  const textStyle = {
-    fontSize: 11,
-    textAnchor: "left",
-    fill: "#b0b0b0",
-    pointerEvents: "none"
-  };
+    const textStyle = {
+        fontSize: 11,
+        textAnchor: "left",
+        fill: "#b0b0b0",
+        pointerEvents: "none"
+    };
 
-  const textStyleCentered = {
-    fontSize: 11,
-    textAnchor: "middle",
-    fill: "#bdbdbd",
-    pointerEvents: "none"
-  };
+    const textStyleCentered = {
+        fontSize: 11,
+        textAnchor: "middle",
+        fill: "#bdbdbd",
+        pointerEvents: "none"
+    };
 
-  const tstyle = align === "center" ? textStyleCentered : textStyle;
-  const posx = align === "center" ? parseInt(width / 2, 10) : 10;
+    const tstyle = align === "center" ? textStyleCentered : textStyle;
+    const posx = align === "center" ? parseInt(width / 2, 10) : 10;
 
-  const text = <text x={posx} y={5} dy="1.2em" style={tstyle}>{label}</text>;
+    const text = <text x={posx} y={5} dy="1.2em" style={tstyle}>{label}</text>;
 
-  const box = <rect x={0} y={0} style={style} width={width} height={height} />;
+    const box = <rect x={0} y={0} style={style} width={width} height={height} />;
 
-  return (
-    <g>
-      {box}
-      {text}
-    </g>
-  );
+    return (
+        <g>
+            {box}
+            {text}
+        </g>
+    );
 };
 
 Label.defaultProps = {
-  align: "center",
-  width: 100,
-  height: 100,
-  pointerEvents: "none",
-  style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
+    align: "center",
+    width: 100,
+    height: 100,
+    pointerEvents: "none",
+    style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
 };
 
 Label.propTypes = {
-  align: PropTypes.oneOf(["center", "left"]),
-  /**
+    align: PropTypes.oneOf(["center", "left"]),
+    /**
    * The label to render
    */
-  label: PropTypes.string.isRequired,
-  /**
+    label: PropTypes.string.isRequired,
+    /**
    * The style of the label. This is the inline CSS applied directly
    * to the label box
    */
-  style: PropTypes.object, // eslint-disable-line
-  /**
+    style: PropTypes.object, // eslint-disable-line
+    /**
    * The width of the rectangle to render into
    */
-  width: PropTypes.number,
-  /**
+    width: PropTypes.number,
+    /**
    * The height of the rectangle to render into
    */
-  height: PropTypes.number
+    height: PropTypes.number
 };
 
 export default Label;

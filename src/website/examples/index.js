@@ -28,21 +28,20 @@ import volume from "./volume/Index";
 import nyc from "./nyc/Index";
 import climate from "./climate/Index";
 
-
 export default {
-  ...realtime,
-  ...baselines,
-  ...barchart,
-  ...continents,
-  ...currency,
-  ...cycling,
-  ...ddos,
-  ...outages,
-  ...stockchart,
-  ...traffic,
-  ...weather,
-  ...wind,
-  ...volume,
-  ...nyc,
-  ...climate
+    ...realtime,
+    ...baselines,
+    ...barchart,
+    ...continents,
+    ...currency,
+    ...cycling,
+    ...ddos,
+    ...outages,
+    ...stockchart,
+    ...traffic,
+    ...weather,
+    ...wind,
+    ...volume,
+    ...nyc,
+    ...climate
 };

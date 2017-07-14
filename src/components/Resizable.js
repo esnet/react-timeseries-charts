@@ -17,46 +17,46 @@ import PropTypes from "prop-types";
  * a chart or other svg diagram and have this drive the chart width.
  */
 export default class Resizable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { width: 0 };
-  }
-
-  componentDidMount() {
-    window.addEventListener("resize", () => this.handleResize());
-    this.handleResize();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", () => this.handleResize());
-  }
-
-  handleResize() {
-    if (this.container) {
-      this.setState({
-        width: this.container.offsetWidth
-      });
+    constructor(props) {
+        super(props);
+        this.state = { width: 0 };
     }
-  }
 
-  render() {
-    const child = React.Children.only(this.props.children);
-    const childElement = this.state.width
-      ? React.cloneElement(child, { width: this.state.width })
-      : null;
-    return (
-      <div
-        ref={c => {
-          this.container = c;
-        }}
-        {...this.props}
-      >
-        {childElement}
-      </div>
-    );
-  }
+    componentDidMount() {
+        window.addEventListener("resize", () => this.handleResize());
+        this.handleResize();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", () => this.handleResize());
+    }
+
+    handleResize() {
+        if (this.container) {
+            this.setState({
+                width: this.container.offsetWidth
+            });
+        }
+    }
+
+    render() {
+        const child = React.Children.only(this.props.children);
+        const childElement = this.state.width
+            ? React.cloneElement(child, { width: this.state.width })
+            : null;
+        return (
+            <div
+                ref={c => {
+                    this.container = c;
+                }}
+                {...this.props}
+            >
+                {childElement}
+            </div>
+        );
+    }
 }
 
 Resizable.propTypes = {
-  children: PropTypes.node
+    children: PropTypes.node
 };

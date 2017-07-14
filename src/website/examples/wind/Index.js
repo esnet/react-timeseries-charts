@@ -85,14 +85,10 @@ const wind = React.createClass({
         let text = `Speed: - mph, time: -:--`;
         let infoValues = [];
         if (highlight) {
-            const speedText = `${formatter(
-                highlight.event.get(highlight.column)
-            )} mph`;
+            const speedText = `${formatter(highlight.event.get(highlight.column))} mph`;
             text = `
                 Speed: ${speedText},
-                time: ${this.state.highlight.event
-                .timestamp()
-                .toLocaleTimeString()}
+                time: ${this.state.highlight.event.timestamp().toLocaleTimeString()}
             `;
             infoValues = [{ label: "Speed", value: speedText }];
         }
@@ -110,9 +106,7 @@ const wind = React.createClass({
         ];
 
         const perEventStyle = (column, event) => {
-            const color = heat[
-                Math.floor((1 - event.get("station1") / 40) * 9)
-            ];
+            const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
             return {
                 normal: {
                     fill: color,
@@ -154,10 +148,8 @@ const wind = React.createClass({
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 enablePanZoom={true}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
-                                onTimeRangeChanged={timerange =>
-                                    this.setState({ timerange })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
+                                onTimeRangeChanged={timerange => this.setState({ timerange })}
                             >
                                 <ChartRow height="150" debug={false}>
                                     <YAxis
@@ -185,10 +177,8 @@ const wind = React.createClass({
                                             }}
                                             format=".1f"
                                             selected={this.state.selection}
-                                            onSelectionChange={
-                                                (p) => this.handleSelectionChanged(p)
-                                            }
-                                            onMouseNear={(p) => this.handleMouseNear(p)}
+                                            onSelectionChange={p => this.handleSelectionChanged(p)}
+                                            onMouseNear={p => this.handleMouseNear(p)}
                                             highlight={this.state.highlight}
                                             radius={(event, column) =>
                                                 column === "station1" ? 3 : 2}

@@ -18,10 +18,10 @@ import EventMarker from "./EventMarker";
 import { Styler } from "../js/styler";
 
 const defaultStyle = {
-  normal: { fill: "steelblue", opacity: 0.8 },
-  highlighted: { fill: "steelblue", opacity: 1.0 },
-  selected: { fill: "steelblue", opacity: 1.0 },
-  muted: { fill: "steelblue", opacity: 0.4 }
+    normal: { fill: "steelblue", opacity: 0.8 },
+    highlighted: { fill: "steelblue", opacity: 1.0 },
+    selected: { fill: "steelblue", opacity: 1.0 },
+    muted: { fill: "steelblue", opacity: 0.4 }
 };
 
 /**
@@ -134,221 +134,212 @@ const defaultStyle = {
  * {label, value} pairs.
  */
 export default class BarChart extends React.Component {
-  handleHover(e, event, column) {
-    const bar = { event, column };
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(bar);
+    handleHover(e, event, column) {
+        const bar = { event, column };
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(bar);
+        }
     }
-  }
 
-  handleHoverLeave() {
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(null);
+    handleHoverLeave() {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(null);
+        }
     }
-  }
 
-  handleClick(e, event, column) {
-    const bar = { event, column };
-    if (this.props.onSelectionChange) {
-      this.props.onSelectionChange(bar);
+    handleClick(e, event, column) {
+        const bar = { event, column };
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(bar);
+        }
+        e.stopPropagation();
     }
-    e.stopPropagation();
-  }
 
-  providedStyleMap(column) {
-    let style = {};
-    if (this.props.style) {
-      if (this.props.style instanceof Styler) {
-        style = this.props.style.barChartStyle()[column];
-      } else if (_.isFunction(this.props.style)) {
-        style = this.props.style(column);
-      } else if (_.isObject(this.props.style)) {
-        style = this.props.style ? this.props.style[column] : defaultStyle;
-      }
+    providedStyleMap(column) {
+        let style = {};
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.barChartStyle()[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
+            }
+        }
+        return style;
     }
-    return style;
-  }
 
-  /**
+    /**
    * Returns the style used for drawing the path
    */
-  style(column, event) {
-    let style;
-    const styleMap = this.providedStyleMap(column);
+    style(column, event) {
+        let style;
+        const styleMap = this.providedStyleMap(column);
 
-    const isHighlighted = this.props.highlighted &&
-      column === this.props.highlighted.column &&
-      Event.is(this.props.highlighted.event, event);
-
-    const isSelected = this.props.selected &&
-      column === this.props.selected.column &&
-      Event.is(this.props.selected.event, event);
-
-    if (this.props.selected) {
-      if (isSelected) {
-        style = merge(
-          true,
-          defaultStyle.selected,
-          styleMap.selected ? styleMap.selected : {}
-        );
-      } else if (isHighlighted) {
-        style = merge(
-          true,
-          defaultStyle.highlighted,
-          styleMap.highlighted ? styleMap.highlighted : {}
-        );
-      } else {
-        style = merge(
-          true,
-          defaultStyle.muted,
-          styleMap.muted ? styleMap.muted : {}
-        );
-      }
-    } else if (isHighlighted) {
-      style = merge(
-        true,
-        defaultStyle.highlighted,
-        styleMap.highlighted ? styleMap.highlighted : {}
-      );
-    } else {
-      style = merge(
-        true,
-        defaultStyle.normal,
-        styleMap.normal ? styleMap.normal : {}
-      );
-    }
-
-    return style;
-  }
-
-  renderBars() {
-    const spacing = +this.props.spacing;
-    const offset = +this.props.offset;
-    const series = this.props.series;
-    const timeScale = this.props.timeScale;
-    const yScale = this.props.yScale;
-    const columns = this.props.columns || ["value"];
-
-    const bars = [];
-    let eventMarker;
-
-    for (const event of series.events()) {
-      const begin = event.begin();
-      const end = event.end();
-      const beginPos = timeScale(begin) + spacing;
-      const endPos = timeScale(end) - spacing;
-
-      let width;
-      if (this.props.size) {
-        width = this.props.size;
-      } else {
-        width = endPos - beginPos;
-      }
-
-      if (width < 1) {
-        width = 1;
-      }
-
-      let x;
-      if (this.props.size) {
-        const center = timeScale(begin) +
-          (timeScale(end) - timeScale(begin)) / 2;
-        x = center - this.props.size / 2 + offset;
-      } else {
-        x = timeScale(begin) + spacing + offset;
-      }
-
-      const yBase = yScale(0);
-      let yposPositive = yBase;
-      let yposNegative = yBase;
-      if (columns) {
-        for (const column of columns) {
-          const index = event.index();
-          const key = `${series.name()}-${index}-${column}`;
-          const value = event.get(column);
-          const style = this.style(column, event);
-
-          let height = yScale(0) - yScale(value);
-          // Allow negative values. Minimum bar height = 1 pixel.
-          // Stack negative bars below X-axis and positive above X-Axis
-          const positiveBar = height >= 0;
-          height = Math.max(Math.abs(height), 1);
-          const y = positiveBar ? yposPositive - height : yposNegative;
-
-          // Event marker if info provided and hovering
-          const isHighlighted = this.props.highlighted &&
+        const isHighlighted = this.props.highlighted &&
             column === this.props.highlighted.column &&
             Event.is(this.props.highlighted.event, event);
-          if (isHighlighted && this.props.info) {
-            eventMarker = (
-              <EventMarker
-                {...this.props}
-                event={event}
-                column={column}
-                offsetX={offset}
-                offsetY={yBase - (positiveBar ? yposPositive : yposNegative)}
-              />
+
+        const isSelected = this.props.selected &&
+            column === this.props.selected.column &&
+            Event.is(this.props.selected.event, event);
+
+        if (this.props.selected) {
+            if (isSelected) {
+                style = merge(
+                    true,
+                    defaultStyle.selected,
+                    styleMap.selected ? styleMap.selected : {}
+                );
+            } else if (isHighlighted) {
+                style = merge(
+                    true,
+                    defaultStyle.highlighted,
+                    styleMap.highlighted ? styleMap.highlighted : {}
+                );
+            } else {
+                style = merge(true, defaultStyle.muted, styleMap.muted ? styleMap.muted : {});
+            }
+        } else if (isHighlighted) {
+            style = merge(
+                true,
+                defaultStyle.highlighted,
+                styleMap.highlighted ? styleMap.highlighted : {}
             );
-          }
-
-          const box = { x, y, width, height };
-          const barProps = { key, ...box, style };
-
-          if (this.props.onSelectionChange) {
-            barProps.onClick = e => this.handleClick(e, event, column);
-          }
-          if (this.props.onHighlightChange) {
-            barProps.onMouseMove = e => this.handleHover(e, event, column);
-            barProps.onMouseLeave = () => this.handleHoverLeave();
-          }
-
-          bars.push(<rect {...barProps} />);
-
-          if (positiveBar) {
-            yposPositive -= height;
-          } else {
-            yposNegative += height;
-          }
+        } else {
+            style = merge(true, defaultStyle.normal, styleMap.normal ? styleMap.normal : {});
         }
-      }
-    }
-    return (
-      <g>
-        {bars}
-        {eventMarker}
-      </g>
-    );
-  }
 
-  render() {
-    return (
-      <g>
-        {this.renderBars()}
-      </g>
-    );
-  }
+        return style;
+    }
+
+    renderBars() {
+        const spacing = +this.props.spacing;
+        const offset = +this.props.offset;
+        const series = this.props.series;
+        const timeScale = this.props.timeScale;
+        const yScale = this.props.yScale;
+        const columns = this.props.columns || ["value"];
+
+        const bars = [];
+        let eventMarker;
+
+        for (const event of series.events()) {
+            const begin = event.begin();
+            const end = event.end();
+            const beginPos = timeScale(begin) + spacing;
+            const endPos = timeScale(end) - spacing;
+
+            let width;
+            if (this.props.size) {
+                width = this.props.size;
+            } else {
+                width = endPos - beginPos;
+            }
+
+            if (width < 1) {
+                width = 1;
+            }
+
+            let x;
+            if (this.props.size) {
+                const center = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
+                x = center - this.props.size / 2 + offset;
+            } else {
+                x = timeScale(begin) + spacing + offset;
+            }
+
+            const yBase = yScale(0);
+            let yposPositive = yBase;
+            let yposNegative = yBase;
+            if (columns) {
+                for (const column of columns) {
+                    const index = event.index();
+                    const key = `${series.name()}-${index}-${column}`;
+                    const value = event.get(column);
+                    const style = this.style(column, event);
+
+                    let height = yScale(0) - yScale(value);
+                    // Allow negative values. Minimum bar height = 1 pixel.
+                    // Stack negative bars below X-axis and positive above X-Axis
+                    const positiveBar = height >= 0;
+                    height = Math.max(Math.abs(height), 1);
+                    const y = positiveBar ? yposPositive - height : yposNegative;
+
+                    // Event marker if info provided and hovering
+                    const isHighlighted = this.props.highlighted &&
+                        column === this.props.highlighted.column &&
+                        Event.is(this.props.highlighted.event, event);
+                    if (isHighlighted && this.props.info) {
+                        eventMarker = (
+                            <EventMarker
+                                {...this.props}
+                                event={event}
+                                column={column}
+                                offsetX={offset}
+                                offsetY={yBase - (positiveBar ? yposPositive : yposNegative)}
+                            />
+                        );
+                    }
+
+                    const box = { x, y, width, height };
+                    const barProps = { key, ...box, style };
+
+                    if (this.props.onSelectionChange) {
+                        barProps.onClick = e => this.handleClick(e, event, column);
+                    }
+                    if (this.props.onHighlightChange) {
+                        barProps.onMouseMove = e => this.handleHover(e, event, column);
+                        barProps.onMouseLeave = () => this.handleHoverLeave();
+                    }
+
+                    bars.push(<rect {...barProps} />);
+
+                    if (positiveBar) {
+                        yposPositive -= height;
+                    } else {
+                        yposNegative += height;
+                    }
+                }
+            }
+        }
+        return (
+            <g>
+                {bars}
+                {eventMarker}
+            </g>
+        );
+    }
+
+    render() {
+        return (
+            <g>
+                {this.renderBars()}
+            </g>
+        );
+    }
 }
 
 BarChart.propTypes = {
-  /**
+    /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
    * data to visualize
    */
-  series: PropTypes.instanceOf(TimeSeries).isRequired,
-  /**
+    series: PropTypes.instanceOf(TimeSeries).isRequired,
+    /**
    * The distance in pixels to inset the bar chart from its actual timerange
    */
-  spacing: PropTypes.number,
-  /**
+    spacing: PropTypes.number,
+    /**
    * The distance in pixels to offset the bar from its center position within the timerange
    * it represents
    */
-  offset: PropTypes.number,
-  /**
+    offset: PropTypes.number,
+    /**
    * A list of columns within the series that will be stacked on top of each other
    */
-  columns: PropTypes.arrayOf(PropTypes.string),
-  /**
+    columns: PropTypes.arrayOf(PropTypes.string),
+    /**
    * The style of the bar chart drawing (using SVG CSS properties).
    * This is an object with a key for each column which is being drawn,
    * per the `columns` prop. For each column a style is defined for
@@ -385,34 +376,32 @@ BarChart.propTypes = {
    * four states (normal, highlighted, selected and muted) and the corresponding
    * CSS properties.
    */
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.func,
-    PropTypes.instanceOf(Styler)
-  ]),
-  /**
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
+    /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string, //eslint-disable-line
-      value: PropTypes.string //eslint-disable-line
-  })),
-  /**
+    info: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string, //eslint-disable-line
+            value: PropTypes.string //eslint-disable-line
+        })
+    ),
+    /**
    * The style of the info box itself. Typically you'd want to
    * specify a fill color, and stroke color / width here.
    */
-  infoStyle: PropTypes.object, //eslint-disable-line
-  /**
+    infoStyle: PropTypes.object, //eslint-disable-line
+    /**
    * The width of the info box
    */
-  infoWidth: PropTypes.number, //eslint-disable-line
-  /**
+    infoWidth: PropTypes.number, //eslint-disable-line
+    /**
    * The height of the info box
    */
-  infoHeight: PropTypes.number, //eslint-disable-line
-  /**
+    infoHeight: PropTypes.number, //eslint-disable-line
+    /**
    * Alter the format of the timestamp shown on the info box.
    * This may be either a function or a string. If you provide a function
    * that will be passed an Index and should return a string. For example:
@@ -422,81 +411,82 @@ BarChart.propTypes = {
    * Alternatively you can pass in a d3 format string. That will be applied
    * to the begin time of the Index range.
    */
-  infoTimeFormat: PropTypes.oneOfType([ //eslint-disable-line
-    PropTypes.string, //eslint-disable-line
-    PropTypes.func //eslint-disable-line
-  ]),
-  /**
+    infoTimeFormat: PropTypes.oneOfType([
+        //eslint-disable-line
+        PropTypes.string, //eslint-disable-line
+        PropTypes.func //eslint-disable-line
+    ]),
+    /**
    * The radius of the infoBox dot at the end of the marker
    */
-  markerRadius: PropTypes.number,
-  /**
+    markerRadius: PropTypes.number,
+    /**
    * The style of the infoBox dot at the end of the marker
    */
-  markerStyle: PropTypes.object,
-  /**
+    markerStyle: PropTypes.object,
+    /**
    * If size is specified, then the bar will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  size: PropTypes.number,
-  /**
+    size: PropTypes.number,
+    /**
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
    *
    * See also `onSelectionChange`
    */
-  selected: PropTypes.shape({
-    event: PropTypes.instanceOf(IndexedEvent),
-    column: PropTypes.string
-  }),
-  /**
+    selected: PropTypes.shape({
+        event: PropTypes.instanceOf(IndexedEvent),
+        column: PropTypes.string
+    }),
+    /**
    * A callback that will be called when the selection changes. It will be called
    * with an object containing the event and column.
    */
-  onSelectionChange: PropTypes.func,
-  /**
+    onSelectionChange: PropTypes.func,
+    /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
-  highlighted: PropTypes.shape({
-    event: PropTypes.instanceOf(IndexedEvent),
-    column: PropTypes.string
-  }),
-  /**
+    highlighted: PropTypes.shape({
+        event: PropTypes.instanceOf(IndexedEvent),
+        column: PropTypes.string
+    }),
+    /**
    * A callback that will be called when the hovered over bar changes.
    * It will be called with an object containing the event and column.
    */
-  onHighlightChange: PropTypes.func,
-  /**
+    onHighlightChange: PropTypes.func,
+    /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: PropTypes.func,
-  /**
+    timeScale: PropTypes.func,
+    /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: PropTypes.func
+    yScale: PropTypes.func
 };
 
 BarChart.defaultProps = {
-  columns: ["value"],
-  spacing: 1.0,
-  offset: 0,
-  infoStyle: {
-    stroke: "#999",
-    fill: "white",
-    opacity: 0.90,
-    pointerEvents: "none"
-  },
-  stemStyle: {
-    stroke: "#999",
-    cursor: "crosshair",
-    pointerEvents: "none"
-  },
-  markerStyle: {
-    fill: "#999"
-  },
-  markerRadius: 2,
-  infoWidth: 90,
-  infoHeight: 30
+    columns: ["value"],
+    spacing: 1.0,
+    offset: 0,
+    infoStyle: {
+        stroke: "#999",
+        fill: "white",
+        opacity: 0.90,
+        pointerEvents: "none"
+    },
+    stemStyle: {
+        stroke: "#999",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    },
+    markerStyle: {
+        fill: "#999"
+    },
+    markerRadius: 2,
+    infoWidth: 90,
+    infoHeight: 30
 };

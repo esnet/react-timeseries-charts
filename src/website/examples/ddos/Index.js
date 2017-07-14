@@ -116,22 +116,11 @@ const ddos = React.createClass({
             }
         };
 
-        const requestsAxisStyle = merge(
-            true,
-            axisStyle,
-            style.axisStyle("requests")
-        );
-        const connectionsAxisStyle = merge(
-            true,
-            axisStyle,
-            style.axisStyle("connections")
-        );
+        const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
+        const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
 
         return (
-            <ChartContainer
-                timeRange={requestsSeries.range()}
-                timeAxisStyle={axisStyle}
-            >
+            <ChartContainer timeRange={requestsSeries.range()} timeAxisStyle={axisStyle}>
                 <ChartRow height="300">
                     <YAxis
                         id="axis1"

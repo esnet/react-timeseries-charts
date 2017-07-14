@@ -12,129 +12,120 @@ import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Event,
-  TimeEvent,
-  IndexedEvent,
-  max,
-  median,
-  min,
-  percentile,
-  TimeSeries
-} from "pondjs";
+import { Event, TimeEvent, IndexedEvent, max, median, min, percentile, TimeSeries } from "pondjs";
 
 import EventMarker from "./EventMarker";
 import { Styler } from "../js/styler";
 import { scaleAsString } from "../js/util";
 
 const defaultFillStyle = {
-  fill: "steelblue",
-  stroke: "none"
+    fill: "steelblue",
+    stroke: "none"
 };
 
 const defaultMutedStyle = {
-  fill: "grey",
-  stroke: "none"
+    fill: "grey",
+    stroke: "none"
 };
 
 const defaultStyle = [
-  {
-    normal: { ...defaultFillStyle, opacity: 0.2 },
-    highlighted: { ...defaultFillStyle, opacity: 0.3 },
-    selected: { ...defaultFillStyle, opacity: 0.3 },
-    muted: { ...defaultMutedStyle, opacity: 0.1 }
-  },
-  {
-    normal: { ...defaultFillStyle, opacity: 0.5 },
-    highlighted: { ...defaultFillStyle, opacity: 0.6 },
-    selected: { ...defaultFillStyle, opacity: 0.6 },
-    muted: { ...defaultMutedStyle, opacity: 0.2 }
-  },
-  {
-    normal: { ...defaultFillStyle, opacity: 0.9 },
-    highlighted: { ...defaultFillStyle, opacity: 1.0 },
-    selected: { ...defaultFillStyle, opacity: 1.0 },
-    muted: { ...defaultMutedStyle, opacity: 0.2 }
-  }
+    {
+        normal: { ...defaultFillStyle, opacity: 0.2 },
+        highlighted: { ...defaultFillStyle, opacity: 0.3 },
+        selected: { ...defaultFillStyle, opacity: 0.3 },
+        muted: { ...defaultMutedStyle, opacity: 0.1 }
+    },
+    {
+        normal: { ...defaultFillStyle, opacity: 0.5 },
+        highlighted: { ...defaultFillStyle, opacity: 0.6 },
+        selected: { ...defaultFillStyle, opacity: 0.6 },
+        muted: { ...defaultMutedStyle, opacity: 0.2 }
+    },
+    {
+        normal: { ...defaultFillStyle, opacity: 0.9 },
+        highlighted: { ...defaultFillStyle, opacity: 1.0 },
+        selected: { ...defaultFillStyle, opacity: 1.0 },
+        muted: { ...defaultMutedStyle, opacity: 0.2 }
+    }
 ];
 
 const defaultAggregation = {
-  size: "5m",
-  reducers: {
-    outer: [min(), max()],
-    inner: [percentile(25), percentile(75)],
-    center: median()
-  }
+    size: "5m",
+    reducers: {
+        outer: [min(), max()],
+        inner: [percentile(25), percentile(75)],
+        center: median()
+    }
 };
 
 function getSeries(series, column) {
-  return series.map(e => {
-    const v = e.get(column);
-    const d = {};
-    switch (v.length) {
-      case 1:
-        d.center = v[0];
-        break;
-      case 2:
-        d.innerMin = v[0];
-        d.innerMax = v[1];
-        break;
-      case 3:
-        d.innerMin = v[0];
-        d.center = v[1];
-        d.innerMax = v[2];
-        break;
-      case 4:
-        d.outerMin = v[0];
-        d.innerMin = v[1];
-        d.innerMax = v[2];
-        d.outerMax = v[3];
-        break;
-      case 5:
-        d.outerMin = v[0];
-        d.innerMin = v[1];
-        d.center = v[2];
-        d.innerMax = v[3];
-        d.outerMax = v[4];
-        break;
-      default:
-        console.error("Tried to make boxchart from invalid array");
-    }
-    const ee = new IndexedEvent(e.index(), d);
-    return ee;
-  });
+    return series.map(e => {
+        const v = e.get(column);
+        const d = {};
+        switch (v.length) {
+            case 1:
+                d.center = v[0];
+                break;
+            case 2:
+                d.innerMin = v[0];
+                d.innerMax = v[1];
+                break;
+            case 3:
+                d.innerMin = v[0];
+                d.center = v[1];
+                d.innerMax = v[2];
+                break;
+            case 4:
+                d.outerMin = v[0];
+                d.innerMin = v[1];
+                d.innerMax = v[2];
+                d.outerMax = v[3];
+                break;
+            case 5:
+                d.outerMin = v[0];
+                d.innerMin = v[1];
+                d.center = v[2];
+                d.innerMax = v[3];
+                d.outerMax = v[4];
+                break;
+            default:
+                console.error("Tried to make boxchart from invalid array");
+        }
+        const ee = new IndexedEvent(e.index(), d);
+        return ee;
+    });
 }
 
 function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
-  const { size, reducers } = aggregation;
-  const { inner, outer, center } = reducers;
+    const { size, reducers } = aggregation;
+    const { inner, outer, center } = reducers;
 
-  function mapColumn(c, r) {
-    const obj = {};
-    obj[c] = r;
-    return obj;
-  }
+    function mapColumn(c, r) {
+        const obj = {};
+        obj[c] = r;
+        return obj;
+    }
 
-  const fixedWindowAggregation = {};
+    const fixedWindowAggregation = {};
 
-  if (inner) {
-    fixedWindowAggregation.innerMin = mapColumn(column, inner[0]);
-    fixedWindowAggregation.innerMax = mapColumn(column, inner[1]);
-  }
+    if (inner) {
+        fixedWindowAggregation.innerMin = mapColumn(column, inner[0]);
+        fixedWindowAggregation.innerMax = mapColumn(column, inner[1]);
+    }
 
-  if (outer) {
-    fixedWindowAggregation.outerMin = mapColumn(column, outer[0]);
-    fixedWindowAggregation.outerMax = mapColumn(column, outer[1]);
-  }
+    if (outer) {
+        fixedWindowAggregation.outerMin = mapColumn(column, outer[0]);
+        fixedWindowAggregation.outerMax = mapColumn(column, outer[1]);
+    }
 
-  if (center) {
-    fixedWindowAggregation.center = mapColumn(column, center);
-  }
+    if (center) {
+        fixedWindowAggregation.center = mapColumn(column, center);
+    }
 
-  return series.fixedWindowRollup({
-    windowSize: size,
-    aggregation: fixedWindowAggregation
-  });
+    return series.fixedWindowRollup({
+        windowSize: size,
+        aggregation: fixedWindowAggregation
+    });
 }
 
 /**
@@ -209,461 +200,442 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
  * specification you will get events for the rollup, not your original data.
  */
 export default class BoxChart extends React.Component {
-  constructor(props) {
-    super(props);
-    if (
-      props.series._collection._type === TimeEvent // eslint-disable-line
-    ) {
-      this.series = getAggregatedSeries(
-        props.series,
-        props.column,
-        props.aggregation
-      );
-    } else {
-      this.series = getSeries(props.series, props.column);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const aggregation = nextProps.aggregation;
-
-    let aggregationChanged = false;
-    if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
-      aggregationChanged = true;
+    constructor(props) {
+        super(props);
+        if (
+            props.series._collection._type === TimeEvent // eslint-disable-line
+        ) {
+            this.series = getAggregatedSeries(props.series, props.column, props.aggregation);
+        } else {
+            this.series = getSeries(props.series, props.column);
+        }
     }
 
-    if (aggregation && this.props.aggregation) {
-      if (aggregation.size !== this.props.aggregation.size) {
-        aggregationChanged = true;
-      }
+    componentWillReceiveProps(nextProps) {
+        const aggregation = nextProps.aggregation;
+
+        let aggregationChanged = false;
+        if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
+            aggregationChanged = true;
+        }
+
+        if (aggregation && this.props.aggregation) {
+            if (aggregation.size !== this.props.aggregation.size) {
+                aggregationChanged = true;
+            }
+        }
+
+        if (aggregationChanged) {
+            this.series = getAggregatedSeries(
+                nextProps.series,
+                nextProps.column,
+                nextProps.aggregation
+            );
+        }
     }
 
-    if (aggregationChanged) {
-      this.series = getAggregatedSeries(
-        nextProps.series,
-        nextProps.column,
-        nextProps.aggregation
-      );
+    shouldComponentUpdate(nextProps) {
+        const newSeries = nextProps.series;
+        const oldSeries = this.props.series;
+        const width = nextProps.width;
+        const timeScale = nextProps.timeScale;
+        const yScale = nextProps.yScale;
+        const column = nextProps.column;
+        const style = nextProps.style;
+        const aggregation = nextProps.aggregation;
+        const highlighted = nextProps.highlighted;
+        const selected = nextProps.selected;
+
+        const widthChanged = this.props.width !== width;
+        const timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
+        const yAxisScaleChanged = this.props.yScale !== yScale;
+        const columnChanged = this.props.column !== column;
+        const styleChanged = JSON.stringify(this.props.style) !== JSON.stringify(style);
+        const highlightedChanged = this.props.highlighted !== highlighted;
+        const selectedChanged = this.props.selected !== selected;
+
+        let aggregationChanged = false;
+        if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
+            aggregationChanged = true;
+        }
+
+        if (aggregation && this.props.aggregation) {
+            if (aggregation.size !== this.props.aggregation.size) {
+                aggregationChanged = true;
+            }
+        }
+
+        let seriesChanged = false;
+        if (oldSeries.length !== newSeries.length) {
+            seriesChanged = true;
+        } else {
+            seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+        }
+
+        // If the series changes we need to rebuild this.series with
+        // the incoming props
+        if (seriesChanged) {
+            if (
+                nextProps.series._collection._type === TimeEvent // eslint-disable-line
+            ) {
+                this.series = getAggregatedSeries(
+                    nextProps.series,
+                    nextProps.column,
+                    nextProps.aggregation
+                );
+            } else {
+                this.series = getSeries(nextProps.series, nextProps.column);
+            }
+        }
+
+        return seriesChanged ||
+            timeScaleChanged ||
+            widthChanged ||
+            columnChanged ||
+            styleChanged ||
+            yAxisScaleChanged ||
+            aggregationChanged ||
+            highlightedChanged ||
+            selectedChanged;
     }
-  }
 
-  shouldComponentUpdate(nextProps) {
-    const newSeries = nextProps.series;
-    const oldSeries = this.props.series;
-    const width = nextProps.width;
-    const timeScale = nextProps.timeScale;
-    const yScale = nextProps.yScale;
-    const column = nextProps.column;
-    const style = nextProps.style;
-    const aggregation = nextProps.aggregation;
-    const highlighted = nextProps.highlighted;
-    const selected = nextProps.selected;
-
-    const widthChanged = this.props.width !== width;
-    const timeScaleChanged = scaleAsString(this.props.timeScale) !==
-      scaleAsString(timeScale);
-    const yAxisScaleChanged = this.props.yScale !== yScale;
-    const columnChanged = this.props.column !== column;
-    const styleChanged = JSON.stringify(this.props.style) !==
-      JSON.stringify(style);
-    const highlightedChanged = this.props.highlighted !== highlighted;
-    const selectedChanged = this.props.selected !== selected;
-
-    let aggregationChanged = false;
-    if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
-      aggregationChanged = true;
+    handleHover(e, event) {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(event);
+        }
     }
 
-    if (aggregation && this.props.aggregation) {
-      if (aggregation.size !== this.props.aggregation.size) {
-        aggregationChanged = true;
-      }
+    handleHoverLeave() {
+        if (this.props.onHighlightChange) {
+            this.props.onHighlightChange(null);
+        }
     }
 
-    let seriesChanged = false;
-    if (oldSeries.length !== newSeries.length) {
-      seriesChanged = true;
-    } else {
-      seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+    handleClick(e, event) {
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(event);
+        }
+        e.stopPropagation();
     }
 
-    // If the series changes we need to rebuild this.series with
-    // the incoming props
-    if (seriesChanged) {
-      if (
-        nextProps.series._collection._type === TimeEvent // eslint-disable-line
-      ) {
-        this.series = getAggregatedSeries(
-          nextProps.series,
-          nextProps.column,
-          nextProps.aggregation
-        );
-      } else {
-        this.series = getSeries(nextProps.series, nextProps.column);
-      }
+    providedStyleArray(column) {
+        let style = defaultStyle;
+        if (this.props.style) {
+            if (this.props.style instanceof Styler) {
+                style = this.props.style.boxChartStyle()[column];
+            } else if (_.isFunction(this.props.style)) {
+                style = this.props.style(column);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
+            }
+        }
+        return style;
     }
 
-    return seriesChanged ||
-      timeScaleChanged ||
-      widthChanged ||
-      columnChanged ||
-      styleChanged ||
-      yAxisScaleChanged ||
-      aggregationChanged ||
-      highlightedChanged ||
-      selectedChanged;
-  }
-
-  handleHover(e, event) {
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(event);
-    }
-  }
-
-  handleHoverLeave() {
-    if (this.props.onHighlightChange) {
-      this.props.onHighlightChange(null);
-    }
-  }
-
-  handleClick(e, event) {
-    if (this.props.onSelectionChange) {
-      this.props.onSelectionChange(event);
-    }
-    e.stopPropagation();
-  }
-
-  providedStyleArray(column) {
-    let style = defaultStyle;
-    if (this.props.style) {
-      if (this.props.style instanceof Styler) {
-        style = this.props.style.boxChartStyle()[column];
-      } else if (_.isFunction(this.props.style)) {
-        style = this.props.style(column);
-      } else if (_.isObject(this.props.style)) {
-        style = this.props.style ? this.props.style[column] : defaultStyle;
-      }
-    }
-    return style;
-  }
-
-  /**
+    /**
    * Returns the style used for drawing the path
    */
-  style(column, event, level) {
-    let style;
-    if (!this.providedStyle) {
-      this.providedStyle = this.providedStyleArray(this.props.column);
+    style(column, event, level) {
+        let style;
+        if (!this.providedStyle) {
+            this.providedStyle = this.providedStyleArray(this.props.column);
+        }
+
+        if (
+            !_.isNull(this.providedStyle) &&
+            (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)
+        ) {
+            console.warn("Provided style to BoxChart should be an array of 3 objects");
+            return defaultStyle;
+        }
+
+        const isHighlighted = this.props.highlighted && Event.is(this.props.highlighted, event);
+
+        const isSelected = this.props.selected && Event.is(this.props.selected, event);
+
+        if (this.props.selected) {
+            if (isSelected) {
+                if (!this.selectedStyle || !this.selectedStyle[level]) {
+                    if (!this.selectedStyle) {
+                        this.selectedStyle = [];
+                    }
+                    this.selectedStyle[level] = merge(
+                        true,
+                        defaultStyle[level].selected,
+                        this.providedStyle[level].selected ? this.providedStyle[level].selected : {}
+                    );
+                }
+                style = this.selectedStyle[level];
+            } else if (isHighlighted) {
+                if (!this.highlightedStyle || !this.highlightedStyle[level]) {
+                    if (!this.highlightedStyle) {
+                        this.highlightedStyle = [];
+                    }
+                    this.highlightedStyle[level] = merge(
+                        true,
+                        defaultStyle[level].highlighted,
+                        this.providedStyle[level].highlighted
+                            ? this.providedStyle[level].highlighted
+                            : {}
+                    );
+                }
+                style = this.highlightedStyle[level];
+            } else {
+                if (!this.mutedStyle) {
+                    this.mutedStyle = [];
+                }
+                if (!this.mutedStyle[level]) {
+                    this.mutedStyle[level] = merge(
+                        true,
+                        defaultStyle[level].muted,
+                        this.providedStyle[level].muted ? this.providedStyle[level].muted : {}
+                    );
+                }
+                style = this.mutedStyle[level];
+            }
+        } else if (isHighlighted) {
+            style = merge(
+                true,
+                defaultStyle[level].highlighted,
+                this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {}
+            );
+        } else {
+            if (!this.normalStyle) {
+                this.normalStyle = [];
+            }
+            if (!this.normalStyle[level]) {
+                this.normalStyle[level] = merge(
+                    true,
+                    defaultStyle[level].normal,
+                    this.providedStyle[level].normal ? this.providedStyle[level].normal : {}
+                );
+            }
+            style = this.normalStyle[level];
+        }
+        return style;
     }
 
-    if (
-      !_.isNull(this.providedStyle) &&
-        (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)
-    ) {
-      console.warn(
-        "Provided style to BoxChart should be an array of 3 objects"
-      );
-      return defaultStyle;
-    }
+    renderBars() {
+        const {
+            timeScale,
+            yScale,
+            column
+        } = this.props;
 
-    const isHighlighted = this.props.highlighted &&
-      Event.is(this.props.highlighted, event);
+        const innerSpacing = +this.props.innerSpacing;
+        const outerSpacing = +this.props.outerSpacing;
+        const innerSize = +this.props.innerSize;
+        const outerSize = +this.props.outerSize;
 
-    const isSelected = this.props.selected &&
-      Event.is(this.props.selected, event);
+        const bars = [];
+        let eventMarker;
 
-    if (this.props.selected) {
-      if (isSelected) {
-        if (!this.selectedStyle || !this.selectedStyle[level]) {
-          if (!this.selectedStyle) {
-            this.selectedStyle = [];
-          }
-          this.selectedStyle[level] = merge(
-            true,
-            defaultStyle[level].selected,
-            this.providedStyle[level].selected
-              ? this.providedStyle[level].selected
-              : {}
-          );
+        for (const event of this.series.events()) {
+            const index = event.index();
+            const begin = event.begin();
+            const end = event.end();
+            const d = event.data();
+
+            const beginPosInner = timeScale(begin) + innerSpacing;
+            const endPosInner = timeScale(end) - innerSpacing;
+
+            const beginPosOuter = timeScale(begin) + outerSpacing;
+            const endPosOuter = timeScale(end) - outerSpacing;
+
+            let innerWidth = innerSize || endPosInner - beginPosInner;
+            if (innerWidth < 1) {
+                innerWidth = 1;
+            }
+
+            let outerWidth = outerSize || endPosOuter - beginPosOuter;
+            if (outerWidth < 1) {
+                outerWidth = 1;
+            }
+
+            const c = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
+
+            let xInner = timeScale(begin) + innerSpacing;
+            if (innerSize) {
+                xInner = c - innerSize / 2;
+            }
+
+            let xOuter = timeScale(begin) + outerSpacing;
+            if (outerSize) {
+                xOuter = c - outerSize / 2;
+            }
+
+            const styles = [];
+            styles[0] = this.style(column, event, 0);
+            styles[1] = this.style(column, event, 1);
+            styles[2] = this.style(column, event, 2);
+
+            const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
+            const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
+            const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
+            const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
+            const center = d.has("center") ? yScale(event.get("center")) : null;
+
+            let hasInner = true;
+            let hasOuter = true;
+            let hasCenter = true;
+            if (_.isNull(innerMin) || _.isNull(innerMax)) {
+                hasInner = false;
+            }
+            if (_.isNull(outerMin) || _.isNull(outerMax)) {
+                hasOuter = false;
+            }
+            if (_.isNull(center)) {
+                hasCenter = false;
+            }
+
+            let ymax = 0;
+            if (hasOuter) {
+                let level = 0;
+                if (!hasInner) {
+                    level += 1;
+                }
+                if (!hasCenter) {
+                    level += 1;
+                }
+                const keyOuter = `${this.series.name()}-${index}-outer`;
+                const boxOuter = {
+                    x: xOuter,
+                    y: outerMax,
+                    width: outerWidth,
+                    height: outerMin - outerMax,
+                    rx: 2,
+                    ry: 2
+                };
+                const barOuterProps = {
+                    key: keyOuter,
+                    ...boxOuter,
+                    style: styles[level]
+                };
+                if (this.props.onSelectionChange) {
+                    barOuterProps.onClick = e => this.handleClick(e, event);
+                }
+                if (this.props.onHighlightChange) {
+                    barOuterProps.onMouseMove = e => this.handleHover(e, event);
+                    barOuterProps.onMouseLeave = () => this.handleHoverLeave();
+                }
+                bars.push(<rect {...barOuterProps} />);
+                ymax = "outerMax";
+            }
+
+            if (hasInner) {
+                let level = 1;
+                if (!hasCenter) {
+                    level += 1;
+                }
+                const keyInner = `${this.series.name()}-${index}-inner`;
+                const boxInner = {
+                    x: xInner,
+                    y: innerMax,
+                    width: innerWidth,
+                    height: innerMin - innerMax,
+                    rx: 1,
+                    ry: 1
+                };
+                const barInnerProps = {
+                    key: keyInner,
+                    ...boxInner,
+                    style: styles[level]
+                };
+                if (this.props.onSelectionChange) {
+                    barInnerProps.onClick = e => this.handleClick(e, event);
+                }
+                if (this.props.onHighlightChange) {
+                    barInnerProps.onMouseMove = e => this.handleHover(e, event);
+                    barInnerProps.onMouseLeave = () => this.handleHoverLeave();
+                }
+                bars.push(<rect {...barInnerProps} />);
+                ymax = ymax || "innerMax";
+            }
+
+            if (hasCenter) {
+                const level = 2;
+                const keyCenter = `${this.series.name()}-${index}-center`;
+                const boxCenter = {
+                    x: xInner,
+                    y: center,
+                    width: innerWidth,
+                    height: 1
+                };
+                const barCenterProps = {
+                    key: keyCenter,
+                    ...boxCenter,
+                    style: styles[level]
+                };
+                if (this.props.onSelectionChange) {
+                    barCenterProps.onClick = e => this.handleClick(e, event);
+                }
+                if (this.props.onHighlightChange) {
+                    barCenterProps.onMouseMove = e => this.handleHover(e, event);
+                    barCenterProps.onMouseLeave = () => this.handleHoverLeave();
+                }
+                bars.push(<rect {...barCenterProps} />);
+                ymax = ymax || "center";
+            }
+
+            // Event marker if info provided and hovering
+            const isHighlighted = this.props.highlighted && Event.is(this.props.highlighted, event);
+            if (isHighlighted && this.props.info) {
+                eventMarker = (
+                    <EventMarker
+                        {...this.props}
+                        yValueFunc={e => e.get(ymax)}
+                        event={event}
+                        column={column}
+                        marker="circle"
+                        markerRadius={2}
+                    />
+                );
+            }
         }
-        style = this.selectedStyle[level];
-      } else if (isHighlighted) {
-        if (!this.highlightedStyle || !this.highlightedStyle[level]) {
-          if (!this.highlightedStyle) {
-            this.highlightedStyle = [];
-          }
-          this.highlightedStyle[level] = merge(
-            true,
-            defaultStyle[level].highlighted,
-            this.providedStyle[level].highlighted
-              ? this.providedStyle[level].highlighted
-              : {}
-          );
-        }
-        style = this.highlightedStyle[level];
-      } else {
-        if (!this.mutedStyle) {
-          this.mutedStyle = [];
-        }
-        if (!this.mutedStyle[level]) {
-          this.mutedStyle[level] = merge(
-            true,
-            defaultStyle[level].muted,
-            this.providedStyle[level].muted
-              ? this.providedStyle[level].muted
-              : {}
-          );
-        }
-        style = this.mutedStyle[level];
-      }
-    } else if (isHighlighted) {
-      style = merge(
-        true,
-        defaultStyle[level].highlighted,
-        this.providedStyle[level].highlighted
-          ? this.providedStyle[level].highlighted
-          : {}
-      );
-    } else {
-      if (!this.normalStyle) {
-        this.normalStyle = [];
-      }
-      if (!this.normalStyle[level]) {
-        this.normalStyle[level] = merge(
-          true,
-          defaultStyle[level].normal,
-          this.providedStyle[level].normal
-            ? this.providedStyle[level].normal
-            : {}
+
+        return (
+            <g>
+                {bars}
+                {eventMarker}
+            </g>
         );
-      }
-      style = this.normalStyle[level];
     }
-    return style;
-  }
 
-  renderBars() {
-    const {
-      timeScale,
-      yScale,
-      column
-    } = this.props;
-
-    const innerSpacing = +this.props.innerSpacing;
-    const outerSpacing = +this.props.outerSpacing;
-    const innerSize = +this.props.innerSize;
-    const outerSize = +this.props.outerSize;
-
-    const bars = [];
-    let eventMarker;
-
-    for (const event of this.series.events()) {
-      const index = event.index();
-      const begin = event.begin();
-      const end = event.end();
-      const d = event.data();
-
-      const beginPosInner = timeScale(begin) + innerSpacing;
-      const endPosInner = timeScale(end) - innerSpacing;
-
-      const beginPosOuter = timeScale(begin) + outerSpacing;
-      const endPosOuter = timeScale(end) - outerSpacing;
-
-      let innerWidth = innerSize || endPosInner - beginPosInner;
-      if (innerWidth < 1) {
-        innerWidth = 1;
-      }
-
-      let outerWidth = outerSize || endPosOuter - beginPosOuter;
-      if (outerWidth < 1) {
-        outerWidth = 1;
-      }
-
-      const c = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
-
-      let xInner = timeScale(begin) + innerSpacing;
-      if (innerSize) {
-        xInner = c - innerSize / 2;
-      }
-
-      let xOuter = timeScale(begin) + outerSpacing;
-      if (outerSize) {
-        xOuter = c - outerSize / 2;
-      }
-
-      const styles = [];
-      styles[0] = this.style(column, event, 0);
-      styles[1] = this.style(column, event, 1);
-      styles[2] = this.style(column, event, 2);
-
-      const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
-      const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
-      const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
-      const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
-      const center = d.has("center") ? yScale(event.get("center")) : null;
-
-      let hasInner = true;
-      let hasOuter = true;
-      let hasCenter = true;
-      if (_.isNull(innerMin) || _.isNull(innerMax)) {
-        hasInner = false;
-      }
-      if (_.isNull(outerMin) || _.isNull(outerMax)) {
-        hasOuter = false;
-      }
-      if (_.isNull(center)) {
-        hasCenter = false;
-      }
-
-      let ymax = 0;
-      if (hasOuter) {
-        let level = 0;
-        if (!hasInner) {
-          level += 1;
-        }
-        if (!hasCenter) {
-          level += 1;
-        }
-        const keyOuter = `${this.series.name()}-${index}-outer`;
-        const boxOuter = {
-          x: xOuter,
-          y: outerMax,
-          width: outerWidth,
-          height: outerMin - outerMax,
-          rx: 2,
-          ry: 2
-        };
-        const barOuterProps = {
-          key: keyOuter,
-          ...boxOuter,
-          style: styles[level]
-        };
-        if (this.props.onSelectionChange) {
-          barOuterProps.onClick = e => this.handleClick(e, event);
-        }
-        if (this.props.onHighlightChange) {
-          barOuterProps.onMouseMove = e => this.handleHover(e, event);
-          barOuterProps.onMouseLeave = () => this.handleHoverLeave();
-        }
-        bars.push(<rect {...barOuterProps} />);
-        ymax = "outerMax";
-      }
-
-      if (hasInner) {
-        let level = 1;
-        if (!hasCenter) {
-          level += 1;
-        }
-        const keyInner = `${this.series.name()}-${index}-inner`;
-        const boxInner = {
-          x: xInner,
-          y: innerMax,
-          width: innerWidth,
-          height: innerMin - innerMax,
-          rx: 1,
-          ry: 1
-        };
-        const barInnerProps = {
-          key: keyInner,
-          ...boxInner,
-          style: styles[level]
-        };
-        if (this.props.onSelectionChange) {
-          barInnerProps.onClick = e => this.handleClick(e, event);
-        }
-        if (this.props.onHighlightChange) {
-          barInnerProps.onMouseMove = e => this.handleHover(e, event);
-          barInnerProps.onMouseLeave = () => this.handleHoverLeave();
-        }
-        bars.push(<rect {...barInnerProps} />);
-        ymax = ymax || "innerMax";
-      }
-
-      if (hasCenter) {
-        const level = 2;
-        const keyCenter = `${this.series.name()}-${index}-center`;
-        const boxCenter = {
-          x: xInner,
-          y: center,
-          width: innerWidth,
-          height: 1
-        };
-        const barCenterProps = {
-          key: keyCenter,
-          ...boxCenter,
-          style: styles[level]
-        };
-        if (this.props.onSelectionChange) {
-          barCenterProps.onClick = e => this.handleClick(e, event);
-        }
-        if (this.props.onHighlightChange) {
-          barCenterProps.onMouseMove = e => this.handleHover(e, event);
-          barCenterProps.onMouseLeave = () => this.handleHoverLeave();
-        }
-        bars.push(<rect {...barCenterProps} />);
-        ymax = ymax || "center";
-      }
-
-      // Event marker if info provided and hovering
-      const isHighlighted = this.props.highlighted &&
-        Event.is(this.props.highlighted, event);
-      if (isHighlighted && this.props.info) {
-        eventMarker = (
-          <EventMarker
-            {...this.props}
-            yValueFunc={e => e.get(ymax)}
-            event={event}
-            column={column}
-            marker="circle"
-            markerRadius={2}
-          />
+    render() {
+        return (
+            <g>
+                {this.renderBars()}
+            </g>
         );
-      }
     }
-
-    return (
-      <g>
-        {bars}
-        {eventMarker}
-      </g>
-    );
-  }
-
-  render() {
-    return (
-      <g>
-        {this.renderBars()}
-      </g>
-    );
-  }
 }
 
 BoxChart.propTypes = {
-  /**
+    /**
    * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
    * data to visualize. See general notes on the BoxChart.
    */
-  // series: PropTypes.instanceOf(TimeSeries).isRequired,
+    // series: PropTypes.instanceOf(TimeSeries).isRequired,
 
-  series: (props, propName, componentName) => {
-    const value = props[propName];
-    if (!(value instanceof TimeSeries)) {
-      return new Error(
-        `A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`
-      );
-    }
+    series: (props, propName, componentName) => {
+        const value = props[propName];
+        if (!(value instanceof TimeSeries)) {
+            return new Error(
+                `A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`
+            );
+        }
 
-    // TODO: Better detection of errors
+        // TODO: Better detection of errors
 
-    // everything ok
-    return null;
-  },
-  /**
+        // everything ok
+        return null;
+    },
+    /**
    * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
    * works on just a single column.
    */
-  column: PropTypes.string,
-  /**
+    column: PropTypes.string,
+    /**
    * The aggregation specification. This object should contain:
    *   - innerMax
    *   - innerMin
@@ -687,127 +659,124 @@ BoxChart.propTypes = {
    *     }
    * ```
    */
-  aggregation: PropTypes.shape({
-    size: PropTypes.string,
-    reducers: PropTypes.shape({
-      inner: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
-      outer: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
-      center: PropTypes.func // eslint-disable-line
-    })
-  }), // eslint-disable-line
-  /**
+    aggregation: PropTypes.shape({
+        size: PropTypes.string,
+        reducers: PropTypes.shape({
+            inner: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
+            outer: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
+            center: PropTypes.func // eslint-disable-line
+        })
+    }), // eslint-disable-line
+    /**
    * The style of the box chart drawing (using SVG CSS properties) or
    * a styler object. It is recommended to user the styler unless you need
    * detailed customization.
    */
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.func,
-    PropTypes.instanceOf(Styler)
-  ]),
-  /**
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
+    /**
    * The style of the info box and connecting lines
    */
-  infoStyle: PropTypes.object, //eslint-disable-line
-  /**
+    infoStyle: PropTypes.object, //eslint-disable-line
+    /**
    * The width of the hover info box
    */
-  infoWidth: PropTypes.number, //eslint-disable-line
-  /**
+    infoWidth: PropTypes.number, //eslint-disable-line
+    /**
    * The height of the hover info box
    */
-  infoHeight: PropTypes.number, //eslint-disable-line
-  /**
+    infoHeight: PropTypes.number, //eslint-disable-line
+    /**
    * The values to show in the info box. This is an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box.
    */
-  info: PropTypes.arrayOf(
-    PropTypes.shape({ //eslint-disable-line
-      label: PropTypes.string, //eslint-disable-line
-      value: PropTypes.string //eslint-disable-line
-    })
-  ),
-  /**
+    info: PropTypes.arrayOf(
+        PropTypes.shape({
+            //eslint-disable-line
+            label: PropTypes.string, //eslint-disable-line
+            value: PropTypes.string //eslint-disable-line
+        })
+    ),
+    /**
    * If spacing is specified, then the boxes will be separated from the
    * timerange boundary by this number of pixels. Use this to space out
    * the boxes from each other. Inner and outer boxes are controlled
    * separately.
    */
-  innerSpacing: PropTypes.number,
-  /**
+    innerSpacing: PropTypes.number,
+    /**
    * If spacing is specified, then the boxes will be separated from the
    * timerange boundary by this number of pixels. Use this to space out
    * the boxes from each other. Inner and outer boxes are controlled
    * separately.
    */
-  outerSpacing: PropTypes.number,
-  /**
+    outerSpacing: PropTypes.number,
+    /**
    * If size is specified, then the innerBox will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  innerSize: PropTypes.number,
-  /**
+    innerSize: PropTypes.number,
+    /**
    * If size is specified, then the outer box will be this number of pixels wide. This
    * prop takes priority over "spacing".
    */
-  outerSize: PropTypes.number,
-  /**
+    outerSize: PropTypes.number,
+    /**
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
    *
    * See also `onSelectionChange`
    */
-  selected: PropTypes.instanceOf(IndexedEvent),
-  /**
+    selected: PropTypes.instanceOf(IndexedEvent),
+    /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *
    * See also `onHighlightChange`
    */
-  highlighted: PropTypes.instanceOf(IndexedEvent),
-  /**
+    highlighted: PropTypes.instanceOf(IndexedEvent),
+    /**
    * A callback that will be called when the selection changes. It will be called
    * with the event corresponding to the box clicked as its only arg.
    */
-  onSelectionChange: PropTypes.func,
-  /**
+    onSelectionChange: PropTypes.func,
+    /**
    * A callback that will be called when the hovered over box changes.
    * It will be called with the event corresponding to the box hovered over.
    */
-  onHighlightChange: PropTypes.func,
-  /**
+    onHighlightChange: PropTypes.func,
+    /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: PropTypes.func,
-  /**
+    timeScale: PropTypes.func,
+    /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: PropTypes.func,
-  /**
+    yScale: PropTypes.func,
+    /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: PropTypes.number
+    width: PropTypes.number
 };
 
 BoxChart.defaultProps = {
-  column: "value",
-  innerSpacing: 1.0,
-  outerSpacing: 2.0,
-  infoStyle: {
-    stroke: "#999",
-    fill: "white",
-    opacity: 0.90,
-    pointerEvents: "none"
-  },
-  stemStyle: {
-    stroke: "#999",
-    cursor: "crosshair",
-    pointerEvents: "none"
-  },
-  markerStyle: {
-    fill: "#999"
-  },
-  markerRadius: 2,
-  infoWidth: 90,
-  infoHeight: 30
+    column: "value",
+    innerSpacing: 1.0,
+    outerSpacing: 2.0,
+    infoStyle: {
+        stroke: "#999",
+        fill: "white",
+        opacity: 0.90,
+        pointerEvents: "none"
+    },
+    stemStyle: {
+        stroke: "#999",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    },
+    markerStyle: {
+        fill: "#999"
+    },
+    markerRadius: 2,
+    infoWidth: 90,
+    infoHeight: 30
 };

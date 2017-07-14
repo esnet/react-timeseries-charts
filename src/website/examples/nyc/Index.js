@@ -26,9 +26,7 @@ import styler from "../../../js/styler";
 
 // Data
 const weather = require("dsv?delimiter=,!./knyc.csv"); //eslint-disable-line
-const style = styler([
-  { key: "temp", color: "steelblue", width: 1, opacity: 0.5 }
-]);
+const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 }]);
 
 //
 // Extract data from CSV file
@@ -36,25 +34,25 @@ const style = styler([
 
 const name = "KNYC";
 const events = weather.map(item => {
-  const {
-    date,
-    actual_min_temp,
-    actual_max_temp,
-    record_min_temp,
-    record_max_temp
-  } = item;
-  return new IndexedEvent(
-    date,
-    {
-      temp: [
-        +record_min_temp, //eslint-disable-line
-        +actual_min_temp, //eslint-disable-line
-        +actual_max_temp, //eslint-disable-line
-        +record_max_temp //eslint-disable-line
-      ]
-    },
-    false
-  );
+    const {
+        date,
+        actual_min_temp,
+        actual_max_temp,
+        record_min_temp,
+        record_max_temp
+    } = item;
+    return new IndexedEvent(
+        date,
+        {
+            temp: [
+                +record_min_temp, //eslint-disable-line
+                +actual_min_temp, //eslint-disable-line
+                +actual_max_temp, //eslint-disable-line
+                +record_max_temp //eslint-disable-line
+            ]
+        },
+        false
+    );
 });
 
 const collection = new Collection(events);
@@ -64,85 +62,86 @@ const series = new TimeSeries({ name, collection });
 // Styles
 //
 
-const nyc = React.createClass({ //eslint-disable-line
-  getInitialState() {
-    return {
-      timerange: new TimeRange([1425168000000, 1433116800000]),
-      selection: null
-    };
-  },
-  handleTimeRangeChange(timerange) {
-    this.setState({ timerange });
-  },
-  infoValues() {
-    if (this.state.highlight) {
-      return [
-        {
-          label: "day min",
-          value: `${this.state.highlight.get("innerMin")}°F`
-        },
-        {
-          label: "day max",
-          value: `${this.state.highlight.get("innerMax")}°F`
-        },
-        {
-          label: "all-time min",
-          value: `${this.state.highlight.get("outerMin")}°F`
-        },
-        {
-          label: "all-time max",
-          value: `${this.state.highlight.get("outerMax")}°F`
+const nyc = React.createClass({
+    //eslint-disable-line
+    getInitialState() {
+        return {
+            timerange: new TimeRange([1425168000000, 1433116800000]),
+            selection: null
+        };
+    },
+    handleTimeRangeChange(timerange) {
+        this.setState({ timerange });
+    },
+    infoValues() {
+        if (this.state.highlight) {
+            return [
+                {
+                    label: "day min",
+                    value: `${this.state.highlight.get("innerMin")}°F`
+                },
+                {
+                    label: "day max",
+                    value: `${this.state.highlight.get("innerMax")}°F`
+                },
+                {
+                    label: "all-time min",
+                    value: `${this.state.highlight.get("outerMin")}°F`
+                },
+                {
+                    label: "all-time max",
+                    value: `${this.state.highlight.get("outerMax")}°F`
+                }
+            ];
         }
-      ];
+        return null;
+    },
+    render() {
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <Resizable>
+                            <ChartContainer
+                                utc={false}
+                                timeRange={this.state.timerange}
+                                enablePanZoom={true}
+                                onBackgroundClick={() => this.setState({ selection: null })}
+                                onTimeRangeChanged={this.handleTimeRangeChange}
+                            >
+                                <ChartRow height="300">
+                                    <Charts>
+                                        <BoxChart
+                                            axis="temp"
+                                            style={style}
+                                            column="temp"
+                                            series={series}
+                                            info={this.infoValues()}
+                                            infoWidth={130}
+                                            infoHeight={75}
+                                            highlighted={this.state.highlight}
+                                            onHighlightChange={highlight =>
+                                                this.setState({ highlight })}
+                                            selected={this.state.selection}
+                                            onSelectionChange={selection =>
+                                                this.setState({ selection })}
+                                        />
+                                    </Charts>
+                                    <YAxis
+                                        id="temp"
+                                        label="Temperature"
+                                        min={0}
+                                        max={120}
+                                        width="70"
+                                    />
+                                </ChartRow>
+                            </ChartContainer>
+                        </Resizable>
+                    </div>
+                </div>
+            </div>
+        );
     }
-    return null;
-  },
-  render() {
-    return (
-      <div>
-        <div className="row">
-          <div className="col-md-12">
-            <Resizable>
-              <ChartContainer
-                utc={false}
-                timeRange={this.state.timerange}
-                enablePanZoom={true}
-                onBackgroundClick={() => this.setState({ selection: null })}
-                onTimeRangeChanged={this.handleTimeRangeChange}
-              >
-                <ChartRow height="300">
-                  <Charts>
-                    <BoxChart
-                      axis="temp"
-                      style={style}
-                      column="temp"
-                      series={series}
-                      info={this.infoValues()}
-                      infoWidth={130}
-                      infoHeight={75}
-                      highlighted={this.state.highlight}
-                      onHighlightChange={highlight =>
-                        this.setState({ highlight })}
-                      selected={this.state.selection}
-                      onSelectionChange={selection =>
-                        this.setState({ selection })}
-                    />
-                  </Charts>
-                  <YAxis
-                    id="temp"
-                    label="Temperature"
-                    min={0}
-                    max={120}
-                    width="70"
-                  />
-                </ChartRow>
-              </ChartContainer>
-            </Resizable>
-          </div>
-        </div>
-      </div>
-    );
-  }
 });
 
 // Export example

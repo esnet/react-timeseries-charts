@@ -96,11 +96,9 @@ const currency = React.createClass({
                             align="right"
                             style={style}
                             highlight={this.state.highlight}
-                            onHighlightChange={highlight =>
-                                this.setState({ highlight })}
+                            onHighlightChange={highlight => this.setState({ highlight })}
                             selection={this.state.selection}
-                            onSelectionChange={selection =>
-                                this.setState({ selection })}
+                            onSelectionChange={selection => this.setState({ selection })}
                             categories={[
                                 { key: "aud", label: "AUD", value: audValue },
                                 { key: "euro", label: "Euro", value: euroValue }
@@ -118,8 +116,7 @@ const currency = React.createClass({
                                 minTime={currencySeries.range().begin()}
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                                 minDuration={1000 * 60 * 60 * 24 * 30}

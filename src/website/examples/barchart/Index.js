@@ -55,10 +55,7 @@ const data = [
 const series = new TimeSeries({
     name: "hilo_rainfall",
     columns: ["index", "precip"],
-    points: data.map(([d, value]) => [
-        Index.getIndexString("1h", new Date(d)),
-        value
-    ])
+    points: data.map(([d, value]) => [Index.getIndexString("1h", new Date(d)), value])
 });
 
 /*
@@ -98,9 +95,7 @@ series = {
 const barchart = React.createClass({
     displayName: "BarChartExample",
     render() {
-        const style = styler([
-            { key: "precip", color: "#A5C8E1", selected: "#2CB1CF" },
-        ]);
+        const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
 
         return (
             <div>
@@ -113,7 +108,7 @@ const barchart = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer timeRange={series.range()} >
+                            <ChartContainer timeRange={series.range()}>
                                 <ChartRow height="150">
                                     <YAxis
                                         id="rain"

@@ -92,9 +92,7 @@ const continents = React.createClass({
         const max = 130;
         const axisType = "linear";
         const interpolationType = "curveBasis";
-        const options = Object
-            .keys(colorbrewer)
-            .map(c => ({ value: c, label: c }));
+        const options = Object.keys(colorbrewer).map(c => ({ value: c, label: c }));
         const style = styler(columnNames, this.state.scheme);
         const legendCategories = columnNames.map(d => ({ key: d, label: d }));
 
@@ -111,11 +109,7 @@ const continents = React.createClass({
                         />
                     </div>
                     <div className="col-md-9">
-                        <Legend
-                            categories={legendCategories}
-                            style={style}
-                            type="dot"
-                        />
+                        <Legend categories={legendCategories} style={style} type="dot" />
                     </div>
                 </div>
                 <hr />
@@ -124,8 +118,7 @@ const continents = React.createClass({
                         <Resizable>
                             <ChartContainer
                                 timeRange={series.range()}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="350">
                                     <YAxis

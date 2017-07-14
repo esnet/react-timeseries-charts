@@ -12,120 +12,105 @@ import _ from "underscore";
 import React from "react";
 import PropTypes from "prop-types";
 import merge from "merge";
-import {
-  TimeEvent,
-  TimeRangeEvent,
-  IndexedEvent,
-  Index,
-  TimeRange
-} from "pondjs";
+import { TimeEvent, TimeRangeEvent, IndexedEvent, Index, TimeRange } from "pondjs";
 import { timeFormat } from "d3-time-format";
 
 import Label from "./Label";
 import ValueList from "./ValueList";
 
 const EventTime = ({ time, format = "%m/%d/%y %X" }) => {
-  const textStyle = {
-    fontSize: 11,
-    textAnchor: "left",
-    fill: "#bdbdbd",
-    pointerEvents: "none"
-  };
+    const textStyle = {
+        fontSize: 11,
+        textAnchor: "left",
+        fill: "#bdbdbd",
+        pointerEvents: "none"
+    };
 
-  let text;
-  if (_.isFunction(format)) {
-    text = format(time);
-  } else {
-    const fmt = timeFormat(format);
-    text = fmt(time);
-  }
+    let text;
+    if (_.isFunction(format)) {
+        text = format(time);
+    } else {
+        const fmt = timeFormat(format);
+        text = fmt(time);
+    }
 
-  return (
-    <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {text}
-    </text>
-  );
+    return (
+        <text x={0} y={0} dy="1.2em" style={textStyle}>
+            {text}
+        </text>
+    );
 };
 EventTime.propTypes = {
-  time: PropTypes.instanceOf(Date),
-  format: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.string
-  ])
+    time: PropTypes.instanceOf(Date),
+    format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
 EventTime.defaultProps = {
-  infoTimeFormat: "%m/%d/%y %X"
+    infoTimeFormat: "%m/%d/%y %X"
 };
 
 const EventTimeRange = ({ timerange, format = "%m/%d/%y %X" }) => {
-  const textStyle = {
-    fontSize: 11,
-    textAnchor: "left",
-    fill: "#bdbdbd",
-    pointerEvents: "none"
-  };
-  const d1 = timerange.begin();
-  const d2 = timerange.end();
+    const textStyle = {
+        fontSize: 11,
+        textAnchor: "left",
+        fill: "#bdbdbd",
+        pointerEvents: "none"
+    };
+    const d1 = timerange.begin();
+    const d2 = timerange.end();
 
-  let beginText;
-  let endText;
+    let beginText;
+    let endText;
 
-  if (_.isFunction(format)) {
-    beginText = format(d1);
-    endText = format(d2);
-  } else {
-    const fmt = timeFormat(format);
-    beginText = fmt(d1);
-    endText = fmt(d2);
-  }
+    if (_.isFunction(format)) {
+        beginText = format(d1);
+        endText = format(d2);
+    } else {
+        const fmt = timeFormat(format);
+        beginText = fmt(d1);
+        endText = fmt(d2);
+    }
 
-  return (
-    <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {`${beginText} to ${endText}`}
-    </text>
-  );
+    return (
+        <text x={0} y={0} dy="1.2em" style={textStyle}>
+            {`${beginText} to ${endText}`}
+        </text>
+    );
 };
 EventTimeRange.propTypes = {
-  timerange: PropTypes.instanceOf(TimeRange),
-  format: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.string
-  ])
+    timerange: PropTypes.instanceOf(TimeRange),
+    format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
 EventTimeRange.defaultProps = {
-  infoTimeFormat: "%m/%d/%y %X"
+    infoTimeFormat: "%m/%d/%y %X"
 };
 
 const EventIndex = ({ index, format }) => {
-  const textStyle = {
-    fontSize: 11,
-    textAnchor: "left",
-    fill: "#bdbdbd",
-    pointerEvents: "none"
-  };
+    const textStyle = {
+        fontSize: 11,
+        textAnchor: "left",
+        fill: "#bdbdbd",
+        pointerEvents: "none"
+    };
 
-  let text;
-  if (_.isFunction(format)) {
-    text = format(index);
-  } else if (_.isString(format)) {
-    const fmt = timeFormat(format);
-    text = fmt(index.begin());
-  } else {
-    text = index.toString();
-  }
+    let text;
+    if (_.isFunction(format)) {
+        text = format(index);
+    } else if (_.isString(format)) {
+        const fmt = timeFormat(format);
+        text = fmt(index.begin());
+    } else {
+        text = index.toString();
+    }
 
-  return (
-    <text x={0} y={0} dy="1.2em" style={textStyle}>
-      {text}
-    </text>
-  );
+    return (
+        <text x={0} y={0} dy="1.2em" style={textStyle}>
+            {text}
+        </text>
+    );
 };
 EventIndex.propTypes = {
-  index: PropTypes.instanceOf(Index),
-  format: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.string
-  ])
+    index: PropTypes.instanceOf(Index),
+    format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
 
 /**
@@ -159,287 +144,273 @@ EventIndex.propTypes = {
  * override either the x or y position by a number of pixels.
  */
 export default class EventMarker extends React.Component {
-  renderTime(event) {
-    if (event instanceof TimeEvent) {
-      return (
-        <EventTime
-          time={event.timestamp()}
-          format={this.props.infoTimeFormat}
-        />
-      );
-    } else if (event instanceof IndexedEvent) {
-      return (
-        <EventIndex index={event.index()} format={this.props.infoTimeFormat} />
-      );
-    } else if (event instanceof TimeRangeEvent) {
-      return (
-        <EventTimeRange
-          timerange={event.timerange()}
-          format={this.props.infoTimeFormat}
-        />
-      );
-    }
-    return <g />;
-  }
-
-  renderMarker(event, column, info) {
-    let t;
-    if (event instanceof TimeEvent) {
-      t = event.timestamp();
-    } else {
-      t = new Date(
-        event.begin().getTime() +
-          (event.end().getTime() - event.begin().getTime()) / 2
-      );
-    }
-
-    let value;
-    if (this.props.yValueFunc) {
-      value = this.props.yValueFunc(event, column);
-    } else {
-      value = event.get(column);
-    }
-
-    // Allow overrides on the x and y position. This is useful for the barchart
-    // tracker because bars maybe be offset from their actual event position in
-    // order to display them side by side.
-    const posx = this.props.timeScale(t) + this.props.offsetX;
-    const posy = this.props.yScale(value) - this.props.offsetY;
-
-    const infoBoxProps = {
-      align: "left",
-      style: this.props.infoStyle,
-      width: this.props.infoWidth,
-      height: this.props.infoHeight
-    };
-
-    const w = this.props.infoWidth;
-    const lineBottom = posy - 10;
-
-    let verticalStem;
-    let horizontalStem;
-    let dot;
-    let infoBox;
-    let transform;
-    let label;
-
-    if (info) {
-      if (_.isString(this.props.info)) {
-        infoBox = (
-          <Label {...infoBoxProps} label={info} />
-        );
-      } else {
-        infoBox = (
-          <ValueList {...infoBoxProps} values={info} />
-        );
-      }
-    }
-
-    //
-    // Marker on right of event
-    //
-
-    if (this.props.type === "point") {
-      let textDefaultStyle = {
-        fontSize: 11,
-        pointerEvents: "none",
-        paintOrder: "stroke",
-        fill: "#b0b0b0",
-        strokeWidth: 2,
-        strokeLinecap: "butt",
-        strokeLinejoin: "miter",
-        fontWeight: 800
-      }
-
-      let dx = 0;
-      let dy = 0;
-      switch (this.props.markerLabelAlign) {
-        case "left":
-          dx = 5;
-          textDefaultStyle.textAnchor = "start";
-          textDefaultStyle.alignmentBaseline = "central";
-        break;
-        case "right":
-          dx = -5;
-          textDefaultStyle.textAnchor = "end";
-          textDefaultStyle.alignmentBaseline = "central";
-        break;
-        case "top":
-          dy = -5;
-          textDefaultStyle.textAnchor = "middle";
-          textDefaultStyle.alignmentBaseline = "bottom";
-        break;
-        case "bottom":
-          dy = 5;
-          textDefaultStyle.textAnchor = "middle";
-          textDefaultStyle.alignmentBaseline = "hanging";
-        break;
-        default:
-          //pass
-      }
-
-      const tstyle = merge(true, textDefaultStyle, this.props.markerLabelStyle);
-
-      dot = (
-        <circle
-          cx={posx}
-          cy={posy}
-          r={this.props.markerRadius}
-          pointerEvents="none"
-          style={this.props.markerStyle}
-        />
-      );
-      label = (
-        <text x={posx} y={posy} dx={dx} dy={dy} style={tstyle}>
-          {this.props.markerLabel}
-        </text>
-      );
-
-      return (
-        <g>
-          {dot}
-          {label}
-        </g>
-      );
-    } else {
-      if (posx + 10 + w < this.props.width * 3 / 4) {
-        if (info) {
-          verticalStem = (
-            <line
-              pointerEvents="none"
-              style={this.props.stemStyle}
-              x1={-10}
-              y1={lineBottom}
-              x2={-10}
-              y2={20}
-            />
-          );
-          horizontalStem = (
-            <line
-              pointerEvents="none"
-              style={this.props.stemStyle}
-              x1={-10}
-              y1={20}
-              x2={-2}
-              y2={20}
-            />
-          );
+    renderTime(event) {
+        if (event instanceof TimeEvent) {
+            return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
+        } else if (event instanceof IndexedEvent) {
+            return <EventIndex index={event.index()} format={this.props.infoTimeFormat} />;
+        } else if (event instanceof TimeRangeEvent) {
+            return (
+                <EventTimeRange timerange={event.timerange()} format={this.props.infoTimeFormat} />
+            );
         }
-        dot = (
-          <circle
-            cx={-10}
-            cy={lineBottom}
-            r={this.props.markerRadius}
-            pointerEvents="none"
-            style={this.props.markerStyle}
-          />
-        );
-        transform = `translate(${posx + 10},${10})`;
-      } else {
-        if (info) {
-          verticalStem = (
-            <line
-              pointerEvents="none"
-              style={this.props.stemStyle}
-              x1={w + 10}
-              y1={lineBottom}
-              x2={w + 10}
-              y2={20}
-            />
-          );
-          horizontalStem = (
-            <line
-              pointerEvents="none"
-              style={this.props.stemStyle}
-              x1={w + 10}
-              y1={20}
-              x2={w + 2}
-              y2={20}
-            />
-          );
+        return <g />;
+    }
+
+    renderMarker(event, column, info) {
+        let t;
+        if (event instanceof TimeEvent) {
+            t = event.timestamp();
+        } else {
+            t = new Date(
+                event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
+            );
         }
-        dot = (
-          <circle
-            cx={w + 10}
-            cy={lineBottom}
-            r={this.props.markerRadius}
-            pointerEvents="none"
-            style={this.props.markerStyle}
-          />
+
+        let value;
+        if (this.props.yValueFunc) {
+            value = this.props.yValueFunc(event, column);
+        } else {
+            value = event.get(column);
+        }
+
+        // Allow overrides on the x and y position. This is useful for the barchart
+        // tracker because bars maybe be offset from their actual event position in
+        // order to display them side by side.
+        const posx = this.props.timeScale(t) + this.props.offsetX;
+        const posy = this.props.yScale(value) - this.props.offsetY;
+
+        const infoBoxProps = {
+            align: "left",
+            style: this.props.infoStyle,
+            width: this.props.infoWidth,
+            height: this.props.infoHeight
+        };
+
+        const w = this.props.infoWidth;
+        const lineBottom = posy - 10;
+
+        let verticalStem;
+        let horizontalStem;
+        let dot;
+        let infoBox;
+        let transform;
+        let label;
+
+        if (info) {
+            if (_.isString(this.props.info)) {
+                infoBox = <Label {...infoBoxProps} label={info} />;
+            } else {
+                infoBox = <ValueList {...infoBoxProps} values={info} />;
+            }
+        }
+
+        //
+        // Marker on right of event
+        //
+
+        if (this.props.type === "point") {
+            let textDefaultStyle = {
+                fontSize: 11,
+                pointerEvents: "none",
+                paintOrder: "stroke",
+                fill: "#b0b0b0",
+                strokeWidth: 2,
+                strokeLinecap: "butt",
+                strokeLinejoin: "miter",
+                fontWeight: 800
+            };
+
+            let dx = 0;
+            let dy = 0;
+            switch (this.props.markerLabelAlign) {
+                case "left":
+                    dx = 5;
+                    textDefaultStyle.textAnchor = "start";
+                    textDefaultStyle.alignmentBaseline = "central";
+                    break;
+                case "right":
+                    dx = -5;
+                    textDefaultStyle.textAnchor = "end";
+                    textDefaultStyle.alignmentBaseline = "central";
+                    break;
+                case "top":
+                    dy = -5;
+                    textDefaultStyle.textAnchor = "middle";
+                    textDefaultStyle.alignmentBaseline = "bottom";
+                    break;
+                case "bottom":
+                    dy = 5;
+                    textDefaultStyle.textAnchor = "middle";
+                    textDefaultStyle.alignmentBaseline = "hanging";
+                    break;
+                default:
+                //pass
+            }
+
+            const tstyle = merge(true, textDefaultStyle, this.props.markerLabelStyle);
+
+            dot = (
+                <circle
+                    cx={posx}
+                    cy={posy}
+                    r={this.props.markerRadius}
+                    pointerEvents="none"
+                    style={this.props.markerStyle}
+                />
+            );
+            label = (
+                <text x={posx} y={posy} dx={dx} dy={dy} style={tstyle}>
+                    {this.props.markerLabel}
+                </text>
+            );
+
+            return (
+                <g>
+                    {dot}
+                    {label}
+                </g>
+            );
+        } else {
+            if (posx + 10 + w < this.props.width * 3 / 4) {
+                if (info) {
+                    verticalStem = (
+                        <line
+                            pointerEvents="none"
+                            style={this.props.stemStyle}
+                            x1={-10}
+                            y1={lineBottom}
+                            x2={-10}
+                            y2={20}
+                        />
+                    );
+                    horizontalStem = (
+                        <line
+                            pointerEvents="none"
+                            style={this.props.stemStyle}
+                            x1={-10}
+                            y1={20}
+                            x2={-2}
+                            y2={20}
+                        />
+                    );
+                }
+                dot = (
+                    <circle
+                        cx={-10}
+                        cy={lineBottom}
+                        r={this.props.markerRadius}
+                        pointerEvents="none"
+                        style={this.props.markerStyle}
+                    />
+                );
+                transform = `translate(${posx + 10},${10})`;
+            } else {
+                if (info) {
+                    verticalStem = (
+                        <line
+                            pointerEvents="none"
+                            style={this.props.stemStyle}
+                            x1={w + 10}
+                            y1={lineBottom}
+                            x2={w + 10}
+                            y2={20}
+                        />
+                    );
+                    horizontalStem = (
+                        <line
+                            pointerEvents="none"
+                            style={this.props.stemStyle}
+                            x1={w + 10}
+                            y1={20}
+                            x2={w + 2}
+                            y2={20}
+                        />
+                    );
+                }
+                dot = (
+                    <circle
+                        cx={w + 10}
+                        cy={lineBottom}
+                        r={this.props.markerRadius}
+                        pointerEvents="none"
+                        style={this.props.markerStyle}
+                    />
+                );
+                transform = `translate(${posx - w - 10},${10})`;
+            }
+
+            return (
+                <g transform={transform}>
+                    {verticalStem}
+                    {horizontalStem}
+                    {dot}
+                    {this.renderTime(event)}
+                    <g transform={`translate(0,${20})`}>
+                        {infoBox}
+                    </g>
+                </g>
+            );
+        }
+    }
+
+    render() {
+        const { event, column, info } = this.props;
+        if (!event) {
+            return <g />;
+        }
+        return (
+            <g>
+                {this.renderMarker(event, column, info)}
+            </g>
         );
-        transform = `translate(${posx - w - 10},${10})`;
-      }
-
-      return (
-        <g transform={transform}>
-          {verticalStem}
-          {horizontalStem}
-          {dot}
-          {this.renderTime(event)}
-          <g transform={`translate(0,${20})`}>
-            {infoBox}
-          </g>
-        </g>
-      );
-
     }
-  }
-
-  render() {
-    const { event, column, info } = this.props;
-    if (!event) {
-      return <g />;
-    }
-    return (
-      <g>
-        {this.renderMarker(event, column, info)}
-      </g>
-    );
-  }
 }
 
 EventMarker.propTypes = {
-  type: PropTypes.oneOf(["point", "flag"]),
+    type: PropTypes.oneOf(["point", "flag"]),
 
-  /**
+    /**
    * What [Pond Event](http://software.es.net/pond#event) to mark
    */
-  event: PropTypes.oneOfType([
-    PropTypes.instanceOf(TimeEvent),
-    PropTypes.instanceOf(IndexedEvent),
-    PropTypes.instanceOf(TimeRangeEvent)
-  ]),
-  /**
+    event: PropTypes.oneOfType([
+        PropTypes.instanceOf(TimeEvent),
+        PropTypes.instanceOf(IndexedEvent),
+        PropTypes.instanceOf(TimeRangeEvent)
+    ]),
+    /**
    * Which column in the Event to use
    */
-  column: PropTypes.string,
-  /**
+    column: PropTypes.string,
+    /**
    * The values to show in the info box. This is either an array of
    * objects, with each object specifying the label and value
    * to be shown in the info box, or a simple string label. If this
    * prop is not supplied, no infoBox will be displayed.
    */
-  info: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.string, // eslint-disable-line
-        value: PropTypes.string // eslint-disable-line
-      }))
-  ]),
-  /**
+    info: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.arrayOf(
+            PropTypes.shape({
+                label: PropTypes.string, // eslint-disable-line
+                value: PropTypes.string // eslint-disable-line
+            })
+        )
+    ]),
+    /**
    * The style of the info box itself. Typically you'd want to
    * specify a fill color, and stroke color/width here.
    */
-  infoStyle: PropTypes.object,
-  /**
+    infoStyle: PropTypes.object,
+    /**
    * The width of the info box
    */
-  infoWidth: PropTypes.number,
-  /**
+    infoWidth: PropTypes.number,
+    /**
    * The height of the info box
    */
-  infoHeight: PropTypes.number,
-  /**
+    infoHeight: PropTypes.number,
+    /**
    * Alter the format of the timestamp shown on the info box.
    * This may be either a function or a string. If you provide a function
    * that will be passed an Index and should return a string. For example:
@@ -449,73 +420,70 @@ EventMarker.propTypes = {
    * Alternatively you can pass in a d3 format string. That will be applied
    * to the begin time of the Index range.
    */
-  infoTimeFormat: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.string
-  ]),
-  /**
+    infoTimeFormat: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+    /**
    * Show a label to the left or right of the marker
    */
-  markerLabelAlign: PropTypes.oneOf(["left", "right", "top", "bottom"]),
-  /**
+    markerLabelAlign: PropTypes.oneOf(["left", "right", "top", "bottom"]),
+    /**
    * The radius of the dot at the end of the marker
    */
-  markerRadius: PropTypes.number,
-  /**
+    markerRadius: PropTypes.number,
+    /**
    * The style of the event marker dot
    */
-  markerStyle: PropTypes.object,
-  /**
+    markerStyle: PropTypes.object,
+    /**
    * The y value is calculated by the column and event, but if
    * this prop is provided this will be used instead.
    */
-  yValueFunc: PropTypes.func,
-  /**
+    yValueFunc: PropTypes.func,
+    /**
    * Offset the marker position in the x direction.
    */
-  offsetX: PropTypes.number,
-  /**
+    offsetX: PropTypes.number,
+    /**
    * Offset the marker position in the y direction
    */
-  offsetY: PropTypes.number,
-  /**
+    offsetY: PropTypes.number,
+    /**
    * [Internal] The timeScale supplied by the surrounding ChartContainer
    */
-  timeScale: PropTypes.func,
-  /**
+    timeScale: PropTypes.func,
+    /**
    * [Internal] The yScale supplied by the associated YAxis
    */
-  yScale: PropTypes.func,
-  /**
+    yScale: PropTypes.func,
+    /**
    * [Internal] The width supplied by the surrounding ChartContainer
    */
-  width: PropTypes.number
+    width: PropTypes.number
 };
 
 EventMarker.defaultProps = {
-  type: "flag",
-  column: "value",
-  infoWidth: 90,
-  infoHeight: 25,
-  infoStyle: {
-    fill: "white",
-    opacity: 0.90,
-    stroke: "#999",
-    pointerEvents: "none"
-  },
-  stemStyle: {
-    stroke: "#999",
-    cursor: "crosshair",
-    pointerEvents: "none"
-  },
-  markerStyle: {
-    fill: "#999"
-  },
-  markerRadius: 2,
-  markerLabelAlign: "left",
-  markerLabelStyle: {
-    fill: "#999"
-  },
-  offsetX: 0,
-  offsetY: 0
+    type: "flag",
+    column: "value",
+    infoWidth: 90,
+    infoHeight: 25,
+    infoStyle: {
+        fill: "white",
+        opacity: 0.90,
+        stroke: "#999",
+        pointerEvents: "none"
+    },
+    stemStyle: {
+        stroke: "#999",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    },
+    markerStyle: {
+        fill: "#999"
+    },
+    markerRadius: 2,
+    markerLabelAlign: "left",
+    markerLabelStyle: {
+        fill: "#999"
+    },
+    offsetX: 0,
+    offsetY: 0
 };

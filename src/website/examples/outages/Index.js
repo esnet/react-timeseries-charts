@@ -68,10 +68,7 @@ const outageEvents = [
 
 const events = outageEvents.map(
     ({ startTime, endTime, ...data }) =>
-        new TimeRangeEvent(
-            new TimeRange(new Date(startTime), new Date(endTime)),
-            data
-        )
+        new TimeRangeEvent(new TimeRange(new Date(startTime), new Date(endTime)), data)
 );
 const series = new TimeSeries({ name: "outages", events });
 

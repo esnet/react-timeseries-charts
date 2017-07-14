@@ -47,9 +47,7 @@ class App extends Component {
                                     </a>
                                 </li>
                                 <li>
-                                    <a
-                                        href="https://github.com/esnet/react-timeseries-charts/"
-                                    >
+                                    <a href="https://github.com/esnet/react-timeseries-charts/">
                                         <img
                                             src={githubLogo}
                                             alt="Github"
@@ -206,9 +204,7 @@ class App extends Component {
 
                         <ul className="nav nav-sidebar">
                             <li>
-                                <a
-                                    href="https://github.com/esnet/react-timeseries-charts"
-                                >
+                                <a href="https://github.com/esnet/react-timeseries-charts">
                                     GitHub
                                 </a>
                             </li>
@@ -229,18 +225,14 @@ class App extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    href="http://software.es.net/react-network-diagrams/"
-                                >
+                                <a href="http://software.es.net/react-network-diagrams/">
                                     Network Diagrams
                                 </a>
                             </li>
                         </ul>
                     </div>
 
-                    <div
-                        className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-                    >
+                    <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                         {this.props.children}
                     </div>
 

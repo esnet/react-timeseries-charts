@@ -174,11 +174,7 @@ const realtime = React.createClass({
                     style={fiveMinuteStyle}
                     columns={["value"]}
                 />
-                <ScatterChart
-                    axis="y"
-                    series={eventSeries}
-                    style={scatterStyle}
-                />
+                <ScatterChart axis="y" series={eventSeries} style={scatterStyle} />
             </Charts>
         );
 

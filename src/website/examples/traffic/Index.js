@@ -46,10 +46,7 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
     seriesList: [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
 });
 
-const upDownStyle = styler([
-    { key: "in", color: "#C8D5B8" },
-    { key: "out", color: "#9BB8D7" }
-]);
+const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
 
 const traffic = React.createClass({
     getInitialState() {
@@ -72,10 +69,7 @@ const traffic = React.createClass({
             borderColor: "#F4F4F4"
         };
 
-        const max = _.max([
-            trafficBNLtoNEWYSeries.max("in"),
-            trafficNEWYtoBNLSeries.max("out")
-        ]);
+        const max = _.max([trafficBNLtoNEWYSeries.max("in"), trafficNEWYtoBNLSeries.max("out")]);
 
         const axistype = "linear";
         const tracker = this.state.tracker ? `${this.state.tracker}` : "";
@@ -112,8 +106,7 @@ const traffic = React.createClass({
                                 maxTime={trafficSeries.range().end()}
                                 minTime={trafficSeries.range().begin()}
                                 minDuration={1000 * 60 * 60}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                             >
                                 <ChartRow height="250" debug={false}>

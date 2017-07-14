@@ -21,67 +21,59 @@ import PropTypes from "prop-types";
  *      ----+----------------+
  */
 const ValueAxis = ({ width, height, value, detail }) => {
-  const labelStyle = {
-    fill: "#666",
-    fontSize: 20,
-    textAnchor: "middle"
-  };
-  const detailStyle = {
-    fontSize: 12,
-    textAnchor: "middle",
-    fill: "#9a9a9a"
-  };
-  return (
-    <g>
-      <rect
-        key="background"
-        x="0"
-        y="0"
-        width={width}
-        height={height}
-        style={{ fill: "none", stroke: "none" }}
-      />
-      <text
-        key="value"
-        x={parseInt(width / 2, 10)}
-        y={height / 2}
-        style={labelStyle}
-      >
-        {value}
-      </text>
-      <text
-        key="detail"
-        x={parseInt(width / 2, 10)}
-        y={height / 2}
-        dy="1.2em"
-        style={detailStyle}
-      >
-        {detail}
-      </text>
-    </g>
-  );
+    const labelStyle = {
+        fill: "#666",
+        fontSize: 20,
+        textAnchor: "middle"
+    };
+    const detailStyle = {
+        fontSize: 12,
+        textAnchor: "middle",
+        fill: "#9a9a9a"
+    };
+    return (
+        <g>
+            <rect
+                key="background"
+                x="0"
+                y="0"
+                width={width}
+                height={height}
+                style={{ fill: "none", stroke: "none" }}
+            />
+            <text key="value" x={parseInt(width / 2, 10)} y={height / 2} style={labelStyle}>
+                {value}
+            </text>
+            <text
+                key="detail"
+                x={parseInt(width / 2, 10)}
+                y={height / 2}
+                dy="1.2em"
+                style={detailStyle}
+            >
+                {detail}
+            </text>
+        </g>
+    );
 };
 
 ValueAxis.propTypes = {
-  /**
+    /**
    * If values are numbers, use this format string
    */
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  /**
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
    * If values are numbers, use this format string
    */
-  detail: PropTypes.string,
-  /**
+    detail: PropTypes.string,
+    /**
    * The width of the axis
    */
-  width: PropTypes.number,
-  /**
+    width: PropTypes.number,
+    /**
    * The height of the axis
    */
-  height: PropTypes.number
+    height: PropTypes.number
 };
 
 export default ValueAxis;
