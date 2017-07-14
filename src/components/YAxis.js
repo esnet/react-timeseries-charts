@@ -174,12 +174,21 @@ export default class YAxis extends React.Component {
     const axis = align === "left" ? axisLeft : axisRight;
     if (this.props.type === "linear" || this.props.type === "power") {
       if (this.props.height <= 200) {
-        axisGenerator = axis(scale).ticks(5).tickFormat(d => {
-          if (absolute) {
-            return yformat(Math.abs(d));
-          }
-          return yformat(d);
-        }).tickSizeOuter(0);
+        if (this.props.tickCount > 0) {
+          axisGenerator = axis(scale).ticks(this.props.tickCount).tickFormat(d => {
+            if (absolute) {
+              return yformat(Math.abs(d));
+            }
+            return yformat(d);
+          }).tickSizeOuter(0);
+        } else {
+          axisGenerator = axis(scale).ticks(5).tickFormat(d => {
+            if (absolute) {
+              return yformat(Math.abs(d));
+            }
+            return yformat(d);
+          }).tickSizeOuter(0);
+        }
       } else {
         axisGenerator = axis(scale).tickFormat(d => {
           if (absolute) {
@@ -279,7 +288,7 @@ YAxis.defaultProps = {
   labelOffset: 0, // Offset the label position
   transition: 100, // Axis transition time
   width: 80,
-  style: defaultStyle
+  style: defaultStyle,
 };
 
 YAxis.propTypes = {
@@ -360,5 +369,9 @@ YAxis.propTypes = {
   /**
    * [Internal] The height supplied by the surrounding ChartContainer
    */
-  height: PropTypes.number
+  height: PropTypes.number,
+  /**
+   * The number of ticks
+   */
+  tickCount: PropTypes.number
 };
