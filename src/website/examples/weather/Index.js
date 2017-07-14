@@ -45,13 +45,9 @@ _.each(weatherJSON, readings => {
     const time = new Moment(readings.Time).toDate().getTime();
     const tempReading = readings.TemperatureF;
     const pressureReading = readings["PressureIn"];
-    const windReading = readings["WindSpeedMPH"] === "Calm"
-        ? 0
-        : readings["WindSpeedMPH"];
+    const windReading = readings["WindSpeedMPH"] === "Calm" ? 0 : readings["WindSpeedMPH"];
     const gustReading = readings["WindSpeedGustMPH"];
-    const rainReading = readings["HourlyPrecipIn"] === "N/A"
-        ? 0
-        : readings["HourlyPrecipIn"];
+    const rainReading = readings["HourlyPrecipIn"] === "N/A" ? 0 : readings["HourlyPrecipIn"];
     const rainAccumReading = readings["dailyrainin"];
 
     temperaturePoints.push([time, tempReading]);
@@ -60,11 +56,7 @@ _.each(weatherJSON, readings => {
     // Somewhat fake the wind speed...
     windPoints.push([time, windReading * 5]);
     if (gustReading !== "-" && gustReading !== 0) {
-        gustPoints.push([
-            time,
-            gustReading * 5 + Math.random() * 2.5 - 2.5,
-            gustReading / 3
-        ]);
+        gustPoints.push([time, gustReading * 5 + Math.random() * 2.5 - 2.5, gustReading / 3]);
     }
     rainPoints.push([time, rainReading]);
     rainAccumPoints.push([time, rainAccumReading]);
@@ -153,27 +145,16 @@ const weather = React.createClass({
         return (
             <div>
                 <div className="row">
-                    <div
-                        className="col-md-12"
-                        style={{ fontSize: 14, color: "#777" }}
-                    >
+                    <div className="col-md-12" style={{ fontSize: 14, color: "#777" }}>
                         <span
-                            style={
-                                this.state.mode === "local"
-                                    ? linkStyleActive
-                                    : linkStyle
-                            }
+                            style={this.state.mode === "local" ? linkStyleActive : linkStyle}
                             onClick={() => this.setState({ mode: "utc" })}
                         >
                             UTC
                         </span>
                         <span> | </span>
                         <span
-                            style={
-                                this.state.mode === "utc"
-                                    ? linkStyleActive
-                                    : linkStyle
-                            }
+                            style={this.state.mode === "utc" ? linkStyleActive : linkStyle}
                             onClick={() => this.setState({ mode: "local" })}
                         >
                             Local
@@ -190,10 +171,10 @@ const weather = React.createClass({
                                 utc={this.state.mode === "utc"}
                                 timeRange={tempSeries.timerange()}
                                 showGrid={true}
+                                showGridPosition="under"
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
-                                onTrackerChanged={tracker =>
-                                    this.setState({ tracker })}
+                                onTrackerChanged={tracker => this.setState({ tracker })}
                             >
 
                                 <ChartRow height="150">

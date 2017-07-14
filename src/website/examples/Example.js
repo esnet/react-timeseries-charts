@@ -29,7 +29,8 @@ export default React.createClass({
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
         const docs = Examples[`${exampleName}_docs`];
-
+        const sourceCode = "https://github.com/esnet/react-timeseries-charts/tree/master/src/website/examples/" +
+            exampleName;
         return (
             <div>
                 <div className="row">
@@ -37,6 +38,7 @@ export default React.createClass({
                         <div className="row">
                             <div className="col-md-12">
                                 <h3>{ExampleMetaData.title}</h3>
+                                <a href={sourceCode} target="_blank">Source Code</a>
                                 <p>
                                     {ExampleMetaData.description}
                                 </p>

@@ -4,6 +4,7 @@ This example uses three rows to create stacked chart:
         utc={this.state.mode === "utc"}
         timeRange={tempSeries.timerange()}
         showGrid={true}
+        showGridPosition="over"
         trackerPosition={this.state.tracker}
         trackerTimeFormat="%X"
         onTrackerChanged={(tracker) => this.setState({tracker})} >

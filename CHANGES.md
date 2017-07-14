@@ -3,9 +3,9 @@
 ## v0.12.5
 > Jun 15, 2017
 
- * Fixes propType warnings by using prop-types package(([@aruntk](https://github.com/aruntka) in [#152](https://github.com/esnet/react-timeseries-charts/pull/152))
- * Fixes an issue with ScatterChart prop type (([@christian-acuna](https://github.com/christian-acuna) in [#155](https://github.com/esnet/react-timeseries-charts/pull/155))
- * Pointer events allowing on ScatterChart (([@samford100](https://github.com/samford100) in [#137](https://github.com/esnet/react-timeseries-charts/pull/137))
+ * Fixes React propType warnings by using prop-types package ([@aruntk](https://github.com/aruntka) in [#152](https://github.com/esnet/react-timeseries-charts/pull/152))
+ * Fixes an issue with ScatterChart prop type ([@christian-acuna](https://github.com/christian-acuna) in [#155](https://github.com/esnet/react-timeseries-charts/pull/155))
+ * Pointer events allowing on ScatterChart ([@samford100](https://github.com/samford100) in [#137](https://github.com/esnet/react-timeseries-charts/pull/137))
 
 ## v0.12.3
 > Feb 24, 2017
