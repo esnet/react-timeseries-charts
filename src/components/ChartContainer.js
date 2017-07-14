@@ -393,18 +393,18 @@ ChartContainer.propTypes = {
    *
    * However, some options exist:
    * 
-   * 1) setting format to "day", "month" or "year" will show only ticks on those,
+   *  - setting format to "day", "month" or "year" will show only ticks on those,
    * and every one of those intervals. For example maybe you are showing a bar
    * chart for October 2014 then setting the format to "day" will insure that a
    * label is placed for each and every day
    *
-   * 2) setting format to "relative" interprets the time as a duration. This
+   *  - setting format to "relative" interprets the time as a duration. This
    * is good for data that is specified relative to its start time, rather than
    * as an actual date/time
    * 
-   * 3) setting the format to a d3 format string will use that format
+   *  - setting the format to a d3 format string will use that format
    * 
-   * 4) supplying a function for format will cause that function to be called
+   *  - supplying a function for format will cause that function to be called
    * whenever rendering a time
    */
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -417,7 +417,8 @@ ChartContainer.propTypes = {
    */
     showGrid: PropTypes.bool,
     /**
-   * Defines whether Grid is overlayed or underlayed
+   * Defines whether grid is overlayed ("over"( or underlayed ("under")
+   * with respect to the charts
    */
     showGridPosition: PropTypes.oneOf(["over", "under"]),
     /**
