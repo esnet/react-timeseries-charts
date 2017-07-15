@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+import "babel-polyfill";
 
 import "./App.css";
 
@@ -80,69 +81,11 @@ class App extends Component {
 
                         <ul className="nav nav-sidebar">
                             <li>
-                                <Link to="/example/realtime">
-                                    Realtime example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/baselines">
-                                    Baselines demo
-                                </Link>
-                            </li>
-                            <li>
                                 <Link to="/example/barchart">
-                                    Simple BarChart example
+                                    BarChart example
                                 </Link>
                             </li>
-                            <li>
-                                <Link to="/example/continents">
-                                    Stacked AreaCharts
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/currency">
-                                    Currency example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/cycling">
-                                    Cycling example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/ddos">
-                                    DDoS attack example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/outages">Outage events</Link>
-                            </li>
-                            <li>
-                                <Link to="/example/traffic">
-                                    Network traffic
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/weather">
-                                    Weather example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/wind">Scatter example</Link>
-                            </li>
-                            <li>
-                                <Link to="/example/volume">
-                                    Barchart example
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/example/nyc">Boxplot example</Link>
-                            </li>
-                            <li>
-                                <Link to="/example/climate">
-                                    Climate example
-                                </Link>
-                            </li>
+
                         </ul>
 
                         <div className="sidebar-heading">API</div>

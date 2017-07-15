@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015, The Regents of the University of California,
+ *  Copyright (c) 2017, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -11,20 +11,23 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import {
-    ChartContainer,
-    ChartRow,
-    Charts,
-    YAxis,
-    BarChart,
-    Resizable,
-    styler
-} from "react-timeseries-charts";
+
+// Pond
 import { TimeSeries, Index } from "pondjs";
 
-// Docs exports
+// Imports from the charts library
+import ChartContainer from "../../../components/ChartContainer";
+import ChartRow from "../../../components/ChartRow";
+import Charts from "../../../components/Charts";
+import YAxis from "../../../components/YAxis";
+import BarChart from "../../../components/BarChart";
+import Resizable from "../../../components/Resizable";
+import styler from "../../../js/styler";
+
+/// Ignore these next two lines
 import barchart_docs from "./barchart_docs.md";
 import barchart_thumbnail from "./barchart_thumbnail.png";
+///
 
 const data = [
     ["2017-01-24 00:00", 0.01],
@@ -59,44 +62,11 @@ const series = new TimeSeries({
     points: data.map(([d, value]) => [Index.getIndexString("1h", new Date(d)), value])
 });
 
-/*
-series = {
-   "name": "HI_ASOS",
-   "utc": true,
-   "columns": ["index", "precip"],
-   "points": [
-      ["1h-412568", 0.01],
-      ["1h-412569", 0.13],
-      ["1h-412570", 0.07],
-      ["1h-412571", 0.04],
-      ["1h-412572", 0.33],
-      ["1h-412573", 0.2,
-      ["1h-412574", 0.08],
-      ["1h-412575", 0.54],
-      ["1h-412576", 0.95],
-      ["1h-412577", 1.12],
-      ["1h-412578", 0.66],
-      ["1h-412579", 0.06],
-      ["1h-412580", 0.3,
-      ["1h-412581", 0.05],
-      ["1h-412582", 0.5,
-      ["1h-412583", 0.24],
-      ["1h-412584", 0.02],
-      ["1h-412585", 0.98],
-      ["1h-412586", 0.46],
-      ["1h-412587", 0.8,
-      ["1h-412588", 0.39],
-      ["1h-412589", 0.4,
-      ["1h-412590", 0.39],
-      ["1h-412591", 0.28]
-   ]
-}
-*/
-
 const barchart = React.createClass({
     displayName: "BarChartExample",
     render() {
         const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
+
         return (
             <div>
                 <div className="row">

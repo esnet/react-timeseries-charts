@@ -87,7 +87,6 @@
         "react-router": "^2.6.1",
         "react-scripts": "^1.0.10",
         "react-select": "^1.0.0-beta14",
-        "react-timeseries-charts": "0.12.6",
         "ringjs": "0.0.1"
     },
     "peerDependencies": {

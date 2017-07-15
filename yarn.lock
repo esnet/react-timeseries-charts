@@ -5879,32 +5879,6 @@ react-select@^1.0.0-beta14:
     prop-types "^15.5.8"
     react-input-autosize "^1.1.3"
 
-react-timeseries-charts@0.12.6:
-  version "0.12.6"
-  resolved "https://registry.yarnpkg.com/react-timeseries-charts/-/react-timeseries-charts-0.12.6.tgz#fe280c24975cf5246fd8f6f0841a0954b31a3d14"
-  dependencies:
-    array.prototype.fill "^1.0.1"
-    babel-runtime "^6.5.0"
-    colorbrewer "^1.0.0"
-    d3-axis "^1.0.8"
-    d3-ease "^1.0.3"
-    d3-format "^1.2.0"
-    d3-interpolate "^1.1.5"
-    d3-scale "^1.0.6"
-    d3-scale-chromatic "^1.1.1"
-    d3-selection "^1.1.0"
-    d3-shape "^1.2.0"
-    d3-time "^1.0.7"
-    d3-time-format "^2.0.5"
-    d3-transition "^1.1.0"
-    flexbox-react "^4.3.3"
-    invariant "^2.1.1"
-    merge "^1.2.0"
-    moment "^2.18.1"
-    moment-duration-format "^1.3.0"
-    prop-types "^15.5.10"
-    underscore "^1.8.3"
-
 react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
