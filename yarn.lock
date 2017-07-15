@@ -5259,9 +5259,9 @@ pluralize@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-4.0.0.tgz#59b708c1c0190a2f692f1c7618c446b052fd1762"
 
-pondjs@0.8.4:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/pondjs/-/pondjs-0.8.4.tgz#51e833ee71fc875b3196daf6d04fdea890681931"
+pondjs@^0.8.6:
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/pondjs/-/pondjs-0.8.6.tgz#8478a0edfa11f6960bae8ab262b789cd2c8fe586"
   dependencies:
     babel-polyfill "^6.9.1"
     babel-runtime "^6.5.0"
