@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-import "babel-polyfill";
 
 import "./App.css";
 

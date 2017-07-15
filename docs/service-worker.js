@@ -12,9 +12,9 @@ function setOfCachedUrls(e) {
         });
 }
 var precacheConfig = [
-    ["/react-timeseries-charts/index.html", "2b09d5ebdf683602a2f5cfc4a0f87ef7"],
+    ["/react-timeseries-charts/index.html", "b6f7f108382bc2a91c6bbea577a369bd"],
     ["/react-timeseries-charts/static/css/main.7fea2283.css", "b40da45b07d9f6ee7cd3b2edd17973eb"],
-    ["/react-timeseries-charts/static/js/main.1f5dbe9a.js", "913c950ceabbca0463ca848646c0b01a"],
+    ["/react-timeseries-charts/static/js/main.475394a2.js", "56ec925d4d225d32870ed85e90c8c051"],
     [
         "/react-timeseries-charts/static/media/1_introduction.0eb6f1ed.md",
         "0eb6f1ed106ac6275a5aa0c37d2dbb36"
