@@ -11,25 +11,67 @@
 import React from "react";
 import Highlighter from "../components/highlighter";
 import Markdown from "react-markdown";
-import Index from "./index";
+
+import Guides from "./guides";
 import logo from "../img/charts.png";
 
 export default React.createClass({
     mixins: [Highlighter],
+    getInitialState() {
+        return {
+            markdown: null
+        };
+    },
+    componentDidMount() {
+        window.scrollTo(0, 0);
+        const guideName = this.props.params.doc || "intro";
+        console.log(guideName);
+        const markdownFile = Guides[guideName];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
+        this.setState({ markdown: null });
+    },
+    componentWillReceiveProps(nextProps) {
+        window.scrollTo(0, 0);
+        const guideName = nextProps.params.doc || "intro";
+        const markdownFile = Guides[guideName];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
+        this.setState({ markdown: null });
+    },
     render() {
-        const doc = this.props.params.doc;
-        const text = Index[doc];
-        return (
-            <div>
+        if (this.state.markdown !== null) {
+            return (
+                <div>
+                    <div className="row">
+                        <div className="col-md-2">
+                            <img src={logo} alt="ESnet" width={120} height={120} />
+                        </div>
+                        <div className="col-md-9">
+                            <Markdown source={this.state.markdown} />
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
                 <div className="row">
                     <div className="col-md-2">
                         <img src={logo} alt="ESnet" width={120} height={120} />
                     </div>
-                    <div className="col-md-9">
-                        <Markdown source={text} />
-                    </div>
+                    <div className="col-md-9" />
                 </div>
-            </div>
-        );
+            );
+        }
     }
 });
