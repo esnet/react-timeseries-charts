@@ -11,20 +11,18 @@
 /* eslint max-len:0 */
 
 import React from "react";
+import {
+    ChartContainer,
+    ChartRow,
+    Charts,
+    YAxis,
+    BarChart,
+    Resizable,
+    styler
+} from "react-timeseries-charts";
+import { TimeSeries, Index } from "pondjs";
 
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
-import ChartContainer from "../../../components/ChartContainer";
-import ChartRow from "../../../components/ChartRow";
-import Charts from "../../../components/Charts";
-import YAxis from "../../../components/YAxis";
-import BarChart from "../../../components/BarChart";
-import Resizable from "../../../components/Resizable";
-import styler from "../../../js/styler";
-import { Index } from "pondjs";
-
+// Docs exports
 import barchart_docs from "./barchart_docs.md";
 import barchart_thumbnail from "./barchart_thumbnail.png";
 
@@ -99,7 +97,6 @@ const barchart = React.createClass({
     displayName: "BarChartExample",
     render() {
         const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
-
         return (
             <div>
                 <div className="row">

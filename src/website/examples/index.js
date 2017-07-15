@@ -12,34 +12,34 @@
 // Export all of the examples
 //
 
-import baselines from "./baselines/Index";
+//import baselines from "./baselines/Index";
 import barchart from "./barchart/Index";
-import realtime from "./realtime/Index";
-import continents from "./continents/Index";
-import currency from "./currency/Index";
-import cycling from "./cycling/Index";
-import ddos from "./ddos/Index";
-import outages from "./outages/Index";
-import traffic from "./traffic/Index";
-import weather from "./weather/Index";
-import wind from "./wind/Index";
-import volume from "./volume/Index";
-import nyc from "./nyc/Index";
-import climate from "./climate/Index";
+// import realtime from "./realtime/Index";
+// import continents from "./continents/Index";
+// import currency from "./currency/Index";
+// import cycling from "./cycling/Index";
+// import ddos from "./ddos/Index";
+// import outages from "./outages/Index";
+// import traffic from "./traffic/Index";
+// import weather from "./weather/Index";
+// import wind from "./wind/Index";
+// import volume from "./volume/Index";
+// import nyc from "./nyc/Index";
+// import climate from "./climate/Index";
 
 export default {
-    ...realtime,
-    ...baselines,
-    ...barchart,
-    ...continents,
-    ...currency,
-    ...cycling,
-    ...ddos,
-    ...outages,
-    ...traffic,
-    ...weather,
-    ...wind,
-    ...volume,
-    ...nyc,
-    ...climate
+    // ...realtime,
+    // ...baselines,
+    ...barchart
+    // ...continents,
+    // ...currency,
+    // ...cycling,
+    // ...ddos,
+    // ...outages,
+    // ...traffic,
+    // ...weather,
+    // ...wind,
+    // ...volume,
+    // ...nyc,
+    // ...climate
 };

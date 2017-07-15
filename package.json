@@ -2,7 +2,12 @@
     "name": "react-timeseries-charts",
     "version": "0.12.6",
     "description": "Declarative timeseries charts",
-    "keywords": ["d3", "charts", "react", "timeseries"],
+    "keywords": [
+        "d3",
+        "charts",
+        "react",
+        "timeseries"
+    ],
     "homepage": "http://software.es.net/react-timeseries-charts",
     "main": "lib/entry",
     "author": "ESnet Tools Team <tools@es.net>",
@@ -21,9 +26,15 @@
         "prettier": "prettier --print-width 100 --tab-width 4 --write \"./src/**/*.js\""
     },
     "lint-staged": {
-        "*.js": ["prettier --print-width 100 --tab-width 4 --write", "git add"]
+        "*.js": [
+            "prettier --print-width 100 --tab-width 4 --write",
+            "git add"
+        ]
     },
-    "pre-commit": ["lint", "build"],
+    "pre-commit": [
+        "lint",
+        "build"
+    ],
     "license": "BSD-3-Clause-LBNL",
     "dependencies": {
         "array.prototype.fill": "^1.0.1",
@@ -69,13 +80,14 @@
         "pondjs": "^0.8.6",
         "prettier": "^0.22.0",
         "raw-loader": "^0.5.1",
-        "react-docgen": "^2.9.1",
         "react": "^15.6.1",
+        "react-docgen": "^2.9.1",
         "react-dom": "^15.6.1",
         "react-markdown": "^2.4.4",
         "react-router": "^2.6.1",
         "react-scripts": "^1.0.10",
         "react-select": "^1.0.0-beta14",
+        "react-timeseries-charts": "0.12.6",
         "ringjs": "0.0.1"
     },
     "peerDependencies": {
