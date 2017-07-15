@@ -12,7 +12,7 @@ function setOfCachedUrls(e) {
         });
 }
 var precacheConfig = [
-    ["/react-timeseries-charts/index.html", "c39cbf54fa2f536b50ee4b0979cabf4a"],
+    ["/react-timeseries-charts/index.html", "b2786f6820aef828d90cd03b49b9e792"],
     ["/react-timeseries-charts/static/css/main.7fea2283.css", "b40da45b07d9f6ee7cd3b2edd17973eb"],
     [
         "/react-timeseries-charts/static/media/barchart_docs.387e58bc.md",
