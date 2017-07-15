@@ -29,6 +29,9 @@ import Resizable from "../../../components/Resizable";
 // Weather data
 import weatherJSON from "./weather.json";
 
+import wind_docs from "./wind_docs.md";
+import wind_thumbnail from "./wind_thumbnail.png";
+
 //
 // Read in the weather data and add some randomness and intensity for fun
 //
@@ -196,6 +199,4 @@ const wind = React.createClass({
 });
 
 // Export example
-import wind_docs from "raw!./wind_docs.md";
-import wind_thumbnail from "./wind_thumbnail.png";
 export default { wind, wind_docs, wind_thumbnail };

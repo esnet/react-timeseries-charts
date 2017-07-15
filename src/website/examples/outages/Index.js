@@ -22,6 +22,9 @@ import Charts from "../../../components/Charts";
 import EventChart from "../../../components/EventChart";
 import Resizable from "../../../components/Resizable";
 
+import outages_docs from "./outages_docs.md";
+import outages_thumbnail from "./outages_thumbnail.png";
+
 //
 // Test data
 //
@@ -141,6 +144,4 @@ const outages = React.createClass({
 });
 
 // Export example
-import outages_docs from "raw!./outages_docs.md";
-import outages_thumbnail from "./outages_thumbnail.png";
 export default { outages, outages_docs, outages_thumbnail };

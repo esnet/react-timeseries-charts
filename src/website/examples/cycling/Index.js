@@ -35,6 +35,9 @@ import ValueAxis from "../../../components/ValueAxis";
 import YAxis from "../../../components/YAxis";
 import styler from "../../../js/styler";
 
+import cycling_docs from "./cycling_docs.md";
+import cycling_thumbnail from "./cycling_thumbnail.png";
+
 //
 // Build TimeSeries from our data file
 //
@@ -670,6 +673,4 @@ const cycling = React.createClass({
 });
 
 // Export example
-import cycling_docs from "raw!./cycling_docs.md";
-import cycling_thumbnail from "./cycling_thumbnail.png";
 export default { cycling, cycling_docs, cycling_thumbnail };

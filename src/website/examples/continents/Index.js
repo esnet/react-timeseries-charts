@@ -28,6 +28,9 @@ import Legend from "../../../components/Legend";
 import Resizable from "../../../components/Resizable";
 import styler from "../../../js/styler";
 
+import continents_docs from "./continents_docs.md";
+import continents_thumbnail from "./continents_thumbnail.png";
+
 // Data
 const rawData = require("./stacked.json");
 const numPoints = rawData[0].values.length;
@@ -155,6 +158,4 @@ const continents = React.createClass({
 });
 
 // Export example
-import continents_docs from "raw!./continents_docs.md";
-import continents_thumbnail from "./continents_thumbnail.png";
 export default { continents, continents_docs, continents_thumbnail };

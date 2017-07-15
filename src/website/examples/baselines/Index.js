@@ -21,6 +21,9 @@ import LineChart from "../../../components/LineChart";
 import Baseline from "../../../components/Baseline";
 import Resizable from "../../../components/Resizable";
 
+import baselines_docs from "./baselines_docs.md";
+import baselines_thumbnail from "./baselines_thumbnail.png";
+
 // Data
 const data = require("./usd_vs_euro.json");
 const points = data.widget[0].data.reverse();
@@ -120,6 +123,4 @@ const baselines = React.createClass({
 });
 
 // Export example
-import baselines_docs from "raw!./baselines_docs.md";
-import baselines_thumbnail from "./baselines_thumbnail.png";
 export default { baselines, baselines_docs, baselines_thumbnail };

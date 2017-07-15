@@ -24,8 +24,12 @@ import BoxChart from "../../../components/BoxChart";
 import Resizable from "../../../components/Resizable";
 import styler from "../../../js/styler";
 
+import nyc_docs from "./nyc_docs.md";
+import nyc_thumbnail from "./nyc_thumbnail.png";
+
 // Data
-const weather = require("dsv?delimiter=,!./knyc.csv"); //eslint-disable-line
+import weather from "./knyc.json";
+
 const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 }]);
 
 //
@@ -145,6 +149,4 @@ const nyc = React.createClass({
 });
 
 // Export example
-import nyc_docs from "raw!./nyc_docs.md"; //eslint-disable-line
-import nyc_thumbnail from "./nyc_thumbnail.png"; //eslint-disable-line
 export default { nyc, nyc_docs, nyc_thumbnail };

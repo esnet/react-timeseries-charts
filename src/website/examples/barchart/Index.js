@@ -25,6 +25,9 @@ import Resizable from "../../../components/Resizable";
 import styler from "../../../js/styler";
 import { Index } from "pondjs";
 
+import barchart_docs from "./barchart_docs.md";
+import barchart_thumbnail from "./barchart_thumbnail.png";
+
 const data = [
     ["2017-01-24 00:00", 0.01],
     ["2017-01-24 01:00", 0.13],
@@ -139,6 +142,4 @@ const barchart = React.createClass({
 });
 
 // Export example
-import barchart_docs from "raw!./barchart_docs.md";
-import barchart_thumbnail from "./barchart_thumbnail.png";
 export default { barchart, barchart_docs, barchart_thumbnail };

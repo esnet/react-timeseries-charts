@@ -31,6 +31,9 @@ import styler from "../../../js/styler";
 // Weather data
 import weatherJSON from "./weather.json";
 
+import weather_docs from "./weather_docs.md";
+import weather_thumbnail from "./weather_thumbnail.png";
+
 //
 // Read in the weather data
 //
@@ -313,6 +316,4 @@ const weather = React.createClass({
 });
 
 // Export example
-import weather_docs from "raw!./weather_docs.md";
-import weather_thumbnail from "./weather_thumbnail.png";
 export default { weather, weather_docs, weather_thumbnail };

@@ -28,6 +28,9 @@ import Resizable from "../../../components/Resizable";
 import Legend from "../../../components/Legend";
 import styler from "../../../js/styler";
 
+import ddos_docs from "./ddos_docs.md";
+import ddos_thumbnail from "./ddos_thumbnail.png";
+
 // Data
 const ddosData = require("./data.json");
 
@@ -200,6 +203,4 @@ const ddos = React.createClass({
 });
 
 // Export example
-import ddos_docs from "raw!./ddos_docs.md";
-import ddos_thumbnail from "./ddos_thumbnail.png";
 export default { ddos, ddos_docs, ddos_thumbnail };

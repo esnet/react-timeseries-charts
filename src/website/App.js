@@ -119,11 +119,6 @@ class App extends Component {
                                 <Link to="/example/outages">Outage events</Link>
                             </li>
                             <li>
-                                <Link to="/example/stockchart">
-                                    Stock chart
-                                </Link>
-                            </li>
-                            <li>
                                 <Link to="/example/traffic">
                                     Network traffic
                                 </Link>

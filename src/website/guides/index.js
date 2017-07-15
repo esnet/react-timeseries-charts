@@ -8,12 +8,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import start from "raw!./start.md";
-import style from "raw!./style.md";
-import markers from "raw!./markers.md";
+// import start from "./start.md";
+// import style from "./style.md";
+// import markers from "./markers.md";
 
 export default {
-    start,
-    style,
-    markers
+    // start,
+    // style,
+    // markers
 };

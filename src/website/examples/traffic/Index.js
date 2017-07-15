@@ -26,6 +26,9 @@ import Legend from "../../../components/Legend";
 import Resizable from "../../../components/Resizable";
 import styler from "../../../js/styler";
 
+import traffic_docs from "./traffic_docs.md";
+import traffic_thumbnail from "./traffic_thumbnail.png";
+
 // Data
 const rawTrafficData = require("./link-traffic.json");
 
@@ -143,6 +146,4 @@ const traffic = React.createClass({
 });
 
 // Export example
-import traffic_docs from "raw!./traffic_docs.md";
-import traffic_thumbnail from "./traffic_thumbnail.png";
 export default { traffic, traffic_docs, traffic_thumbnail };

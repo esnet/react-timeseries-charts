@@ -16,6 +16,43 @@ import Meta from "./examples.json";
 
 export default React.createClass({
     mixins: [Highlighter],
+    getInitialState() {
+        return {
+            markdown: null
+        };
+    },
+    componentWillReceiveProps() {
+        window.scrollTo(0, 0);
+        const exampleName = this.props.params.example;
+        const markdownFile = Examples[`${exampleName}_docs`];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
+    },
+    renderMarkdown() {
+        if (this.state.markdown) {
+            return (
+                <div className="row">
+                    <div className="col-md-12">
+                        <Markdown source={this.state.markdown} />
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-md-12">
+                        Loading...
+                    </div>
+                </div>
+            );
+        }
+    },
+
     render() {
         const tagStyle = {
             background: "#EEE",
@@ -28,9 +65,8 @@ export default React.createClass({
         const exampleName = this.props.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
-        const docs = Examples[`${exampleName}_docs`];
-        const sourceCode = "https://github.com/esnet/react-timeseries-charts/tree/master/src/website/examples/" +
-            exampleName;
+        const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/examples/${exampleName}/Index.js`;
+
         return (
             <div>
                 <div className="row">
@@ -38,27 +74,24 @@ export default React.createClass({
                         <div className="row">
                             <div className="col-md-12">
                                 <h3>{ExampleMetaData.title}</h3>
-                                <a href={sourceCode} target="_blank">Source Code</a>
+                                <p>
+                                    <a
+                                        style={{ fontSize: "small" }}
+                                        href={sourceCode}
+                                        target="_blank"
+                                    >
+                                        Source Code »
+                                    </a>
+                                </p>
                                 <p>
                                     {ExampleMetaData.description}
                                 </p>
-                                <div>
-                                    {ExampleMetaData.tags.map(tag => (
-                                        <span style={tagStyle} key={tag}>
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
                             </div>
                         </div>
                         <hr />
                         <Component />
                         <hr />
-                        <div className="row">
-                            <div className="col-md-12">
-                                <Markdown source={docs} />
-                            </div>
-                        </div>
+                        {this.renderMarkdown()}
                     </div>
                 </div>
             </div>

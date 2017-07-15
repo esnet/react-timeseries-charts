@@ -28,6 +28,9 @@ import Legend from "../../../components/Legend";
 import Resizable from "../../../components/Resizable";
 import styler from "../../../js/styler";
 
+import currency_docs from "./currency_docs.md";
+import currency_thumbnail from "./currency_thumbnail.png";
+
 // Data
 const aud = require("./usd_vs_aud.json");
 const euro = require("./usd_vs_euro.json");
@@ -164,6 +167,4 @@ const currency = React.createClass({
 });
 
 // Export example
-import currency_docs from "raw!./currency_docs.md";
-import currency_thumbnail from "./currency_thumbnail.png";
 export default { currency, currency_docs, currency_thumbnail };

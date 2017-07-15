@@ -29,6 +29,9 @@ import EventMarker from "../../../components/EventMarker";
 
 import styler from "../../../js/styler";
 
+import climate_docs from "./climate_docs.md";
+import climate_thumbnail from "./climate_thumbnail.png";
+
 // Data
 const temperatures = require("./climate_data");
 
@@ -231,6 +234,4 @@ const climate = React.createClass({
 });
 
 // Export example
-import climate_docs from "raw!./climate_docs.md";
-import climate_thumbnail from "./climate_thumbnail.png";
 export default { climate, climate_docs, climate_thumbnail };

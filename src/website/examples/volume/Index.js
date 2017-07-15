@@ -30,6 +30,9 @@ import styler from "../../../js/styler";
 // Test data
 import monthlyJSON from "./total_traffic_6mo.json";
 
+import volume_docs from "./volume_docs.md";
+import volume_thumbnail from "./volume_thumbnail.png";
+
 //
 // October 2014 daily traffic
 //
@@ -466,6 +469,4 @@ const volume = React.createClass({
 });
 
 // Export example
-import volume_docs from "raw!./volume_docs.md";
-import volume_thumbnail from "./volume_thumbnail.png";
 export default { volume, volume_docs, volume_thumbnail };

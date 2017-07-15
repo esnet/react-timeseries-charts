@@ -27,7 +27,18 @@
     "cycling": {
         "title": "Cycling example",
         "description": "A multi-channel visualization of a bike ride. Features pan and zoom and brushing.",
-        "tags": ["LineChart", "AreaChart", "BoxChart", "Legend", "styler", "panzoom", "Brush", "channels", "infobox", "TimeMarker"]
+        "tags": [
+            "LineChart",
+            "AreaChart",
+            "BoxChart",
+            "Legend",
+            "styler",
+            "panzoom",
+            "Brush",
+            "channels",
+            "infobox",
+            "TimeMarker"
+        ]
     },
     "ddos": {
         "title": "DDoS attack",
@@ -38,11 +49,6 @@
         "title": "Outage events",
         "description": "Example showing the experimental EventChart.",
         "tags": ["LabelAxis", "EventChart", "panzoom"]
-    },
-    "stockchart": {
-        "title": "Stockchart",
-        "description": "Example in progress to build a stock chart. Demonstrates log to linear scale transitions.",
-        "tags": ["LineChart", "BarChart", "panzoom"]
     },
     "traffic": {
         "title": "Network Traffic example",
