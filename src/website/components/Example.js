@@ -9,10 +9,12 @@
  */
 
 import React from "react";
-import Highlighter from "../components/highlighter";
 import Markdown from "react-markdown";
-import Examples from "./index.js";
-import Meta from "./examples.json";
+
+import Highlighter from "./Highlighter";
+
+import Examples from "../packages/charts/examples/examples.js";
+import Meta from "../packages/charts/examples/examples.json";
 
 export default React.createClass({
     mixins: [Highlighter],

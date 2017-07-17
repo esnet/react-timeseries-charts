@@ -15,11 +15,12 @@ import { Link } from "react-router";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
-import Highlighter from "../components/highlighter";
+import Highlighter from "./Highlighter";
 import APIDoc from "./APIDoc";
-import Meta from "../examples/examples.json";
-import Examples from "../examples/index.js";
-import docsFile from "./docs.json";
+
+import Meta from "../packages/charts/examples/examples.json";
+import Examples from "../packages/charts/examples/examples.js";
+import docsFile from "../packages/charts/api/docs.json";
 
 const Example = React.createClass({
     render() {

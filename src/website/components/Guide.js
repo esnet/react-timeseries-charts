@@ -9,11 +9,11 @@
  */
 
 import React from "react";
-import Highlighter from "../components/highlighter";
+import Highlighter from "./Highlighter";
 import Markdown from "react-markdown";
 
-import Guides from "./guides";
-import logo from "../img/charts.png";
+import Guides from "../packages/charts/guides/guides";
+import logo from "../packages/charts/logo.png";
 
 export default React.createClass({
     mixins: [Highlighter],

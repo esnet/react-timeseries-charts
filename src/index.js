@@ -6,9 +6,9 @@ import "./website/index.css";
 import "react-select/dist/react-select.css";
 
 import App from "./website/App";
-import Guide from "./website/guides/Guide";
-import Example from "./website/examples/Example";
-import API from "./website/api/API";
+import Guide from "./website/components/Guide";
+import Example from "./website/components/Example";
+import API from "./website/components/API";
 
 import registerServiceWorker from "./registerServiceWorker";
 
@@ -18,7 +18,7 @@ ReactDOM.render(
             <IndexRoute component={Guide} />
             <Route path="guide/:doc" component={Guide} />
             <Route path="example/:example" component={Example} />
-            <Route path="api/:component" component={API} />
+            <Route path="api/:packages/:component" component={API} />
         </Route>
     </Router>,
     document.getElementById("root")

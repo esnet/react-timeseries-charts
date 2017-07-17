@@ -91,43 +91,43 @@ class App extends Component {
 
                         <ul className="nav nav-sidebar">
 
-                            <li><Link to="/api/AreaChart">AreaChart</Link></li>
-                            <li><Link to="/api/BarChart">BarChart</Link></li>
-                            <li><Link to="/api/Baseline">Baseline</Link></li>
-                            <li><Link to="/api/BoxChart">BoxChart</Link></li>
-                            <li><Link to="/api/Brush">Brush</Link></li>
+                            <li><Link to="/api/charts/AreaChart">AreaChart</Link></li>
+                            <li><Link to="/api/charts/BarChart">BarChart</Link></li>
+                            <li><Link to="/api/charts/Baseline">Baseline</Link></li>
+                            <li><Link to="/api/charts/BoxChart">BoxChart</Link></li>
+                            <li><Link to="/api/charts/Brush">Brush</Link></li>
                             <li>
-                                <Link to="/api/ChartContainer">
+                                <Link to="/api/charts/ChartContainer">
                                     ChartContainer
                                 </Link>
                             </li>
-                            <li><Link to="/api/ChartRow">ChartRow</Link></li>
-                            <li><Link to="/api/Charts">Charts</Link></li>
+                            <li><Link to="/api/charts/ChartRow">ChartRow</Link></li>
+                            <li><Link to="/api/charts/Charts">Charts</Link></li>
                             <li>
-                                <Link to="/api/EventChart">EventChart</Link>
+                                <Link to="/api/charts/EventChart">EventChart</Link>
                             </li>
                             <li>
-                                <Link to="/api/EventMarker">EventMarker</Link>
+                                <Link to="/api/charts/EventMarker">EventMarker</Link>
                             </li>
-                            <li><Link to="/api/LabelAxis">LabelAxis</Link></li>
-                            <li><Link to="/api/Legend">Legend</Link></li>
-                            <li><Link to="/api/LineChart">LineChart</Link></li>
-                            <li><Link to="/api/Resizable">Resizable</Link></li>
+                            <li><Link to="/api/charts/LabelAxis">LabelAxis</Link></li>
+                            <li><Link to="/api/charts/Legend">Legend</Link></li>
+                            <li><Link to="/api/charts/LineChart">LineChart</Link></li>
+                            <li><Link to="/api/charts/Resizable">Resizable</Link></li>
                             <li>
-                                <Link to="/api/ScatterChart">ScatterChart</Link>
+                                <Link to="/api/charts/ScatterChart">ScatterChart</Link>
                             </li>
-                            <li><Link to="/api/TimeAxis">TimeAxis</Link></li>
+                            <li><Link to="/api/charts/TimeAxis">TimeAxis</Link></li>
                             <li>
-                                <Link to="/api/TimeMarker">TimeMarker</Link>
+                                <Link to="/api/charts/TimeMarker">TimeMarker</Link>
                             </li>
                             <li>
-                                <Link to="/api/TimeRangeMarker">
+                                <Link to="/api/charts/TimeRangeMarker">
                                     TimeRangeMarker
                                 </Link>
                             </li>
-                            <li><Link to="/api/ValueAxis">ValueAxis</Link></li>
-                            <li><Link to="/api/ValueList">ValueList</Link></li>
-                            <li><Link to="/api/YAxis">YAxis</Link></li>
+                            <li><Link to="/api/charts/ValueAxis">ValueAxis</Link></li>
+                            <li><Link to="/api/charts/ValueList">ValueList</Link></li>
+                            <li><Link to="/api/charts/YAxis">YAxis</Link></li>
 
                         </ul>
 

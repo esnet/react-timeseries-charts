@@ -1,7 +1,8 @@
 import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
-import docsFile from "./docs.json";
+
+import chartsDocs from "../packages/charts/api/docs.json";
 
 /**
  * Displays API data from the docs.json file
@@ -99,7 +100,7 @@ export default React.createClass({
     },
     render() {
         const file = this.props.file;
-        const docs = docsFile[file];
+        const docs = chartsDocs[file];
         return (
             <div>
                 <h3>{docs.displayName} API</h3>
