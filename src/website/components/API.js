@@ -15,7 +15,7 @@ import { Link } from "react-router";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
-import Highlighter from "./Highlighter";
+import Highlighter from "./highlighter";
 import APIDoc from "./APIDoc";
 
 import Meta from "../packages/charts/examples/examples.json";
