@@ -11,7 +11,7 @@
 import React from "react";
 import Markdown from "react-markdown";
 
-import Highlighter from "./Highlighter";
+import Highlighter from "./highlighter";
 
 import Examples from "../packages/charts/examples/examples.js";
 import Meta from "../packages/charts/examples/examples.json";
@@ -67,7 +67,7 @@ export default React.createClass({
         const exampleName = this.props.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
-        const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/examples/${exampleName}/Index.js`;
+        const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/packages/charts/examples/${exampleName}/Index.js`;
 
         return (
             <div>

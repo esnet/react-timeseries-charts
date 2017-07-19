@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import Highlighter from "./Highlighter";
+import Highlighter from "./highlighter";
 import Markdown from "react-markdown";
 
 import Guides from "../packages/charts/guides/guides";
