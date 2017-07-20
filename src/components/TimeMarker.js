@@ -33,7 +33,6 @@ export default class TimeMarker extends React.Component {
     }
 
     renderTimeMarker(d) {
-        console.log("renderTimeMarker", this.props.timeFormat);
         const textStyle = {
             fontSize: 11,
             textAnchor: "left",
@@ -104,7 +103,6 @@ export default class TimeMarker extends React.Component {
     }
 
     render() {
-        console.log("render", this.props.timeFormat);
         const posx = this.props.timeScale(this.props.time);
         if (posx) {
             return (
