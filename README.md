@@ -1,4 +1,4 @@
-<img src="https://github.com/esnet/react-timeseries-charts/blob/master/src/website/img/charts.png" alt="logo" width="160px"/>
+<img src="https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/src/website/packages/charts/logo.png" alt="logo" width="160px"/>
 
 # React Timeseries Charts
 
