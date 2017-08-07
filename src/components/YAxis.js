@@ -13,6 +13,7 @@ import merge from "merge";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
+import { range } from "d3-array";
 import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
@@ -174,18 +175,19 @@ export default class YAxis extends React.Component {
         let axisGenerator;
         const axis = align === "left" ? axisLeft : axisRight;
         if (this.props.type === "linear" || this.props.type === "power") {
-            if (this.props.height <= 200) {
-                if (this.props.tickCount > 0) {
-                    axisGenerator = axis(scale)
-                        .ticks(this.props.tickCount)
-                        .tickFormat(d => {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        })
-                        .tickSizeOuter(0);
-                } else {
+            if (this.props.tickCount > 0) {
+                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
+                axisGenerator = axis(scale)
+                    .tickValues(range(this.props.min, this.props.max + 1, stepSize))
+                    .tickFormat(d => {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    })
+                    .tickSizeOuter(0);
+            } else {
+                if (this.props.height <= 200) {
                     axisGenerator = axis(scale)
                         .ticks(5)
                         .tickFormat(d => {
@@ -195,16 +197,16 @@ export default class YAxis extends React.Component {
                             return yformat(d);
                         })
                         .tickSizeOuter(0);
+                } else {
+                    axisGenerator = axis(scale)
+                        .tickFormat(d => {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        })
+                        .tickSizeOuter(0);
                 }
-            } else {
-                axisGenerator = axis(scale)
-                    .tickFormat(d => {
-                        if (absolute) {
-                            return yformat(Math.abs(d));
-                        }
-                        return yformat(d);
-                    })
-                    .tickSizeOuter(0);
             }
         } else if (this.props.type === "log") {
             axisGenerator = axis().scale(scale).ticks(10, ".2s").tickSizeOuter(0);
