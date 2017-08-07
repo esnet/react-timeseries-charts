@@ -178,7 +178,9 @@ export default class YAxis extends React.Component {
             if (this.props.tickCount > 0) {
                 const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
                 axisGenerator = axis(scale)
-                    .tickValues(range(this.props.min, this.props.max + 1, stepSize))
+                    .tickValues(
+                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
+                    )
                     .tickFormat(d => {
                         if (absolute) {
                             return yformat(Math.abs(d));
@@ -189,7 +191,7 @@ export default class YAxis extends React.Component {
             } else {
                 if (this.props.height <= 200) {
                     axisGenerator = axis(scale)
-                        .ticks(5)
+                        .ticks(4)
                         .tickFormat(d => {
                             if (absolute) {
                                 return yformat(Math.abs(d));
