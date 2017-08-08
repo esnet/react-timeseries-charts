@@ -12,9 +12,10 @@
 
 import React from "react";
 import _ from "underscore";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { indexedSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import Baseline from "../../../../../components/Baseline";
@@ -42,7 +43,7 @@ _.each(temperatures, val => {
     points.push([index, temperature, fiveyear]);
 });
 
-const temperatureSeries = new TimeSeries({
+const temperatureSeries = indexedSeries({
     name: "temperature anomoly",
     columns: ["index", "temperature", "five_year"],
     points
@@ -64,7 +65,7 @@ const style = styler([
     { key: "five_year", color: "black", width: 2 }
 ]);
 
-const climate = React.createClass({
+const climate = createReactClass({
     getInitialState() {
         return {
             tracker: null,

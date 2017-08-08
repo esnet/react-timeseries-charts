@@ -201,8 +201,12 @@ export default class ChartContainer extends React.Component {
         }
 
         const timeScale = this.props.utc
-            ? scaleUtc().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth])
-            : scaleTime().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth]);
+            ? scaleUtc()
+                  .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
+                  .range([0, timeAxisWidth])
+            : scaleTime()
+                  .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
+                  .range([0, timeAxisWidth]);
 
         let i = 0;
         let yPosition = 0;

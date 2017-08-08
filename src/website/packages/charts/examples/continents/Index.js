@@ -14,9 +14,10 @@ import React from "react";
 import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -53,7 +54,7 @@ for (let i = 0; i < numPoints; i++) {
     points.push(point);
 }
 
-const series = new TimeSeries({ name, columns, points });
+const series = timeSeries({ name, columns, points });
 
 //
 // Style
@@ -78,7 +79,7 @@ const styler = styler(columnNames.map((c, i) => ({
 // Build area chart style
 //
 
-const continents = React.createClass({
+const continents = createReactClass({
     getInitialState() {
         return {
             highlight: null,

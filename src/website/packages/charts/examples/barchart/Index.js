@@ -11,9 +11,10 @@
 /* eslint max-len:0 */
 
 import React from "react";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries, Index } from "pondjs";
+import { indexedSeries, TimeSeries, Index } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -56,13 +57,13 @@ const data = [
     ["2017-01-24 23:00", 0.28]
 ];
 
-const series = new TimeSeries({
+const series = indexedSeries({
     name: "hilo_rainfall",
     columns: ["index", "precip"],
     points: data.map(([d, value]) => [Index.getIndexString("1h", new Date(d)), value])
 });
 
-const barchart = React.createClass({
+const barchart = createReactClass({
     displayName: "BarChartExample",
     render() {
         const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);

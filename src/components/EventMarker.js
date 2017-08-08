@@ -12,7 +12,7 @@ import _ from "underscore";
 import React from "react";
 import PropTypes from "prop-types";
 import merge from "merge";
-import { TimeEvent, TimeRangeEvent, IndexedEvent, Index, TimeRange } from "pondjs";
+import { index, TimeEvent, TimeRangeEvent, IndexedEvent, Index, TimeRange } from "pondjs";
 import { timeFormat } from "d3-time-format";
 
 import Label from "./Label";
@@ -145,11 +145,16 @@ EventIndex.propTypes = {
  */
 export default class EventMarker extends React.Component {
     renderTime(event) {
-        if (event instanceof TimeEvent) {
+        if (event.keyType() === "time") {
             return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
-        } else if (event instanceof IndexedEvent) {
-            return <EventIndex index={event.index()} format={this.props.infoTimeFormat} />;
-        } else if (event instanceof TimeRangeEvent) {
+        } else if (event.keyType() === "index") {
+            return (
+                <EventIndex
+                    index={index(event.indexAsString())}
+                    format={this.props.infoTimeFormat}
+                />
+            );
+        } else if (event.keyType() === "timerange") {
             return (
                 <EventTimeRange timerange={event.timerange()} format={this.props.infoTimeFormat} />
             );
@@ -159,7 +164,7 @@ export default class EventMarker extends React.Component {
 
     renderMarker(event, column, info) {
         let t;
-        if (event instanceof TimeEvent) {
+        if (event.keyType() === "time") {
             t = event.timestamp();
         } else {
             t = new Date(

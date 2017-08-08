@@ -11,9 +11,11 @@
 /* eslint max-len:0 */
 
 import React from "react/";
+import * as Immutable from "immutable";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries, TimeRangeEvent, TimeRange } from "pondjs";
+import { TimeSeries, timerange, timeRangeEvent } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -29,7 +31,7 @@ import outages_thumbnail from "./outages_thumbnail.png";
 // Test data
 //
 
-const outageEvents = [
+const outageEvents = Immutable.List([
     {
         startTime: "2015-03-08T09:00:00Z",
         endTime: "2015-03-22T14:00:00Z",
@@ -63,17 +65,23 @@ const outageEvents = [
         organization: "Internet2 / Level 3",
         type: "Unplanned"
     }
-];
+]);
 
 //
 // Turn data into TimeSeries
 //
 
-const events = outageEvents.map(
-    ({ startTime, endTime, ...data }) =>
-        new TimeRangeEvent(new TimeRange(new Date(startTime), new Date(endTime)), data)
-);
-const series = new TimeSeries({ name: "outages", events });
+const TIMERANGE_EVENT_LIST = outageEvents.map(event => {
+    const { startTime, endTime, ...other } = event;
+    const b = new Date(startTime);
+    const e = new Date(endTime);
+    return timeRangeEvent(timerange(b, e), Immutable.Map(other));
+});
+
+const series = new TimeSeries({
+    name: "outages",
+    events: TIMERANGE_EVENT_LIST
+});
 
 //
 // Render event chart
@@ -100,7 +108,7 @@ function outageEventStyleFunc(event, state) {
     }
 }
 
-const outages = React.createClass({
+const outages = createReactClass({
     getInitialState() {
         return {
             tracker: null,

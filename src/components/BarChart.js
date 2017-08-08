@@ -214,17 +214,17 @@ export default class BarChart extends React.Component {
     }
 
     renderBars() {
-        const spacing = +this.props.spacing;
-        const offset = +this.props.offset;
-        const series = this.props.series;
-        const timeScale = this.props.timeScale;
-        const yScale = this.props.yScale;
-        const columns = this.props.columns || ["value"];
+        const spacing = +this.props.spacing; // 1
+        const offset = +this.props.offset; // 0
+        const series = this.props.series; // TimeSeries
+        const timeScale = this.props.timeScale; // f scale(x)
+        const yScale = this.props.yScale; // f (v)
+        const columns = this.props.columns || ["value"]; // precip
 
         const bars = [];
         let eventMarker;
 
-        for (const event of series.events()) {
+        for (const event of series.collection().eventList()) {
             const begin = event.begin();
             const end = event.end();
             const beginPos = timeScale(begin) + spacing;
@@ -254,7 +254,7 @@ export default class BarChart extends React.Component {
             let yposNegative = yBase;
             if (columns) {
                 for (const column of columns) {
-                    const index = event.index();
+                    const index = event.indexAsString();
                     const key = `${series.name()}-${index}-${column}`;
                     const value = event.get(column);
                     const style = this.style(column, event);
