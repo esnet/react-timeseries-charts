@@ -301,7 +301,8 @@ export default class Brush extends React.Component {
 
         if (!this.viewport().disjoint(timeRange)) {
             const range = timeRange.intersection(this.viewport());
-            const [begin, end] = range.toJSON();
+            const begin = range.begin().getTime();
+            const end = range.end().getTime();
             const [x, y] = [timeScale(begin), 0];
             const endPos = timeScale(end);
 

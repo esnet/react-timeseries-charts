@@ -66,7 +66,7 @@ export default class EventChart extends React.Component {
 
         // Create and array of markers, one for each event
         let i = 0;
-        for (const event of series.events()) {
+        for (const event of series.collection().eventList()) {
             const begin = event.begin();
             const end = event.end();
             const beginPos = scale(begin) >= 0 ? scale(begin) : 0;

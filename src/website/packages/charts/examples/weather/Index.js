@@ -13,9 +13,10 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -69,32 +70,32 @@ _.each(weatherJSON, readings => {
 // Timeseries
 //
 
-const tempSeries = new TimeSeries({
+const tempSeries = timeSeries({
     name: "Temperature",
     columns: ["time", "temp"],
     points: temperaturePoints
 });
-const pressureSeries = new TimeSeries({
+const pressureSeries = timeSeries({
     name: "Pressure",
     columns: ["time", "pressure"],
     points: pressurePoints
 });
-const windSeries = new TimeSeries({
+const windSeries = timeSeries({
     name: "Wind",
     columns: ["time", "wind"],
     points: windPoints
 });
-const gustSeries = new TimeSeries({
+const gustSeries = timeSeries({
     name: "Gust",
     columns: ["time", "gust", "radius"],
     points: gustPoints
 });
-const rainSeries = new TimeSeries({
+const rainSeries = timeSeries({
     name: "Rain",
     columns: ["time", "rain"],
     points: rainPoints
 });
-const rainAccumSeries = new TimeSeries({
+const rainAccumSeries = timeSeries({
     name: "Rain Accum",
     columns: ["time", "rainAccum"],
     points: rainAccumPoints
@@ -137,7 +138,7 @@ const linkStyleActive = {
 // Render weather charts
 //
 
-const weather = React.createClass({
+const weather = createReactClass({
     getInitialState() {
         return {
             tracker: null,

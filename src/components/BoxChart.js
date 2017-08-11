@@ -109,18 +109,25 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
     const fixedWindowAggregation = {};
 
     if (inner) {
-        fixedWindowAggregation.innerMin = mapColumn(column, inner[0]);
-        fixedWindowAggregation.innerMax = mapColumn(column, inner[1]);
+        fixedWindowAggregation.innerMin = [column, inner[0]];
+        fixedWindowAggregation.innerMax = [column, inner[1]];
+        // fixedWindowAggregation.innerMin = mapColumn(column, inner[0]);
+        // fixedWindowAggregation.innerMax = mapColumn(column, inner[1]);
     }
 
     if (outer) {
-        fixedWindowAggregation.outerMin = mapColumn(column, outer[0]);
-        fixedWindowAggregation.outerMax = mapColumn(column, outer[1]);
+        fixedWindowAggregation.outerMin = [column, outer[0]];
+        fixedWindowAggregation.outerMax = [column, outer[1]];
+        // fixedWindowAggregation.outerMin = mapColumn(column, outer[0]);
+        // fixedWindowAggregation.outerMax = mapColumn(column, outer[1]);
     }
 
     if (center) {
-        fixedWindowAggregation.center = mapColumn(column, center);
+        fixedWindowAggregation.center = [column, center];
+        // fixedWindowAggregation.center = mapColumn(column, center);
     }
+
+    console.log("getAggregatedSeries ", size, fixedWindowAggregation);
 
     return series.fixedWindowRollup({
         windowSize: size,
@@ -430,11 +437,11 @@ export default class BoxChart extends React.Component {
         const bars = [];
         let eventMarker;
 
-        for (const event of this.series.events()) {
+        for (const event of this.series.collection().eventList()) {
             const index = event.index();
             const begin = event.begin();
             const end = event.end();
-            const d = event.data();
+            const d = event.getData();
 
             const beginPosInner = timeScale(begin) + innerSpacing;
             const endPosInner = timeScale(end) - innerSpacing;

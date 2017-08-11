@@ -14,9 +14,10 @@ import React from "react";
 import _ from "underscore";
 import moment from "moment";
 import merge from "merge";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -45,13 +46,13 @@ _.each(ddosData, val => {
     connections.push([timestamp.toDate().getTime(), numConnection]);
 });
 
-const connectionsSeries = new TimeSeries({
+const connectionsSeries = timeSeries({
     name: "connections",
     columns: ["time", "connections"],
     points: connections
 });
 
-const requestsSeries = new TimeSeries({
+const requestsSeries = timeSeries({
     name: "requests",
     columns: ["time", "requests"],
     points: requests
@@ -66,7 +67,7 @@ const style = styler([
     { key: "requests", color: "#9467bd", width: 2 }
 ]);
 
-const ddos = React.createClass({
+const ddos = createReactClass({
     getInitialState() {
         return {
             active: {

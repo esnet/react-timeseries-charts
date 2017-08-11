@@ -14,9 +14,10 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { format } from "d3-format";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -53,7 +54,7 @@ _.each(weatherJSON, readings => {
 // Timeseries
 //
 
-const series = new TimeSeries({
+const series = timeSeries({
     name: "Gust",
     columns: ["time", "station1", "station2"],
     points
@@ -63,7 +64,7 @@ const series = new TimeSeries({
 // Render scatter chart
 //
 
-const wind = React.createClass({
+const wind = createReactClass({
     getInitialState() {
         return {
             hover: null,
