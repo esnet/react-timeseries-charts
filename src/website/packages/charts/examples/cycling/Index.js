@@ -12,6 +12,8 @@
 /* eslint-disable react/prefer-es6-class */
 
 import "moment-duration-format";
+import * as Immutable from "immutable";
+import * as _ from "lodash";
 import moment from "moment";
 import React from "react";
 import { format } from "d3-format";
@@ -20,11 +22,13 @@ import createReactClass from "create-react-class";
 // Pond
 import {
     avg,
+    Collection,
     filter,
     indexedSeries,
     median,
     percentile,
     period,
+    time,
     timeSeries,
     TimeSeries,
     timerange,
@@ -106,10 +110,7 @@ const speed = timeSeries({
 
 const speedSmoothed = speed.fixedWindowRollup({
     windowSize: period("1m"),
-    aggregation: {
-        speed5mAvg: ["speed", avg(filter.ignoreMissing)]
-    },
-    toEvents: true
+    aggregation: { speed5mAvg: ["speed", avg(filter.ignoreMissing)] }
 });
 
 console.log("speed Smoothed ", speedSmoothed);
