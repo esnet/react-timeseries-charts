@@ -214,12 +214,12 @@ export default class BarChart extends React.Component {
     }
 
     renderBars() {
-        const spacing = +this.props.spacing; // 1
-        const offset = +this.props.offset; // 0
-        const series = this.props.series; // TimeSeries
-        const timeScale = this.props.timeScale; // f scale(x)
-        const yScale = this.props.yScale; // f (v)
-        const columns = this.props.columns || ["value"]; // precip
+        const spacing = +this.props.spacing;
+        const offset = +this.props.offset;
+        const series = this.props.series;
+        const timeScale = this.props.timeScale;
+        const yScale = this.props.yScale;
+        const columns = this.props.columns || ["value"];
 
         const bars = [];
         let eventMarker;

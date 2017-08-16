@@ -196,9 +196,11 @@ export default class ChartContainer extends React.Component {
         const timeAxisHeight = 35;
         const timeAxisWidth = this.props.width - leftWidth - rightWidth;
 
-        if (!this.props.timeRange || _.isEmpty(this.props.timeRange)) {
+        if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
+
+        console.log("timerange ", this.props.timeRange);
 
         const timeScale = this.props.utc
             ? scaleUtc()

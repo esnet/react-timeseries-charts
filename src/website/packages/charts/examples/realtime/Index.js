@@ -54,7 +54,6 @@ const realtime = createReactClass({
     },
     getNewEvent(t) {
         const base = Math.sin(t.getTime() / 10000000) * 350 + 500;
-        console.log("time(t) ", t);
         return timeEvent(
             time(t),
             Immutable.Map({ value: parseInt(base + Math.random() * 1000, 10) })
