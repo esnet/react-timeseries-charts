@@ -89,6 +89,7 @@ const barchart = createReactClass({
                                         format=".2f"
                                         width="70"
                                         type="linear"
+                                        tickCount={4}
                                     />
                                     <Charts>
                                         <BarChart

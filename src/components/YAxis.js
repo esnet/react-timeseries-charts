@@ -18,6 +18,7 @@ import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
 import { select } from "d3-selection";
+import { Axis } from "react-axis";
 
 import { scaleAsString } from "../js/util";
 
@@ -82,212 +83,29 @@ const defaultStyle = {
  *  it will use for its vertical scale.
  */
 export default class YAxis extends React.Component {
-    componentDidMount() {
-        this.renderAxis(
-            this.props.align,
-            this.props.scale,
-            +this.props.width,
-            this.props.absolute,
-            this.props.format
-        );
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const scale = nextProps.scale;
-        const align = nextProps.align;
-        const width = nextProps.width;
-        const absolute = nextProps.absolute;
-        const fmt = nextProps.format;
-        const type = nextProps.type;
-
-        if (
-            scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-            this.props.type !== nextProps.type
-        ) {
-            this.updateAxis(align, scale, width, absolute, type, fmt);
-        }
-    }
-
     shouldComponentUpdate() {
         // eslint-disable-line
-        return false;
-    }
-
-    updateAxis(align, scale, width, absolute, type, fmt) {
-        const yformat = format(fmt);
-        const axis = align === "left" ? axisLeft : axisRight;
-
-        const axisStyle = merge(
-            true,
-            defaultStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
-        );
-        const { axisColor } = axisStyle;
-
-        //
-        // Make an axis generator
-        //
-
-        let axisGenerator;
-        if (type === "linear" || type === "power") {
-            if (this.props.height <= 200) {
-                axisGenerator = axis(scale).ticks(5).tickFormat(d => {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    }
-                    return yformat(d);
-                });
-            } else {
-                axisGenerator = axis(scale).tickFormat(d => {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    }
-                    return yformat(d);
-                });
-            }
-        } else if (type === "log") {
-            axisGenerator = axis(scale).ticks(10, ".2s");
-        }
-
-        select(ReactDOM.findDOMNode(this))
-            .select(".yaxis")
-            .transition()
-            .duration(this.props.transition)
-            .ease(easeSinOut)
-            .call(axisGenerator);
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("text")
-            .style("fill", axisColor)
-            .style("stroke", "none");
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("line")
-            .style("stroke", axisColor);
-    }
-
-    renderAxis(align, scale, width, absolute, fmt) {
-        const yformat = format(fmt);
-        let axisGenerator;
-        const axis = align === "left" ? axisLeft : axisRight;
-        if (this.props.type === "linear" || this.props.type === "power") {
-            if (this.props.tickCount > 0) {
-                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
-                axisGenerator = axis(scale)
-                    .tickValues(
-                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
-                    )
-                    .tickFormat(d => {
-                        if (absolute) {
-                            return yformat(Math.abs(d));
-                        }
-                        return yformat(d);
-                    })
-                    .tickSizeOuter(0);
-            } else {
-                if (this.props.height <= 200) {
-                    axisGenerator = axis(scale)
-                        .ticks(4)
-                        .tickFormat(d => {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        })
-                        .tickSizeOuter(0);
-                } else {
-                    axisGenerator = axis(scale)
-                        .tickFormat(d => {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        })
-                        .tickSizeOuter(0);
-                }
-            }
-        } else if (this.props.type === "log") {
-            axisGenerator = axis().scale(scale).ticks(10, ".2s").tickSizeOuter(0);
-        }
-
-        // Remove the old axis from under this DOM node
-        select(ReactDOM.findDOMNode(this)).selectAll("*").remove(); // eslint-disable-line
-        // Add the new axis
-        const x = align === "left" ? width - MARGIN : 0;
-        const labelOffset = align === "left"
-            ? this.props.labelOffset - 50
-            : 40 + this.props.labelOffset;
-
-        //
-        // Style
-        //
-
-        const labelStyle = merge(
-            true,
-            defaultStyle.labels,
-            this.props.style.labels ? this.props.style.labels : {}
-        );
-        const axisStyle = merge(
-            true,
-            defaultStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
-        );
-        const { axisColor } = axisStyle;
-        const { labelColor, labelWeight, labelSize } = labelStyle;
-
-        this.axis = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .append("g")
-            .attr("transform", `translate(${x},0)`)
-            .style("stroke", "none")
-            .attr("class", "yaxis")
-            .style("fill", labelColor)
-            .style("font-weight", labelWeight)
-            .style("font-size", labelSize)
-            .call(axisGenerator)
-            .append("text")
-            .text(this.props.label)
-            .attr("transform", "rotate(-90)")
-            .attr("y", labelOffset)
-            .attr("dy", ".71em")
-            .attr("text-anchor", "end")
-            .style("fill", this.props.style.labelColor)
-            .style(
-                "font-family",
-                this.props.style.labelFont || '"Goudy Bookletter 1911", sans-serif"'
-            )
-            .style("font-weight", this.props.style.labelWeight || 100)
-            .style(
-                "font-size",
-                this.props.style.labelSize ? `${this.props.style.width}px` : "12px"
-            );
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("text")
-            .style("fill", axisColor)
-            .style("stroke", "none");
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("line")
-            .style("stroke", axisColor);
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .select("path")
-            .style("fill", "none")
-            .style("stroke", axisColor);
+        return true;
     }
 
     render() {
         // eslint-disable-line
-        return <g />;
+        return (
+            <Axis
+                label={this.props.label ? this.props.label : this.props.id}
+                labelStyle={this.props.style}
+                width={this.props.width}
+                position={this.props.align}
+                margin={5}
+                height={this.props.height}
+                max={this.props.max}
+                min={this.props.min}
+                type={this.props.type}
+                format={this.props.format}
+                tickCount={this.props.tickCount}
+                absolute={this.props.absolute}
+            />
+        );
     }
 }
 

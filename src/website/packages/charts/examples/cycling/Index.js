@@ -219,7 +219,7 @@ const cycling = createReactClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
@@ -333,7 +333,7 @@ const cycling = createReactClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
@@ -456,7 +456,7 @@ const cycling = createReactClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 trackerShowTime
@@ -480,6 +480,7 @@ const cycling = createReactClass({
                         width={70}
                         type="linear"
                         format=",.1f"
+                        tickCount={5}
                     />
                     <YAxis
                         id="axis2"
@@ -489,6 +490,7 @@ const cycling = createReactClass({
                         width={70}
                         type="linear"
                         format="d"
+                        tickCount={5}
                     />
                     <Charts>
                         <LineChart
@@ -520,7 +522,7 @@ const cycling = createReactClass({
         return (
             <ChartContainer
                 timeRange={altitude.range()}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
             >
                 <ChartRow height="100" debug={false}>
@@ -537,6 +539,7 @@ const cycling = createReactClass({
                         width={70}
                         type="linear"
                         format="d"
+                        tickCount={5}
                     />
                     <Charts>
                         <AreaChart
