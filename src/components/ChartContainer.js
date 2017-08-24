@@ -14,12 +14,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
+import { TimeAxis } from "react-axis";
 
 import Brush from "./Brush";
 import ChartRow from "./ChartRow";
 import Charts from "./Charts";
 import EventHandler from "./EventHandler";
-import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
@@ -200,8 +200,6 @@ export default class ChartContainer extends React.Component {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        console.log("timerange ", this.props.timeRange);
-
         const timeScale = this.props.utc
             ? scaleUtc()
                   .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
@@ -285,16 +283,25 @@ export default class ChartContainer extends React.Component {
             pointerEvents: "none"
         };
 
+        let timezone;
+        if (this.props.utc === true) {
+            timezone = "Etc/UTC";
+        } else {
+            timezone = "America/Los_Angeles";
+        }
+
         const timeAxis = (
             <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5} style={xStyle} />
                 <TimeAxis
-                    scale={timeScale}
-                    utc={this.props.utc}
-                    style={this.props.timeAxisStyle}
                     format={this.props.format}
-                    showGrid={this.props.showGrid}
-                    gridHeight={chartsHeight}
+                    timezone={timezone}
+                    position="bottom"
+                    beginTime={this.props.timeRange.begin()}
+                    endTime={this.props.timeRange.end()}
+                    width={timeAxisWidth}
+                    margin={0}
+                    height={50}
                 />
             </g>
         );

@@ -192,6 +192,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                     <Charts>
                                         <LineChart
@@ -217,6 +218,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                 </ChartRow>
@@ -232,6 +234,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                     <Charts>
@@ -257,12 +260,13 @@ const weather = createReactClass({
                                         id="wind"
                                         label="Wind (mph)"
                                         labelOffset={5}
-                                        style={{ labelColor: scheme.wind }}
+                                        style={{ fill: scheme.wind }}
                                         min={0}
                                         max={50}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 
@@ -277,6 +281,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
+                                        tickCount={5}
                                     />
                                     <Charts>
                                         <AreaChart
@@ -304,6 +309,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
+                                        tickCount={4}
                                     />
                                 </ChartRow>
 

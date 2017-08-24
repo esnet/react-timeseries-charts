@@ -73,7 +73,7 @@ const baselines = createReactClass({
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()} format="%b '%y">
+                <ChartContainer timeRange={series.range()} format="year">
                     <ChartRow height="150">
                         <YAxis
                             id="price"
@@ -82,6 +82,7 @@ const baselines = createReactClass({
                             max={series.max()}
                             width="60"
                             format="$,.2f"
+                            tickCount={4}
                         />
                         <Charts>
                             <LineChart axis="price" series={series} style={style} />

@@ -151,6 +151,7 @@ const wind = createReactClass({
                         <Resizable>
                             <ChartContainer
                                 timeRange={this.state.timerange}
+                                format="hour"
                                 enablePanZoom={true}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 onTimeRangeChanged={timerange => this.setState({ timerange })}
