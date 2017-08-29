@@ -290,6 +290,7 @@ export default class ChartContainer extends React.Component {
             timezone = "America/Los_Angeles";
         }
 
+        const gridHeight = this.props.tickExtend ? chartsHeight : 0;
         const timeAxis = (
             <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5} style={xStyle} />
@@ -302,6 +303,7 @@ export default class ChartContainer extends React.Component {
                     width={timeAxisWidth}
                     margin={0}
                     height={50}
+                    tickExtend={gridHeight}
                 />
             </g>
         );

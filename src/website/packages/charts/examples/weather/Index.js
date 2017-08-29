@@ -179,6 +179,7 @@ const weather = createReactClass({
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
+                                tickExtend={500}
                             >
 
                                 <ChartRow height="150">
@@ -281,7 +282,6 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
-                                        tickCount={5}
                                     />
                                     <Charts>
                                         <AreaChart
@@ -309,7 +309,7 @@ const weather = createReactClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
-                                        tickCount={4}
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 

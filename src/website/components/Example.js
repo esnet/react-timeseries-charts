@@ -10,51 +10,20 @@
 
 import React from "react";
 import Markdown from "react-markdown";
+import createReactClass from "create-react-class";
 
 import Highlighter from "./highlighter";
 
 import Examples from "../packages/charts/examples/examples.js";
 import Meta from "../packages/charts/examples/examples.json";
 
-export default React.createClass({
+export default createReactClass({
     mixins: [Highlighter],
     getInitialState() {
         return {
             markdown: null
         };
     },
-    componentWillReceiveProps() {
-        window.scrollTo(0, 0);
-        const exampleName = this.props.params.example;
-        const markdownFile = Examples[`${exampleName}_docs`];
-        fetch(markdownFile)
-            .then(response => {
-                return response.text();
-            })
-            .then(markdown => {
-                this.setState({ markdown });
-            });
-    },
-    renderMarkdown() {
-        if (this.state.markdown) {
-            return (
-                <div className="row">
-                    <div className="col-md-12">
-                        <Markdown source={this.state.markdown} />
-                    </div>
-                </div>
-            );
-        } else {
-            return (
-                <div className="row">
-                    <div className="col-md-12">
-                        Loading...
-                    </div>
-                </div>
-            );
-        }
-    },
-
     render() {
         const tagStyle = {
             background: "#EEE",
@@ -68,6 +37,14 @@ export default React.createClass({
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
         const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/packages/charts/examples/${exampleName}/Index.js`;
+        const markdownFile = Examples[`${exampleName}_docs`];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
 
         return (
             <div>
@@ -93,7 +70,11 @@ export default React.createClass({
                         <hr />
                         <Component />
                         <hr />
-                        {this.renderMarkdown()}
+                        <div className="row">
+                            <div className="col-md-12">
+                                <Markdown source={this.state.markdown} />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

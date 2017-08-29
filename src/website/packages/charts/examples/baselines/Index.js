@@ -12,6 +12,7 @@
 
 import React from "react";
 import createReactClass from "create-react-class";
+import moment from "moment";
 
 import { timeSeries, TimeSeries } from "pondjs";
 
@@ -73,7 +74,14 @@ const baselines = createReactClass({
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()} format="year">
+                <ChartContainer
+                    timeRange={series.range()}
+                    format={d => ({
+                        label: moment(d).format("MMM `YY"),
+                        size: 15,
+                        labelAlign: "adjacent"
+                    })}
+                >
                     <ChartRow height="150">
                         <YAxis
                             id="price"
