@@ -23,9 +23,9 @@ export default React.createClass({
             markdown: null
         };
     },
-    componentWillReceiveProps() {
+    fetchMarkdownForProps(props) {
         window.scrollTo(0, 0);
-        const exampleName = this.props.params.example;
+        const exampleName = props.params.example;
         const markdownFile = Examples[`${exampleName}_docs`];
         fetch(markdownFile)
             .then(response => {
@@ -34,6 +34,12 @@ export default React.createClass({
             .then(markdown => {
                 this.setState({ markdown });
             });
+    },
+    componentDidMount() {
+        this.fetchMarkdownForProps(this.props);
+    },
+    componentWillReceiveProps(nextProps) {
+        this.fetchMarkdownForProps(nextProps);
     },
     renderMarkdown() {
         if (this.state.markdown) {
