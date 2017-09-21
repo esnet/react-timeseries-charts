@@ -87,12 +87,17 @@ export class Styler {
    * Returns the color scheme with the appropiate number of colors.
    * If there are more columns than the largest set in the scheme then
    * just the largest scheme set will be returned.
+   * If there are less columns than the smallest set in the scheme then
+   * just the smallest scheme will be returned.
    * @param  {number} columnCount The number of columns to apply the scheme to
    * @return {array}              An array with the scheme colors in it.
    */
     colorLookup(columnCount) {
-        const maxSchemeSize = _.max(_.keys(colorbrewer[this.colorScheme]));
-        const colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
+        const colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
+        const minSchemeSize = _.min(colorSchemeKeys);
+        const maxSchemeSize = _.max(colorSchemeKeys);
+        let colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
+        colorLookupSize = _.max([colorLookupSize, minSchemeSize]);
         return this.colorScheme ? colorbrewer[this.colorScheme][colorLookupSize] : [];
     }
 

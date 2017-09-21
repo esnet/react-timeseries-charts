@@ -24,6 +24,44 @@ export default createReactClass({
             markdown: null
         };
     },
+    fetchMarkdownForProps(props) {
+        window.scrollTo(0, 0);
+        const exampleName = props.params.example;
+        const markdownFile = Examples[`${exampleName}_docs`];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
+    },
+    componentDidMount() {
+        this.fetchMarkdownForProps(this.props);
+    },
+    componentWillReceiveProps(nextProps) {
+        this.fetchMarkdownForProps(nextProps);
+    },
+    renderMarkdown() {
+        if (this.state.markdown) {
+            return (
+                <div className="row">
+                    <div className="col-md-12">
+                        <Markdown source={this.state.markdown} />
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-md-12">
+                        Loading...
+                    </div>
+                </div>
+            );
+        }
+    },
+
     render() {
         const tagStyle = {
             background: "#EEE",
