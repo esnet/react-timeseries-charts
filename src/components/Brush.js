@@ -53,6 +53,8 @@ export default class Brush extends React.Component {
         const begin = +this.props.timeRange.begin();
         const end = +this.props.timeRange.end();
 
+        document.addEventListener("mouseup", this.handleMouseUp);
+
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "brush",
@@ -68,6 +70,9 @@ export default class Brush extends React.Component {
         const offset = getElementOffset(this.overlay);
         const x = e.pageX - offset.left;
         const t = this.props.timeScale.invert(x).getTime();
+
+        document.addEventListener("mouseup", this.handleMouseUp);
+
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "overlay",
