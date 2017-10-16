@@ -11,7 +11,7 @@
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
-import { TimeRange } from "pondjs";
+import { timerange, TimeRange } from "pondjs";
 
 import { getElementOffset } from "../js/util";
 
@@ -234,6 +234,8 @@ export default class Brush extends React.Component {
 
     renderBrush() {
         const { timeRange, timeScale, height, style } = this.props;
+        console.log("render brush props ", this.props);
+        console.log(this.viewport().disjoint(timeRange));
 
         if (!timeRange) {
             return <g />;
@@ -304,7 +306,8 @@ export default class Brush extends React.Component {
 
         if (!this.viewport().disjoint(timeRange)) {
             const range = timeRange.intersection(this.viewport());
-            const [begin, end] = range.toJSON();
+            const begin = range.begin().getTime();
+            const end = range.end().getTime();
             const [x, y] = [timeScale(begin), 0];
             const endPos = timeScale(end);
 

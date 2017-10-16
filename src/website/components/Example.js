@@ -10,13 +10,14 @@
 
 import React from "react";
 import Markdown from "react-markdown";
+import createReactClass from "create-react-class";
 
 import Highlighter from "./highlighter";
 
 import Examples from "../packages/charts/examples/examples.js";
 import Meta from "../packages/charts/examples/examples.json";
 
-export default React.createClass({
+export default createReactClass({
     mixins: [Highlighter],
     getInitialState() {
         return {
@@ -74,6 +75,14 @@ export default React.createClass({
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
         const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/packages/charts/examples/${exampleName}/Index.js`;
+        const markdownFile = Examples[`${exampleName}_docs`];
+        fetch(markdownFile)
+            .then(response => {
+                return response.text();
+            })
+            .then(markdown => {
+                this.setState({ markdown });
+            });
 
         return (
             <div>
@@ -99,7 +108,11 @@ export default React.createClass({
                         <hr />
                         <Component />
                         <hr />
-                        {this.renderMarkdown()}
+                        <div className="row">
+                            <div className="col-md-12">
+                                <Markdown source={this.state.markdown} />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

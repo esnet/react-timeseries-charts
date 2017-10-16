@@ -1,0 +1,94 @@
+{
+  "name": "react-timeseries-charts",
+  "version": "1.0.0",
+  "description": "Declarative timeseries charts",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "lint-staged": {
+    "*.js": ["eslint --fix", "git add"]
+  },
+  "dependencies": {
+    "array.prototype.fill": "^1.0.1",
+    "babel-runtime": "^6.23.0",
+    "colorbrewer": "^1.0.0",
+    "d3-axis": "^1.0.8",
+    "d3-ease": "^1.0.3",
+    "d3-format": "^1.2.0",
+    "d3-interpolate": "^1.1.5",
+    "d3-scale": "^1.0.6",
+    "d3-scale-chromatic": "^1.1.1",
+    "d3-selection": "^1.1.0",
+    "d3-shape": "^1.2.0",
+    "d3-time": "^1.0.7",
+    "d3-time-format": "^2.0.5",
+    "d3-transition": "^1.1.0",
+    "flexbox-react": "^4.3.3",
+    "invariant": "^2.1.1",
+    "merge": "^1.2.0",
+    "moment": "^2.18.1",
+    "moment-duration-format": "^1.3.0",
+    "prop-types": "^15.5.10",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "dsv-loader": "^2.0.0",
+    "eslint": "^4.1.1",
+    "eslint-config-react-app": "^1.0.5",
+    "eslint-plugin-flowtype": "^2.33.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1",
+    "husky": "^0.13.4",
+    "lint-staged": "^3.6.1",
+    "pondjs": "0.9.0-alpha.50c9fc30",
+    "prettier": "^0.22.0",
+    "raw-loader": "^0.5.1",
+    "react": "^15.6.1",
+    "react-docgen": "^2.9.1",
+    "react-dom": "^15.6.1",
+    "react-markdown": "^2.4.4",
+    "react-router": "^2.6.1",
+    "react-scripts": "^1.0.10",
+    "react-select": "^1.0.0-beta14",
+    "ringjs": "0.0.1"
+  },
+  "peerDependencies": {
+    "pondjs": "0.9.0-alpha.50c9fc30",
+    "react": "^15.3.1"
+  },
+  "scripts": {
+    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o ../website/src/docs.json --pretty",
+    "lint": "eslint src/components/*.js",
+    "test": "npm run lint",
+    "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
+    "start-website": "react-scripts start",
+    "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs",
+    "precommit": "lint-staged",
+    "prettier": "prettier --print-width 100 --tab-width 4 --write \"./src/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esnet/react-timeseries-charts.git"
+  },
+  "keywords": [
+    "d3",
+    "charts",
+    "react",
+    "timeseries"
+  ],
+  "author": "ESnet Tools Team <tools@es.net>",
+  "license": "BSD-3-Clause-LBNL",
+  "bugs": {
+    "url": "https://github.com/esnet/react-timeseries-charts/issues"
+  },
+  "homepage": "https://github.com/esnet/react-timeseries-charts#readme"
+}

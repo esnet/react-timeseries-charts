@@ -76,7 +76,7 @@
     "eslint-plugin-react": "^7.0.1",
     "husky": "^0.13.3",
     "lint-staged": "^3.4.0",
-    "pondjs": "^0.8.7",
+    "pondjs": "0.9.0-alpha.50c9fc30",
     "prettier": "^0.22.0",
     "raw-loader": "^0.5.1",
     "react": "^15.6.1",

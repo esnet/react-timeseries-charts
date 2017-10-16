@@ -11,7 +11,10 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import { TimeSeries } from "pondjs";
+import createReactClass from "create-react-class";
+import moment from "moment";
+
+import { timeSeries, TimeSeries } from "pondjs";
 
 import ChartContainer from "../../../../../components/ChartContainer";
 import ChartRow from "../../../../../components/ChartRow";
@@ -27,7 +30,7 @@ import baselines_thumbnail from "./baselines_thumbnail.png";
 // Data
 const data = require("./usd_vs_euro.json");
 const points = data.widget[0].data.reverse();
-const series = new TimeSeries({
+const series = timeSeries({
     name: "USD_vs_EURO",
     columns: ["time", "value"],
     points
@@ -55,7 +58,7 @@ const baselineStyleLite = {
     }
 };
 
-const baselines = React.createClass({
+const baselines = createReactClass({
     getInitialState() {
         return {
             tracker: null,
@@ -71,7 +74,14 @@ const baselines = React.createClass({
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()} format="%b '%y">
+                <ChartContainer
+                    timeRange={series.range()}
+                    format={d => ({
+                        label: moment(d).format("MMM `YY"),
+                        size: 15,
+                        labelAlign: "adjacent"
+                    })}
+                >
                     <ChartRow height="150">
                         <YAxis
                             id="price"
@@ -80,6 +90,7 @@ const baselines = React.createClass({
                             max={series.max()}
                             width="60"
                             format="$,.2f"
+                            tickCount={4}
                         />
                         <Charts>
                             <LineChart axis="price" series={series} style={style} />

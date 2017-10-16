@@ -12,12 +12,29 @@
 /* eslint-disable react/prefer-es6-class */
 
 import "moment-duration-format";
+import * as Immutable from "immutable";
+import * as _ from "lodash";
 import moment from "moment";
 import React from "react";
 import { format } from "d3-format";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries, TimeRange, avg, filter, percentile, median } from "pondjs";
+import {
+    avg,
+    Collection,
+    filter,
+    indexedSeries,
+    median,
+    percentile,
+    period,
+    time,
+    timeSeries,
+    TimeSeries,
+    timerange,
+    timeRangeSeries,
+    TimeRange
+} from "pondjs";
 
 // Imports from the charts library
 import AreaChart from "../../../../../components/AreaChart";
@@ -67,37 +84,36 @@ for (let i = 0; i < data.time.length; i += 1) {
     }
 }
 
-const pace = new TimeSeries({
+const pace = timeSeries({
     name: "Pace",
     columns: ["time", "pace"],
     points: pacePoints
 });
 
-const hr = new TimeSeries({
+const hr = timeSeries({
     name: "Heartrate",
     columns: ["time", "hr"],
     points: hrPoints
 });
 
-const altitude = new TimeSeries({
+const altitude = timeSeries({
     name: "Altitude",
     columns: ["time", "altitude"],
     points: altitudePoints
 });
 
-const speed = new TimeSeries({
+const speed = timeSeries({
     name: "Speed",
     columns: ["time", "speed"],
     points: speedPoints
 });
 
 const speedSmoothed = speed.fixedWindowRollup({
-    windowSize: "1m",
-    aggregation: {
-        speed5mAvg: { speed: avg(filter.ignoreMissing) }
-    },
-    toEvents: true
+    windowSize: period("1m"),
+    aggregation: { speed5mAvg: ["speed", avg(filter.ignoreMissing)] }
 });
+
+console.log("speed Smoothed ", speedSmoothed);
 
 //
 // Styling
@@ -137,9 +153,10 @@ const speedSummaryValues = [
     { label: "Avg", value: speedFormat(speed.avg("speed")) }
 ];
 
-const cycling = React.createClass({
+const cycling = createReactClass({
     getInitialState() {
-        const initialRange = new TimeRange([75 * 60 * 1000, 125 * 60 * 1000]);
+        const initialRange = timerange(75 * 60 * 1000, 125 * 60 * 1000);
+        console.log("initial Range ", initialRange);
         return {
             mode: "channels",
             rollup: "1m",
@@ -175,6 +192,7 @@ const cycling = React.createClass({
     },
     renderChannelsChart() {
         const tr = this.state.timerange;
+        console.log("tr is ", tr);
         const speedCropped = speed.crop(tr);
         const hrCropped = hr.crop(tr);
 
@@ -201,7 +219,7 @@ const cycling = React.createClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
@@ -315,7 +333,7 @@ const cycling = React.createClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
@@ -438,7 +456,7 @@ const cycling = React.createClass({
         return (
             <ChartContainer
                 timeRange={this.state.timerange}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 trackerShowTime
@@ -462,6 +480,7 @@ const cycling = React.createClass({
                         width={70}
                         type="linear"
                         format=",.1f"
+                        tickCount={5}
                     />
                     <YAxis
                         id="axis2"
@@ -471,6 +490,7 @@ const cycling = React.createClass({
                         width={70}
                         type="linear"
                         format="d"
+                        tickCount={5}
                     />
                     <Charts>
                         <LineChart
@@ -502,7 +522,7 @@ const cycling = React.createClass({
         return (
             <ChartContainer
                 timeRange={altitude.range()}
-                format="relative"
+                format="duration"
                 trackerPosition={this.state.tracker}
             >
                 <ChartRow height="100" debug={false}>
@@ -519,6 +539,7 @@ const cycling = React.createClass({
                         width={70}
                         type="linear"
                         format="d"
+                        tickCount={5}
                     />
                     <Charts>
                         <AreaChart

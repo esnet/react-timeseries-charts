@@ -299,7 +299,7 @@ export class Styler {
         const { color } = this.columnStyles[columnName];
         const c = color || colorLookup[i % colorLookup.length];
         return {
-            labelColor: c
+            fill: c
         };
     }
 

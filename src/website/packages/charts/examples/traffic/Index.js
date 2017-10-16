@@ -12,9 +12,10 @@
 
 import React from "react";
 import _ from "underscore";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -32,13 +33,13 @@ import traffic_thumbnail from "./traffic_thumbnail.png";
 // Data
 const rawTrafficData = require("./link-traffic.json");
 
-const trafficBNLtoNEWYSeries = new TimeSeries({
+const trafficBNLtoNEWYSeries = timeSeries({
     name: `BNL to NEWY`,
     columns: ["time", "in"],
     points: _.map(rawTrafficData.traffic["BNL--NEWY"], p => [p[0] * 1000, p[1]])
 });
 
-const trafficNEWYtoBNLSeries = new TimeSeries({
+const trafficNEWYtoBNLSeries = timeSeries({
     name: `NEWY to BNL`,
     columns: ["time", "out"],
     points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])
@@ -51,7 +52,7 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
 
 const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
 
-const traffic = React.createClass({
+const traffic = createReactClass({
     getInitialState() {
         return {
             tracker: null,

@@ -13,9 +13,10 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -69,32 +70,32 @@ _.each(weatherJSON, readings => {
 // Timeseries
 //
 
-const tempSeries = new TimeSeries({
+const tempSeries = timeSeries({
     name: "Temperature",
     columns: ["time", "temp"],
     points: temperaturePoints
 });
-const pressureSeries = new TimeSeries({
+const pressureSeries = timeSeries({
     name: "Pressure",
     columns: ["time", "pressure"],
     points: pressurePoints
 });
-const windSeries = new TimeSeries({
+const windSeries = timeSeries({
     name: "Wind",
     columns: ["time", "wind"],
     points: windPoints
 });
-const gustSeries = new TimeSeries({
+const gustSeries = timeSeries({
     name: "Gust",
     columns: ["time", "gust", "radius"],
     points: gustPoints
 });
-const rainSeries = new TimeSeries({
+const rainSeries = timeSeries({
     name: "Rain",
     columns: ["time", "rain"],
     points: rainPoints
 });
-const rainAccumSeries = new TimeSeries({
+const rainAccumSeries = timeSeries({
     name: "Rain Accum",
     columns: ["time", "rainAccum"],
     points: rainAccumPoints
@@ -137,7 +138,7 @@ const linkStyleActive = {
 // Render weather charts
 //
 
-const weather = React.createClass({
+const weather = createReactClass({
     getInitialState() {
         return {
             tracker: null,
@@ -178,6 +179,7 @@ const weather = React.createClass({
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
+                                tickExtend={500}
                             >
 
                                 <ChartRow height="150">
@@ -191,6 +193,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                     <Charts>
                                         <LineChart
@@ -216,6 +219,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                 </ChartRow>
@@ -231,6 +235,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                     <Charts>
@@ -256,12 +261,13 @@ const weather = React.createClass({
                                         id="wind"
                                         label="Wind (mph)"
                                         labelOffset={5}
-                                        style={{ labelColor: scheme.wind }}
+                                        style={{ fill: scheme.wind }}
                                         min={0}
                                         max={50}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 
@@ -303,6 +309,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 

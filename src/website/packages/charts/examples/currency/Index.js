@@ -13,9 +13,10 @@
 import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
+import createReactClass from "create-react-class";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { timeSeries, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -45,7 +46,7 @@ function buildPoints() {
     return points;
 }
 
-const currencySeries = new TimeSeries({
+const currencySeries = timeSeries({
     name: "Currency",
     columns: ["time", "aud", "euro"],
     points: buildPoints()
@@ -56,7 +57,7 @@ const style = styler([
     { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
-const currency = React.createClass({
+const currency = createReactClass({
     getInitialState() {
         return {
             tracker: null,
