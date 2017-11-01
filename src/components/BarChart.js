@@ -149,9 +149,12 @@ export default class BarChart extends React.Component {
 
     handleClick(e, event, column) {
         const bar = { event, column };
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(bar);
+        if (this.barIsSelected(bar)) {
+            this.props.removeFromSelection(bar);
+        } else {
+            this.props.addToSelection(bar);
         }
+
         e.stopPropagation();
     }
 
@@ -169,6 +172,11 @@ export default class BarChart extends React.Component {
         return style;
     }
 
+    barIsSelected = bar =>
+        this.props.selected.some(
+            item => item.column === bar.column && Event.is(item.event, bar.event)
+        );
+
     /**
    * Returns the style used for drawing the path
    */
@@ -180,11 +188,9 @@ export default class BarChart extends React.Component {
             column === this.props.highlighted.column &&
             Event.is(this.props.highlighted.event, event);
 
-        const isSelected = this.props.selected &&
-            column === this.props.selected.column &&
-            Event.is(this.props.selected.event, event);
+        const isSelected = this.props.selected && this.barIsSelected({ event, column });
 
-        if (this.props.selected) {
+        if (this.props.selected && this.props.selected.length > 0) {
             if (isSelected) {
                 style = merge(
                     true,
@@ -285,9 +291,8 @@ export default class BarChart extends React.Component {
                     const box = { x, y, width, height };
                     const barProps = { key, ...box, style };
 
-                    if (this.props.onSelectionChange) {
-                        barProps.onClick = e => this.handleClick(e, event, column);
-                    }
+                    barProps.onClick = e => this.handleClick(e, event, column);
+
                     if (this.props.onHighlightChange) {
                         barProps.onMouseMove = e => this.handleHover(e, event, column);
                         barProps.onMouseLeave = () => this.handleHoverLeave();
@@ -433,17 +438,25 @@ BarChart.propTypes = {
    * The selected item, which will be rendered in the "selected" style.
    * If a bar is selected, all other bars will be rendered in the "muted" style.
    *
-   * See also `onSelectionChange`
+   * See next comment, for selection mutation functions.
    */
-    selected: PropTypes.shape({
-        event: PropTypes.instanceOf(IndexedEvent),
-        column: PropTypes.string
-    }),
+    selected: PropTypes.arrayOf(
+        PropTypes.shape({
+            event: PropTypes.instanceOf(IndexedEvent),
+            column: PropTypes.string
+        })
+    ),
+
     /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
-    onSelectionChange: PropTypes.func,
+     * This fork enables multiple selection for the bar chart, rather than just allowing one bucket to be selected.
+     * As a result, I've replaced the `onSelectionChanged` function with three imperative functions:
+     *  - `addToSelection` should add the passed bucket into your selection array.
+     *  - `removeFromSelection` should remove the passed bucket from your selection array.
+     *  - `setAsSelection` removes all currently selected buckets and replaces them with the passed bucket.
+     */
+    addToSelection: PropTypes.func,
+    removeFromSelection: PropTypes.func,
+    setAsSelection: PropTypes.func,
     /**
    * The highlighted item, which will be rendered in the "highlighted" style.
    *

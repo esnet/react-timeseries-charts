@@ -16,7 +16,7 @@ import { format } from "d3-format";
 import moment from "moment";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { Event, TimeSeries } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -145,11 +145,26 @@ const volume = React.createClass({
     getInitialState() {
         return {
             timerange: octoberTrafficSeries.range(),
-            selection: null
+            selection: []
         };
     },
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
+    },
+    addToSelection(bar) {
+        const { selection } = this.state;
+        this.setState({ selection: [bar, ...selection] });
+    },
+    removeFromSelection(bar) {
+        const { selection } = this.state;
+        const filtered = selection.filter(
+            item => !(item.column === bar.column && Event.is(bar.event, item.event))
+        );
+
+        this.setState({ selection: filtered });
+    },
+    setAsSelection(bar) {
+        this.setState({ selection: [bar] });
     },
     render() {
         /*
@@ -211,11 +226,11 @@ const volume = React.createClass({
         ]);
 
         const formatter = format(".2s");
-        const selectedDate = this.state.selection
-            ? this.state.selection.event.index().toNiceString()
+        const selectedDate = this.state.selection && this.state.selection[0]
+            ? this.state.selection[0].event.index().toNiceString()
             : "--";
-        const selectedValue = this.state.selection
-            ? `${formatter(+this.state.selection.event.value(this.state.selection.column))}b`
+        const selectedValue = this.state.selection && this.state.selection[0]
+            ? `${formatter(+this.state.selection[0].event.value(this.state.selection.column))}b`
             : "--";
 
         const highlight = this.state.highlight;
@@ -250,7 +265,6 @@ const volume = React.createClass({
                                 format="day"
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
-                                onBackgroundClick={() => this.setState({ selection: null })}
                                 maxTime={new Date(1414827330868)}
                                 minTime={new Date(1412143472795)}
                                 minDuration={1000 * 60 * 60 * 24 * 5}
@@ -276,8 +290,9 @@ const volume = React.createClass({
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                            addToSelection={this.addToSelection}
+                                            removeFromSelection={this.removeFromSelection}
+                                            setAsSelection={this.setAsSelection}
                                         />
                                     </Charts>
                                     <YAxis
@@ -304,11 +319,7 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer
-                                timeRange={octoberTrafficSeries.range()}
-                                format="day"
-                                onBackgroundClick={() => this.setState({ selection: null })}
-                            >
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis
                                         id="traffic-volume"
@@ -333,8 +344,9 @@ const volume = React.createClass({
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                            addToSelection={this.addToSelection}
+                                            removeFromSelection={this.removeFromSelection}
+                                            setAsSelection={this.setAsSelection}
                                         />
                                         <BarChart
                                             axis="traffic-volume"
@@ -348,8 +360,9 @@ const volume = React.createClass({
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                            addToSelection={this.addToSelection}
+                                            removeFromSelection={this.removeFromSelection}
+                                            setAsSelection={this.setAsSelection}
                                         />
 
                                     </Charts>
@@ -370,11 +383,7 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-                            <ChartContainer
-                                timeRange={octoberTrafficSeries.range()}
-                                format="day"
-                                onBackgroundClick={() => this.setState({ selection: null })}
-                            >
+                            <ChartContainer timeRange={octoberTrafficSeries.range()} format="day">
                                 <ChartRow height="150">
                                     <YAxis
                                         id="traffic-volume"
@@ -397,8 +406,9 @@ const volume = React.createClass({
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                            addToSelection={this.addToSelection}
+                                            removeFromSelection={this.removeFromSelection}
+                                            setAsSelection={this.setAsSelection}
                                         />
                                     </Charts>
                                 </ChartRow>
@@ -426,7 +436,6 @@ const volume = React.createClass({
                             <ChartContainer
                                 timeRange={octoberNetTrafficSeries.range()}
                                 format="day"
-                                onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
                                     <YAxis
@@ -454,8 +463,9 @@ const volume = React.createClass({
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
                                             selected={this.state.selection}
-                                            onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                            addToSelection={this.addToSelection}
+                                            removeFromSelection={this.removeFromSelection}
+                                            setAsSelection={this.setAsSelection}
                                         />
                                     </Charts>
                                 </ChartRow>
