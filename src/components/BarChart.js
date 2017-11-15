@@ -216,6 +216,7 @@ export default class BarChart extends React.Component {
     renderBars() {
         const spacing = +this.props.spacing;
         const offset = +this.props.offset;
+        const minBarHeight = this.props.minBarHeight;
         const series = this.props.series;
         const timeScale = this.props.timeScale;
         const yScale = this.props.yScale;
@@ -263,7 +264,7 @@ export default class BarChart extends React.Component {
                     // Allow negative values. Minimum bar height = 1 pixel.
                     // Stack negative bars below X-axis and positive above X-Axis
                     const positiveBar = height >= 0;
-                    height = Math.max(Math.abs(height), 1);
+                    height = Math.max(Math.abs(height), minBarHeight);
                     const y = positiveBar ? yposPositive - height : yposNegative;
 
                     // Event marker if info provided and hovering
@@ -335,6 +336,10 @@ BarChart.propTypes = {
    * it represents
    */
     offset: PropTypes.number,
+    /**
+   * The minimum height of a bar given in pixels. By default the minimum height of a bar is 1 pixel.
+   */
+    minBarHeight: PropTypes.number,
     /**
    * A list of columns within the series that will be stacked on top of each other
    */
@@ -472,6 +477,7 @@ BarChart.defaultProps = {
     columns: ["value"],
     spacing: 1.0,
     offset: 0,
+    minBarHeight: 0,
     infoStyle: {
         stroke: "#999",
         fill: "white",
