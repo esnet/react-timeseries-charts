@@ -305,6 +305,7 @@ export default class ChartContainer extends React.Component {
                     height={chartsHeight + timeAxisHeight}
                     scale={timeScale}
                     enablePanZoom={this.props.enablePanZoom}
+                    enableDragZoom={this.props.enableDragZoom}
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
@@ -380,6 +381,10 @@ ChartContainer.propTypes = {
    */
     enablePanZoom: PropTypes.bool,
     /**
+   * Boolean to turn on interactive drag to zoom behavior for the chart.
+   */
+    enableDragZoom: PropTypes.bool,
+    /**
    * If this is set the timerange of the chart cannot be zoomed in further
    * than this duration, in milliseconds. This might be determined by the
    * resolution of your data.
@@ -392,7 +397,7 @@ ChartContainer.propTypes = {
    * on the timeRange prop and there is no need to set this.
    *
    * However, some options exist:
-   * 
+   *
    *  - setting format to "day", "month" or "year" will show only ticks on those,
    * and every one of those intervals. For example maybe you are showing a bar
    * chart for October 2014 then setting the format to "day" will insure that a
@@ -401,9 +406,9 @@ ChartContainer.propTypes = {
    *  - setting format to "relative" interprets the time as a duration. This
    * is good for data that is specified relative to its start time, rather than
    * as an actual date/time
-   * 
+   *
    *  - setting the format to a d3 format string will use that format
-   * 
+   *
    *  - supplying a function for format will cause that function to be called
    * whenever rendering a time
    */

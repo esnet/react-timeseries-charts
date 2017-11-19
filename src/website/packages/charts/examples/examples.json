@@ -42,8 +42,8 @@
     },
     "ddos": {
         "title": "DDoS attack",
-        "description": "A LineChart example featuring scale transitions and an interactive legend",
-        "tags": ["LineChart", "Legend", "styler"]
+        "description": "A LineChart example featuring scale transitions, an interactive legend, and drag to zoom",
+        "tags": ["LineChart", "Legend", "styler", "dragzoom"]
     },
     "outages": {
         "title": "Outage events",
