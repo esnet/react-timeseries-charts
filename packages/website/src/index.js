@@ -13,7 +13,7 @@ import registerServiceWorker from './registerServiceWorker';
 ReactDOM.render(
     <HashRouter>
         <Route path="/" component={App}>
-            <Route path="/" exact component={Guide} />
+            {/* <Route path="/" exact component={Guide} /> */}
             <Route path="guide/:doc" component={Guide} />
             <Route path="example/:example" component={Example} />
             <Route path="api/:packages/:component" component={API} />

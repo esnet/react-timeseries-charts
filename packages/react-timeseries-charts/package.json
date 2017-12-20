@@ -77,7 +77,7 @@
     "husky": "^0.13.3",
     "lerna": "^2.0.0",
     "lint-staged": "^3.4.0",
-    "pondjs": "1.0.0-alpha.0",
+    "pondjs": "1.0.0-alpha.1",
     "prettier": "^0.22.0",
     "raw-loader": "^0.5.1",
     "react": "^15.6.1",

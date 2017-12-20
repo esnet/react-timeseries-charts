@@ -17,7 +17,7 @@ import React from "react";
 import { format } from "d3-format";
 
 // Pond
-import { TimeSeries, TimeRange, avg, filter, percentile, median } from "pondjs";
+import { TimeSeries, TimeRange, avg, filter, percentile, median, timeSeries } from "pondjs";
 
 // Imports from the charts library
 import { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, TimeMarker, ValueAxis, YAxis, styler } from "react-timeseries-charts";
@@ -54,37 +54,37 @@ for (let i = 0; i < data.time.length; i += 1) {
     }
 }
 
-const pace = new TimeSeries({
+const pace = timeSeries({
     name: "Pace",
     columns: ["time", "pace"],
     points: pacePoints
 });
 
-const hr = new TimeSeries({
+const hr = timeSeries({
     name: "Heartrate",
     columns: ["time", "hr"],
     points: hrPoints
 });
 
-const altitude = new TimeSeries({
+const altitude = timeSeries({
     name: "Altitude",
     columns: ["time", "altitude"],
     points: altitudePoints
 });
 
-const speed = new TimeSeries({
+const speed = timeSeries({
     name: "Speed",
     columns: ["time", "speed"],
     points: speedPoints
 });
 
-const speedSmoothed = speed.fixedWindowRollup({
-    windowSize: "1m",
-    aggregation: {
-        speed5mAvg: { speed: avg(filter.ignoreMissing) }
-    },
-    toEvents: true
-});
+// const speedSmoothed = speed.fixedWindowRollup({
+//     windowSize: "1m",
+//     aggregation: {
+//         speed5mAvg: { speed: avg(filter.ignoreMissing) }
+//     },
+//     toEvents: true
+// });
 
 //
 // Styling
@@ -211,14 +211,14 @@ const cycling = React.createClass({
                         format=",.1f"
                     />
                     <Charts>
-                        <LineChart
+                        {/* <LineChart
                             axis="speedaxis"
                             series={speedSmoothed}
                             columns={["speed5mAvg"]}
                             interpolation="curveBasis"
                             style={style}
                             breakLine={false}
-                        />
+                        /> */}
                         <LineChart
                             axis="speedaxis"
                             series={speedCropped}

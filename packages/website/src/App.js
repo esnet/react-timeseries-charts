@@ -90,9 +90,9 @@ class App extends Component {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/example/barchart">
+                                 <Link to="/example/barchart">
                                     Simple BarChart example
-                                </Link>
+                                </Link> 
                             </li>
                             <li>
                                 <Link to="/example/continents">
@@ -105,9 +105,9 @@ class App extends Component {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/example/cycling">
+                                 <Link to="/example/cycling">
                                     Cycling example
-                                </Link>
+                                </Link> 
                             </li>
                             <li>
                                 <Link to="/example/ddos">
@@ -115,7 +115,7 @@ class App extends Component {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/example/outages">Outage events</Link>
+                                 <Link to="/example/outages">Outage events</Link> 
                             </li>
                             <li>
                                 <Link to="/example/traffic">

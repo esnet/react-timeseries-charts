@@ -13,7 +13,7 @@
 import React from "react";
 
 // Pond
-import { TimeSeries, Index } from "pondjs";
+import { indexedSeries, TimeSeries, Index, window, duration, period, time } from "pondjs";
 
 // Imports from the charts library
 import { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable, styler } from "react-timeseries-charts";
@@ -50,10 +50,12 @@ const data = [
     ["2017-01-24 23:00", 0.28]
 ];
 
-const series = new TimeSeries({
+const hourly = window(duration("1d"));
+
+const series = indexedSeries({
     name: "hilo_rainfall",
     columns: ["index", "precip"],
-    points: data.map(([d, value]) => [Index.getIndexString("1h", new Date(d)), value])
+    points: data.map(([d, value]) => [hourly.getIndexSet(time(new Date(d))).first().toString(), value])
 });
 
 const barchart = React.createClass({
