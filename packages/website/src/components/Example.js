@@ -25,7 +25,7 @@ export default React.createClass({
     },
     fetchMarkdownForProps(props) {
         window.scrollTo(0, 0);
-        const exampleName = props.params.example;
+        const exampleName = props.match.params.example;
         const markdownFile = Examples[`${exampleName}_docs`];
         fetch(markdownFile)
             .then(response => {
@@ -70,7 +70,7 @@ export default React.createClass({
             fontSize: "smaller"
         };
 
-        const exampleName = this.props.params.example;
+        const exampleName = this.props.match.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
         const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/packages/charts/examples/${exampleName}/Index.js`;

@@ -83,25 +83,27 @@ const TaggedExamples = React.createClass({
 export default React.createClass({
     mixins: [Highlighter],
     render() {
-        const component = this.props.params.component;
+        const component = this.props.match.params.component;
         const path = `src/components/${component}.js`;
 
         if (!_.has(docsFile, path)) {
             return <div>API could not be found</div>;
         }
         const title = component;
+        const titleStyle = {
+            color: "#317eac",
+            fontSize: 32,
+            fontFamily: "monospace",
+            fontWeight: 100
+        };
         return (
             <div>
-                <h2>{title}</h2>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-2"></div>
+                    <div className="col-md-9">
+                        <h2 style={titleStyle}>{`<${title}>`}</h2>
                         <TaggedExamples tag={component} />
-                    </div>
-                </div>
-                <hr />
-                <div className="row">
-                    <div className="col-md-12">
-                        <APIDoc file={path} />
+                        <APIDoc file={path}/>
                     </div>
                 </div>
             </div>

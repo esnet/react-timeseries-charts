@@ -16,7 +16,7 @@
     "url": "https://github.com/esnet/react-timeseries-charts/issues"
   },
   "scripts": {
-    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o ../website/packages/charts/api/docs.json --pretty",
+    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o ../website/src/api/docs.json --pretty",
     "lint": "eslint src/components/*.js",
     "test": "npm run lint",
     "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",

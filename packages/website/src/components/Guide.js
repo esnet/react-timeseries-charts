@@ -24,7 +24,8 @@ export default React.createClass({
     },
     componentDidMount() {
         window.scrollTo(0, 0);
-        const guideName = this.props.params.doc || "intro";
+        console.log("this.props is ", this.props);
+        const guideName = this.props.match.params.doc || "intro";
         console.log(guideName);
         const markdownFile = Guides[guideName];
         fetch(markdownFile)
@@ -38,7 +39,7 @@ export default React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         window.scrollTo(0, 0);
-        const guideName = nextProps.params.doc || "intro";
+        const guideName = nextProps.match.params.doc || "intro";
         const markdownFile = Guides[guideName];
         fetch(markdownFile)
             .then(response => {
