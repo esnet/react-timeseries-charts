@@ -19,12 +19,7 @@ import { format } from "d3-format";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import ScatterChart from "../../../../../components/ScatterChart";
-import Resizable from "../../../../../components/Resizable";
+import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";

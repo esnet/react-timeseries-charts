@@ -17,16 +17,7 @@ import _ from "underscore";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import Baseline from "../../../../../components/Baseline";
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import LineChart from "../../../../../components/LineChart";
-import Resizable from "../../../../../components/Resizable";
-import ScatterChart from "../../../../../components/ScatterChart";
-import EventMarker from "../../../../../components/EventMarker";
-import styler from "../../../../../js/styler";
+import { Baseline, ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, ScatterChart, EventMarker, styler } from "react-timeseries-charts";
 
 import climate_docs from "./climate_docs.md";
 import climate_thumbnail from "./climate_thumbnail.png";

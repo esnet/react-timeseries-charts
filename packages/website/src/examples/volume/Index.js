@@ -19,13 +19,7 @@ import moment from "moment";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import BarChart from "../../../../../components/BarChart";
-import Resizable from "../../../../../components/Resizable";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable, styler } from "react-timeseries-charts";
 
 // Test data
 import monthlyJSON from "./total_traffic_6mo.json";

@@ -16,13 +16,7 @@ import React from "react";
 import { TimeSeries, TimeRange, IndexedEvent, Collection } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import BoxChart from "../../../../../components/BoxChart";
-import Resizable from "../../../../../components/Resizable";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable, styler } from "react-timeseries-charts";
 
 import nyc_docs from "./nyc_docs.md";
 import nyc_thumbnail from "./nyc_thumbnail.png";

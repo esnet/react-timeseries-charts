@@ -18,15 +18,7 @@ import { timeFormat } from "d3-time-format";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import LineChart from "../../../../../components/LineChart";
-import Baseline from "../../../../../components/Baseline";
-import Legend from "../../../../../components/Legend";
-import Resizable from "../../../../../components/Resizable";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import currency_docs from "./currency_docs.md";
 import currency_thumbnail from "./currency_thumbnail.png";

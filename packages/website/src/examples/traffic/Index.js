@@ -17,14 +17,7 @@ import _ from "underscore";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import AreaChart from "../../../../../components/AreaChart";
-import Legend from "../../../../../components/Legend";
-import Resizable from "../../../../../components/Resizable";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import traffic_docs from "./traffic_docs.md";
 import traffic_thumbnail from "./traffic_thumbnail.png";

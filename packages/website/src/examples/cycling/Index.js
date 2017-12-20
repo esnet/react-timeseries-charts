@@ -20,20 +20,7 @@ import { format } from "d3-format";
 import { TimeSeries, TimeRange, avg, filter, percentile, median } from "pondjs";
 
 // Imports from the charts library
-import AreaChart from "../../../../../components/AreaChart";
-import Baseline from "../../../../../components/Baseline";
-import BoxChart from "../../../../../components/BoxChart";
-import Brush from "../../../../../components/Brush";
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import LabelAxis from "../../../../../components/LabelAxis";
-import LineChart from "../../../../../components/LineChart";
-import Resizable from "../../../../../components/Resizable";
-import TimeMarker from "../../../../../components/TimeMarker";
-import ValueAxis from "../../../../../components/ValueAxis";
-import YAxis from "../../../../../components/YAxis";
-import styler from "../../../../../js/styler";
+import { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, TimeMarker, ValueAxis, YAxis, styler } from "react-timeseries-charts";
 
 import cycling_docs from "./cycling_docs.md";
 import cycling_thumbnail from "./cycling_thumbnail.png";

@@ -18,15 +18,7 @@ import Moment from "moment";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import AreaChart from "../../../../../components/AreaChart";
-import LineChart from "../../../../../components/LineChart";
-import ScatterChart from "../../../../../components/ScatterChart";
-import Resizable from "../../../../../components/Resizable";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable, styler } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";

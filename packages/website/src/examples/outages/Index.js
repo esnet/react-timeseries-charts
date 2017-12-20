@@ -16,11 +16,7 @@ import React from "react/";
 import { TimeSeries, TimeRangeEvent, TimeRange } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import EventChart from "../../../../../components/EventChart";
-import Resizable from "../../../../../components/Resizable";
+import { ChartContainer, ChartRow, Charts, EventChart, Resizable } from "react-timeseries-charts";
 
 import outages_docs from "./outages_docs.md";
 import outages_thumbnail from "./outages_thumbnail.png";

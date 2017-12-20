@@ -19,14 +19,7 @@ import merge from "merge";
 import { TimeSeries } from "pondjs";
 
 // Imports from the charts library
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import LineChart from "../../../../../components/LineChart";
-import Resizable from "../../../../../components/Resizable";
-import Legend from "../../../../../components/Legend";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import ddos_docs from "./ddos_docs.md";
 import ddos_thumbnail from "./ddos_thumbnail.png";

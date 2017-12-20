@@ -13,13 +13,7 @@
 import React from "react";
 import { TimeSeries } from "pondjs";
 
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import LineChart from "../../../../../components/LineChart";
-import Baseline from "../../../../../components/Baseline";
-import Resizable from "../../../../../components/Resizable";
+import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Resizable } from "react-timeseries-charts";
 
 import baselines_docs from "./baselines_docs.md";
 import baselines_thumbnail from "./baselines_thumbnail.png";

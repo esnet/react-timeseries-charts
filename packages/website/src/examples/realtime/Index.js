@@ -21,15 +21,7 @@ import {
     percentile
 } from "pondjs";
 
-import ChartContainer from "../../../../../components/ChartContainer";
-import ChartRow from "../../../../../components/ChartRow";
-import Charts from "../../../../../components/Charts";
-import YAxis from "../../../../../components/YAxis";
-import ScatterChart from "../../../../../components/ScatterChart";
-import BarChart from "../../../../../components/BarChart";
-import Resizable from "../../../../../components/Resizable";
-import Legend from "../../../../../components/Legend";
-import styler from "../../../../../js/styler";
+import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import realtime_docs from "./realtime_docs.md";
 import realtime_thumbnail from "./realtime_thumbnail.png";
