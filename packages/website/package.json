@@ -5,6 +5,7 @@
     "homepage": "http://software.es.net/react-timeseries-charts/",
     "dependencies": {
         "bootstrap": "^3.3.7",
+        "colorbrewer": "^1.1.0",
         "jest-cli": "^20.0.4",
         "lodash.clonedeep": "^4.5.0",
         "prismjs": "^1.8.1",

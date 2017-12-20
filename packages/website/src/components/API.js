@@ -11,16 +11,16 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
 import Highlighter from "./highlighter";
 import APIDoc from "./APIDoc";
 
-import Meta from "../packages/charts/examples/examples.json";
-import Examples from "../packages/charts/examples/examples.js";
-import docsFile from "../packages/charts/api/docs.json";
+import Meta from "../examples/examples.json";
+import Examples from "../examples/examples.js";
+import docsFile from "../api/docs.json";
 
 const Example = React.createClass({
     render() {

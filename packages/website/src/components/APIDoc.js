@@ -2,7 +2,7 @@ import React from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
 
-import chartsDocs from "../packages/charts/api/docs.json";
+import chartsDocs from "../api/docs.json";
 
 /**
  * Displays API data from the docs.json file

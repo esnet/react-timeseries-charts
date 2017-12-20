@@ -12,8 +12,8 @@ import React from "react";
 import Highlighter from "./highlighter";
 import Markdown from "react-markdown";
 
-import Guides from "../packages/charts/guides/guides";
-import logo from "../packages/charts/logo.png";
+import Guides from "../guides/guides";
+import logo from "../logo.png";
 
 export default React.createClass({
     mixins: [Highlighter],
