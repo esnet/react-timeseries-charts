@@ -224,7 +224,7 @@ export default class BarChart extends React.Component {
         const bars = [];
         let eventMarker;
 
-        for (const event of series.events()) {
+        for (const event of series.collection().eventList()) {
             const begin = event.begin();
             const end = event.end();
             const beginPos = timeScale(begin) + spacing;
@@ -254,7 +254,7 @@ export default class BarChart extends React.Component {
             let yposNegative = yBase;
             if (columns) {
                 for (const column of columns) {
-                    const index = event.index();
+                    const index = event.indexAsString();
                     const key = `${series.name()}-${index}-${column}`;
                     const value = event.get(column);
                     const style = this.style(column, event);

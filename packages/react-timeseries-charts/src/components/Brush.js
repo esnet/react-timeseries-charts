@@ -11,7 +11,7 @@
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
-import { TimeRange } from "pondjs";
+import { timerange, TimeRange } from "pondjs";
 
 import { getElementOffset } from "../js/util";
 
@@ -53,8 +53,6 @@ export default class Brush extends React.Component {
         const begin = +this.props.timeRange.begin();
         const end = +this.props.timeRange.end();
 
-        document.addEventListener("mouseup", this.handleMouseUp);
-
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "brush",
@@ -70,9 +68,6 @@ export default class Brush extends React.Component {
         const offset = getElementOffset(this.overlay);
         const x = e.pageX - offset.left;
         const t = this.props.timeScale.invert(x).getTime();
-
-        document.addEventListener("mouseup", this.handleMouseUp);
-
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "overlay",
@@ -234,6 +229,8 @@ export default class Brush extends React.Component {
 
     renderBrush() {
         const { timeRange, timeScale, height, style } = this.props;
+        console.log("render brush props ", this.props);
+        console.log(this.viewport().disjoint(timeRange));
 
         if (!timeRange) {
             return <g />;
@@ -304,7 +301,8 @@ export default class Brush extends React.Component {
 
         if (!this.viewport().disjoint(timeRange)) {
             const range = timeRange.intersection(this.viewport());
-            const [begin, end] = range.toJSON();
+            const begin = range.begin().getTime();
+            const end = range.end().getTime();
             const [x, y] = [timeScale(begin), 0];
             const endPos = timeScale(end);
 
