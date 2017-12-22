@@ -12,9 +12,7 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Renders a simple label surrounded by a box within in svg
@@ -65,15 +63,14 @@ var Label = function Label(_ref) {
         label
     );
 
-    var box = _react2.default.createElement("rect", {
-        x: 0,
-        y: 0,
-        style: style,
-        width: width,
-        height: height
-    });
+    var box = _react2.default.createElement("rect", { x: 0, y: 0, style: style, width: width, height: height });
 
-    return _react2.default.createElement("g", null, box, text);
+    return _react2.default.createElement(
+        "g",
+        null,
+        box,
+        text
+    );
 };
 
 Label.defaultProps = {

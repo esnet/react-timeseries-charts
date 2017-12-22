@@ -12,9 +12,7 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Renders a 'axis' that display a label for a current tracker value
@@ -36,7 +34,10 @@ function _interopRequireDefault(obj) {
  */
 
 var ValueAxis = function ValueAxis(_ref) {
-    var width = _ref.width, height = _ref.height, value = _ref.value, detail = _ref.detail;
+    var width = _ref.width,
+        height = _ref.height,
+        value = _ref.value,
+        detail = _ref.detail;
 
     var labelStyle = {
         fill: "#666",

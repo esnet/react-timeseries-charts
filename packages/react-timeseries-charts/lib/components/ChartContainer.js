@@ -4,22 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = (function() {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }
-    return function(Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
-})();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _underscore = require("underscore");
 
@@ -65,37 +50,13 @@ var _TimeMarker = require("./TimeMarker");
 
 var _TimeMarker2 = _interopRequireDefault(_TimeMarker);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-}
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError(
-            "Super expression must either be null or a function, not " + typeof superClass
-        );
-    }
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: { value: subClass, enumerable: false, writable: true, configurable: true }
-    });
-    if (superClass)
-        Object.setPrototypeOf
-            ? Object.setPrototypeOf(subClass, superClass)
-            : (subClass.__proto__ = superClass);
-} /**
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  Copyright (c) 2015-present, The Regents of the University of California,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  through Lawrence Berkeley National Laboratory (subject to receipt
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  of any required approvals from the U.S. Dept. of Energy).
@@ -139,375 +100,336 @@ var defaultTimeAxisStyle = {
  * ```
  */
 
-var ChartContainer = (function(_React$Component) {
+var ChartContainer = function (_React$Component) {
     _inherits(ChartContainer, _React$Component);
 
     function ChartContainer() {
         _classCallCheck(this, ChartContainer);
 
-        return _possibleConstructorReturn(
-            this,
-            (ChartContainer.__proto__ || Object.getPrototypeOf(ChartContainer))
-                .apply(this, arguments)
-        );
+        return _possibleConstructorReturn(this, (ChartContainer.__proto__ || Object.getPrototypeOf(ChartContainer)).apply(this, arguments));
     }
 
-    _createClass(ChartContainer, [
-        {
-            key: "handleTrackerChanged",
+    _createClass(ChartContainer, [{
+        key: "handleTrackerChanged",
 
-            //
-            // Event handlers
-            //
+        //
+        // Event handlers
+        //
 
-            value: function handleTrackerChanged(t) {
-                if (this.props.onTrackerChanged) {
-                    this.props.onTrackerChanged(t);
-                }
+        value: function handleTrackerChanged(t) {
+            if (this.props.onTrackerChanged) {
+                this.props.onTrackerChanged(t);
             }
+        }
 
-            /**
+        /**
         * Within the charts library the time range of the x axis is kept as a begin
         * and end time (Javascript Date objects). But the interface is Pond based,
         * so this callback returns a Pond TimeRange.
         */
-        },
-        {
-            key: "handleTimeRangeChanged",
-            value: function handleTimeRangeChanged(timerange) {
-                if (this.props.onTimeRangeChanged) {
-                    this.props.onTimeRangeChanged(timerange);
-                }
-            }
-        },
-        {
-            key: "handleMouseMove",
-            value: function handleMouseMove(t) {
-                if (this.props.onTrackerChanged) {
-                    this.props.onTrackerChanged(t);
-                }
-            }
-        },
-        {
-            key: "handleMouseOut",
-            value: function handleMouseOut() {
-                if (this.props.onTrackerChanged) {
-                    this.props.onTrackerChanged(null);
-                }
-            }
-        },
-        {
-            key: "handleBackgroundClick",
-            value: function handleBackgroundClick() {
-                if (this.props.onBackgroundClick) {
-                    this.props.onBackgroundClick();
-                }
-            }
-        },
-        {
-            key: "handleZoom",
-            value: function handleZoom(timerange) {
-                if (this.props.onTimeRangeChanged) {
-                    this.props.onTimeRangeChanged(timerange);
-                }
-            }
-        },
-        {
-            key: "handleResize",
-            value: function handleResize(width, height) {
-                if (this.props.onChartResize) {
-                    this.props.onChartResize(width, height);
-                }
-            }
 
-            //
-            // Render
-            //
-        },
-        {
-            key: "render",
-            value: function render() {
-                var _this2 = this;
-
-                var chartRows = [];
-                var leftAxisWidths = [];
-                var rightAxisWidths = [];
-
-                //
-                // How much room does the axes of all the charts take up on the right
-                // and left. The result is an array for left and right axis which
-                // contain the min column width needed to hold the axes widths at the
-                // pos for all rows.
-                //
-                // pos   1      0        <charts>     0        1        2
-                //     | Axis | Axis |   CHARTS    |  Axis  |                      Row 1
-                //            | Axis |   CHARTS    |  Axis  |  Axis  |  Axis |     Row 2
-                //     ...............              ..........................
-                //          left cols              right cols
-                //
-
-                _react2.default.Children.forEach(this.props.children, function(childRow) {
-                    if (childRow.type === _ChartRow2.default) {
-                        //
-                        // Within this row, count the number of columns that will be
-                        // left and right of the Charts tag, as well as the total number
-                        // of Charts tags for error handling
-                        //
-
-                        var countLeft = 0;
-                        var countCharts = 0;
-
-                        var align = "left";
-
-                        _react2.default.Children.forEach(childRow.props.children, function(child) {
-                            if (child.type === _Charts2.default) {
-                                countCharts += 1;
-                                align = "right";
-                            } else if (child.type !== _Brush2.default) {
-                                if (align === "left") {
-                                    countLeft += 1;
-                                }
-                            }
-                        });
-
-                        if (countCharts !== 1) {
-                            var msg = "ChartRow should have one and only one <Charts> tag within it";
-                            (0, _invariant2.default)(false, msg, childRow.constructor.name);
-                        }
-
-                        align = "left";
-                        var pos = countLeft - 1;
-
-                        _react2.default.Children.forEach(childRow.props.children, function(child) {
-                            if (child.type === _Charts2.default || child.type === _Brush2.default) {
-                                if (child.type === _Charts2.default) {
-                                    align = "right";
-                                    pos = 0;
-                                }
-                            } else {
-                                var width = Number(child.props.width) || 40;
-                                if (align === "left") {
-                                    leftAxisWidths[pos] = leftAxisWidths[pos]
-                                        ? Math.max(width, leftAxisWidths[pos])
-                                        : width;
-                                    pos -= 1;
-                                } else if (align === "right") {
-                                    rightAxisWidths[pos] = rightAxisWidths[pos]
-                                        ? Math.max(width, rightAxisWidths[pos])
-                                        : width;
-                                    pos += 1;
-                                }
-                            }
-                        });
-                    }
-                });
-
-                // Space used by columns on left and right of charts
-                var leftWidth = _underscore2.default.reduce(
-                    leftAxisWidths,
-                    function(a, b) {
-                        return a + b;
-                    },
-                    0
-                );
-                var rightWidth = _underscore2.default.reduce(
-                    rightAxisWidths,
-                    function(a, b) {
-                        return a + b;
-                    },
-                    0
-                );
-
-                //
-                // Time scale
-                //
-
-                var timeAxisHeight = 35;
-                var timeAxisWidth = this.props.width - leftWidth - rightWidth;
-
-                if (!this.props.timeRange) {
-                    throw Error("Invalid timerange passed to ChartContainer");
-                }
-
-                var timeScale = this.props.utc
-                    ? (0, _d3Scale.scaleUtc)()
-                          .domain(this.props.timeRange.toJSON())
-                          .range([0, timeAxisWidth])
-                    : (0, _d3Scale.scaleTime)()
-                          .domain(this.props.timeRange.toJSON())
-                          .range([0, timeAxisWidth]);
-
-                var i = 0;
-                var yPosition = 0;
-                _react2.default.Children.forEach(this.props.children, function(child) {
-                    if (child.type === _ChartRow2.default) {
-                        var chartRow = child;
-                        var rowKey = "chart-row-row-" + i;
-                        var firstRow = i === 0;
-                        var props = {
-                            timeScale: timeScale,
-                            leftAxisWidths: leftAxisWidths,
-                            rightAxisWidths: rightAxisWidths,
-                            width: _this2.props.width,
-                            minTime: _this2.props.minTime,
-                            maxTime: _this2.props.maxTime,
-                            transition: _this2.props.transition,
-                            enablePanZoom: _this2.props.enablePanZoom,
-                            minDuration: _this2.props.minDuration,
-                            timeFormat: _this2.props.format,
-                            trackerShowTime: firstRow,
-                            trackerTime: _this2.props.trackerPosition,
-                            trackerTimeFormat: _this2.props.format,
-                            onTimeRangeChanged: function onTimeRangeChanged(tr) {
-                                return _this2.handleTimeRangeChanged(tr);
-                            },
-                            onTrackerChanged: function onTrackerChanged(t) {
-                                return _this2.handleTrackerChanged(t);
-                            }
-                        };
-                        var transform = "translate(" + -leftWidth + "," + yPosition + ")";
-                        chartRows.push(
-                            _react2.default.createElement(
-                                "g",
-                                { transform: transform, key: rowKey },
-                                _react2.default.cloneElement(chartRow, props)
-                            )
-                        );
-                        yPosition += parseInt(child.props.height, 10);
-                    }
-                    i += 1;
-                });
-
-                var chartsHeight = yPosition;
-                var chartsWidth = this.props.width - leftWidth - rightWidth;
-
-                // Hover tracker line
-                var tracker = void 0;
-                if (
-                    this.props.trackerPosition &&
-                    this.props.timeRange.contains(this.props.trackerPosition)
-                ) {
-                    tracker = _react2.default.createElement(
-                        "g",
-                        {
-                            key: "tracker-group",
-                            style: { pointerEvents: "none" },
-                            transform: "translate(" + leftWidth + ",0)"
-                        },
-                        _react2.default.createElement(_TimeMarker2.default, {
-                            width: chartsWidth,
-                            height: chartsHeight,
-                            showInfoBox: false,
-                            time: this.props.trackerPosition,
-                            timeScale: timeScale,
-                            timeFormat: this.props.format,
-                            infoWidth: this.props.trackerHintWidth,
-                            infoHeight: this.props.trackerHintHeight,
-                            info: this.props.trackerValues
-                        })
-                    );
-                }
-
-                //
-                // TimeAxis
-                //
-
-                var xStyle = {
-                    stroke: this.props.timeAxisStyle.axis.axisColor,
-                    strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
-                    fill: "none",
-                    pointerEvents: "none"
-                };
-
-                var timeAxis = _react2.default.createElement(
-                    "g",
-                    { transform: "translate(" + leftWidth + "," + chartsHeight + ")" },
-                    _react2.default.createElement("line", {
-                        x1: -leftWidth,
-                        y1: 0.5,
-                        x2: this.props.width,
-                        y2: 0.5,
-                        style: xStyle
-                    }),
-                    _react2.default.createElement(_TimeAxis2.default, {
-                        scale: timeScale,
-                        utc: this.props.utc,
-                        style: this.props.timeAxisStyle,
-                        format: this.props.format,
-                        showGrid: this.props.showGrid,
-                        gridHeight: chartsHeight
-                    })
-                );
-
-                //
-                // Event handler
-                //
-
-                var rows = _react2.default.createElement(
-                    "g",
-                    { transform: "translate(" + leftWidth + "," + 0 + ")" },
-                    _react2.default.createElement(
-                        _EventHandler2.default,
-                        {
-                            key: "event-handler",
-                            width: chartsWidth,
-                            height: chartsHeight + timeAxisHeight,
-                            scale: timeScale,
-                            enablePanZoom: this.props.enablePanZoom,
-                            minDuration: this.props.minDuration,
-                            minTime: this.props.minTime,
-                            maxTime: this.props.maxTime,
-                            onMouseOut: function onMouseOut(e) {
-                                return _this2.handleMouseOut(e);
-                            },
-                            onMouseMove: function onMouseMove(e) {
-                                return _this2.handleMouseMove(e);
-                            },
-                            onMouseClick: function onMouseClick(e) {
-                                return _this2.handleBackgroundClick(e);
-                            },
-                            onZoom: function onZoom(tr) {
-                                return _this2.handleZoom(tr);
-                            },
-                            onResize: function onResize(width, height) {
-                                return _this2.handleResize(width, height);
-                            }
-                        },
-                        chartRows
-                    )
-                );
-
-                //
-                // Final render of the ChartContainer is composed of a number of
-                // chartRows, a timeAxis and the tracker indicator
-                //
-
-                var svgWidth = this.props.width;
-                var svgHeight = yPosition + timeAxisHeight;
-
-                return this.props.showGridPosition === "over"
-                    ? _react2.default.createElement(
-                          "svg",
-                          { width: svgWidth, height: svgHeight, style: { display: "block" } },
-                          rows,
-                          tracker,
-                          timeAxis
-                      )
-                    : _react2.default.createElement(
-                          "svg",
-                          { width: svgWidth, height: svgHeight, style: { display: "block" } },
-                          timeAxis,
-                          rows,
-                          tracker
-                      );
+    }, {
+        key: "handleTimeRangeChanged",
+        value: function handleTimeRangeChanged(timerange) {
+            if (this.props.onTimeRangeChanged) {
+                this.props.onTimeRangeChanged(timerange);
             }
         }
-    ]);
+    }, {
+        key: "handleMouseMove",
+        value: function handleMouseMove(t) {
+            if (this.props.onTrackerChanged) {
+                this.props.onTrackerChanged(t);
+            }
+        }
+    }, {
+        key: "handleMouseOut",
+        value: function handleMouseOut() {
+            if (this.props.onTrackerChanged) {
+                this.props.onTrackerChanged(null);
+            }
+        }
+    }, {
+        key: "handleBackgroundClick",
+        value: function handleBackgroundClick() {
+            if (this.props.onBackgroundClick) {
+                this.props.onBackgroundClick();
+            }
+        }
+    }, {
+        key: "handleZoom",
+        value: function handleZoom(timerange) {
+            if (this.props.onTimeRangeChanged) {
+                this.props.onTimeRangeChanged(timerange);
+            }
+        }
+    }, {
+        key: "handleResize",
+        value: function handleResize(width, height) {
+            if (this.props.onChartResize) {
+                this.props.onChartResize(width, height);
+            }
+        }
+
+        //
+        // Render
+        //
+
+    }, {
+        key: "render",
+        value: function render() {
+            var _this2 = this;
+
+            var chartRows = [];
+            var leftAxisWidths = [];
+            var rightAxisWidths = [];
+
+            //
+            // How much room does the axes of all the charts take up on the right
+            // and left. The result is an array for left and right axis which
+            // contain the min column width needed to hold the axes widths at the
+            // pos for all rows.
+            //
+            // pos   1      0        <charts>     0        1        2
+            //     | Axis | Axis |   CHARTS    |  Axis  |                      Row 1
+            //            | Axis |   CHARTS    |  Axis  |  Axis  |  Axis |     Row 2
+            //     ...............              ..........................
+            //          left cols              right cols
+            //
+
+            _react2.default.Children.forEach(this.props.children, function (childRow) {
+                if (childRow.type === _ChartRow2.default) {
+                    //
+                    // Within this row, count the number of columns that will be
+                    // left and right of the Charts tag, as well as the total number
+                    // of Charts tags for error handling
+                    //
+
+                    var countLeft = 0;
+                    var countCharts = 0;
+
+                    var align = "left";
+
+                    _react2.default.Children.forEach(childRow.props.children, function (child) {
+                        if (child.type === _Charts2.default) {
+                            countCharts += 1;
+                            align = "right";
+                        } else if (child.type !== _Brush2.default) {
+                            if (align === "left") {
+                                countLeft += 1;
+                            }
+                        }
+                    });
+
+                    if (countCharts !== 1) {
+                        var msg = "ChartRow should have one and only one <Charts> tag within it";
+                        (0, _invariant2.default)(false, msg, childRow.constructor.name);
+                    }
+
+                    align = "left";
+                    var pos = countLeft - 1;
+
+                    _react2.default.Children.forEach(childRow.props.children, function (child) {
+                        if (child.type === _Charts2.default || child.type === _Brush2.default) {
+                            if (child.type === _Charts2.default) {
+                                align = "right";
+                                pos = 0;
+                            }
+                        } else {
+                            var width = Number(child.props.width) || 40;
+                            if (align === "left") {
+                                leftAxisWidths[pos] = leftAxisWidths[pos] ? Math.max(width, leftAxisWidths[pos]) : width;
+                                pos -= 1;
+                            } else if (align === "right") {
+                                rightAxisWidths[pos] = rightAxisWidths[pos] ? Math.max(width, rightAxisWidths[pos]) : width;
+                                pos += 1;
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Space used by columns on left and right of charts
+            var leftWidth = _underscore2.default.reduce(leftAxisWidths, function (a, b) {
+                return a + b;
+            }, 0);
+            var rightWidth = _underscore2.default.reduce(rightAxisWidths, function (a, b) {
+                return a + b;
+            }, 0);
+
+            //
+            // Time scale
+            //
+
+            var timeAxisHeight = 35;
+            var timeAxisWidth = this.props.width - leftWidth - rightWidth;
+
+            if (!this.props.timeRange) {
+                throw Error("Invalid timerange passed to ChartContainer");
+            }
+
+            console.log("timerange ", this.props.timeRange);
+
+            var timeScale = this.props.utc ? (0, _d3Scale.scaleUtc)().domain([this.props.timeRange.begin(), this.props.timeRange.end()]).range([0, timeAxisWidth]) : (0, _d3Scale.scaleTime)().domain([this.props.timeRange.begin(), this.props.timeRange.end()]).range([0, timeAxisWidth]);
+
+            var i = 0;
+            var yPosition = 0;
+            _react2.default.Children.forEach(this.props.children, function (child) {
+                if (child.type === _ChartRow2.default) {
+                    var chartRow = child;
+                    var rowKey = "chart-row-row-" + i;
+                    var firstRow = i === 0;
+                    var props = {
+                        timeScale: timeScale,
+                        leftAxisWidths: leftAxisWidths,
+                        rightAxisWidths: rightAxisWidths,
+                        width: _this2.props.width,
+                        minTime: _this2.props.minTime,
+                        maxTime: _this2.props.maxTime,
+                        transition: _this2.props.transition,
+                        enablePanZoom: _this2.props.enablePanZoom,
+                        minDuration: _this2.props.minDuration,
+                        timeFormat: _this2.props.format,
+                        trackerShowTime: firstRow,
+                        trackerTime: _this2.props.trackerPosition,
+                        trackerTimeFormat: _this2.props.format,
+                        onTimeRangeChanged: function onTimeRangeChanged(tr) {
+                            return _this2.handleTimeRangeChanged(tr);
+                        },
+                        onTrackerChanged: function onTrackerChanged(t) {
+                            return _this2.handleTrackerChanged(t);
+                        }
+                    };
+                    var transform = "translate(" + -leftWidth + "," + yPosition + ")";
+                    chartRows.push(_react2.default.createElement(
+                        "g",
+                        { transform: transform, key: rowKey },
+                        _react2.default.cloneElement(chartRow, props)
+                    ));
+                    yPosition += parseInt(child.props.height, 10);
+                }
+                i += 1;
+            });
+
+            var chartsHeight = yPosition;
+            var chartsWidth = this.props.width - leftWidth - rightWidth;
+
+            // Hover tracker line
+            var tracker = void 0;
+            if (this.props.trackerPosition && this.props.timeRange.contains(this.props.trackerPosition)) {
+                tracker = _react2.default.createElement(
+                    "g",
+                    {
+                        key: "tracker-group",
+                        style: { pointerEvents: "none" },
+                        transform: "translate(" + leftWidth + ",0)"
+                    },
+                    _react2.default.createElement(_TimeMarker2.default, {
+                        width: chartsWidth,
+                        height: chartsHeight,
+                        showInfoBox: false,
+                        time: this.props.trackerPosition,
+                        timeScale: timeScale,
+                        timeFormat: this.props.format,
+                        infoWidth: this.props.trackerHintWidth,
+                        infoHeight: this.props.trackerHintHeight,
+                        info: this.props.trackerValues
+                    })
+                );
+            }
+
+            //
+            // TimeAxis
+            //
+
+            var xStyle = {
+                stroke: this.props.timeAxisStyle.axis.axisColor,
+                strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
+                fill: "none",
+                pointerEvents: "none"
+            };
+
+            var timeAxis = _react2.default.createElement(
+                "g",
+                { transform: "translate(" + leftWidth + "," + chartsHeight + ")" },
+                _react2.default.createElement("line", { x1: -leftWidth, y1: 0.5, x2: this.props.width, y2: 0.5, style: xStyle }),
+                _react2.default.createElement(_TimeAxis2.default, {
+                    scale: timeScale,
+                    utc: this.props.utc,
+                    style: this.props.timeAxisStyle,
+                    format: this.props.format,
+                    showGrid: this.props.showGrid,
+                    gridHeight: chartsHeight
+                })
+            );
+
+            //
+            // Event handler
+            //
+
+            var rows = _react2.default.createElement(
+                "g",
+                { transform: "translate(" + leftWidth + "," + 0 + ")" },
+                _react2.default.createElement(
+                    _EventHandler2.default,
+                    {
+                        key: "event-handler",
+                        width: chartsWidth,
+                        height: chartsHeight + timeAxisHeight,
+                        scale: timeScale,
+                        enablePanZoom: this.props.enablePanZoom,
+                        minDuration: this.props.minDuration,
+                        minTime: this.props.minTime,
+                        maxTime: this.props.maxTime,
+                        onMouseOut: function onMouseOut(e) {
+                            return _this2.handleMouseOut(e);
+                        },
+                        onMouseMove: function onMouseMove(e) {
+                            return _this2.handleMouseMove(e);
+                        },
+                        onMouseClick: function onMouseClick(e) {
+                            return _this2.handleBackgroundClick(e);
+                        },
+                        onZoom: function onZoom(tr) {
+                            return _this2.handleZoom(tr);
+                        },
+                        onResize: function onResize(width, height) {
+                            return _this2.handleResize(width, height);
+                        }
+                    },
+                    chartRows
+                )
+            );
+
+            //
+            // Final render of the ChartContainer is composed of a number of
+            // chartRows, a timeAxis and the tracker indicator
+            //
+
+            var svgWidth = this.props.width;
+            var svgHeight = yPosition + timeAxisHeight;
+
+            return this.props.showGridPosition === "over" ? _react2.default.createElement(
+                "svg",
+                { width: svgWidth, height: svgHeight, style: { display: "block" } },
+                rows,
+                tracker,
+                timeAxis
+            ) : _react2.default.createElement(
+                "svg",
+                { width: svgWidth, height: svgHeight, style: { display: "block" } },
+                timeAxis,
+                rows,
+                tracker
+            );
+        }
+    }]);
 
     return ChartContainer;
-})(_react2.default.Component);
+}(_react2.default.Component);
 
 exports.default = ChartContainer;
+
 
 ChartContainer.propTypes = {
     /**
@@ -521,10 +443,7 @@ ChartContainer.propTypes = {
     /**
     * Children of the ChartContainer should be ChartRows.
     */
-    children: _propTypes2.default.oneOfType([
-        _propTypes2.default.arrayOf(_propTypes2.default.element),
-        _propTypes2.default.element
-    ]).isRequired,
+    children: _propTypes2.default.oneOfType([_propTypes2.default.arrayOf(_propTypes2.default.element), _propTypes2.default.element]).isRequired,
     /**
     * The width of the chart. This library also includes a <Resizable> component
     * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
@@ -627,15 +546,10 @@ ChartContainer.propTypes = {
     * specifying the label and value to be shown in the info box,
     * or a simple string label.
     */
-    trackerValues: _propTypes2.default.oneOfType([
-        _propTypes2.default.string,
-        _propTypes2.default.arrayOf(
-            _propTypes2.default.shape({
-                label: _propTypes2.default.string, // eslint-disable-line
-                value: _propTypes2.default.string // eslint-disable-line
-            })
-        )
-    ]),
+    trackerValues: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        label: _propTypes2.default.string, // eslint-disable-line
+        value: _propTypes2.default.string // eslint-disable-line
+    }))]),
     /**
     * A Date specifying the position of the tracker line on the chart. It is
     * common to take this from the onTrackerChanged callback so that the tracker

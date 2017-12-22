@@ -12,9 +12,7 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Renders a list of values in svg
@@ -35,7 +33,11 @@ function _interopRequireDefault(obj) {
  */
 
 var ValueList = function ValueList(props) {
-    var align = props.align, style = props.style, width = props.width, height = props.height;
+    var align = props.align,
+        style = props.style,
+        width = props.width,
+        height = props.height;
+
 
     var textStyle = {
         fontSize: 11,
@@ -51,7 +53,7 @@ var ValueList = function ValueList(props) {
         pointerEvents: "none"
     };
 
-    var values = props.values.map(function(item, i) {
+    var values = props.values.map(function (item, i) {
         if (align === "left") {
             return _react2.default.createElement(
                 "g",
@@ -64,7 +66,11 @@ var ValueList = function ValueList(props) {
                         { style: { fontWeight: 700 } },
                         item.label + ": "
                     ),
-                    _react2.default.createElement("tspan", null, "" + item.value)
+                    _react2.default.createElement(
+                        "tspan",
+                        null,
+                        "" + item.value
+                    )
                 )
             );
         }
@@ -81,20 +87,23 @@ var ValueList = function ValueList(props) {
                     { style: { fontWeight: 700 } },
                     item.label + ": "
                 ),
-                _react2.default.createElement("tspan", null, "" + item.value)
+                _react2.default.createElement(
+                    "tspan",
+                    null,
+                    "" + item.value
+                )
             )
         );
     });
 
-    var box = _react2.default.createElement("rect", {
-        style: style,
-        x: 0,
-        y: 0,
-        width: width,
-        height: height
-    });
+    var box = _react2.default.createElement("rect", { style: style, x: 0, y: 0, width: width, height: height });
 
-    return _react2.default.createElement("g", null, box, values);
+    return _react2.default.createElement(
+        "g",
+        null,
+        box,
+        values
+    );
 };
 
 ValueList.defaultProps = {
@@ -110,16 +119,12 @@ ValueList.propTypes = {
     /**
     * An array of label value pairs to render
     */
-    values: _propTypes2.default.arrayOf(
-        _propTypes2.default.shape({
-            label: _propTypes2.default.string, // eslint-disable-line
-            value: _propTypes2.default.oneOfType([
-                // eslint-disable-line
-                _propTypes2.default.number,
-                _propTypes2.default.string
-            ])
-        })
-    ).isRequired,
+    values: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        label: _propTypes2.default.string, // eslint-disable-line
+        value: _propTypes2.default.oneOfType([
+        // eslint-disable-line
+        _propTypes2.default.number, _propTypes2.default.string])
+    })).isRequired,
     /**
     * CSS object to be applied to the ValueList surrounding box
     */

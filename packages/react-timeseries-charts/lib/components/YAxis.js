@@ -4,22 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = (function() {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }
-    return function(Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
-})();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 require("d3-transition");
 
@@ -39,6 +24,8 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _d3Array = require("d3-array");
+
 var _d3Axis = require("d3-axis");
 
 var _d3Ease = require("d3-ease");
@@ -49,37 +36,13 @@ var _d3Selection = require("d3-selection");
 
 var _util = require("../js/util");
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-}
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError(
-            "Super expression must either be null or a function, not " + typeof superClass
-        );
-    }
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: { value: subClass, enumerable: false, writable: true, configurable: true }
-    });
-    if (superClass)
-        Object.setPrototypeOf
-            ? Object.setPrototypeOf(subClass, superClass)
-            : (subClass.__proto__ = superClass);
-} /**
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  Copyright (c) 2015-present, The Regents of the University of California,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  through Lawrence Berkeley National Laboratory (subject to receipt
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  of any required approvals from the U.S. Dept. of Energy).
@@ -90,6 +53,7 @@ function _inherits(subClass, superClass) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
 // eslint-disable-line
+
 
 var MARGIN = 0;
 
@@ -152,246 +116,161 @@ var defaultStyle = {
  *  it will use for its vertical scale.
  */
 
-var YAxis = (function(_React$Component) {
+var YAxis = function (_React$Component) {
     _inherits(YAxis, _React$Component);
 
     function YAxis() {
         _classCallCheck(this, YAxis);
 
-        return _possibleConstructorReturn(
-            this,
-            (YAxis.__proto__ || Object.getPrototypeOf(YAxis)).apply(this, arguments)
-        );
+        return _possibleConstructorReturn(this, (YAxis.__proto__ || Object.getPrototypeOf(YAxis)).apply(this, arguments));
     }
 
-    _createClass(YAxis, [
-        {
-            key: "componentDidMount",
-            value: function componentDidMount() {
-                this.renderAxis(
-                    this.props.align,
-                    this.props.scale,
-                    +this.props.width,
-                    this.props.absolute,
-                    this.props.format
-                );
-            }
-        },
-        {
-            key: "componentWillReceiveProps",
-            value: function componentWillReceiveProps(nextProps) {
-                var scale = nextProps.scale;
-                var align = nextProps.align;
-                var width = nextProps.width;
-                var absolute = nextProps.absolute;
-                var fmt = nextProps.format;
-                var type = nextProps.type;
+    _createClass(YAxis, [{
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            this.renderAxis(this.props.align, this.props.scale, +this.props.width, this.props.absolute, this.props.format);
+        }
+    }, {
+        key: "componentWillReceiveProps",
+        value: function componentWillReceiveProps(nextProps) {
+            var scale = nextProps.scale;
+            var align = nextProps.align;
+            var width = nextProps.width;
+            var absolute = nextProps.absolute;
+            var fmt = nextProps.format;
+            var type = nextProps.type;
 
-                if (
-                    (0, _util.scaleAsString)(this.props.scale) !==
-                        (0, _util.scaleAsString)(scale) || this.props.type !== nextProps.type
-                ) {
-                    this.updateAxis(align, scale, width, absolute, type, fmt);
-                }
-            }
-        },
-        {
-            key: "shouldComponentUpdate",
-            value: function shouldComponentUpdate() {
-                // eslint-disable-line
-                return false;
-            }
-        },
-        {
-            key: "updateAxis",
-            value: function updateAxis(align, scale, width, absolute, type, fmt) {
-                var yformat = (0, _d3Format.format)(fmt);
-                var axis = align === "left" ? _d3Axis.axisLeft : _d3Axis.axisRight;
-
-                var axisStyle = (0, _merge2.default)(
-                    true,
-                    defaultStyle.axis,
-                    this.props.style.axis ? this.props.style.axis : {}
-                );
-                var axisColor = axisStyle.axisColor;
-
-                //
-                // Make an axis generator
-                //
-
-                var axisGenerator = void 0;
-                if (type === "linear" || type === "power") {
-                    if (this.props.height <= 200) {
-                        axisGenerator = axis(scale).ticks(5).tickFormat(function(d) {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        });
-                    } else {
-                        axisGenerator = axis(scale).tickFormat(function(d) {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        });
-                    }
-                } else if (type === "log") {
-                    axisGenerator = axis(scale).ticks(10, ".2s");
-                }
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this))
-                    .select(".yaxis")
-                    .transition()
-                    .duration(this.props.transition)
-                    .ease(_d3Ease.easeSinOut)
-                    .call(axisGenerator);
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .select("g")
-                    .selectAll(".tick")
-                    .select("text")
-                    .style("fill", axisColor)
-                    .style("stroke", "none");
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .select("g")
-                    .selectAll(".tick")
-                    .select("line")
-                    .style("stroke", axisColor);
-            }
-        },
-        {
-            key: "renderAxis",
-            value: function renderAxis(align, scale, width, absolute, fmt) {
-                var yformat = (0, _d3Format.format)(fmt);
-                var axisGenerator = void 0;
-                var axis = align === "left" ? _d3Axis.axisLeft : _d3Axis.axisRight;
-                if (this.props.type === "linear" || this.props.type === "power") {
-                    if (this.props.height <= 200) {
-                        if (this.props.tickCount > 0) {
-                            axisGenerator = axis(scale)
-                                .ticks(this.props.tickCount)
-                                .tickFormat(function(d) {
-                                    if (absolute) {
-                                        return yformat(Math.abs(d));
-                                    }
-                                    return yformat(d);
-                                })
-                                .tickSizeOuter(0);
-                        } else {
-                            axisGenerator = axis(scale)
-                                .ticks(5)
-                                .tickFormat(function(d) {
-                                    if (absolute) {
-                                        return yformat(Math.abs(d));
-                                    }
-                                    return yformat(d);
-                                })
-                                .tickSizeOuter(0);
-                        }
-                    } else {
-                        axisGenerator = axis(scale)
-                            .tickFormat(function(d) {
-                                if (absolute) {
-                                    return yformat(Math.abs(d));
-                                }
-                                return yformat(d);
-                            })
-                            .tickSizeOuter(0);
-                    }
-                } else if (this.props.type === "log") {
-                    axisGenerator = axis().scale(scale).ticks(10, ".2s").tickSizeOuter(0);
-                }
-
-                // Remove the old axis from under this DOM node
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this))
-                    .selectAll("*")
-                    .remove(); // eslint-disable-line
-                // Add the new axis
-                var x = align === "left" ? width - MARGIN : 0;
-                var labelOffset = align === "left"
-                    ? this.props.labelOffset - 50
-                    : 40 + this.props.labelOffset;
-
-                //
-                // Style
-                //
-
-                var labelStyle = (0, _merge2.default)(
-                    true,
-                    defaultStyle.labels,
-                    this.props.style.labels ? this.props.style.labels : {}
-                );
-                var axisStyle = (0, _merge2.default)(
-                    true,
-                    defaultStyle.axis,
-                    this.props.style.axis ? this.props.style.axis : {}
-                );
-                var axisColor = axisStyle.axisColor;
-                var labelColor = labelStyle.labelColor,
-                    labelWeight = labelStyle.labelWeight,
-                    labelSize = labelStyle.labelSize;
-
-                this.axis = (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .append("g")
-                    .attr("transform", "translate(" + x + ",0)")
-                    .style("stroke", "none")
-                    .attr("class", "yaxis")
-                    .style("fill", labelColor)
-                    .style("font-weight", labelWeight)
-                    .style("font-size", labelSize)
-                    .call(axisGenerator)
-                    .append("text")
-                    .text(this.props.label)
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", labelOffset)
-                    .attr("dy", ".71em")
-                    .attr("text-anchor", "end")
-                    .style("fill", this.props.style.labelColor)
-                    .style(
-                        "font-family",
-                        this.props.style.labelFont || '"Goudy Bookletter 1911", sans-serif"'
-                    )
-                    .style("font-weight", this.props.style.labelWeight || 100)
-                    .style(
-                        "font-size",
-                        this.props.style.labelSize ? this.props.style.width + "px" : "12px"
-                    );
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .select("g")
-                    .selectAll(".tick")
-                    .select("text")
-                    .style("fill", axisColor)
-                    .style("stroke", "none");
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .select("g")
-                    .selectAll(".tick")
-                    .select("line")
-                    .style("stroke", axisColor);
-
-                (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
-                    .select("g")
-                    .select("path")
-                    .style("fill", "none")
-                    .style("stroke", axisColor);
-            }
-        },
-        {
-            key: "render",
-            value: function render() {
-                // eslint-disable-line
-                return _react2.default.createElement("g", null);
+            if ((0, _util.scaleAsString)(this.props.scale) !== (0, _util.scaleAsString)(scale) || this.props.type !== nextProps.type) {
+                this.updateAxis(align, scale, width, absolute, type, fmt);
             }
         }
-    ]);
+    }, {
+        key: "shouldComponentUpdate",
+        value: function shouldComponentUpdate() {
+            // eslint-disable-line
+            return false;
+        }
+    }, {
+        key: "updateAxis",
+        value: function updateAxis(align, scale, width, absolute, type, fmt) {
+            var yformat = (0, _d3Format.format)(fmt);
+            var axis = align === "left" ? _d3Axis.axisLeft : _d3Axis.axisRight;
+
+            var axisStyle = (0, _merge2.default)(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+            var axisColor = axisStyle.axisColor;
+
+            //
+            // Make an axis generator
+            //
+
+            var axisGenerator = void 0;
+            if (type === "linear" || type === "power") {
+                if (this.props.height <= 200) {
+                    axisGenerator = axis(scale).ticks(5).tickFormat(function (d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    });
+                } else {
+                    axisGenerator = axis(scale).tickFormat(function (d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    });
+                }
+            } else if (type === "log") {
+                axisGenerator = axis(scale).ticks(10, ".2s");
+            }
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)).select(".yaxis").transition().duration(this.props.transition).ease(_d3Ease.easeSinOut).call(axisGenerator);
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .select("g").selectAll(".tick").select("text").style("fill", axisColor).style("stroke", "none");
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .select("g").selectAll(".tick").select("line").style("stroke", axisColor);
+        }
+    }, {
+        key: "renderAxis",
+        value: function renderAxis(align, scale, width, absolute, fmt) {
+            var yformat = (0, _d3Format.format)(fmt);
+            var axisGenerator = void 0;
+            var axis = align === "left" ? _d3Axis.axisLeft : _d3Axis.axisRight;
+            if (this.props.type === "linear" || this.props.type === "power") {
+                if (this.props.tickCount > 0) {
+                    var stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
+                    axisGenerator = axis(scale).tickValues((0, _d3Array.range)(this.props.min, this.props.max + this.props.max / 10000, stepSize)).tickFormat(function (d) {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    }).tickSizeOuter(0);
+                } else {
+                    if (this.props.height <= 200) {
+                        axisGenerator = axis(scale).ticks(4).tickFormat(function (d) {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        }).tickSizeOuter(0);
+                    } else {
+                        axisGenerator = axis(scale).tickFormat(function (d) {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        }).tickSizeOuter(0);
+                    }
+                }
+            } else if (this.props.type === "log") {
+                axisGenerator = axis().scale(scale).ticks(10, ".2s").tickSizeOuter(0);
+            }
+
+            // Remove the old axis from under this DOM node
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)).selectAll("*").remove(); // eslint-disable-line
+            // Add the new axis
+            var x = align === "left" ? width - MARGIN : 0;
+            var labelOffset = align === "left" ? this.props.labelOffset - 50 : 40 + this.props.labelOffset;
+
+            //
+            // Style
+            //
+
+            var labelStyle = (0, _merge2.default)(true, defaultStyle.labels, this.props.style.labels ? this.props.style.labels : {});
+            var axisStyle = (0, _merge2.default)(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+            var axisColor = axisStyle.axisColor;
+            var labelColor = labelStyle.labelColor,
+                labelWeight = labelStyle.labelWeight,
+                labelSize = labelStyle.labelSize;
+
+
+            this.axis = (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .append("g").attr("transform", "translate(" + x + ",0)").style("stroke", "none").attr("class", "yaxis").style("fill", labelColor).style("font-weight", labelWeight).style("font-size", labelSize).call(axisGenerator).append("text").text(this.props.label).attr("transform", "rotate(-90)").attr("y", labelOffset).attr("dy", ".71em").attr("text-anchor", "end").style("fill", this.props.style.labelColor).style("font-family", this.props.style.labelFont || '"Goudy Bookletter 1911", sans-serif"').style("font-weight", this.props.style.labelWeight || 100).style("font-size", this.props.style.labelSize ? this.props.style.width + "px" : "12px");
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .select("g").selectAll(".tick").select("text").style("fill", axisColor).style("stroke", "none");
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .select("g").selectAll(".tick").select("line").style("stroke", axisColor);
+
+            (0, _d3Selection.select)(_reactDom2.default.findDOMNode(this)) // eslint-disable-line
+            .select("g").select("path").style("fill", "none").style("stroke", axisColor);
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            // eslint-disable-line
+            return _react2.default.createElement("g", null);
+        }
+    }]);
 
     return YAxis;
-})(_react2.default.Component);
+}(_react2.default.Component);
 
 exports.default = YAxis;
+
 
 YAxis.defaultProps = {
     id: "yaxis", // id referred to by the chart
