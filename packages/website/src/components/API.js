@@ -10,17 +10,22 @@
 
 /* eslint max-len:0 */
 
-import React from "react";
+import React, {Component} from "react";
 import { Link } from "react-router-dom";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
+import Markdown from "react-markdown";
+import Prism from "prismjs";
 import Highlighter from "./highlighter";
 import APIDoc from "./APIDoc";
 
 import Meta from "../examples/examples.json";
 import Examples from "../examples/examples.js";
 import docsFile from "../api/docs.json";
+
+import { codeRenderer, codeBlockRenderer } from "../renderers";
+import { codeStyle, headingStyle, textStyle, groupStyle } from "../styles";
 
 const Example = React.createClass({
     render() {
@@ -80,8 +85,15 @@ const TaggedExamples = React.createClass({
     }
 });
 
-export default React.createClass({
-    mixins: [Highlighter],
+export default class extends Component {
+    componentDidMount() {
+        Prism.highlightAll();
+    }
+
+    componentDidUpdate() {
+        Prism.highlightAll();
+    }
+
     render() {
         const component = this.props.match.params.component;
         const path = `src/components/${component}.js`;
@@ -90,18 +102,11 @@ export default React.createClass({
             return <div>API could not be found</div>;
         }
         const title = component;
-        const titleStyle = {
-            color: "#317eac",
-            fontSize: 32,
-            fontFamily: "monospace",
-            fontWeight: 100
-        };
         return (
             <div>
                 <div className="row">
-                    <div className="col-md-2"></div>
-                    <div className="col-md-9">
-                        <h2 style={titleStyle}>{`<${title}>`}</h2>
+                    <div className="col-md-12">
+                        <h2 style={headingStyle}>{`<${title}>`}</h2>
                         <TaggedExamples tag={component} />
                         <APIDoc file={path}/>
                     </div>
@@ -109,4 +114,4 @@ export default React.createClass({
             </div>
         );
     }
-});
+}

@@ -1,13 +1,23 @@
-import React from "react";
+import React, {Component} from "react";
 import _ from "underscore";
 import Markdown from "react-markdown";
-
 import chartsDocs from "../api/docs.json";
+import Prism from "prismjs";
+import { codeRenderer, codeBlockRenderer } from "../renderers";
+import { textStyle } from "../styles";
 
 /**
  * Displays API data from the docs.json file
  */
-export default React.createClass({
+export default class extends Component {
+    componentDidMount() {
+        Prism.highlightAll();
+    }
+
+    componentDidUpdate() {
+        Prism.highlightAll();
+    }
+
     renderArrayOf(value) {
         if (value.name === "shape") {
             return "shape {" +
@@ -18,7 +28,8 @@ export default React.createClass({
         } else {
             return `array of ${value.name}s`;
         }
-    },
+    }
+
     renderPropType(type) {
         if (!type) {
             return "unknown type";
@@ -52,7 +63,8 @@ export default React.createClass({
         } else {
             return `${type.name}`;
         }
-    },
+    }
+
     renderProps(props) {
         const propNameStyle = {
             padding: 3,
@@ -82,14 +94,17 @@ export default React.createClass({
         return _.map(props, (prop, propName) => (
             <div key={propName}>
                 <span style={propNameStyle}>{propName}</span>
-                <span>
+                <span style={textStyle}>
                     {prop.defaultValue ? ` = ${prop.defaultValue.value}` : ""}
                 </span>
                 <span className="label label-default">
                     {prop.required ? "Required" : ""}
                 </span>
                 <div style={infoStyle}>
-                    <Markdown source={prop.description ? prop.description : ""} />
+                    <Markdown 
+                        source={prop.description ? prop.description : ""}
+                        renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                    />
                 </div>
                 <span style={typeStyle}>
                     Type: {this.renderPropType(prop.type)}
@@ -97,14 +112,18 @@ export default React.createClass({
                 <hr />
             </div>
         ));
-    },
+    }
+
     render() {
         const file = this.props.file;
         const docs = chartsDocs[file];
         return (
             <div>
                 <h3>{docs.displayName} API</h3>
-                <Markdown source={docs.description} />
+                <Markdown 
+                    source={docs.description}
+                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                />
                 <hr />
                 <h3>{docs.displayName} Props</h3>
                 <hr />
@@ -112,4 +131,4 @@ export default React.createClass({
             </div>
         );
     }
-});
+}

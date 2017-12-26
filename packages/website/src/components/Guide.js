@@ -8,22 +8,27 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React, {Component} from "react";
 import Highlighter from "./highlighter";
 import Markdown from "react-markdown";
 
 import Guides from "../guides/guides";
 import logo from "../logo.png";
 
-export default React.createClass({
-    mixins: [Highlighter],
-    getInitialState() {
-        return {
+import Prism from "prismjs";
+import { codeRenderer, codeBlockRenderer } from "../renderers";
+
+export default class extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             markdown: null
         };
-    },
+    }
+
     componentDidMount() {
         window.scrollTo(0, 0);
+        Prism.highlightAll();
         console.log("this.props is ", this.props);
         const guideName = this.props.match.params.doc || "intro";
         console.log(guideName);
@@ -36,7 +41,8 @@ export default React.createClass({
                 this.setState({ markdown });
             });
         this.setState({ markdown: null });
-    },
+    }
+
     componentWillReceiveProps(nextProps) {
         window.scrollTo(0, 0);
         const guideName = nextProps.match.params.doc || "intro";
@@ -49,17 +55,22 @@ export default React.createClass({
                 this.setState({ markdown });
             });
         this.setState({ markdown: null });
-    },
+    }
+
+    componentDidUpdate() {
+        Prism.highlightAll();
+    }
+
     render() {
         if (this.state.markdown !== null) {
             return (
                 <div>
                     <div className="row">
-                        <div className="col-md-2">
-                            <img src={logo} alt="ESnet" width={120} height={120} />
-                        </div>
-                        <div className="col-md-9">
-                            <Markdown source={this.state.markdown} />
+                        <div className="col-md-12">
+                            <Markdown 
+                                source={this.state.markdown}
+                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }} 
+                            />
                         </div>
                     </div>
                 </div>
@@ -67,12 +78,9 @@ export default React.createClass({
         } else {
             return (
                 <div className="row">
-                    <div className="col-md-2">
-                        <img src={logo} alt="ESnet" width={120} height={120} />
-                    </div>
-                    <div className="col-md-9" />
+                    <div className="col-md-12" />
                 </div>
             );
         }
     }
-});
+}
