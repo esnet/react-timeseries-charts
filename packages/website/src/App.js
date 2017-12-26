@@ -23,6 +23,7 @@ import Sidebar from './Sidebar';
 import Guide from "./components/Guide";
 import Example from "./components/Example";
 import API from "./components/API";
+import ScrollToTop from "./ScrollToTop";
 
 import esnetLogo from "./img/logo.png";
 import githubLogo from "./img/github.png";
@@ -36,6 +37,7 @@ class App extends Component {
             <Router>
                 <div style={bodyStyle}>
                     <Header />
+                    <Route component={ScrollToTop} />
                     <div style={mainStyle}>
                         <div style={contentStyle}>
                             {" "}
