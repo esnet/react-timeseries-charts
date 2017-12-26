@@ -11,17 +11,11 @@
 /* eslint max-len:0 */
 
 import React from "react";
-
-// Pond
 import { indexedSeries, TimeSeries, Index, window, duration, period, time } from "pondjs";
-
-// Imports from the charts library
 import { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable, styler } from "react-timeseries-charts";
 
-/// Ignore these next two lines
 import barchart_docs from "./barchart_docs.md";
 import barchart_thumbnail from "./barchart_thumbnail.png";
-///
 
 const data = [
     ["2017-01-24 00:00", 0.01],
@@ -50,13 +44,15 @@ const data = [
     ["2017-01-24 23:00", 0.28]
 ];
 
-const hourly = window(duration("1d"));
+const hourly = window(duration("1h"));
 
 const series = indexedSeries({
     name: "hilo_rainfall",
     columns: ["index", "precip"],
     points: data.map(([d, value]) => [hourly.getIndexSet(time(new Date(d))).first().toString(), value])
 });
+
+console.log("series is ", series);
 
 const barchart = React.createClass({
     displayName: "BarChartExample",
