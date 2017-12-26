@@ -49,6 +49,10 @@ export default class extends Component {
         this.fetchMarkdownForProps(nextProps);
     }
 
+    componentDidUpdate() {
+        Prism.highlightAll();
+    }
+
     renderMarkdown() {
         if (this.state.markdown) {
             return (

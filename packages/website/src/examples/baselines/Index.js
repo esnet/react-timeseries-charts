@@ -11,8 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import { TimeSeries } from "pondjs";
-
+import { timeSeries, TimeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Resizable } from "react-timeseries-charts";
 
 import baselines_docs from "./baselines_docs.md";
@@ -21,7 +20,7 @@ import baselines_thumbnail from "./baselines_thumbnail.png";
 // Data
 const data = require("./usd_vs_euro.json");
 const points = data.widget[0].data.reverse();
-const series = new TimeSeries({
+const series = timeSeries({
     name: "USD_vs_EURO",
     columns: ["time", "value"],
     points

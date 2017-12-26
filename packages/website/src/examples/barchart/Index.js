@@ -52,8 +52,6 @@ const series = indexedSeries({
     points: data.map(([d, value]) => [hourly.getIndexSet(time(new Date(d))).first().toString(), value])
 });
 
-console.log("series is ", series);
-
 const barchart = React.createClass({
     displayName: "BarChartExample",
     render() {

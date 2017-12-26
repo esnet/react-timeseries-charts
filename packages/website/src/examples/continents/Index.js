@@ -14,11 +14,7 @@ import React from "react";
 import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import continents_docs from "./continents_docs.md";
@@ -32,7 +28,6 @@ const columnNames = rawData.map(d => d.key);
 //
 // Process out data into a TimeSeries
 //
-
 const name = "series";
 const columns = ["time", ...columnNames];
 const points = [];
@@ -46,7 +41,7 @@ for (let i = 0; i < numPoints; i++) {
     points.push(point);
 }
 
-const series = new TimeSeries({ name, columns, points });
+const series = timeSeries({ name, columns, points });
 
 //
 // Style
