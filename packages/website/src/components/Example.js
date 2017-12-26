@@ -8,7 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import React, {Component} from "react";
 import Markdown from "react-markdown";
 
 import Highlighter from "./highlighter";
@@ -16,13 +16,17 @@ import Highlighter from "./highlighter";
 import Examples from "../examples/examples.js";
 import Meta from "../examples/examples.json";
 
-export default React.createClass({
-    mixins: [Highlighter],
-    getInitialState() {
-        return {
+import Prism from "prismjs";
+import { codeRenderer, codeBlockRenderer } from "../renderers";
+
+export default class extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             markdown: null
         };
-    },
+    }
+
     fetchMarkdownForProps(props) {
         window.scrollTo(0, 0);
         const exampleName = props.match.params.example;
@@ -34,19 +38,26 @@ export default React.createClass({
             .then(markdown => {
                 this.setState({ markdown });
             });
-    },
+    }
+
     componentDidMount() {
+        Prism.highlightAll();
         this.fetchMarkdownForProps(this.props);
-    },
+    }
+
     componentWillReceiveProps(nextProps) {
         this.fetchMarkdownForProps(nextProps);
-    },
+    }
+
     renderMarkdown() {
         if (this.state.markdown) {
             return (
                 <div className="row">
                     <div className="col-md-12">
-                        <Markdown source={this.state.markdown} />
+                        <Markdown 
+                            source={this.state.markdown}
+                            renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                        />
                     </div>
                 </div>
             );
@@ -59,7 +70,7 @@ export default React.createClass({
                 </div>
             );
         }
-    },
+    }
 
     render() {
         const tagStyle = {
@@ -79,23 +90,19 @@ export default React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <h3>{ExampleMetaData.title}</h3>
-                                <p>
-                                    <a
-                                        style={{ fontSize: "small" }}
-                                        href={sourceCode}
-                                        target="_blank"
-                                    >
-                                        Source Code »
-                                    </a>
-                                </p>
-                                <p>
-                                    {ExampleMetaData.description}
-                                </p>
-                            </div>
-                        </div>
+                        <h3>{ExampleMetaData.title}</h3>
+                        <p>
+                            <a
+                                style={{ fontSize: "small" }}
+                                href={sourceCode}
+                                target="_blank"
+                            >
+                                Source Code »
+                            </a>
+                        </p>
+                        <p>
+                            {ExampleMetaData.description}
+                        </p>
                         <hr />
                         <Component />
                         <hr />
@@ -105,4 +112,4 @@ export default React.createClass({
             </div>
         );
     }
-});
+}

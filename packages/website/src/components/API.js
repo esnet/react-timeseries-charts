@@ -106,7 +106,7 @@ export default class extends Component {
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <h2 style={headingStyle}>{`<${title}>`}</h2>
+                        <h2 style={headingStyle}>{`${title}`}</h2>
                         <TaggedExamples tag={component} />
                         <APIDoc file={path}/>
                     </div>

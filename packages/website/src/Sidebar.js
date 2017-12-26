@@ -98,7 +98,7 @@ export default class extends Component {
 
                 <div className="sidebar-heading" style={sidebarTitleStyle}>API</div>
                 <ul className="nav nav-sidebar" style={sidebarItemStyle}>
-                    <li><Link to="/api/charts/AreaChart" activeStyle={activeStyle}>AreaChart</Link></li>
+                    <li><Link to="/api/charts/AreaChart">AreaChart</Link></li>
                     <li><Link to="/api/charts/BarChart">BarChart</Link></li>
                     <li><Link to="/api/charts/Baseline">Baseline</Link></li>
                     <li><Link to="/api/charts/BoxChart">BoxChart</Link></li>
