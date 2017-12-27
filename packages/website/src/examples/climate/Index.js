@@ -12,11 +12,7 @@
 
 import React from "react";
 import _ from "underscore";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, indexedSeries } from "pondjs";
 import { Baseline, ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, ScatterChart, EventMarker, styler } from "react-timeseries-charts";
 
 import climate_docs from "./climate_docs.md";
@@ -33,7 +29,7 @@ _.each(temperatures, val => {
     points.push([index, temperature, fiveyear]);
 });
 
-const temperatureSeries = new TimeSeries({
+const temperatureSeries = indexedSeries({
     name: "temperature anomoly",
     columns: ["index", "temperature", "five_year"],
     points
