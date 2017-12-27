@@ -11,11 +11,8 @@
 /* eslint max-len:0 */
 
 import React from "react/";
-
-// Pond
-import { TimeSeries, TimeRangeEvent, TimeRange } from "pondjs";
-
-// Imports from the charts library
+import * as Immutable from "immutable";
+import { TimeSeries, TimeRangeEvent, TimeRange, timerange, timeRangeEvent } from "pondjs";
 import { ChartContainer, ChartRow, Charts, EventChart, Resizable } from "react-timeseries-charts";
 
 import outages_docs from "./outages_docs.md";
@@ -65,11 +62,17 @@ const outageEvents = [
 // Turn data into TimeSeries
 //
 
-const events = outageEvents.map(
-    ({ startTime, endTime, ...data }) =>
-        new TimeRangeEvent(new TimeRange(new Date(startTime), new Date(endTime)), data)
-);
-const series = new TimeSeries({ name: "outages", events });
+const TIMERANGE_EVENT_LIST = outageEvents.map(event => {
+    const { startTime, endTime, ...other } = event;
+    const b = new Date(startTime);
+    const e = new Date(endTime);
+    return timeRangeEvent(timerange(b, e), Immutable.Map(other));
+});
+
+const series = new TimeSeries({
+    name: "outages",
+    events: Immutable.List(TIMERANGE_EVENT_LIST)
+});
 
 //
 // Render event chart

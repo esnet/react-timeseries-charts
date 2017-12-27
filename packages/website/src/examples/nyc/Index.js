@@ -11,11 +11,8 @@
 /* eslint max-len:0 */
 
 import React from "react";
-
-// Pond
-import { TimeSeries, TimeRange, IndexedEvent, Collection } from "pondjs";
-
-// Imports from the charts library
+import * as Immutable from "immutable";
+import { TimeSeries, TimeRange, IndexedEvent, Collection, timerange, index, Index, indexedEvent } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable, styler } from "react-timeseries-charts";
 
 import nyc_docs from "./nyc_docs.md";
@@ -31,27 +28,29 @@ const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 
 //
 
 const name = "KNYC";
-const events = weather.map(item => {
-    const {
-        date,
-        actual_min_temp,
-        actual_max_temp,
-        record_min_temp,
-        record_max_temp
-    } = item;
-    return new IndexedEvent(
-        date,
-        {
-            temp: [
-                +record_min_temp, //eslint-disable-line
-                +actual_min_temp, //eslint-disable-line
-                +actual_max_temp, //eslint-disable-line
-                +record_max_temp //eslint-disable-line
-            ]
-        },
-        false
-    );
-});
+const w = Immutable.List(weather);
+const events = Immutable.List(
+    w.map(item => {
+        const {
+            date,
+            actual_min_temp,
+            actual_max_temp,
+            record_min_temp,
+            record_max_temp
+        } = item;
+        return indexedEvent(
+            index(date),
+            Immutable.Map({
+                temp: [
+                    +record_min_temp, //eslint-disable-line
+                    +actual_min_temp, //eslint-disable-line
+                    +actual_max_temp, //eslint-disable-line
+                    +record_max_temp //eslint-disable-line
+                ]
+            })
+        );
+    })
+);
 
 const collection = new Collection(events);
 const series = new TimeSeries({ name, collection });
@@ -64,7 +63,7 @@ const nyc = React.createClass({
     //eslint-disable-line
     getInitialState() {
         return {
-            timerange: new TimeRange([1425168000000, 1433116800000]),
+            timerange: timerange(1425168000000, 1433116800000),
             selection: null
         };
     },

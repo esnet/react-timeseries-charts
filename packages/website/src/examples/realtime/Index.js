@@ -10,17 +10,19 @@
 
 import React from "react";
 import Ring from "ringjs";
-
+import * as Immutable from "immutable";
 import {
+    time,
     TimeSeries,
     TimeRange,
-    TimeEvent,
-    Pipeline as pipeline,
-    Stream,
-    EventOut,
-    percentile
+    timeEvent,
+    Trigger,
+    period,
+    stream,
+    percentile,
+    window,
+    TimeEvent
 } from "pondjs";
-
 import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import realtime_docs from "./realtime_docs.md";
@@ -43,36 +45,38 @@ const realtime = React.createClass({
     },
     getNewEvent(t) {
         const base = Math.sin(t.getTime() / 10000000) * 350 + 500;
-        return new TimeEvent(t, parseInt(base + Math.random() * 1000, 10));
+        return timeEvent(time(t), Immutable.Map({ value: parseInt(base + Math.random() * 1000, 10)}));
     },
     componentDidMount() {
         //
         // Setup our aggregation pipelines
         //
 
-        this.stream = new Stream();
+        this.stream = stream();
 
-        pipeline()
-            .from(this.stream)
-            .windowBy("5m")
-            .emitOn("discard")
-            .aggregate({
-                value: { value: percentile(90) }
+        const p90 = this.stream
+            .groupByWindow({
+                window: window(period("5m")),
+                trigger: Trigger.onDiscardedWindow
             })
-            .to(EventOut, event => {
+            .aggregate({
+                value: ["value", percentile(90)]
+            })
+            .output(event => {
                 const events = this.state.percentile90Out;
                 events.push(event);
                 this.setState({ percentile90Out: events });
             });
 
-        pipeline()
-            .from(this.stream)
-            .windowBy("5m")
-            .emitOn("discard")
-            .aggregate({
-                value: { value: percentile(50) }
+        const p50 = this.stream
+            .groupByWindow({
+                window: window(period("5m")),
+                trigger: Trigger.onDiscardedWindow
             })
-            .to(EventOut, event => {
+            .aggregate({
+                value: ["value", percentile(50)]
+            })
+            .output(event => {
                 const events = this.state.percentile50Out;
                 events.push(event);
                 this.setState({ percentile50Out: events });
@@ -128,17 +132,17 @@ const realtime = React.createClass({
 
         const eventSeries = new TimeSeries({
             name: "raw",
-            events: this.state.events.toArray()
+            events: Immutable.List(this.state.events.toArray())
         });
 
         const perc50Series = new TimeSeries({
             name: "five minute perc50",
-            events: this.state.percentile50Out.toArray()
+            events: Immutable.List(this.state.percentile50Out.toArray())
         });
 
         const perc90Series = new TimeSeries({
             name: "five minute perc90",
-            events: this.state.percentile90Out.toArray()
+            events: Immutable.List(this.state.percentile90Out.toArray())
         });
 
         // Timerange for the chart axis

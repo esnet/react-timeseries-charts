@@ -14,11 +14,7 @@ import React from "react";
 import _ from "underscore";
 import moment from "moment";
 import merge from "merge";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import ddos_docs from "./ddos_docs.md";
@@ -38,13 +34,13 @@ _.each(ddosData, val => {
     connections.push([timestamp.toDate().getTime(), numConnection]);
 });
 
-const connectionsSeries = new TimeSeries({
+const connectionsSeries = timeSeries({
     name: "connections",
     columns: ["time", "connections"],
     points: connections
 });
 
-const requestsSeries = new TimeSeries({
+const requestsSeries = timeSeries({
     name: "requests",
     columns: ["time", "requests"],
     points: requests

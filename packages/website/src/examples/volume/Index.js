@@ -14,16 +14,11 @@ import React from "react";
 import _ from "underscore";
 import { format } from "d3-format";
 import moment from "moment";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, indexedSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable, styler } from "react-timeseries-charts";
 
 // Test data
 import monthlyJSON from "./total_traffic_6mo.json";
-
 import volume_docs from "./volume_docs.md";
 import volume_thumbnail from "./volume_thumbnail.png";
 
@@ -49,7 +44,7 @@ _.each(days, (value, day) => {
     trafficPoints.push([`2014-10-${dayOfMonth}`, volIn, volOut]);
 });
 
-const octoberTrafficSeries = new TimeSeries({
+const octoberTrafficSeries = indexedSeries({
     name: "October Traffic",
     utc: false,
     columns: ["index", "in", "out"],
@@ -97,7 +92,7 @@ _.each(interfaceKeys, interfaceKey => {
     netTrafficColumnNames.push(interfaceKey.split(":")[0]);
 });
 
-const octoberNetTrafficSeries = new TimeSeries({
+const octoberNetTrafficSeries = indexedSeries({
     name: "October Net Traffic",
     utc: false,
     columns: netTrafficColumnNames,
@@ -209,7 +204,7 @@ const volume = React.createClass({
             ? this.state.selection.event.index().toNiceString()
             : "--";
         const selectedValue = this.state.selection
-            ? `${formatter(+this.state.selection.event.value(this.state.selection.column))}b`
+            ? `${formatter(+this.state.selection.event.get(this.state.selection.column))}b`
             : "--";
 
         const highlight = this.state.highlight;

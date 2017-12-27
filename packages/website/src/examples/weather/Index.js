@@ -13,16 +13,11 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable, styler } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";
-
 import weather_docs from "./weather_docs.md";
 import weather_thumbnail from "./weather_thumbnail.png";
 
@@ -61,32 +56,32 @@ _.each(weatherJSON, readings => {
 // Timeseries
 //
 
-const tempSeries = new TimeSeries({
+const tempSeries = timeSeries({
     name: "Temperature",
     columns: ["time", "temp"],
     points: temperaturePoints
 });
-const pressureSeries = new TimeSeries({
+const pressureSeries = timeSeries({
     name: "Pressure",
     columns: ["time", "pressure"],
     points: pressurePoints
 });
-const windSeries = new TimeSeries({
+const windSeries = timeSeries({
     name: "Wind",
     columns: ["time", "wind"],
     points: windPoints
 });
-const gustSeries = new TimeSeries({
+const gustSeries = timeSeries({
     name: "Gust",
     columns: ["time", "gust", "radius"],
     points: gustPoints
 });
-const rainSeries = new TimeSeries({
+const rainSeries = timeSeries({
     name: "Rain",
     columns: ["time", "rain"],
     points: rainPoints
 });
-const rainAccumSeries = new TimeSeries({
+const rainAccumSeries = timeSeries({
     name: "Rain Accum",
     columns: ["time", "rainAccum"],
     points: rainAccumPoints

@@ -15,11 +15,7 @@ import "moment-duration-format";
 import moment from "moment";
 import React from "react";
 import { format } from "d3-format";
-
-// Pond
-import { TimeSeries, TimeRange, avg, filter, percentile, median, timeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, TimeRange, avg, filter, percentile, median, timeSeries, timerange, window, period, duration } from "pondjs";
 import { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, TimeMarker, ValueAxis, YAxis, styler } from "react-timeseries-charts";
 
 import cycling_docs from "./cycling_docs.md";
@@ -78,13 +74,12 @@ const speed = timeSeries({
     points: speedPoints
 });
 
-// const speedSmoothed = speed.fixedWindowRollup({
-//     windowSize: "1m",
-//     aggregation: {
-//         speed5mAvg: { speed: avg(filter.ignoreMissing) }
-//     },
-//     toEvents: true
-// });
+const speedSmoothed = speed.fixedWindowRollup({
+    window: window(period("1m")),
+    aggregation: {
+        speed5mAvg: { speed: avg(filter.ignoreMissing) }
+    }
+});
 
 //
 // Styling
@@ -126,7 +121,8 @@ const speedSummaryValues = [
 
 const cycling = React.createClass({
     getInitialState() {
-        const initialRange = new TimeRange([75 * 60 * 1000, 125 * 60 * 1000]);
+        const initialRange = timerange(75 * 60 * 1000, 125 * 60 * 1000);
+        console.log("intial Range is ", initialRange);
         return {
             mode: "channels",
             rollup: "1m",
@@ -162,6 +158,7 @@ const cycling = React.createClass({
     },
     renderChannelsChart() {
         const tr = this.state.timerange;
+        console.log("tr is ", tr);
         const speedCropped = speed.crop(tr);
         const hrCropped = hr.crop(tr);
 

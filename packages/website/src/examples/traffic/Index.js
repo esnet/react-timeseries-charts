@@ -12,11 +12,7 @@
 
 import React from "react";
 import _ from "underscore";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import traffic_docs from "./traffic_docs.md";
@@ -25,13 +21,13 @@ import traffic_thumbnail from "./traffic_thumbnail.png";
 // Data
 const rawTrafficData = require("./link-traffic.json");
 
-const trafficBNLtoNEWYSeries = new TimeSeries({
+const trafficBNLtoNEWYSeries = timeSeries({
     name: `BNL to NEWY`,
     columns: ["time", "in"],
     points: _.map(rawTrafficData.traffic["BNL--NEWY"], p => [p[0] * 1000, p[1]])
 });
 
-const trafficNEWYtoBNLSeries = new TimeSeries({
+const trafficNEWYtoBNLSeries = timeSeries({
     name: `NEWY to BNL`,
     columns: ["time", "out"],
     points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])

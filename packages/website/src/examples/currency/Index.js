@@ -13,11 +13,7 @@
 import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import currency_docs from "./currency_docs.md";
@@ -37,7 +33,7 @@ function buildPoints() {
     return points;
 }
 
-const currencySeries = new TimeSeries({
+const currencySeries = timeSeries({
     name: "Currency",
     columns: ["time", "aud", "euro"],
     points: buildPoints()

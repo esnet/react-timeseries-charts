@@ -14,16 +14,11 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { format } from "d3-format";
-
-// Pond
-import { TimeSeries } from "pondjs";
-
-// Imports from the charts library
+import { TimeSeries, timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";
-
 import wind_docs from "./wind_docs.md";
 import wind_thumbnail from "./wind_thumbnail.png";
 
@@ -48,7 +43,7 @@ _.each(weatherJSON, readings => {
 // Timeseries
 //
 
-const series = new TimeSeries({
+const series = timeSeries({
     name: "Gust",
     columns: ["time", "station1", "station2"],
     points
