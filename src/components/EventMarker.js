@@ -372,10 +372,12 @@ EventMarker.propTypes = {
         PropTypes.instanceOf(IndexedEvent),
         PropTypes.instanceOf(TimeRangeEvent)
     ]),
+
     /**
      * Which column in the Event to use
      */
     column: PropTypes.string,
+
     /**
      * The values to show in the info box. This is either an array of
      * objects, with each object specifying the label and value
@@ -391,19 +393,23 @@ EventMarker.propTypes = {
             })
         )
     ]),
+
     /**
      * The style of the info box itself. Typically you'd want to
      * specify a fill color, and stroke color/width here.
      */
     infoStyle: PropTypes.object,
+
     /**
      * The width of the info box
      */
     infoWidth: PropTypes.number,
+
     /**
      * The height of the info box
      */
     infoHeight: PropTypes.number,
+
     /**
      * Alter the format of the timestamp shown on the info box.
      * This may be either a function or a string. If you provide a function
@@ -415,39 +421,48 @@ EventMarker.propTypes = {
      * to the begin time of the Index range.
      */
     infoTimeFormat: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+
     /**
      * Show a label to the left or right of the marker
      */
     markerLabelAlign: PropTypes.oneOf(["left", "right", "top", "bottom"]),
+
     /**
      * The radius of the dot at the end of the marker
      */
     markerRadius: PropTypes.number,
+
     /**
      * The style of the event marker dot
      */
     markerStyle: PropTypes.object,
+
     /**
      * The y value is calculated by the column and event, but if
      * this prop is provided this will be used instead.
      */
     yValueFunc: PropTypes.func,
+
     /**
      * Offset the marker position in the x direction.
      */
     offsetX: PropTypes.number,
+
     /**
      * Offset the marker position in the y direction
      */
     offsetY: PropTypes.number,
+
     /**
      * [Internal] The timeScale supplied by the surrounding ChartContainer
      */
     timeScale: PropTypes.func,
+
     /**
      * [Internal] The yScale supplied by the associated YAxis
      */
     yScale: PropTypes.func,
+
     /**
      * [Internal] The width supplied by the surrounding ChartContainer
      */

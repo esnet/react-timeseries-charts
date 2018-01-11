@@ -459,6 +459,7 @@ class cycling extends React.Component {
 
         const durationPerPixel = timerange.duration() / 800 / 1000;
 
+        // Line charts
         const charts = [];
         for (let channelName of displayChannels) {
             let series = channels[channelName].series;
@@ -481,49 +482,38 @@ class cycling extends React.Component {
             );
         }
 
-        /*
-        const speedBegin = speed.bisect(tr.begin());
-        const speedEnd = speed.bisect(tr.end());
-        const speedCropped = speed.slice(speedBegin, speedEnd);
+        // Tracker info box
+        const trackerInfoValues = displayChannels
+            .filter(channelName => channels[channelName].show)
+            .map(channelName => {
+                const fmt = format(channels[channelName].format);
 
-        const powerBegin = speed.bisect(tr.begin());
-        const powerEnd = speed.bisect(tr.end());
-        const powerCropped = power.slice(powerBegin, powerEnd);
+                let series = channels[channelName].series.crop(timerange);
 
-        // Get the speed at the current tracker position
-        let speedValue = "--";
-        if (this.state.tracker) {
-            const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
-            const speedAtTracker = speedCropped.at(speedIndexAtTracker).get("speed");
-            if (speedAtTracker) {
-                speedValue = speedFormat(speedAtTracker);
-            }
-        }
+                let v = "--";
+                if (this.state.tracker) {
+                    const i = series.bisect(new Date(this.state.tracker));
+                    const vv = series.at(i).get(channelName);
+                    if (vv) {
+                        v = fmt(vv);
+                    }
+                }
 
-        // Get the heartrate value at the current tracker position
-        let powerValue = "--";
-        if (this.state.tracker) {
-            const powerIndexAtTracker = powerCropped.bisect(new Date(this.state.tracker));
-            const powerAtTracker = powerCropped.at(powerIndexAtTracker).get("power");
-            if (powerAtTracker) {
-                powerValue = parseInt(powerAtTracker, 10);
-            }
-        }
+                const label = channels[channelName].label;
+                const value = `${v} ${channels[channelName].units}`;
 
-        const trackerInfoValues = [
-            { label: "Speed", value: `${speedValue} mph` },
-            { label: "Power", value: `${powerValue} watts` }
-        ];
-        */
+                return { label, value };
+            });
 
-        const axes = [];
+        // Axis list
+        const axisList = [];
         for (let channelName of displayChannels) {
             const label = channels[channelName].label;
             const max = channels[channelName].max;
             const format = channels[channelName].format;
             const id = `${channelName}_axis`;
             const visible = channels[channelName].show;
-            axes.push(
+            axisList.push(
                 <YAxis
                     id={id}
                     key={id}
@@ -551,9 +541,14 @@ class cycling extends React.Component {
                 minDuration={minDuration}
                 onTimeRangeChanged={this.handleTimeRangeChange}
             >
-                <ChartRow height="200">
+                <ChartRow
+                    height="200"
+                    trackerInfoValues={trackerInfoValues}
+                    trackerInfoHeight={10 + trackerInfoValues.length * 16}
+                    trackerInfoWidth={140}
+                >
+                    {axisList}
                     <Charts>{charts}</Charts>
-                    {axes}
                 </ChartRow>
             </ChartContainer>
         );
