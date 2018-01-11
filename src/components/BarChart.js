@@ -170,17 +170,19 @@ export default class BarChart extends React.Component {
     }
 
     /**
-   * Returns the style used for drawing the path
-   */
+     * Returns the style used for drawing the path
+     */
     style(column, event) {
         let style;
         const styleMap = this.providedStyleMap(column);
 
-        const isHighlighted = this.props.highlighted &&
+        const isHighlighted =
+            this.props.highlighted &&
             column === this.props.highlighted.column &&
             Event.is(this.props.highlighted.event, event);
 
-        const isSelected = this.props.selected &&
+        const isSelected =
+            this.props.selected &&
             column === this.props.selected.column &&
             Event.is(this.props.selected.event, event);
 
@@ -267,7 +269,8 @@ export default class BarChart extends React.Component {
                     const y = positiveBar ? yposPositive - height : yposNegative;
 
                     // Event marker if info provided and hovering
-                    const isHighlighted = this.props.highlighted &&
+                    const isHighlighted =
+                        this.props.highlighted &&
                         column === this.props.highlighted.column &&
                         Event.is(this.props.highlighted.event, event);
                     if (isHighlighted && this.props.info) {
@@ -312,170 +315,190 @@ export default class BarChart extends React.Component {
     }
 
     render() {
-        return (
-            <g>
-                {this.renderBars()}
-            </g>
-        );
+        return <g>{this.renderBars()}</g>;
     }
 }
 
 BarChart.propTypes = {
     /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
-   * data to visualize
-   */
+     * Show or hide this chart
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * data to visualize
+     */
     series: PropTypes.instanceOf(TimeSeries).isRequired,
+
     /**
-   * The distance in pixels to inset the bar chart from its actual timerange
-   */
+     * The distance in pixels to inset the bar chart from its actual timerange
+     */
     spacing: PropTypes.number,
+
     /**
-   * The distance in pixels to offset the bar from its center position within the timerange
-   * it represents
-   */
+     * The distance in pixels to offset the bar from its center position within the timerange
+     * it represents
+     */
     offset: PropTypes.number,
+
     /**
-   * A list of columns within the series that will be stacked on top of each other
-   */
+     * A list of columns within the series that will be stacked on top of each other
+     */
     columns: PropTypes.arrayOf(PropTypes.string),
+
     /**
-   * The style of the bar chart drawing (using SVG CSS properties).
-   * This is an object with a key for each column which is being drawn,
-   * per the `columns` prop. For each column a style is defined for
-   * each state the bar may be in. This style is the CSS properties for
-   * the underlying SVG <Rect>, so most likely you'll define fill and
-   * opacity.
-   *
-   * For example:
-   * ```
-   * style = {
-   *     columnName: {
-   *         normal: {
-   *             fill: "steelblue",
-   *             opacity: 0.8,
-   *         },
-   *         highlighted: {
-   *             fill: "#a7c4dd",
-   *             opacity: 1.0,
-   *         },
-   *         selected: {
-   *             fill: "orange",
-   *             opacity: 1.0,
-   *         },
-   *         muted: {
-   *             fill: "grey",
-   *             opacity: 0.5
-   *         }
-   *     }
-   * }
-   * ```
-   *
-   * You can also supply a function, which will be called with an event
-   * and column. The function should return an object containing the
-   * four states (normal, highlighted, selected and muted) and the corresponding
-   * CSS properties.
-   */
+     * The style of the bar chart drawing (using SVG CSS properties).
+     * This is an object with a key for each column which is being drawn,
+     * per the `columns` prop. For each column a style is defined for
+     * each state the bar may be in. This style is the CSS properties for
+     * the underlying SVG <Rect>, so most likely you'll define fill and
+     * opacity.
+     *
+     * For example:
+     * ```
+     * style = {
+     *     columnName: {
+     *         normal: {
+     *             fill: "steelblue",
+     *             opacity: 0.8,
+     *         },
+     *         highlighted: {
+     *             fill: "#a7c4dd",
+     *             opacity: 1.0,
+     *         },
+     *         selected: {
+     *             fill: "orange",
+     *             opacity: 1.0,
+     *         },
+     *         muted: {
+     *             fill: "grey",
+     *             opacity: 0.5
+     *         }
+     *     }
+     * }
+     * ```
+     *
+     * You can also supply a function, which will be called with an event
+     * and column. The function should return an object containing the
+     * four states (normal, highlighted, selected and muted) and the corresponding
+     * CSS properties.
+     */
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
+
     /**
-   * The values to show in the info box. This is an array of
-   * objects, with each object specifying the label and value
-   * to be shown in the info box.
-   */
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
     info: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string, //eslint-disable-line
             value: PropTypes.string //eslint-disable-line
         })
     ),
+
     /**
-   * The style of the info box itself. Typically you'd want to
-   * specify a fill color, and stroke color / width here.
-   */
+     * The style of the info box itself. Typically you'd want to
+     * specify a fill color, and stroke color / width here.
+     */
     infoStyle: PropTypes.object, //eslint-disable-line
+
     /**
-   * The width of the info box
-   */
+     * The width of the info box
+     */
     infoWidth: PropTypes.number, //eslint-disable-line
+
     /**
-   * The height of the info box
-   */
+     * The height of the info box
+     */
     infoHeight: PropTypes.number, //eslint-disable-line
+
     /**
-   * Alter the format of the timestamp shown on the info box.
-   * This may be either a function or a string. If you provide a function
-   * that will be passed an Index and should return a string. For example:
-   * ```
-   *     index => moment(index.begin()).format("Do MMM 'YY")
-   * ```
-   * Alternatively you can pass in a d3 format string. That will be applied
-   * to the begin time of the Index range.
-   */
+     * Alter the format of the timestamp shown on the info box.
+     * This may be either a function or a string. If you provide a function
+     * that will be passed an Index and should return a string. For example:
+     * ```
+     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * ```
+     * Alternatively you can pass in a d3 format string. That will be applied
+     * to the begin time of the Index range.
+     */
     infoTimeFormat: PropTypes.oneOfType([
         //eslint-disable-line
         PropTypes.string, //eslint-disable-line
         PropTypes.func //eslint-disable-line
     ]),
+
     /**
-   * The radius of the infoBox dot at the end of the marker
-   */
+     * The radius of the infoBox dot at the end of the marker
+     */
     markerRadius: PropTypes.number,
+
     /**
-   * The style of the infoBox dot at the end of the marker
-   */
+     * The style of the infoBox dot at the end of the marker
+     */
     markerStyle: PropTypes.object,
+
     /**
-   * If size is specified, then the bar will be this number of pixels wide. This
-   * prop takes priority over "spacing".
-   */
+     * If size is specified, then the bar will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     size: PropTypes.number,
+
     /**
-   * The selected item, which will be rendered in the "selected" style.
-   * If a bar is selected, all other bars will be rendered in the "muted" style.
-   *
-   * See also `onSelectionChange`
-   */
+     * The selected item, which will be rendered in the "selected" style.
+     * If a bar is selected, all other bars will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected: PropTypes.shape({
         event: PropTypes.instanceOf(IndexedEvent),
         column: PropTypes.string
     }),
+
     /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
+     * A callback that will be called when the selection changes. It will be called
+     * with an object containing the event and column.
+     */
     onSelectionChange: PropTypes.func,
+
     /**
-   * The highlighted item, which will be rendered in the "highlighted" style.
-   *
-   * See also `onHighlightChange`
-   */
+     * The highlighted item, which will be rendered in the "highlighted" style.
+     *
+     * See also `onHighlightChange`
+     */
     highlighted: PropTypes.shape({
         event: PropTypes.instanceOf(IndexedEvent),
         column: PropTypes.string
     }),
+
     /**
-   * A callback that will be called when the hovered over bar changes.
-   * It will be called with an object containing the event and column.
-   */
+     * A callback that will be called when the hovered over bar changes.
+     * It will be called with an object containing the event and column.
+     */
     onHighlightChange: PropTypes.func,
+
     /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale: PropTypes.func,
+
     /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
+     * [Internal] The yScale supplied by the associated YAxis
+     */
     yScale: PropTypes.func
 };
 
 BarChart.defaultProps = {
+    visible: true,
     columns: ["value"],
     spacing: 1.0,
     offset: 0,
     infoStyle: {
         stroke: "#999",
         fill: "white",
-        opacity: 0.90,
+        opacity: 0.9,
         pointerEvents: "none"
     },
     stemStyle: {

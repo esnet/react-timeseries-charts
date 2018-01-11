@@ -140,17 +140,18 @@ _.each(monthlyJSON, router => {
     }
 });
 
-const volume = React.createClass({
-    displayName: "VolumeExample",
-    getInitialState() {
-        return {
-            timerange: octoberTrafficSeries.range(),
-            selection: null
-        };
-    },
-    handleTimeRangeChange(timerange) {
+class volume extends React.Component {
+    static displayName = "VolumeExample";
+
+    state = {
+        timerange: octoberTrafficSeries.range(),
+        selection: null
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
+    };
+
     render() {
         /*
         
@@ -229,7 +230,6 @@ const volume = React.createClass({
 
         return (
             <div>
-
                 <div className="row">
                     <div className="col-md-12">
                         <b>October 2014 Total Traffic</b>
@@ -271,13 +271,16 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             info={infoValues}
                                             infoTimeFormat={index =>
-                                                moment(index.begin()).format("Do MMM 'YY")}
+                                                moment(index.begin()).format("Do MMM 'YY")
+                                            }
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                     </Charts>
                                     <YAxis
@@ -295,8 +298,8 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
-                        Alternatively we can display bars side by side using the 'spacing' and 'offset' props:
-
+                        Alternatively we can display bars side by side using the 'spacing' and
+                        'offset' props:
                         <hr />
                     </div>
                 </div>
@@ -331,10 +334,12 @@ const volume = React.createClass({
                                             info={infoValues}
                                             infoTimeFormat="%m/%d/%y"
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                         <BarChart
                                             axis="traffic-volume"
@@ -346,12 +351,13 @@ const volume = React.createClass({
                                             info={infoValues}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
-
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -395,10 +401,12 @@ const volume = React.createClass({
                                             info={infoValues}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                     </Charts>
                                 </ChartRow>
@@ -410,12 +418,10 @@ const volume = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
-                        BarChart can display negative values as well, as shown below for a stacked format.
-
-                        Note that all bars representing positive values are stacked together above the
-
-                        x-axis and the bars for negative values are stacked below the x-axis.
-
+                        BarChart can display negative values as well, as shown below for a stacked
+                        format. Note that all bars representing positive values are stacked together
+                        above the x-axis and the bars for negative values are stacked below the
+                        x-axis.
                         <hr />
                     </div>
                 </div>
@@ -452,10 +458,12 @@ const volume = React.createClass({
                                             infoWidth={140}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                     </Charts>
                                 </ChartRow>
@@ -466,7 +474,7 @@ const volume = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { volume, volume_docs, volume_thumbnail };

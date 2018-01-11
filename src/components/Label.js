@@ -38,7 +38,11 @@ const Label = ({ label, style, align, width, height }) => {
     const tstyle = align === "center" ? textStyleCentered : textStyle;
     const posx = align === "center" ? parseInt(width / 2, 10) : 10;
 
-    const text = <text x={posx} y={5} dy="1.2em" style={tstyle}>{label}</text>;
+    const text = (
+        <text x={posx} y={5} dy="1.2em" style={tstyle}>
+            {label}
+        </text>
+    );
 
     const box = <rect x={0} y={0} style={style} width={width} height={height} />;
 
@@ -59,23 +63,30 @@ Label.defaultProps = {
 };
 
 Label.propTypes = {
+    /**
+     * Where to position the label, either "left" or "center" within the box
+     */
     align: PropTypes.oneOf(["center", "left"]),
+
     /**
-   * The label to render
-   */
+     * The label to render
+     */
     label: PropTypes.string.isRequired,
+
     /**
-   * The style of the label. This is the inline CSS applied directly
-   * to the label box
-   */
+     * The style of the label. This is the inline CSS applied directly
+     * to the label box
+     */
     style: PropTypes.object, // eslint-disable-line
+
     /**
-   * The width of the rectangle to render into
-   */
+     * The width of the rectangle to render into
+     */
     width: PropTypes.number,
+
     /**
-   * The height of the rectangle to render into
-   */
+     * The height of the rectangle to render into
+     */
     height: PropTypes.number
 };
 

@@ -27,13 +27,22 @@ function createScale(yaxis, type, min, max, y0, y1) {
     if (_.isUndefined(min) || _.isUndefined(max)) {
         scale = null;
     } else if (type === "linear") {
-        scale = scaleLinear().domain([min, max]).range([y0, y1]).nice();
+        scale = scaleLinear()
+            .domain([min, max])
+            .range([y0, y1])
+            .nice();
     } else if (type === "log") {
         const base = yaxis.props.logBase || 10;
-        scale = scaleLog().base(base).domain([min, max]).range([y0, y1]);
+        scale = scaleLog()
+            .base(base)
+            .domain([min, max])
+            .range([y0, y1]);
     } else if (type === "power") {
         const power = yaxis.props.powerExponent || 2;
-        scale = scalePow().exponent(power).domain([min, max]).range([y0, y1]);
+        scale = scalePow()
+            .exponent(power)
+            .domain([min, max])
+            .range([y0, y1]);
     }
     return scale;
 }
@@ -116,9 +125,9 @@ export default class ChartRow extends React.Component {
     }
 
     /**
-   * When we get changes to the row's props we update our map of
-   * axis scales.
-   */
+     * When we get changes to the row's props we update our map of
+     * axis scales.
+     */
     componentWillReceiveProps(nextProps) {
         const innerHeight = +nextProps.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
@@ -183,7 +192,8 @@ export default class ChartRow extends React.Component {
                 const id = child.props.id;
                 // Check to see if we think this 'axis' is actually an axis
                 if (
-                    (child.type === YAxis || _.has(child.props, "min")) && _.has(child.props, "max")
+                    (child.type === YAxis || _.has(child.props, "min")) &&
+                    _.has(child.props, "max")
                 ) {
                     const yaxis = child;
 
@@ -202,8 +212,7 @@ export default class ChartRow extends React.Component {
             }
         });
 
-        // Since we'll be building the left axis items from the
-        // inside to the outside
+        // Since we'll be building the left axis items from the inside to the outside
         leftAxisList.reverse();
 
         //
@@ -228,10 +237,8 @@ export default class ChartRow extends React.Component {
             leftColumnIndex += 1
         ) {
             const colWidth = this.props.leftAxisWidths[leftColumnIndex];
-
             posx -= colWidth;
-
-            if (leftColumnIndex < leftAxisList.length) {
+            if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
                 transform = `translate(${posx},0)`;
 
@@ -261,8 +268,7 @@ export default class ChartRow extends React.Component {
             rightColumnIndex += 1
         ) {
             const colWidth = this.props.rightAxisWidths[rightColumnIndex];
-
-            if (rightColumnIndex < rightAxisList.length) {
+            if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
                 transform = `translate(${posx},0)`;
 
@@ -302,34 +308,36 @@ export default class ChartRow extends React.Component {
             if (child.type === Charts) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
-                    let scale = null;
-                    if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {
-                        scale = this.state.yAxisScalerMap[chart.props.axis];
+                    if (!_.has(chart.props, "visible") || chart.props.visible) {
+                        let scale = null;
+                        if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {
+                            scale = this.state.yAxisScalerMap[chart.props.axis];
+                        }
+
+                        let ytransition = null;
+                        if (_.has(this.scaleMap, chart.props.axis)) {
+                            ytransition = this.scaleMap[chart.props.axis];
+                        }
+
+                        const chartProps = {
+                            key: keyCount,
+                            width: chartWidth,
+                            height: innerHeight,
+                            timeScale: this.props.timeScale,
+                            timeFormat: this.props.timeFormat
+                        };
+
+                        if (scale) {
+                            chartProps.yScale = scale;
+                        }
+
+                        if (ytransition) {
+                            chartProps.transition = ytransition;
+                        }
+
+                        chartList.push(React.cloneElement(chart, chartProps));
+                        keyCount += 1;
                     }
-
-                    let ytransition = null;
-                    if (_.has(this.scaleMap, chart.props.axis)) {
-                        ytransition = this.scaleMap[chart.props.axis];
-                    }
-
-                    const chartProps = {
-                        key: keyCount,
-                        width: chartWidth,
-                        height: innerHeight,
-                        timeScale: this.props.timeScale,
-                        timeFormat: this.props.timeFormat
-                    };
-
-                    if (scale) {
-                        chartProps.yScale = scale;
-                    }
-
-                    if (ytransition) {
-                        chartProps.transition = ytransition;
-                    }
-
-                    chartList.push(React.cloneElement(chart, chartProps));
-                    keyCount += 1;
                 });
             }
         });
@@ -431,40 +439,39 @@ export default class ChartRow extends React.Component {
 ChartRow.defaultProps = {
     trackerTimeFormat: "%b %d %Y %X",
     enablePanZoom: false,
-    height: 100
+    height: 100,
+    visible: true
 };
 
 ChartRow.propTypes = {
     /**
-   * The height of the row.
-   */
+     * The height of the row.
+     */
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-    leftAxisWidths: PropTypes.arrayOf(PropTypes.number),
-    rightAxisWidths: PropTypes.arrayOf(PropTypes.number),
-    width: PropTypes.number,
-    timeScale: PropTypes.func,
-    trackerTimeFormat: PropTypes.string,
-    timeFormat: PropTypes.string,
-    trackerTime: PropTypes.instanceOf(Date),
+
     /**
-   * Should the time be shown on top of the tracker info box
-   */
+     * Show or hide this row
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * Should the time be shown on top of the tracker info box
+     */
     trackerShowTime: PropTypes.bool,
     /**
-   * The width of the tracker info box
-   */
+     * The width of the tracker info box
+     */
     trackerInfoWidth: PropTypes.number,
     /**
-   * The height of the tracker info box
-   */
+     * The height of the tracker info box
+     */
     trackerInfoHeight: PropTypes.number,
     /**
-   * Info box value or values to place next to the tracker line
-   * This is either an array of objects, with each object
-   * specifying the label (a string) and value (also a string)
-   * to be shown in the info box, or a simple string label.
-   */
+     * Info box value or values to place next to the tracker line
+     * This is either an array of objects, with each object
+     * specifying the label (a string) and value (also a string)
+     * to be shown in the info box, or a simple string label.
+     */
     trackerInfoValues: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.arrayOf(
@@ -473,5 +480,14 @@ ChartRow.propTypes = {
                 value: PropTypes.string // eslint-disable-line
             })
         )
-    ])
+    ]),
+
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+    leftAxisWidths: PropTypes.arrayOf(PropTypes.number),
+    rightAxisWidths: PropTypes.arrayOf(PropTypes.number),
+    width: PropTypes.number,
+    timeScale: PropTypes.func,
+    trackerTimeFormat: PropTypes.string,
+    timeFormat: PropTypes.string,
+    trackerTime: PropTypes.instanceOf(Date)
 };

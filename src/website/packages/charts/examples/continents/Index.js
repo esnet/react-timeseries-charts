@@ -78,17 +78,17 @@ const styler = styler(columnNames.map((c, i) => ({
 // Build area chart style
 //
 
-const continents = React.createClass({
-    getInitialState() {
-        return {
-            highlight: null,
-            selection: null,
-            scheme: "Paired"
-        };
-    },
-    handleSchemeChange({ value }) {
+class continents extends React.Component {
+    state = {
+        highlight: null,
+        selection: null,
+        scheme: "Paired"
+    };
+
+    handleSchemeChange = ({ value }) => {
         this.setState({ scheme: value });
-    },
+    };
+
     render() {
         const cols = { up: columnNames, down: [] };
         const min = 0;
@@ -141,10 +141,12 @@ const continents = React.createClass({
                                             interpolation={interpolationType}
                                             highlight={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selection={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                     </Charts>
                                 </ChartRow>
@@ -155,7 +157,7 @@ const continents = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { continents, continents_docs, continents_thumbnail };

@@ -67,10 +67,10 @@ export default class ChartContainer extends React.Component {
     }
 
     /**
-   * Within the charts library the time range of the x axis is kept as a begin
-   * and end time (Javascript Date objects). But the interface is Pond based,
-   * so this callback returns a Pond TimeRange.
-   */
+     * Within the charts library the time range of the x axis is kept as a begin
+     * and end time (Javascript Date objects). But the interface is Pond based,
+     * so this callback returns a Pond TimeRange.
+     */
     handleTimeRangeChanged(timerange) {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
@@ -102,6 +102,7 @@ export default class ChartContainer extends React.Component {
     }
 
     handleResize(width, height) {
+        console.log("handle resize");
         if (this.props.onChartResize) {
             this.props.onChartResize(width, height);
         }
@@ -168,7 +169,10 @@ export default class ChartContainer extends React.Component {
                             pos = 0;
                         }
                     } else {
-                        const width = Number(child.props.width) || 40;
+                        let width = Number(child.props.width) || 40;
+                        const visible = !_.has(child.props, "visible") || child.props.visible;
+                        if (!visible) width = 0;
+
                         if (align === "left") {
                             leftAxisWidths[pos] = leftAxisWidths[pos]
                                 ? Math.max(width, leftAxisWidths[pos])
@@ -201,8 +205,12 @@ export default class ChartContainer extends React.Component {
         }
 
         const timeScale = this.props.utc
-            ? scaleUtc().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth])
-            : scaleTime().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth]);
+            ? scaleUtc()
+                  .domain(this.props.timeRange.toJSON())
+                  .range([0, timeAxisWidth])
+            : scaleTime()
+                  .domain(this.props.timeRange.toJSON())
+                  .range([0, timeAxisWidth]);
 
         let i = 0;
         let yPosition = 0;
@@ -211,6 +219,7 @@ export default class ChartContainer extends React.Component {
                 const chartRow = child;
                 const rowKey = `chart-row-row-${i}`;
                 const firstRow = i === 0;
+                const isVisible = child.props.visible;
                 const props = {
                     timeScale,
                     leftAxisWidths,
@@ -229,12 +238,15 @@ export default class ChartContainer extends React.Component {
                     onTrackerChanged: t => this.handleTrackerChanged(t)
                 };
                 const transform = `translate(${-leftWidth},${yPosition})`;
-                chartRows.push(
-                    <g transform={transform} key={rowKey}>
-                        {React.cloneElement(chartRow, props)}
-                    </g>
-                );
-                yPosition += parseInt(child.props.height, 10);
+                if (isVisible) {
+                    chartRows.push(
+                        <g transform={transform} key={rowKey}>
+                            {React.cloneElement(chartRow, props)}
+                        </g>
+                    );
+
+                    yPosition += parseInt(child.props.height, 10);
+                }
             }
             i += 1;
         });
@@ -242,10 +254,16 @@ export default class ChartContainer extends React.Component {
         const chartsHeight = yPosition;
         const chartsWidth = this.props.width - leftWidth - rightWidth;
 
+        if (this.props.onChartResize && chartsWidth !== this.chartsWidth) {
+            this.props.onChartResize(chartsWidth);
+            this.chartsWidth = chartsWidth;
+        }
+
         // Hover tracker line
         let tracker;
         if (
-            this.props.trackerPosition && this.props.timeRange.contains(this.props.trackerPosition)
+            this.props.trackerPosition &&
+            this.props.timeRange.contains(this.props.trackerPosition)
         ) {
             tracker = (
                 <g
@@ -327,138 +345,168 @@ export default class ChartContainer extends React.Component {
         const svgWidth = this.props.width;
         const svgHeight = yPosition + timeAxisHeight;
 
-        return this.props.showGridPosition === "over"
-            ? <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
-                  {rows}
-                  {tracker}
-                  {timeAxis}
-              </svg>
-            : <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
-                  {timeAxis}
-                  {rows}
-                  {tracker}
-              </svg>;
+        return this.props.showGridPosition === "over" ? (
+            <svg
+                width={svgWidth}
+                height={svgHeight}
+                style={{ display: "block" }}
+                ref={c => {
+                    this.svg = c;
+                }}
+            >
+                {rows}
+                {tracker}
+                {timeAxis}
+            </svg>
+        ) : (
+            <svg
+                width={svgWidth}
+                height={svgHeight}
+                style={{ display: "block" }}
+                ref={c => {
+                    this.svg = c;
+                }}
+            >
+                {timeAxis}
+                {rows}
+                {tracker}
+            </svg>
+        );
     }
 }
 
 ChartContainer.propTypes = {
     /**
-   * A Pond TimeRange representing the begin and end time of the chart.
-   */
+     * A [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange) representing the
+     * begin and end time of the chart.
+     */
     timeRange: PropTypes.instanceOf(TimeRange).isRequired,
+
     /**
-   * Should the time axis use a UTC scale or local
-   */
+     * Should the time axis use a UTC scale or local
+     */
     utc: PropTypes.bool,
+
     /**
-   * Children of the ChartContainer should be ChartRows.
-   */
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.element),
-        PropTypes.element
-    ]).isRequired,
+     * Children of the ChartContainer should be ChartRows.
+     */
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
+        .isRequired,
+
     /**
-   * The width of the chart. This library also includes a <Resizable> component
-   * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
-   * inject a width prop into the ChartContainer so that it will fit the
-   * surrounding element. This is very handy when you need the chart to resize
-   * based on a responsive layout.
-   */
+     * The width of the chart. This library also includes a <Resizable> component
+     * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
+     * inject a width prop into the ChartContainer so that it will fit the
+     * surrounding element. This is very handy when you need the chart to resize
+     * based on a responsive layout.
+     */
     width: PropTypes.number,
+
     /**
-   * Constrain the timerange to not move back in time further than this Date.
-   */
+     * Constrain the timerange to not move back in time further than this Date.
+     */
     minTime: PropTypes.instanceOf(Date),
+
     /**
-   * Constrain the timerange to not move forward in time than this Date. A
-   * common example is setting this to the current time or the end time
-   * of a fixed set of data.
-   */
+     * Constrain the timerange to not move forward in time than this Date. A
+     * common example is setting this to the current time or the end time
+     * of a fixed set of data.
+     */
     maxTime: PropTypes.instanceOf(Date),
+
     /**
-   * Boolean to turn on interactive pan and zoom behavior for the chart.
-   */
+     * Boolean to turn on interactive pan and zoom behavior for the chart.
+     */
     enablePanZoom: PropTypes.bool,
+
     /**
-   * If this is set the timerange of the chart cannot be zoomed in further
-   * than this duration, in milliseconds. This might be determined by the
-   * resolution of your data.
-   */
+     * If this is set the timerange of the chart cannot be zoomed in further
+     * than this duration, in milliseconds. This might be determined by the
+     * resolution of your data.
+     */
     minDuration: PropTypes.number,
+
     /**
-   * Provides several options as to the format of the time axis labels.
-   *
-   * In general the time axis will generate an appropriate time scale based
-   * on the timeRange prop and there is no need to set this.
-   *
-   * However, some options exist:
-   * 
-   *  - setting format to "day", "month" or "year" will show only ticks on those,
-   * and every one of those intervals. For example maybe you are showing a bar
-   * chart for October 2014 then setting the format to "day" will insure that a
-   * label is placed for each and every day
-   *
-   *  - setting format to "relative" interprets the time as a duration. This
-   * is good for data that is specified relative to its start time, rather than
-   * as an actual date/time
-   * 
-   *  - setting the format to a d3 format string will use that format
-   * 
-   *  - supplying a function for format will cause that function to be called
-   * whenever rendering a time
-   */
+     * Provides several options as to the format of the time axis labels.
+     *
+     * In general the time axis will generate an appropriate time scale based
+     * on the timeRange prop and there is no need to set this.
+     *
+     * However, some options exist:
+     *
+     *  - setting format to "day", "month" or "year" will show only ticks on those,
+     * and every one of those intervals. For example maybe you are showing a bar
+     * chart for October 2014 then setting the format to "day" will insure that a
+     * label is placed for each and every day
+     *
+     *  - setting format to "relative" interprets the time as a duration. This
+     * is good for data that is specified relative to its start time, rather than
+     * as an actual date/time
+     *
+     *  - setting the format to a d3 format string will use that format
+     *
+     *  - supplying a function for format will cause that function to be called
+     * whenever rendering a time
+     */
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+
     /**
-   * Time in milliseconds to transition from one Y-scale to the next
-   */
+     * Time in milliseconds to transition from one Y-scale to the next
+     */
     transition: PropTypes.number,
+
     /**
-   * Show grid lines for each time marker
-   */
+     * Show grid lines for each time marker
+     */
     showGrid: PropTypes.bool,
+
     /**
-   * Defines whether grid is overlayed ("over"( or underlayed ("under")
-   * with respect to the charts
-   */
+     * Defines whether grid is overlayed ("over"( or underlayed ("under")
+     * with respect to the charts
+     */
     showGridPosition: PropTypes.oneOf(["over", "under"]),
+
     /**
-   * Adjust the time axis style. This is an object of the
-   * form { labels, axis } where "label" and "axis" are objects
-   * themselves. The options here are best represented by
-   * an example:
-   *
-   * ```
-   *  const axisStyle = {
-   *      labels: {
-   *          labelColor: "grey",
-   *          labelWeight: 100,
-   *          labelSize: 11
-   *      },
-   *      axis: {
-   *          axisColor: "grey",
-   *          axisWidth: 1
-   *      }
-   *  };
-   * ```
-   */
+     * Adjust the time axis style. This is an object of the
+     * form { labels, axis } where "label" and "axis" are objects
+     * themselves. The options here are best represented by
+     * an example:
+     *
+     * ```
+     *  const axisStyle = {
+     *      labels: {
+     *          labelColor: "grey",
+     *          labelWeight: 100,
+     *          labelSize: 11
+     *      },
+     *      axis: {
+     *          axisColor: "grey",
+     *          axisWidth: 1
+     *      }
+     *  };
+     * ```
+     */
     timeAxisStyle: PropTypes.shape({
         labels: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object
     }),
+
     /**
-   * The width of the tracker info box
-   */
+     * The width of the tracker info box
+     */
     trackerHintWidth: PropTypes.number,
+
     /**
-   * The height of the tracker info box
-   */
+     * The height of the tracker info box
+     */
     trackerHintHeight: PropTypes.number,
+
     /**
-   * Info box value or values to place next to the tracker line.
-   * This is either an array of objects, with each object
-   * specifying the label and value to be shown in the info box,
-   * or a simple string label.
-   */
+     * Info box value or values to place next to the tracker line.
+     * This is either an array of objects, with each object
+     * specifying the label and value to be shown in the info box,
+     * or a simple string label.
+     */
     trackerValues: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.arrayOf(
@@ -468,48 +516,53 @@ ChartContainer.propTypes = {
             })
         )
     ]),
+
     /**
-   * A Date specifying the position of the tracker line on the chart. It is
-   * common to take this from the onTrackerChanged callback so that the tracker
-   * followers the user's cursor, but it could be modified to snap to a point or
-   * to the nearest minute, for example.
-   */
+     * A Date specifying the position of the tracker line on the chart. It is
+     * common to take this from the onTrackerChanged callback so that the tracker
+     * followers the user's cursor, but it could be modified to snap to a point or
+     * to the nearest minute, for example.
+     */
     trackerPosition: PropTypes.instanceOf(Date),
+
     /**
-   * Will be called when the user hovers over a chart. The callback will
-   * be called with the timestamp (a Date object) of the position hovered
-   * over. This maybe then used as the trackerPosition (see above), or to
-   * information data about the time hovered over within the greater page.
-   * Commonly we might do something like this:
-   * ```
-   *   <ChartContainer
-   *     onTrackerChanged={(tracker) => this.setState({tracker})}
-   *     trackerPosition={this.state.tracker}
-   *     ... />
-   * ```
-   */
+     * Will be called when the user hovers over a chart. The callback will
+     * be called with the timestamp (a Date object) of the position hovered
+     * over. This maybe then used as the trackerPosition (see above), or to
+     * information data about the time hovered over within the greater page.
+     * Commonly we might do something like this:
+     * ```
+     *   <ChartContainer
+     *     onTrackerChanged={(tracker) => this.setState({tracker})}
+     *     trackerPosition={this.state.tracker}
+     *     ... />
+     * ```
+     */
     onTrackerChanged: PropTypes.func,
+
     /**
-   * This will be called if the user pans and/or zooms the chart. The callback
-   * will be called with the new TimeRange. This can be fed into the timeRange
-   * prop as well as used elsewhere on the greater page. Typical use might look
-   * like this:
-   * ```
-   *   <ChartContainer
-   *     onTimeRangeChanged={(timerange) => this.setState({timerange})}
-   *     timeRange={this.state.timerange}
-   *     ... />
-   * ```
-   */
+     * This will be called if the user pans and/or zooms the chart. The callback
+     * will be called with the new TimeRange. This can be fed into the timeRange
+     * prop as well as used elsewhere on the greater page. Typical use might look
+     * like this:
+     * ```
+     *   <ChartContainer
+     *     onTimeRangeChanged={(timerange) => this.setState({timerange})}
+     *     timeRange={this.state.timerange}
+     *     ... />
+     * ```
+     */
     onTimeRangeChanged: PropTypes.func,
+
     /**
-   * Called when the size of the chart changes
-   */
+     * Called when the size of the chart changes
+     */
     onChartResize: PropTypes.func,
+
     /**
-   * Called when the user clicks the background plane of the chart. This is
-   * useful when deselecting elements.
-   */
+     * Called when the user clicks the background plane of the chart. This is
+     * useful when deselecting elements.
+     */
     onBackgroundClick: PropTypes.func
 };
 

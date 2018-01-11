@@ -38,13 +38,7 @@ const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 
 
 const name = "KNYC";
 const events = weather.map(item => {
-    const {
-        date,
-        actual_min_temp,
-        actual_max_temp,
-        record_min_temp,
-        record_max_temp
-    } = item;
+    const { date, actual_min_temp, actual_max_temp, record_min_temp, record_max_temp } = item;
     return new IndexedEvent(
         date,
         {
@@ -66,18 +60,18 @@ const series = new TimeSeries({ name, collection });
 // Styles
 //
 
-const nyc = React.createClass({
+class nyc extends React.Component {
     //eslint-disable-line
-    getInitialState() {
-        return {
-            timerange: new TimeRange([1425168000000, 1433116800000]),
-            selection: null
-        };
-    },
-    handleTimeRangeChange(timerange) {
+    state = {
+        timerange: new TimeRange([1425168000000, 1433116800000]),
+        selection: null
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
-    infoValues() {
+    };
+
+    infoValues = () => {
         if (this.state.highlight) {
             return [
                 {
@@ -99,7 +93,8 @@ const nyc = React.createClass({
             ];
         }
         return null;
-    },
+    };
+
     render() {
         return (
             <div>
@@ -125,10 +120,12 @@ const nyc = React.createClass({
                                             infoHeight={75}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selected={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                     </Charts>
                                     <YAxis
@@ -146,7 +143,7 @@ const nyc = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { nyc, nyc_docs, nyc_thumbnail };

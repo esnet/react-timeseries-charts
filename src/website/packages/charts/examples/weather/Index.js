@@ -137,13 +137,12 @@ const linkStyleActive = {
 // Render weather charts
 //
 
-const weather = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            mode: "local"
-        };
-    },
+class weather extends React.Component {
+    state = {
+        tracker: null,
+        mode: "local"
+    };
+
     render() {
         return (
             <div>
@@ -179,7 +178,6 @@ const weather = React.createClass({
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
                             >
-
                                 <ChartRow height="150">
                                     <YAxis
                                         id="temp"
@@ -217,7 +215,6 @@ const weather = React.createClass({
                                         type="linear"
                                         format=",.1f"
                                     />
-
                                 </ChartRow>
 
                                 <ChartRow height="150">
@@ -305,7 +302,6 @@ const weather = React.createClass({
                                         format=",.2f"
                                     />
                                 </ChartRow>
-
                             </ChartContainer>
                         </Resizable>
                     </div>
@@ -313,7 +309,7 @@ const weather = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { weather, weather_docs, weather_thumbnail };

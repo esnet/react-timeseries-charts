@@ -24,6 +24,12 @@ import ValueList from "./ValueList";
  *      | Avg 26 Gbps    | 0   |
  *      +----------------+-----+------- ...
  * ```
+ *
+ * This can be used for data channel style displays where the user will see many
+ * rows of data stacked on top of each other and will need to interact with the
+ * data to see actual values. You can combine this with the `ValueAxis` to help
+ * do that. See the Cycling example for exactly how to arrange that.
+ *
  */
 export default class LabelAxis extends React.Component {
     renderAxis() {
@@ -93,9 +99,7 @@ export default class LabelAxis extends React.Component {
                 <text x={parseInt(rectWidth / 2, 10)} y={labelYPos} style={labelStyle}>
                     {this.props.label}
                 </text>
-                <g transform={`translate(0,${labelYPos + 2})`}>
-                    {valueList}
-                </g>
+                <g transform={`translate(0,${labelYPos + 2})`}>{valueList}</g>
 
                 {this.renderAxis()}
             </g>
@@ -105,18 +109,20 @@ export default class LabelAxis extends React.Component {
 
 LabelAxis.propTypes = {
     /**
-   * The label to show as the axis.
-   */
+     * The label to show as the axis.
+     */
     label: PropTypes.string.isRequired,
+
     /**
-   * Show or hide the max/min values that appear alongside the label
-   */
+     * Show or hide the max/min values that appear alongside the label
+     */
     hideScale: PropTypes.bool,
+
     /**
-   * Supply a list of label value pairs to render within the LabelAxis.
-   * This expects an array of objects. Each object is of the form:
-   *     {label: "Speed", value: "26.2 mph"}.
-   */
+     * Supply a list of label value pairs to render within the LabelAxis.
+     * This expects an array of objects. Each object is of the form:
+     *     {label: "Speed", value: "26.2 mph"}.
+     */
     values: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string, // eslint-disable-line
@@ -127,29 +133,35 @@ LabelAxis.propTypes = {
             ])
         })
     ).isRequired,
+
     /**
-   * Width to provide the values
-   */
+     * Width to provide the values
+     */
     valWidth: PropTypes.number,
+
     /**
-   * Max value of the axis scale
-   */
+     * Max value of the axis scale
+     */
     max: PropTypes.number.isRequired,
+
     /**
-   * Min value of the axis scale
-   */
+     * Min value of the axis scale
+     */
     min: PropTypes.number.isRequired,
+
     /**
-   * If values are numbers, use this format string
-   */
+     * If values are numbers, use this format string
+     */
     format: PropTypes.string,
+
     /**
-   * The width of the axis
-   */
+     * The width of the axis
+     */
     width: PropTypes.number,
+
     /**
-   * The height of the axis
-   */
+     * The height of the axis
+     */
     height: PropTypes.number
 };
 

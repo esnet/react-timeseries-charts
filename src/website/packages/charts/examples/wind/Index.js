@@ -63,25 +63,26 @@ const series = new TimeSeries({
 // Render scatter chart
 //
 
-const wind = React.createClass({
-    getInitialState() {
-        return {
-            hover: null,
-            highlight: null,
-            selection: null,
-            timerange: series.range()
-        };
-    },
-    handleSelectionChanged(point) {
+class wind extends React.Component {
+    state = {
+        hover: null,
+        highlight: null,
+        selection: null,
+        timerange: series.range()
+    };
+
+    handleSelectionChanged = point => {
         this.setState({
             selection: point
         });
-    },
-    handleMouseNear(point) {
+    };
+
+    handleMouseNear = point => {
         this.setState({
             highlight: point
         });
-    },
+    };
+
     render() {
         const highlight = this.state.highlight;
         const formatter = format(".2f");
@@ -136,11 +137,8 @@ const wind = React.createClass({
 
         return (
             <div>
-
                 <div className="row">
-                    <div className="col-md-12">
-                        {text}
-                    </div>
+                    <div className="col-md-12">{text}</div>
                 </div>
 
                 <hr />
@@ -184,7 +182,8 @@ const wind = React.createClass({
                                             onMouseNear={p => this.handleMouseNear(p)}
                                             highlight={this.state.highlight}
                                             radius={(event, column) =>
-                                                column === "station1" ? 3 : 2}
+                                                column === "station1" ? 3 : 2
+                                            }
                                         />
                                     </Charts>
                                 </ChartRow>
@@ -192,11 +191,10 @@ const wind = React.createClass({
                         </Resizable>
                     </div>
                 </div>
-
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { wind, wind_docs, wind_thumbnail };

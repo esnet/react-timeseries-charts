@@ -11,6 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react/";
+import createReactClass from "create-react-class";
 
 // Pond
 import { TimeSeries, TimeRangeEvent, TimeRange } from "pondjs";
@@ -100,7 +101,7 @@ function outageEventStyleFunc(event, state) {
     }
 }
 
-const outages = React.createClass({
+const outages = createReactClass({
     getInitialState() {
         return {
             tracker: null,

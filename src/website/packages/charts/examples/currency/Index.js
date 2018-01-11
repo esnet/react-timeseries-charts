@@ -56,19 +56,20 @@ const style = styler([
     { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
-const currency = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            timerange: currencySeries.range()
-        };
-    },
-    handleTrackerChanged(tracker) {
+class currency extends React.Component {
+    state = {
+        tracker: null,
+        timerange: currencySeries.range()
+    };
+
+    handleTrackerChanged = tracker => {
         this.setState({ tracker });
-    },
-    handleTimeRangeChange(timerange) {
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
+    };
+
     render() {
         const f = format("$,.2f");
         const df = timeFormat("%b %d %Y %X");
@@ -144,10 +145,12 @@ const currency = React.createClass({
                                             interpolation="curveBasis"
                                             highlight={this.state.highlight}
                                             onHighlightChange={highlight =>
-                                                this.setState({ highlight })}
+                                                this.setState({ highlight })
+                                            }
                                             selection={this.state.selection}
                                             onSelectionChange={selection =>
-                                                this.setState({ selection })}
+                                                this.setState({ selection })
+                                            }
                                         />
                                         <Baseline
                                             axis="y"
@@ -164,7 +167,7 @@ const currency = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { currency, currency_docs, currency_thumbnail };

@@ -7,35 +7,42 @@ import chartsDocs from "../packages/charts/api/docs.json";
 /**
  * Displays API data from the docs.json file
  */
-export default React.createClass({
+export default class extends React.Component {
     renderArrayOf(value) {
         if (value.name === "shape") {
-            return "shape {" +
+            return (
+                "shape {" +
                 _.map(value.value, (value, key) => {
                     return key;
                 }).join(", ") +
-                "}";
+                "}"
+            );
         } else {
             return `array of ${value.name}s`;
         }
-    },
+    }
+
     renderPropType(type) {
         if (!type) {
             return "unknown type";
         }
         if (type.name === "enum") {
-            return "enum (" +
+            return (
+                "enum (" +
                 _.map(type.value, value => {
                     return value.value;
                 }).join(", ") +
-                ")";
+                ")"
+            );
         }
         if (type.name === "union") {
-            return "one of (" +
+            return (
+                "one of (" +
                 _.map(type.value, value => {
                     return this.renderPropType(value);
                 }).join(", ") +
-                ")";
+                ")"
+            );
         }
         if (type.name === "instanceOf") {
             return `instance of a ${type.value}`;
@@ -44,15 +51,18 @@ export default React.createClass({
             return `array of ${this.renderArrayOf(type.value)}`;
         }
         if (type.name === "shapes") {
-            return `shape of {` +
+            return (
+                `shape of {` +
                 _.map(type.value, (value, key) => {
                     return key;
                 }).join(", ") +
-                "}";
+                "}"
+            );
         } else {
             return `${type.name}`;
         }
-    },
+    }
+
     renderProps(props) {
         const propNameStyle = {
             padding: 3,
@@ -82,22 +92,17 @@ export default React.createClass({
         return _.map(props, (prop, propName) => (
             <div key={propName}>
                 <span style={propNameStyle}>{propName}</span>
-                <span>
-                    {prop.defaultValue ? ` = ${prop.defaultValue.value}` : ""}
-                </span>
-                <span className="label label-default">
-                    {prop.required ? "Required" : ""}
-                </span>
+                <span>{prop.defaultValue ? ` = ${prop.defaultValue.value}` : ""}</span>
+                <span className="label label-default">{prop.required ? "Required" : ""}</span>
                 <div style={infoStyle}>
                     <Markdown source={prop.description ? prop.description : ""} />
                 </div>
-                <span style={typeStyle}>
-                    Type: {this.renderPropType(prop.type)}
-                </span>
+                <span style={typeStyle}>Type: {this.renderPropType(prop.type)}</span>
                 <hr />
             </div>
         ));
-    },
+    }
+
     render() {
         const file = this.props.file;
         const docs = chartsDocs[file];
@@ -112,4 +117,4 @@ export default React.createClass({
             </div>
         );
     }
-});
+}

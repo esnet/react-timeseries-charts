@@ -64,16 +64,15 @@ const style = styler([
     { key: "five_year", color: "black", width: 2 }
 ]);
 
-const climate = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            trackerValue: "-- °C",
-            trackerEvent: null,
-            markerMode: "flag"
-        };
-    },
-    handleTrackerChanged(t) {
+class climate extends React.Component {
+    state = {
+        tracker: null,
+        trackerValue: "-- °C",
+        trackerEvent: null,
+        markerMode: "flag"
+    };
+
+    handleTrackerChanged = t => {
         if (t) {
             const e = temperatureSeries.atTime(t);
             const eventTime = new Date(
@@ -85,9 +84,9 @@ const climate = React.createClass({
         } else {
             this.setState({ tracker: null, trackerValue: null, trackerEvent: null });
         }
-    },
+    };
 
-    renderMarker() {
+    renderMarker = () => {
         if (!this.state.tracker) {
             return <g />;
         }
@@ -120,9 +119,9 @@ const climate = React.createClass({
                 />
             );
         }
-    },
+    };
 
-    renderChart() {
+    renderChart = () => {
         const min = -0.5;
         const max = 1.0;
 
@@ -188,7 +187,8 @@ const climate = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    };
+
     render() {
         const linkStyle = {
             fontWeight: 600,
@@ -222,15 +222,13 @@ const climate = React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-12">
-                        <Resizable>
-                            {this.renderChart()}
-                        </Resizable>
+                        <Resizable>{this.renderChart()}</Resizable>
                     </div>
                 </div>
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { climate, climate_docs, climate_thumbnail };

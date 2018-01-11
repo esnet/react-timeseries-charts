@@ -11,6 +11,7 @@
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
+
 import { TimeRange } from "pondjs";
 
 import { getElementOffset } from "../js/util";
@@ -186,7 +187,8 @@ export default class EventHandler extends React.Component {
         const xy = [Math.round(x), Math.round(y)];
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
-            const timeOffset = this.props.scale.invert(xy[0]).getTime() -
+            const timeOffset =
+                this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
 
             let newBegin = parseInt(this.state.initialPanBegin - timeOffset, 10);
