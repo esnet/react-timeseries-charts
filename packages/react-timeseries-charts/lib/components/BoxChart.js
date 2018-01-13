@@ -78,7 +78,7 @@ var defaultStyle = [{
 }];
 
 var defaultAggregation = {
-    size: "5m",
+    size: (0, _pondjs.window)((0, _pondjs.duration)("5m")),
     reducers: {
         outer: [(0, _pondjs.min)(), (0, _pondjs.max)()],
         inner: [(0, _pondjs.percentile)(25), (0, _pondjs.percentile)(75)],
@@ -163,7 +163,7 @@ function getAggregatedSeries(series, column) {
     console.log("getAggregatedSeries ", size, fixedWindowAggregation);
 
     return series.fixedWindowRollup({
-        windowSize: size,
+        window: size,
         aggregation: fixedWindowAggregation
     });
 }
@@ -724,7 +724,7 @@ BoxChart.propTypes = {
     * ```
     */
     aggregation: _propTypes2.default.shape({
-        size: _propTypes2.default.string,
+        size: _propTypes2.default.instanceOf(Window),
         reducers: _propTypes2.default.shape({
             inner: _propTypes2.default.arrayOf(_propTypes2.default.func), // eslint-disable-line
             outer: _propTypes2.default.arrayOf(_propTypes2.default.func), // eslint-disable-line

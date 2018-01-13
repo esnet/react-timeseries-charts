@@ -75,10 +75,8 @@ const speed = timeSeries({
 });
 
 const speedSmoothed = speed.fixedWindowRollup({
-    window: window(period("1m")),
-    aggregation: {
-        speed5mAvg: { speed: avg(filter.ignoreMissing) }
-    }
+    window: window(duration("1m")),
+    aggregation: { speed5mAvg: ["speed", avg(filter.ignoreMissing)] }
 });
 
 //
@@ -122,10 +120,9 @@ const speedSummaryValues = [
 const cycling = React.createClass({
     getInitialState() {
         const initialRange = timerange(75 * 60 * 1000, 125 * 60 * 1000);
-        console.log("intial Range is ", initialRange);
         return {
             mode: "channels",
-            rollup: "1m",
+            rollup: window(duration("1m")),
             tracker: null,
             timerange: initialRange,
             brushrange: initialRange
@@ -158,7 +155,6 @@ const cycling = React.createClass({
     },
     renderChannelsChart() {
         const tr = this.state.timerange;
-        console.log("tr is ", tr);
         const speedCropped = speed.crop(tr);
         const hrCropped = hr.crop(tr);
 
@@ -208,14 +204,14 @@ const cycling = React.createClass({
                         format=",.1f"
                     />
                     <Charts>
-                        {/* <LineChart
+                         <LineChart
                             axis="speedaxis"
                             series={speedSmoothed}
                             columns={["speed5mAvg"]}
                             interpolation="curveBasis"
                             style={style}
                             breakLine={false}
-                        /> */}
+                        />
                         <LineChart
                             axis="speedaxis"
                             series={speedCropped}
@@ -574,22 +570,22 @@ const cycling = React.createClass({
             return (
                 <div className="col-md-6" style={{ fontSize: 14, color: "#777" }}>
                     <span
-                        style={this.state.rollup !== "1m" ? linkStyleActive : linkStyle}
-                        onClick={() => this.setState({ rollup: "1m" })}
+                        style={this.state.rollup !== window(duration("1m")) ? linkStyleActive : linkStyle}
+                        onClick={() => this.setState({ rollup: window(duration("1m")) })}
                     >
                         1m
                     </span>
                     <span> | </span>
                     <span
-                        style={this.state.rollup !== "5m" ? linkStyleActive : linkStyle}
-                        onClick={() => this.setState({ rollup: "5m" })}
+                        style={this.state.rollup !== window(duration("5m")) ? linkStyleActive : linkStyle}
+                        onClick={() => this.setState({ rollup: window(duration("5m")) })}
                     >
                         5m
                     </span>
                     <span> | </span>
                     <span
-                        style={this.state.rollup !== "15m" ? linkStyleActive : linkStyle}
-                        onClick={() => this.setState({ rollup: "15m" })}
+                        style={this.state.rollup !== window(duration("15m")) ? linkStyleActive : linkStyle}
+                        onClick={() => this.setState({ rollup: window(duration("15m")) })}
                     >
                         15m
                     </span>

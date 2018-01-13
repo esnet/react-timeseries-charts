@@ -20,6 +20,7 @@ import {
     period,
     stream,
     percentile,
+    duration,
     window,
     TimeEvent
 } from "pondjs";
@@ -56,7 +57,7 @@ const realtime = React.createClass({
 
         const p90 = this.stream
             .groupByWindow({
-                window: window(period("5m")),
+                window: window(duration("5m")),
                 trigger: Trigger.onDiscardedWindow
             })
             .aggregate({
@@ -70,7 +71,7 @@ const realtime = React.createClass({
 
         const p50 = this.stream
             .groupByWindow({
-                window: window(period("5m")),
+                window: window(duration("5m")),
                 trigger: Trigger.onDiscardedWindow
             })
             .aggregate({

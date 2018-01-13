@@ -43,7 +43,7 @@ const Example = React.createClass({
         const name = example.key;
         const imgName = `${name}_thumbnail`;
         const img = Examples[imgName];
-        const link = <Link to={`example/${name}`}>{example.value.title}</Link>;
+        const link = <Link to={`../../example/${name}`}>{example.value.title}</Link>;
         return (
             <Flexbox flexDirection="column" minWidth="220px">
                 <div style={style}>

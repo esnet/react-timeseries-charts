@@ -12,7 +12,7 @@ import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
-import { Event, TimeEvent, IndexedEvent, max, median, min, percentile, TimeSeries } from "pondjs";
+import { Event, TimeEvent, IndexedEvent, max, median, min, percentile, TimeSeries, duration, window } from "pondjs";
 
 import EventMarker from "./EventMarker";
 import { Styler } from "../js/styler";
@@ -50,7 +50,7 @@ const defaultStyle = [
 ];
 
 const defaultAggregation = {
-    size: "5m",
+    size: window(duration("5m")),
     reducers: {
         outer: [min(), max()],
         inner: [percentile(25), percentile(75)],
@@ -130,7 +130,7 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
     console.log("getAggregatedSeries ", size, fixedWindowAggregation);
 
     return series.fixedWindowRollup({
-        windowSize: size,
+        window: size,
         aggregation: fixedWindowAggregation
     });
 }
@@ -667,7 +667,7 @@ BoxChart.propTypes = {
    * ```
    */
     aggregation: PropTypes.shape({
-        size: PropTypes.string,
+        size: PropTypes.instanceOf(Window),
         reducers: PropTypes.shape({
             inner: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
             outer: PropTypes.arrayOf(PropTypes.func), // eslint-disable-line
