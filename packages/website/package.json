@@ -1,0 +1,46 @@
+{
+    "name": "docs",
+    "version": "1.0.0",
+    "private": true,
+    "homepage": "http://software.es.net/react-timeseries-charts/",
+    "dependencies": {
+        "bootstrap": "^3.3.7",
+        "colorbrewer": "^1.1.0",
+        "jest-cli": "^20.0.4",
+        "lodash.clonedeep": "^4.5.0",
+        "prismjs": "^1.8.1",
+        "react": "^15.4.2",
+        "react-addons-shallow-compare": "^15.6.0",
+        "react-bootstrap": "^0.31.0",
+        "react-dom": "^15.4.2",
+        "react-lowlight": "^1.1.1",
+        "react-markdown": "^2.4.6",
+        "react-router": "^4.1.1",
+        "react-router-dom": "^4.1.1",
+        "react-sidebar": "^2.3.2",
+        "d3-format": "^1.2.0",
+        "d3-time-format": "^2.0.5",
+        "flexbox-react": "^4.0.0",
+        "immutable": "^3.8.2",
+        "merge": "^1.2.0",
+        "pondjs": "^1.0.0-alpha.1",
+        "raw-loader": "^0.5.1",
+        "react-timeseries-charts": "^1.0.0",
+        "react-select": "^1.0.0-beta14",
+        "moment": "^2.18.1",
+        "moment-duration-format": "^1.3.0",
+        "ringjs": "0.0.1",
+        "underscore": "^1.8.3"
+    },
+    "devDependencies": {
+        "eslint": "^3.17.1",
+        "react-scripts": "^1.0.10",
+        "react-test-renderer": "^15.6.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "rm -rf ../../docs && react-scripts build && mv build ../../docs",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    }
+}
