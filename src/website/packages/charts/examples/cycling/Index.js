@@ -18,11 +18,12 @@ import { format } from "d3-format";
 import _ from "underscore";
 
 // Pond
-import { TimeSeries, TimeRange, avg /* filter, percentile, median */ } from "pondjs";
+import { TimeSeries, TimeRange, avg, percentile, median } from "pondjs";
 
 // Imports from the charts library
 import AreaChart from "../../../../../components/AreaChart";
 import Baseline from "../../../../../components/Baseline";
+import BoxChart from "../../../../../components/BoxChart";
 import Brush from "../../../../../components/Brush";
 import ChartContainer from "../../../../../components/ChartContainer";
 import ChartRow from "../../../../../components/ChartRow";
@@ -231,10 +232,10 @@ class cycling extends React.Component {
             return this.renderMultiAxisChart();
         } else if (this.state.mode === "channels") {
             return this.renderChannelsChart();
-        } // else if (this.state.mode === "rollup") {
-        //     return this.renderBoxChart();
-        // }
-        // return <div>No chart</div>;
+        } else if (this.state.mode === "rollup") {
+            return this.renderBoxChart();
+        }
+        return <div>No chart</div>;
     };
 
     renderChannelsChart = () => {
@@ -339,120 +340,108 @@ class cycling extends React.Component {
         );
     };
 
-    // renderBoxChart() {
-    //     const tr = this.state.timerange;
-    //     const speedCropped = speed.crop(tr);
-    //     const powerCropped = power.crop(tr);
+    renderBoxChart = () => {
+        const { timerange, displayChannels, channels, maxTime, minTime, minDuration } = this.state;
 
-    //     // Get the speed at the current tracker position
-    //     let speedValue = "--";
-    //     if (this.state.tracker) {
-    //         const speedIndexAtTracker = speedCropped.bisect(new Date(this.state.tracker));
-    //         const speedAtTracker = speedCropped.at(speedIndexAtTracker).get("speed");
-    //         if (speedAtTracker) {
-    //             speedValue = speedFormat(speedAtTracker);
-    //         }
-    //     }
+        const rows = [];
 
-    //     // Get the heartrate value at the current tracker position
-    //     let powerValue = "--";
-    //     if (this.state.tracker) {
-    //         const powerIndexAtTracker = powerCropped.bisect(new Date(this.state.tracker));
-    //         const powerAtTracker = powerCropped.at(powerIndexAtTracker).get("power");
-    //         if (powerAtTracker) {
-    //             powerValue = parseInt(powerAtTracker, 10);
-    //         }
-    //     }
+        for (let channelName of displayChannels) {
+            const charts = [];
+            const series = channels[channelName].series;
 
-    //     return (
-    //         <ChartContainer
-    //             timeRange={this.state.timerange}
-    //             format="relative"
-    //             trackerPosition={this.state.tracker}
-    //             onTrackerChanged={this.handleTrackerChanged}
-    //             enablePanZoom
-    //             maxTime={power.range().end()}
-    //             minTime={power.range().begin()}
-    //             minDuration={10 * 60 * 1000}
-    //             onTimeRangeChanged={this.handleTimeRangeChange}
-    //             onChartResize={this.handleChartResize}
-    //             showGrid={false}
-    //         >
-    //             <ChartRow height="100" debug={false}>
-    //                 <LabelAxis
-    //                     id="speedaxis"
-    //                     label="Speed"
-    //                     values={speedSummaryValues}
-    //                     min={0}
-    //                     max={35}
-    //                     width={140}
-    //                     type="linear"
-    //                     format=",.1f"
-    //                 />
-    //                 <Charts>
-    //                     <BoxChart
-    //                         axis="speedaxis"
-    //                         series={speed}
-    //                         column="speed"
-    //                         style={style}
-    //                         aggregation={{
-    //                             size: this.state.rollup,
-    //                             reducers: {
-    //                                 outer: [percentile(5), percentile(95)],
-    //                                 inner: [percentile(25), percentile(75)],
-    //                                 center: median()
-    //                             }
-    //                         }}
-    //                     />
-    //                 </Charts>
-    //                 <ValueAxis
-    //                     id="speedvalueaxis"
-    //                     value={speedValue}
-    //                     detail="Mph"
-    //                     width={80}
-    //                     min={0}
-    //                     max={35}
-    //                 />
-    //             </ChartRow>
-    //             <ChartRow height="100" debug={false}>
-    //                 <LabelAxis
-    //                     id="poweraxis"
-    //                     label="Power"
-    //                     values={powerSummaryValues}
-    //                     min={60}
-    //                     max={200}
-    //                     width={140}
-    //                     type="linear"
-    //                     format="d"
-    //                 />
-    //                 <Charts>
-    //                     <BoxChart
-    //                         axis="poweraxis"
-    //                         series={power}
-    //                         column="power"
-    //                         style={style}
-    //                         aggregation={{
-    //                             size: this.state.rollup,
-    //                             reducers: {
-    //                                 outer: [percentile(5), percentile(95)],
-    //                                 inner: [percentile(25), percentile(75)],
-    //                                 center: median()
-    //                             }
-    //                         }}
-    //                     />
-    //                 </Charts>
-    //                 <ValueAxis
-    //                     id="powervalueaxis"
-    //                     value={powerValue}
-    //                     detail="BPM"
-    //                     min={60}
-    //                     max={200}
-    //                     width={80}
-    //                 />
-    //             </ChartRow>
-    //         </ChartContainer>
-    //     );
-    // },
+            charts.push(
+                <BoxChart
+                    key={`box-${channelName}`}
+                    axis={`${channelName}_axis`}
+                    series={series}
+                    column={channelName}
+                    style={style}
+                    aggregation={{
+                        size: this.state.rollup,
+                        reducers: {
+                            outer: [percentile(5), percentile(95)],
+                            inner: [percentile(25), percentile(75)],
+                            center: median()
+                        }
+                    }}
+                />
+            );
+            charts.push(
+                <Baseline
+                    key={`baseline-${channelName}`}
+                    axis={`${channelName}_axis`}
+                    style={baselineStyles.speed}
+                    value={channels[channelName].avg}
+                />
+            );
+
+            // Get the value at the current tracker position for the ValueAxis
+            let value = "--";
+            if (this.state.tracker) {
+                const approx =
+                    (+this.state.tracker - +timerange.begin()) /
+                    (+timerange.end() - +timerange.begin());
+                const ii = Math.floor(approx * series.size());
+                const i = series.bisect(new Date(this.state.tracker), ii);
+                const v = i < series.size() ? series.at(i).get(channelName) : null;
+                if (v) {
+                    value = parseInt(v, 10);
+                }
+            }
+
+            // Get the summary values for the LabelAxis
+            const summary = [
+                { label: "Max", value: speedFormat(channels[channelName].max) },
+                { label: "Avg", value: speedFormat(channels[channelName].avg) }
+            ];
+
+            rows.push(
+                <ChartRow
+                    height="100"
+                    visible={channels[channelName].show}
+                    key={`row-${channelName}`}
+                >
+                    <LabelAxis
+                        id={`${channelName}_axis`}
+                        label={channels[channelName].label}
+                        values={summary}
+                        min={0}
+                        max={channels[channelName].max}
+                        width={140}
+                        type="linear"
+                        format=",.1f"
+                    />
+                    <Charts>{charts}</Charts>
+                    <ValueAxis
+                        id={`${channelName}_valueaxis`}
+                        value={value}
+                        detail={channels[channelName].units}
+                        width={80}
+                        min={0}
+                        max={35}
+                    />
+                </ChartRow>
+            );
+        }
+
+        return (
+            <ChartContainer
+                timeRange={this.state.timerange}
+                format="relative"
+                showGrid={false}
+                enablePanZoom
+                maxTime={maxTime}
+                minTime={minTime}
+                minDuration={minDuration}
+                trackerPosition={this.state.tracker}
+                onTimeRangeChanged={this.handleTimeRangeChange}
+                onChartResize={width => this.handleChartResize(width)}
+                onTrackerChanged={this.handleTrackerChanged}
+            >
+                {rows}
+            </ChartContainer>
+        );
+    };
 
     renderMultiAxisChart() {
         const { timerange, displayChannels, channels, maxTime, minTime, minDuration } = this.state;
@@ -714,7 +703,7 @@ class cycling extends React.Component {
                 <div className="row">
                     <div className="col-md-6">
                         <Legend
-                            type="line"
+                            type={this.state.mode === "rollup" ? "swatch" : "line"}
                             style={style}
                             categories={legend}
                             onSelectionChange={this.handleActiveChange}

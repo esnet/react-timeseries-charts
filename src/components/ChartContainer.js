@@ -101,13 +101,6 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleResize(width, height) {
-        console.log("handle resize");
-        if (this.props.onChartResize) {
-            this.props.onChartResize(width, height);
-        }
-    }
-
     //
     // Render
     //
@@ -254,11 +247,6 @@ export default class ChartContainer extends React.Component {
         const chartsHeight = yPosition;
         const chartsWidth = this.props.width - leftWidth - rightWidth;
 
-        if (this.props.onChartResize && chartsWidth !== this.chartsWidth) {
-            this.props.onChartResize(chartsWidth);
-            this.chartsWidth = chartsWidth;
-        }
-
         // Hover tracker line
         let tracker;
         if (
@@ -330,7 +318,6 @@ export default class ChartContainer extends React.Component {
                     onMouseMove={e => this.handleMouseMove(e)}
                     onMouseClick={e => this.handleBackgroundClick(e)}
                     onZoom={tr => this.handleZoom(tr)}
-                    onResize={(width, height) => this.handleResize(width, height)}
                 >
                     {chartRows}
                 </EventHandler>

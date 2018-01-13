@@ -122,10 +122,12 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
         fixedWindowAggregation.center = mapColumn(column, center);
     }
 
-    return series.fixedWindowRollup({
+    const aggregatedSeries = series.fixedWindowRollup({
         windowSize: size,
         aggregation: fixedWindowAggregation
     });
+
+    return aggregatedSeries;
 }
 
 /**
@@ -428,6 +430,12 @@ export default class BoxChart extends React.Component {
         const bars = [];
         let eventMarker;
 
+        const scaled = (d, field) => {
+            return d.has(field) && !_.isUndefined(d.get(field)) && !_.isNaN(d.get(field))
+                ? yScale(d.get(field))
+                : null;
+        };
+
         for (const event of this.series.events()) {
             const index = event.index();
             const begin = event.begin();
@@ -467,11 +475,11 @@ export default class BoxChart extends React.Component {
             styles[1] = this.style(column, event, 1);
             styles[2] = this.style(column, event, 2);
 
-            const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
-            const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
-            const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
-            const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
-            const center = d.has("center") ? yScale(event.get("center")) : null;
+            const innerMin = scaled(d, "innerMin");
+            const innerMax = scaled(d, "innerMax");
+            const outerMin = scaled(d, "outerMin");
+            const outerMax = scaled(d, "outerMax");
+            const center = scaled(d, "center");
 
             let hasInner = true;
             let hasOuter = true;
@@ -495,7 +503,9 @@ export default class BoxChart extends React.Component {
                 if (!hasCenter) {
                     level += 1;
                 }
-                const keyOuter = `${this.series.name()}-${index}-outer`;
+                const keyOuter = `${
+                    this.series.name() ? this.series.name() : "series"
+                }-${index}-outer`;
                 const boxOuter = {
                     x: xOuter,
                     y: outerMax,
@@ -509,6 +519,7 @@ export default class BoxChart extends React.Component {
                     ...boxOuter,
                     style: styles[level]
                 };
+
                 if (this.props.onSelectionChange) {
                     barOuterProps.onClick = e => this.handleClick(e, event);
                 }
@@ -516,6 +527,7 @@ export default class BoxChart extends React.Component {
                     barOuterProps.onMouseMove = e => this.handleHover(e, event);
                     barOuterProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barOuterProps} />);
                 ymax = "outerMax";
             }
@@ -546,6 +558,7 @@ export default class BoxChart extends React.Component {
                     barInnerProps.onMouseMove = e => this.handleHover(e, event);
                     barInnerProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barInnerProps} />);
                 ymax = ymax || "innerMax";
             }
@@ -570,6 +583,9 @@ export default class BoxChart extends React.Component {
                 if (this.props.onHighlightChange) {
                     barCenterProps.onMouseMove = e => this.handleHover(e, event);
                     barCenterProps.onMouseLeave = () => this.handleHoverLeave();
+                }
+                if (_.isNaN(barCenterProps.y)) {
+                    console.log(d.toString());
                 }
                 bars.push(<rect {...barCenterProps} />);
                 ymax = ymax || "center";
