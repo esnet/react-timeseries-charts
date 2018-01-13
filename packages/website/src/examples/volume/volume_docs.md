@@ -2,12 +2,12 @@ This simple example of a bar chart displays a pan and zoom chart that shows traf
 
 To begin with we converted the original data into Pond's TimeSeries data structure as `octoberTraffic`:
 
-    import { TimeSeries } from "pondjs";
+    import { TimeSeries, indexedSeries } from "pondjs";
 
-    const octoberTraffic = new TimeSeries({
+    const octoberTraffic = indexedSeries({
         name: "Traffic",
         utc: false,
-        columns: ["time", "in", "out"],
+        columns: ["index", "in", "out"],
         points: trafficPoints
     });
 

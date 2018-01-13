@@ -1,11 +1,11 @@
 ```
-const trafficBNLtoNEWYSeries = new TimeSeries({
+const trafficBNLtoNEWYSeries = timeSeries({
     name: `BNL to NEWY`,
     columns: ["time", "in"],
     points: _.map(rawTrafficData.traffic["BNL--NEWY"], p => [p[0] * 1000, p[1]])
 });
 
-const trafficNEWYtoBNLSeries = new TimeSeries({
+const trafficNEWYtoBNLSeries = timeSeries({
     name: `NEWY to BNL`,
     columns: ["time", "out"],
     points: _.map(rawTrafficData.traffic["NEWY--BNL"], p => [p[0] * 1000, p[1]])

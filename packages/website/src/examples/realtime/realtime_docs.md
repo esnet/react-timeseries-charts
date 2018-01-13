@@ -6,11 +6,11 @@ In this example we have an simulated incoming stream of measurements, represente
 To do this, each event is generated semi-randomly, but they could be coming from a real source. We add a new Event for each minute, but emit 5 per second to speed up the simulation. Essentially we do this:
 
 ```js
-import { Event } from "pondjs";
+import { event } from "pondjs";
 
 const value = getRandomValue();
 const time = getNextTime();
-const event = new Event(t, value);
+const event = event(t, value);
 ```
 
 Now we want to do some things with that Event:
@@ -30,16 +30,15 @@ import { Stream, Pipeline, EventOut, percentile } from "pondjs";
 
 ...
 
-const stream = new Stream();
-
-Pipeline()
-    .from(stream)
-    .windowBy("5m")
-    .emitOn("discard")
-    .aggregate({
-        value: {value: percentile(90)}
+const stream = stream()
+    .groupByWindow({
+        window: window(duration("5m")),
+        trigger: Trigger.onDiscardedWindow
     })
-    .to(EventOut, event => {
+    .aggregate({
+        value: ["value", percentile(90)]
+    })
+    .output(event => {
         // store the output events in our component state
     });
 ```
@@ -59,7 +58,7 @@ For example, our 5 min 50th percentiles:
 
 ```js
 const name = "5m-percentile-50";
-const events = this.state.perc50Out.toArray(); // <- from circle buffer
+const events = Immutable.List(this.state.perc50Out.toArray()); // <- from circle buffer
 const avgSeries = new TimeSeries({name, events});
 ```
 

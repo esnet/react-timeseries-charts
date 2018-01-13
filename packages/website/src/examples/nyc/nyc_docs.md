@@ -9,28 +9,33 @@ In this example we want to do something a little different. We have data that sh
 First we need to import out data, which is in a CSV file that we read in as `weather`. We use Pond to make an array of `IndexedEvents`, one for each day. For the data of each event, we have a single field `temp` that contains an array of our values.
 
 ```
-    const events = weather.map(item => {
-        const timestamp = moment(new Date(item.date));
+    const events = Immutable.List(
+        weather.map(item => {
+            const {
+                date,
+                actual_min_temp,
+                actual_max_temp,
+                record_min_temp,
+                record_max_temp,
+            } = item;
 
-        const {
-            date,
-            actual_min_temp,
-            actual_max_temp,
-            record_min_temp,
-            record_max_temp,
-        } = item;
+            return indexedEvent(
+                index(date), 
+                Immutable.Map({
+                    temp: [
+                        +record_min_temp,
+                        +actual_min_temp,
+                        +actual_max_temp,
+                        +record_max_temp,
+                    ]
+                })
+            );
+        })
+    );
 
-        return new IndexedEvent(date, {
-            temp: [
-                +record_min_temp,
-                +actual_min_temp,
-                +actual_max_temp,
-                +record_max_temp,
-            ]
-        }, false);
-    });
+    const collection = new Collection(events);
+    const series = new TimeSeries({ name, collection });
 
-    const series = new TimeSeries({ name, new Collection(events) });
 ```
 
 We can then render our `series`:

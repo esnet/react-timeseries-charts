@@ -32,18 +32,20 @@ const data = [
 
 We want to take that data and make a simple BarChart from it.
 
-This isn't the exact format we need for our chart. Firstly, like other charts, it needs to be a [Pond TimeSeries](http://software.es.net/pond/#/timeseries). Secondly, the TimeSeries is constructed from IndexedEvents. That is, each point in the TimeSeries is referenced not by a timestamp but by an "index". Each index is a string that represents a range of time. In this case each index will represent a specific hour.
+This isn't the exact format we need for our chart. Firstly, like other charts, it needs to be a [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries). Secondly, the TimeSeries is constructed from IndexedEvents. That is, each point in the TimeSeries is referenced not by a timestamp but by an "index". Each index is a string that represents a range of time. In this case each index will represent a specific hour.
 
 Note that often you will either pass the indexed data from the server, or a more dense timeseries will be aggregated with Pond to these indexed events (see the realtime example).
 
 In this case we can use Pond do do a simple transform from dates to index string:
 
 ```
-const series = new TimeSeries({
+const hourly = window(duration("1h"));
+
+const series = indexedSeries({
     name: "hilo_rainfall",
     columns: ["index", "precip"],
     points: data.map(([d, value]) => [
-        Index.getIndexString("1h", new Date(d)),
+        hourly.getIndexString(new Date(d)).first().toString(),
         value
     ])
 });
