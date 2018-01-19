@@ -7,8 +7,20 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import React from "react";
+
+export type ChartProps = {
+    key: string | number;
+    width: number;
+    height: number;
+    timeScale?: (...args: any[]) => any;
+    yScale?: (...args: any[]) => any;
+    timeFormat?: string
+};
+
+export type ChartsProps = {
+    children?: any;
+};
 
 /**
  *
@@ -55,9 +67,13 @@ import React from "react";
  *
  * A the width your chart will render into
  */
-export default class Charts extends React.Component {
+export class Charts extends React.Component<ChartsProps> {
     render() {
-        return `${this.constructor.name} elements are for configuration only
-and should not be rendered`;
+        return (
+            <g>
+                `${this.constructor.name} elements are for configuration only
+and should not be rendered`
+            </g>
+        );
     }
 }
