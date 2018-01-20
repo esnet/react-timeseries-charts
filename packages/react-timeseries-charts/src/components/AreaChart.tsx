@@ -255,6 +255,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         return columnList.map((column, i) => {
             const style = this.areaStyle(column);
             const pathStyle = this.pathStyle(column);
+
             // Stack the series columns to get our data in x0, y0, y1 format
             const data = [];
             for (let j = 0; j < this.props.series.size(); j += 1) {
@@ -268,41 +269,62 @@ export default class AreaChart extends React.Component<AreaChartProps> {
                     offsets[j] += dir * seriesPoint.get(column);
                 }
             }
+
             // Use D3 to build an area generation function
             const areaGenerator = area()
                 .curve(curves[this.props.interpolation])
                 .x(d => d.x0)
                 .y0(d => d.y0)
                 .y1(d => d.y1);
+
             // Use the area generation function with our stacked data
             // to get an SVG path
             const areaPath = areaGenerator(data);
+
             // Outline the top of the curve
             const lineGenerator = line()
                 .curve(curves[this.props.interpolation])
                 .x(d => d.x0)
                 .y(d => d.y1);
             const outlinePath = lineGenerator(data);
-            return (<g key={`area-${i}`}>
-                <path d={areaPath} style={style} onClick={e => this.handleClick(e, column)} onMouseLeave={() => this.handleHoverLeave()} onMouseMove={e => this.handleHover(e, column)} />
-                <path d={outlinePath} style={pathStyle} onClick={e => this.handleClick(e, column)} onMouseLeave={() => this.handleHoverLeave()} onMouseMove={e => this.handleHover(e, column)} />
-            </g>);
+
+            return (
+                <g key={`area-${i}`}>
+                    <path
+                        d={areaPath}
+                        style={style}
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={() => this.handleHoverLeave()}
+                        onMouseMove={e => this.handleHover(e, column)}
+                    />
+                    <path
+                        d={outlinePath}
+                        style={pathStyle}
+                        onClick={e => this.handleClick(e, column)}
+                        onMouseLeave={() => this.handleHoverLeave()}
+                        onMouseMove={e => this.handleHover(e, column)}
+                    />
+                </g>);
         });
     }
 
     renderAreas() {
         const up = this.props.columns.up || [];
         const down = this.props.columns.down || [];
-        return (<g>
-            {this.renderPaths(up, "up")}
-            {this.renderPaths(down, "down")}
-        </g>);
+        return (
+            <g>
+                {this.renderPaths(up, "up")}
+                {this.renderPaths(down, "down")}
+            </g>
+        );
     }
 
     render() {
-        return (<g>
-            {this.renderAreas()}
-        </g>);
+        return (
+            <g>
+                {this.renderAreas()}
+            </g>
+        );
     }
 }
 

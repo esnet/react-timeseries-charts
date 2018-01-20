@@ -125,6 +125,8 @@ export class YAxis extends React.Component<YAxisProps> {
         style: defaultStyle
     };
 
+    axis: any;
+
     componentDidMount() {
         this.renderAxis(this.props.align, this.props.scale, +this.props.width, this.props.absolute, this.props.format);
     }

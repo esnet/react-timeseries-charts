@@ -10,6 +10,7 @@
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
+import { ScaleTime } from "d3-scale";
 import { TimeRange } from "pondjs";
 
 import "@types/d3-scale";
@@ -18,7 +19,7 @@ import { getElementOffset } from "../js/util";
 
 export type EventHandlerProps = {
     enablePanZoom?: boolean;
-    scale: (...args: any[]) => any;
+    scale: ScaleTime<number, number>;
     width: number;
     height: number;
     minDuration?: number;
@@ -35,14 +36,6 @@ type EventHandlerState = {
     initialPanBegin: any;
     initialPanEnd: any;
     initialPanPosition: number[];
-    isPanning: boolean;
-    initialPanBegin: null;
-    initialPanEnd: null;
-    initialPanPosition: null;
-    isPanning: boolean;
-    initialPanBegin: null;
-    initialPanEnd: null;
-    initialPanPosition: null;
 };
 
 /**
@@ -58,6 +51,8 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
     static defaultProps: Partial<EventHandlerProps> = {
         enablePanZoom: false
     };
+
+    eventRect: SVGRectElement;
 
     constructor(props) {
         super(props);
@@ -97,15 +92,20 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             scale = 0.1;
         }
         const xy = this.getOffsetMousePosition(e);
-        const begin = this.props.scale.domain()[0].getTime();
-        const end = this.props.scale.domain()[1].getTime();
-        const center = this.props.scale.invert(xy[0]).getTime();
-        let beginScaled = center - parseInt((center - begin) * scale, 10);
-        let endScaled = center + parseInt((end - center) * scale, 10);
+
+        const d = this.props.scale.range()[0]
+
+        const begin: number = this.props.scale.domain()[0].getTime();
+        const end: number = this.props.scale.domain()[1].getTime();
+        const center: number = this.props.scale.invert(xy[0]).getTime();
+
+        let beginScaled = center - Math.round((center - +begin) * scale);
+        let endScaled = center + Math.round((end - +center) * scale);
+
         // Duration constraint
         let duration = (end - begin) * scale;
         if (this.props.minDuration) {
-            const minDuration = parseInt(this.props.minDuration, 10);
+            const minDuration = Math.round(this.props.minDuration);
             if (duration < this.props.minDuration) {
                 beginScaled = center - (center - begin) / (end - begin) * minDuration;
                 endScaled = center + (end - center) / (end - begin) * minDuration;
@@ -188,9 +188,9 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             const xy0 = this.state.initialPanPosition;
             const timeOffset = this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
-            let newBegin = parseInt(this.state.initialPanBegin - timeOffset, 10);
-            let newEnd = parseInt(this.state.initialPanEnd - timeOffset, 10);
-            const duration = parseInt(this.state.initialPanEnd - this.state.initialPanBegin, 10);
+            let newBegin = Math.round(this.state.initialPanBegin - timeOffset);
+            let newEnd = Math.round(this.state.initialPanEnd - timeOffset);
+            const duration = Math.round(this.state.initialPanEnd - this.state.initialPanBegin);
             if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
                 newBegin = this.props.minTime.getTime();
                 newEnd = newBegin + duration;
@@ -212,26 +212,25 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             }
         }
     }
-}
-//
-// Render
-//
-render() {
-    const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
-    const handlers = {
-        onWheel: this.handleScrollWheel,
-        onMouseDown: this.handleMouseDown,
-        onMouseMove: this.handleMouseMove,
-        onMouseOut: this.handleMouseOut,
-        onMouseUp: this.handleMouseUp
-    };
-    return (
-        <g pointerEvents="all" {...handlers}>
-            <rect key="handler-hit-rect" ref={c => {
-                this.eventRect = c;
-            }} style={{ opacity: 0.0, cursor }} x={0} y={0} width={this.props.width} height={this.props.height} />
-            {this.props.children}
-        </g>
-    );
-}
+    //
+    // Render
+    //
+    render() {
+        const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
+        const handlers = {
+            onWheel: this.handleScrollWheel,
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
+            onMouseOut: this.handleMouseOut,
+            onMouseUp: this.handleMouseUp
+        };
+        return (
+            <g pointerEvents="all" {...handlers}>
+                <rect key="handler-hit-rect" ref={c => {
+                    this.eventRect = c;
+                }} style={{ opacity: 0.0, cursor }} x={0} y={0} width={this.props.width} height={this.props.height} />
+                {this.props.children}
+            </g>
+        );
+    }
 }
