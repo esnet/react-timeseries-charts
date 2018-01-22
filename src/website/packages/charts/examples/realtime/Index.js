@@ -39,20 +39,21 @@ const minute = 60 * sec;
 const hours = 60 * minute;
 const rate = 80;
 
-const realtime = React.createClass({
-    displayName: "AggregatorDemo",
-    getInitialState() {
-        return {
-            time: new Date(2015, 0, 1),
-            events: new Ring(200),
-            percentile50Out: new Ring(100),
-            percentile90Out: new Ring(100)
-        };
-    },
-    getNewEvent(t) {
+class realtime extends React.Component {
+    static displayName = "AggregatorDemo";
+
+    state = {
+        time: new Date(2015, 0, 1),
+        events: new Ring(200),
+        percentile50Out: new Ring(100),
+        percentile90Out: new Ring(100)
+    };
+
+    getNewEvent = t => {
         const base = Math.sin(t.getTime() / 10000000) * 350 + 500;
         return new TimeEvent(t, parseInt(base + Math.random() * 1000, 10));
-    },
+    };
+
     componentDidMount() {
         //
         // Setup our aggregation pipelines
@@ -91,25 +92,24 @@ const realtime = React.createClass({
         //
 
         const increment = minute;
-        this.interval = setInterval(
-            () => {
-                const t = new Date(this.state.time.getTime() + increment);
-                const event = this.getNewEvent(t);
+        this.interval = setInterval(() => {
+            const t = new Date(this.state.time.getTime() + increment);
+            const event = this.getNewEvent(t);
 
-                // Raw events
-                const newEvents = this.state.events;
-                newEvents.push(event);
-                this.setState({ time: t, events: newEvents });
+            // Raw events
+            const newEvents = this.state.events;
+            newEvents.push(event);
+            this.setState({ time: t, events: newEvents });
 
-                // Let our aggregators process the event
-                this.stream.addEvent(event);
-            },
-            rate
-        );
-    },
+            // Let our aggregators process the event
+            this.stream.addEvent(event);
+        }, rate);
+    }
+
     componentWillUnmount() {
         clearInterval(this.interval);
-    },
+    }
+
     render() {
         const latestTime = `${this.state.time}`;
 
@@ -241,7 +241,7 @@ const realtime = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { realtime, realtime_docs, realtime_thumbnail };

@@ -122,10 +122,12 @@ function getAggregatedSeries(series, column, aggregation = defaultAggregation) {
         fixedWindowAggregation.center = mapColumn(column, center);
     }
 
-    return series.fixedWindowRollup({
+    const aggregatedSeries = series.fixedWindowRollup({
         windowSize: size,
         aggregation: fixedWindowAggregation
     });
+
+    return aggregatedSeries;
 }
 
 /**
@@ -288,7 +290,8 @@ export default class BoxChart extends React.Component {
             }
         }
 
-        return seriesChanged ||
+        return (
+            seriesChanged ||
             timeScaleChanged ||
             widthChanged ||
             columnChanged ||
@@ -296,7 +299,8 @@ export default class BoxChart extends React.Component {
             yAxisScaleChanged ||
             aggregationChanged ||
             highlightedChanged ||
-            selectedChanged;
+            selectedChanged
+        );
     }
 
     handleHover(e, event) {
@@ -333,8 +337,8 @@ export default class BoxChart extends React.Component {
     }
 
     /**
-   * Returns the style used for drawing the path
-   */
+     * Returns the style used for drawing the path
+     */
     style(column, event, level) {
         let style;
         if (!this.providedStyle) {
@@ -416,11 +420,7 @@ export default class BoxChart extends React.Component {
     }
 
     renderBars() {
-        const {
-            timeScale,
-            yScale,
-            column
-        } = this.props;
+        const { timeScale, yScale, column } = this.props;
 
         const innerSpacing = +this.props.innerSpacing;
         const outerSpacing = +this.props.outerSpacing;
@@ -429,6 +429,12 @@ export default class BoxChart extends React.Component {
 
         const bars = [];
         let eventMarker;
+
+        const scaled = (d, field) => {
+            return d.has(field) && !_.isUndefined(d.get(field)) && !_.isNaN(d.get(field))
+                ? yScale(d.get(field))
+                : null;
+        };
 
         for (const event of this.series.events()) {
             const index = event.index();
@@ -469,11 +475,11 @@ export default class BoxChart extends React.Component {
             styles[1] = this.style(column, event, 1);
             styles[2] = this.style(column, event, 2);
 
-            const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
-            const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
-            const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
-            const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
-            const center = d.has("center") ? yScale(event.get("center")) : null;
+            const innerMin = scaled(d, "innerMin");
+            const innerMax = scaled(d, "innerMax");
+            const outerMin = scaled(d, "outerMin");
+            const outerMax = scaled(d, "outerMax");
+            const center = scaled(d, "center");
 
             let hasInner = true;
             let hasOuter = true;
@@ -497,7 +503,9 @@ export default class BoxChart extends React.Component {
                 if (!hasCenter) {
                     level += 1;
                 }
-                const keyOuter = `${this.series.name()}-${index}-outer`;
+                const keyOuter = `${
+                    this.series.name() ? this.series.name() : "series"
+                }-${index}-outer`;
                 const boxOuter = {
                     x: xOuter,
                     y: outerMax,
@@ -511,6 +519,7 @@ export default class BoxChart extends React.Component {
                     ...boxOuter,
                     style: styles[level]
                 };
+
                 if (this.props.onSelectionChange) {
                     barOuterProps.onClick = e => this.handleClick(e, event);
                 }
@@ -518,6 +527,7 @@ export default class BoxChart extends React.Component {
                     barOuterProps.onMouseMove = e => this.handleHover(e, event);
                     barOuterProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barOuterProps} />);
                 ymax = "outerMax";
             }
@@ -548,6 +558,7 @@ export default class BoxChart extends React.Component {
                     barInnerProps.onMouseMove = e => this.handleHover(e, event);
                     barInnerProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barInnerProps} />);
                 ymax = ymax || "innerMax";
             }
@@ -572,6 +583,9 @@ export default class BoxChart extends React.Component {
                 if (this.props.onHighlightChange) {
                     barCenterProps.onMouseMove = e => this.handleHover(e, event);
                     barCenterProps.onMouseLeave = () => this.handleHoverLeave();
+                }
+                if (_.isNaN(barCenterProps.y)) {
+                    console.log(d.toString());
                 }
                 bars.push(<rect {...barCenterProps} />);
                 ymax = ymax || "center";
@@ -602,21 +616,20 @@ export default class BoxChart extends React.Component {
     }
 
     render() {
-        return (
-            <g>
-                {this.renderBars()}
-            </g>
-        );
+        return <g>{this.renderBars()}</g>;
     }
 }
 
 BoxChart.propTypes = {
     /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
-   * data to visualize. See general notes on the BoxChart.
-   */
-    // series: PropTypes.instanceOf(TimeSeries).isRequired,
+     * Show or hide this chart
+     */
+    visible: PropTypes.bool,
 
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * data to visualize. See general notes on the BoxChart.
+     */
     series: (props, propName, componentName) => {
         const value = props[propName];
         if (!(value instanceof TimeSeries)) {
@@ -630,35 +643,37 @@ BoxChart.propTypes = {
         // everything ok
         return null;
     },
+
     /**
-   * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
-   * works on just a single column.
-   */
+     * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
+     * works on just a single column.
+     */
     column: PropTypes.string,
+
     /**
-   * The aggregation specification. This object should contain:
-   *   - innerMax
-   *   - innerMin
-   *   - outerMax
-   *   - outerMin
-   *   - center
-   * Though each of the pairs, and center, is optional.
-   * For each of these keys you should supply the function you
-   * want to use to calculate these. You can import common functions
-   * from Pond, e.g. min(), avg(), percentile(95), etc.
-   *
-   * For example:
-   * ```
-   *     {
-   *       size: this.state.rollup,
-   *       reducers: {
-   *         outer: [min(), max()],
-   *         inner: [percentile(25), percentile(75)],
-   *         center: median(),
-   *       },
-   *     }
-   * ```
-   */
+     * The aggregation specification. This object should contain:
+     *   - innerMax
+     *   - innerMin
+     *   - outerMax
+     *   - outerMin
+     *   - center
+     * Though each of the pairs, and center, is optional.
+     * For each of these keys you should supply the function you
+     * want to use to calculate these. You can import common functions
+     * from Pond, e.g. min(), avg(), percentile(95), etc.
+     *
+     * For example:
+     * ```
+     *     {
+     *       size: this.state.rollup,
+     *       reducers: {
+     *         outer: [min(), max()],
+     *         inner: [percentile(25), percentile(75)],
+     *         center: median(),
+     *       },
+     *     }
+     * ```
+     */
     aggregation: PropTypes.shape({
         size: PropTypes.string,
         reducers: PropTypes.shape({
@@ -667,29 +682,34 @@ BoxChart.propTypes = {
             center: PropTypes.func // eslint-disable-line
         })
     }), // eslint-disable-line
+
     /**
-   * The style of the box chart drawing (using SVG CSS properties) or
-   * a styler object. It is recommended to user the styler unless you need
-   * detailed customization.
-   */
+     * The style of the box chart drawing (using SVG CSS properties) or
+     * a styler object. It is recommended to user the styler unless you need
+     * detailed customization.
+     */
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
+
     /**
-   * The style of the info box and connecting lines
-   */
+     * The style of the info box and connecting lines
+     */
     infoStyle: PropTypes.object, //eslint-disable-line
+
     /**
-   * The width of the hover info box
-   */
+     * The width of the hover info box
+     */
     infoWidth: PropTypes.number, //eslint-disable-line
+
     /**
-   * The height of the hover info box
-   */
+     * The height of the hover info box
+     */
     infoHeight: PropTypes.number, //eslint-disable-line
+
     /**
-   * The values to show in the info box. This is an array of
-   * objects, with each object specifying the label and value
-   * to be shown in the info box.
-   */
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
     info: PropTypes.arrayOf(
         PropTypes.shape({
             //eslint-disable-line
@@ -697,75 +717,87 @@ BoxChart.propTypes = {
             value: PropTypes.string //eslint-disable-line
         })
     ),
+
     /**
-   * If spacing is specified, then the boxes will be separated from the
-   * timerange boundary by this number of pixels. Use this to space out
-   * the boxes from each other. Inner and outer boxes are controlled
-   * separately.
-   */
+     * If spacing is specified, then the boxes will be separated from the
+     * timerange boundary by this number of pixels. Use this to space out
+     * the boxes from each other. Inner and outer boxes are controlled
+     * separately.
+     */
     innerSpacing: PropTypes.number,
+
     /**
-   * If spacing is specified, then the boxes will be separated from the
-   * timerange boundary by this number of pixels. Use this to space out
-   * the boxes from each other. Inner and outer boxes are controlled
-   * separately.
-   */
+     * If spacing is specified, then the boxes will be separated from the
+     * timerange boundary by this number of pixels. Use this to space out
+     * the boxes from each other. Inner and outer boxes are controlled
+     * separately.
+     */
     outerSpacing: PropTypes.number,
+
     /**
-   * If size is specified, then the innerBox will be this number of pixels wide. This
-   * prop takes priority over "spacing".
-   */
+     * If size is specified, then the innerBox will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     innerSize: PropTypes.number,
+
     /**
-   * If size is specified, then the outer box will be this number of pixels wide. This
-   * prop takes priority over "spacing".
-   */
+     * If size is specified, then the outer box will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     outerSize: PropTypes.number,
+
     /**
-   * The selected item, which will be rendered in the "selected" style.
-   * If a bar is selected, all other bars will be rendered in the "muted" style.
-   *
-   * See also `onSelectionChange`
-   */
+     * The selected item, which will be rendered in the "selected" style.
+     * If a bar is selected, all other bars will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected: PropTypes.instanceOf(IndexedEvent),
+
     /**
-   * The highlighted item, which will be rendered in the "highlighted" style.
-   *
-   * See also `onHighlightChange`
-   */
+     * The highlighted item, which will be rendered in the "highlighted" style.
+     *
+     * See also `onHighlightChange`
+     */
     highlighted: PropTypes.instanceOf(IndexedEvent),
+
     /**
-   * A callback that will be called when the selection changes. It will be called
-   * with the event corresponding to the box clicked as its only arg.
-   */
+     * A callback that will be called when the selection changes. It will be called
+     * with the event corresponding to the box clicked as its only arg.
+     */
     onSelectionChange: PropTypes.func,
+
     /**
-   * A callback that will be called when the hovered over box changes.
-   * It will be called with the event corresponding to the box hovered over.
-   */
+     * A callback that will be called when the hovered over box changes.
+     * It will be called with the event corresponding to the box hovered over.
+     */
     onHighlightChange: PropTypes.func,
+
     /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale: PropTypes.func,
+
     /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
+     * [Internal] The yScale supplied by the associated YAxis
+     */
     yScale: PropTypes.func,
+
     /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
+     * [Internal] The width supplied by the surrounding ChartContainer
+     */
     width: PropTypes.number
 };
 
 BoxChart.defaultProps = {
+    visible: true,
     column: "value",
     innerSpacing: 1.0,
     outerSpacing: 2.0,
     infoStyle: {
         stroke: "#999",
         fill: "white",
-        opacity: 0.90,
+        opacity: 0.9,
         pointerEvents: "none"
     },
     stemStyle: {

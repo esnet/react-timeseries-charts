@@ -34,10 +34,10 @@ const defaultStyle = {
 };
 
 /**
- * The YAxis widget displays a vertical axis to the left or right
- * of the charts. A YAxis always appears within a `ChartRow`, from
+ * The `YAxis` widget displays a vertical axis to the left or right
+ * of the charts. A `YAxis` always appears within a `ChartRow`, from
  * which it gets its height and positioning. You can have more than
- * one axis per row.
+ * one axis per row. You do control how wide it is.
  *
  * Here's a simple YAxis example:
  *
@@ -53,11 +53,14 @@ const defaultStyle = {
  * ```
  *
  * Visually you can control the axis `label`, its size via the `width`
- * prop, its `format`, and `type` of scale (linear).
+ * prop, its `format`, and `type` of scale (linear). You can quicky turn
+ * it on and off with the `visible` prop.
  *
- * Each axis also defines a scale through a `min` and `max` prop. Charts
- * may then refer to the axis by by citing the axis `id` in their `axis`
+ * Each axis also defines a scale through a `min` and `max` prop. Chart
+ * then refer to the axis by by citing the axis `id` in their `axis`
  * prop. Those charts will then use the axis scale for their y-scale.
+ * This is what ties them together. Many charts can use the same axis,
+ * or not.
  *
  * Here is an example of two line charts that each have their own axis:
  *
@@ -76,7 +79,7 @@ const defaultStyle = {
  *
  *  Note that there are two `<YAxis>` components defined here, one before
  *  the `<Charts>` block and one after. This defines that the first axis will
- *  appear to the left of the charts and the second will appear after the charts.
+ *  appear to the left of the charts and the second will appear right of the charts.
  *  Each of the line charts uses its `axis` prop to identify the axis ("aud" or "euro")
  *  it will use for its vertical scale.
  */
@@ -130,12 +133,14 @@ export default class YAxis extends React.Component {
         let axisGenerator;
         if (type === "linear" || type === "power") {
             if (this.props.height <= 200) {
-                axisGenerator = axis(scale).ticks(5).tickFormat(d => {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    }
-                    return yformat(d);
-                });
+                axisGenerator = axis(scale)
+                    .ticks(5)
+                    .tickFormat(d => {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    });
             } else {
                 axisGenerator = axis(scale).tickFormat(d => {
                     if (absolute) {
@@ -207,16 +212,20 @@ export default class YAxis extends React.Component {
                     .tickSizeOuter(0);
             }
         } else if (this.props.type === "log") {
-            axisGenerator = axis().scale(scale).ticks(10, ".2s").tickSizeOuter(0);
+            axisGenerator = axis()
+                .scale(scale)
+                .ticks(10, ".2s")
+                .tickSizeOuter(0);
         }
 
         // Remove the old axis from under this DOM node
-        select(ReactDOM.findDOMNode(this)).selectAll("*").remove(); // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
+            .selectAll("*")
+            .remove(); // eslint-disable-line
         // Add the new axis
         const x = align === "left" ? width - MARGIN : 0;
-        const labelOffset = align === "left"
-            ? this.props.labelOffset - 50
-            : 40 + this.props.labelOffset;
+        const labelOffset =
+            align === "left" ? this.props.labelOffset - 50 : 40 + this.props.labelOffset;
 
         //
         // Style
@@ -303,39 +312,50 @@ YAxis.defaultProps = {
 
 YAxis.propTypes = {
     /**
-   * A name for the axis which can be used by a chart to reference the axis.
-   * This is used by the ChartRow to match charts to this axis.
-   */
+     * A name for the axis which can be used by a chart to reference the axis.
+     * This is used by the ChartRow to match charts to this axis.
+     */
     id: PropTypes.string.isRequired, // eslint-disable-line
+
     /**
-   * The label to be displayed alongside the axis.
-   */
+     * Show or hide this axis
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * The label to be displayed alongside the axis.
+     */
     label: PropTypes.string,
+
     /**
-   * The scale type: linear, power, or log.
-   */
+     * The scale type: linear, power, or log.
+     */
     type: PropTypes.oneOf(["linear", "power", "log"]),
+
     /**
-   * Minium value, which combined with "max", define the scale of the axis.
-   */
+     * Minium value, which combined with "max", define the scale of the axis.
+     */
     min: PropTypes.number.isRequired, // eslint-disable-line
+
     /**
-   * Maxium value, which combined with "min,"" define the scale of the axis.
-   */
+     * Maxium value, which combined with "min,"" define the scale of the axis.
+     */
     max: PropTypes.number.isRequired, // eslint-disable-line
+
     /**
-   * Render all ticks on the axis as positive values.
-   */
+     * Render all ticks on the axis as positive values.
+     */
     absolute: PropTypes.bool, // eslint-disable-line
+
     /**
-   * Object specifying the available parameters by which the axis can be
-   * styled. The object can contain: "labels" and "axis". Each of these
-   * is an inline CSS style applied to the tick labels and axis lines
-   * respectively.
-   *
-   * In addition the axis label itself can be styled with: "labelColor",
-   * "labelFont", "labelWidth" and "labelSize".
-   */
+     * Object specifying the available parameters by which the axis can be
+     * styled. The object can contain: "labels" and "axis". Each of these
+     * is an inline CSS style applied to the tick labels and axis lines
+     * respectively.
+     *
+     * In addition the axis label itself can be styled with: "labelColor",
+     * "labelFont", "labelWidth" and "labelSize".
+     */
     style: PropTypes.shape({
         labels: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object, // eslint-disable-line
@@ -345,40 +365,48 @@ YAxis.propTypes = {
         labelSize: PropTypes.string,
         width: PropTypes.number
     }),
+
     /**
-   * The transition time for moving from one scale to another
-   */
+     * The transition time for moving from one scale to another
+     */
     transition: PropTypes.number,
+
     /**
-   * The width of the axis
-   */
+     * The width of the axis
+     */
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
     /**
-   * Offset the axis label from its default position. This allows you to
-   * fine tune the label location, which may be necessary depending on the
-   * scale and how much room the tick labels take up. Maybe positive or
-   * negative.
-   */
+     * Offset the axis label from its default position. This allows you to
+     * fine tune the label location, which may be necessary depending on the
+     * scale and how much room the tick labels take up. Maybe positive or
+     * negative.
+     */
     labelOffset: PropTypes.number,
+
     /**
-   * d3.format for the axis labels. e.g. `format="$,.2f"`
-   */
+     * d3.format for the axis labels. e.g. `format="$,.2f"`
+     */
     format: PropTypes.string,
+
     /**
-   * If the chart should be rendered to with the axis on the left or right.
-   * If you are using the axis in a ChartRow, you do not need to provide this.
-   */
+     * If the chart should be rendered to with the axis on the left or right.
+     * If you are using the axis in a ChartRow, you do not need to provide this.
+     */
     align: PropTypes.string,
+
     /**
-   * [Internal] The scale supplied by the ChartRow
-   */
+     * [Internal] The scale supplied by the ChartRow
+     */
     scale: PropTypes.func,
+
     /**
-   * [Internal] The height supplied by the surrounding ChartContainer
-   */
+     * [Internal] The height supplied by the surrounding ChartContainer
+     */
     height: PropTypes.number,
+
     /**
-   * The number of ticks
-   */
+     * The number of ticks
+     */
     tickCount: PropTypes.number
 };

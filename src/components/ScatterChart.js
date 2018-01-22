@@ -146,17 +146,19 @@ export default class ScatterChart extends React.Component {
     }
 
     /**
-   * Returns the style used for drawing the path
-   */
+     * Returns the style used for drawing the path
+     */
     style(column, event) {
         let style;
 
         const styleMap = this.providedStyleMap(column, event);
 
-        const isHighlighted = this.props.highlight &&
+        const isHighlighted =
+            this.props.highlight &&
             column === this.props.highlight.column &&
             Event.is(this.props.highlight.event, event);
-        const isSelected = this.props.selected &&
+        const isSelected =
+            this.props.selected &&
             column === this.props.selected.column &&
             Event.is(this.props.selected.event, event);
 
@@ -217,7 +219,8 @@ export default class ScatterChart extends React.Component {
                     ? this.props.radius(event, column)
                     : +this.props.radius;
 
-                const isHighlighted = this.props.highlight &&
+                const isHighlighted =
+                    this.props.highlight &&
                     Event.is(this.props.highlight.event, event) &&
                     column === this.props.highlight.column;
 
@@ -287,157 +290,179 @@ export default class ScatterChart extends React.Component {
 
 ScatterChart.propTypes = {
     /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
-   */
+     * Show or hide this chart
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     */
     series: PropTypes.instanceOf(TimeSeries).isRequired,
+
     /**
-   * Which columns of the series to render
-   */
+     * Which columns of the series to render
+     */
     columns: PropTypes.arrayOf(PropTypes.string),
+
     /**
-   * Reference to the axis which provides the vertical scale for drawing. e.g.
-   * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
-   */
+     * Reference to the axis which provides the vertical scale for drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
     axis: PropTypes.string.isRequired, // eslint-disable-line
+
     /**
-   * The radius of the points in the scatter chart.
-   *
-   * If this is a number it will be used as the radius for every point.
-   * If this is a function it will be called for each event.
-   *
-   * The function is called with the event and the column name and must return a number.
-   *
-   * For example this function will use the radius column of the event:
-   *
-   * ```
-   * const radius = (event, column) => {
-   *    return event.get("radius");
-   * }
-   * ```
-   */
+     * The radius of the points in the scatter chart.
+     *
+     * If this is a number it will be used as the radius for every point.
+     * If this is a function it will be called for each event.
+     *
+     * The function is called with the event and the column name and must return a number.
+     *
+     * For example this function will use the radius column of the event:
+     *
+     * ```
+     * const radius = (event, column) => {
+     *    return event.get("radius");
+     * }
+     * ```
+     */
     radius: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.instanceOf(Styler)]),
+
     /**
-   * The style of the scatter chart drawing (using SVG CSS properties).
-   * This is an object with a key for each column which is being plotted,
-   * per the `columns` prop. Each of those keys has an object as its
-   * value which has keys which are style properties for an SVG <Circle> and
-   * the value to use.
-   *
-   * For example:
-   * ```
-   * style = {
-   *     columnName: {
-   *         normal: {
-   *             fill: "steelblue",
-   *             opacity: 0.8,
-   *         },
-   *         highlighted: {
-   *             fill: "#a7c4dd",
-   *             opacity: 1.0,
-   *         },
-   *         selected: {
-   *             fill: "orange",
-   *             opacity: 1.0,
-   *         },
-   *         muted: {
-   *             fill: "grey",
-   *             opacity: 0.5
-   *         }
-   *     }
-   * }
-   * ```
-   *
-   * You can also supply a function, which will be called with an event
-   * and column. The function should return an object containing the
-   * 4 states (normal, highlighted, selected and muted) and the corresponding
-   * CSS properties.
-   */
+     * The style of the scatter chart drawing (using SVG CSS properties).
+     * This is an object with a key for each column which is being plotted,
+     * per the `columns` prop. Each of those keys has an object as its
+     * value which has keys which are style properties for an SVG <Circle> and
+     * the value to use.
+     *
+     * For example:
+     * ```
+     * style = {
+     *     columnName: {
+     *         normal: {
+     *             fill: "steelblue",
+     *             opacity: 0.8,
+     *         },
+     *         highlighted: {
+     *             fill: "#a7c4dd",
+     *             opacity: 1.0,
+     *         },
+     *         selected: {
+     *             fill: "orange",
+     *             opacity: 1.0,
+     *         },
+     *         muted: {
+     *             fill: "grey",
+     *             opacity: 0.5
+     *         }
+     *     }
+     * }
+     * ```
+     *
+     * You can also supply a function, which will be called with an event
+     * and column. The function should return an object containing the
+     * 4 states (normal, highlighted, selected and muted) and the corresponding
+     * CSS properties.
+     */
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+
     /**
-   * The style of the info box and connecting lines. The style should
-   * be an object of the form { line, box }. Line and box are both objects
-   * containing the inline CSS for those elements of the info tracker.
-   */
+     * The style of the info box and connecting lines. The style should
+     * be an object of the form { line, box }. Line and box are both objects
+     * containing the inline CSS for those elements of the info tracker.
+     */
     infoStyle: PropTypes.shape({
         line: PropTypes.object, // eslint-disable-line
         box: PropTypes.object // eslint-disable-line
     }),
+
     /**
-   * The width of the hover info box
-   */
+     * The width of the hover info box
+     */
     infoWidth: PropTypes.number, // eslint-disable-line
+
     /**
-   * The height of the hover info box
-   */
+     * The height of the hover info box
+     */
     infoHeight: PropTypes.number, // eslint-disable-line
+
     /**
-   * The values to show in the info box. This is an array of
-   * objects, with each object specifying the label and value
-   * to be shown in the info box.
-   */
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
     info: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string, // eslint-disable-line
             value: PropTypes.string // eslint-disable-line
         })
     ),
+
     /**
-   * The selected dot, which will be rendered in the "selected" style.
-   * If a dot is selected, all other dots will be rendered in the "muted" style.
-   *
-   * See also `onSelectionChange`
-   */
+     * The selected dot, which will be rendered in the "selected" style.
+     * If a dot is selected, all other dots will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected: PropTypes.arrayOf(
         PropTypes.shape({
             event: PropTypes.instanceOf(Event),
             column: PropTypes.string
         })
     ),
+
     /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
+     * A callback that will be called when the selection changes. It will be called
+     * with an object containing the event and column.
+     */
     onSelectionChange: PropTypes.func,
+
     /**
-   * The highlighted dot, as an object containing the { event, column },
-   * which will be rendered in the "highlighted" style.
-   *
-   * See also the prop `onMouseNear`.
-   */
+     * The highlighted dot, as an object containing the { event, column },
+     * which will be rendered in the "highlighted" style.
+     *
+     * See also the prop `onMouseNear`.
+     */
     highlight: PropTypes.shape({
         event: PropTypes.instanceOf(Event),
         column: PropTypes.string
     }),
+
     /**
-   * Will be called with the nearest point to the cursor. The callback
-   * will contain the point, which is a map of { event, column }.
-   */
+     * Will be called with the nearest point to the cursor. The callback
+     * will contain the point, which is a map of { event, column }.
+     */
     onMouseNear: PropTypes.func,
+
     /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale: PropTypes.func,
+
     /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
+     * [Internal] The yScale supplied by the associated YAxis
+     */
     yScale: PropTypes.func,
+
     /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
+     * [Internal] The width supplied by the surrounding ChartContainer
+     */
     width: PropTypes.number,
+
     /**
-   * [Internal] The height supplied by the surrounding ChartContainer
-   */
+     * [Internal] The height supplied by the surrounding ChartContainer
+     */
     height: PropTypes.number
 };
 
 ScatterChart.defaultProps = {
+    visible: true,
     columns: ["value"],
     radius: 2.0,
     infoStyle: {
         stroke: "#999",
         fill: "white",
-        opacity: 0.90,
+        opacity: 0.9,
         pointerEvents: "none"
     },
     stemStyle: {

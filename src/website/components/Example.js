@@ -9,20 +9,22 @@
  */
 
 import React from "react";
+import createReactClass from "create-react-class";
 import Markdown from "react-markdown";
-
-import Highlighter from "./highlighter";
-
+import Highlighter from "./Highlighter";
 import Examples from "../packages/charts/examples/examples.js";
 import Meta from "../packages/charts/examples/examples.json";
 
-export default React.createClass({
+export default createReactClass({
+    displayName: "Example",
     mixins: [Highlighter],
+
     getInitialState() {
         return {
             markdown: null
         };
     },
+
     fetchMarkdownForProps(props) {
         window.scrollTo(0, 0);
         const exampleName = props.params.example;
@@ -35,12 +37,15 @@ export default React.createClass({
                 this.setState({ markdown });
             });
     },
+
     componentDidMount() {
         this.fetchMarkdownForProps(this.props);
     },
+
     componentWillReceiveProps(nextProps) {
         this.fetchMarkdownForProps(nextProps);
     },
+
     renderMarkdown() {
         if (this.state.markdown) {
             return (
@@ -53,23 +58,13 @@ export default React.createClass({
         } else {
             return (
                 <div className="row">
-                    <div className="col-md-12">
-                        Loading...
-                    </div>
+                    <div className="col-md-12">Loading...</div>
                 </div>
             );
         }
     },
 
     render() {
-        const tagStyle = {
-            background: "#EEE",
-            padding: 5,
-            borderRadius: 2,
-            margin: 2,
-            fontSize: "smaller"
-        };
-
         const exampleName = this.props.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
@@ -91,9 +86,7 @@ export default React.createClass({
                                         Source Code »
                                     </a>
                                 </p>
-                                <p>
-                                    {ExampleMetaData.description}
-                                </p>
+                                <p>{ExampleMetaData.description}</p>
                             </div>
                         </div>
                         <hr />

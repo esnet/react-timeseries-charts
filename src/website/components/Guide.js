@@ -9,19 +9,23 @@
  */
 
 import React from "react";
-import Highlighter from "./highlighter";
+import createReactClass from "create-react-class";
+import Highlighter from "./Highlighter";
 import Markdown from "react-markdown";
 
 import Guides from "../packages/charts/guides/guides";
 import logo from "../packages/charts/logo.png";
 
-export default React.createClass({
+export default createReactClass({
+    displayName: "Guide",
     mixins: [Highlighter],
+
     getInitialState() {
         return {
             markdown: null
         };
     },
+
     componentDidMount() {
         window.scrollTo(0, 0);
         const guideName = this.props.params.doc || "intro";
@@ -36,6 +40,7 @@ export default React.createClass({
             });
         this.setState({ markdown: null });
     },
+
     componentWillReceiveProps(nextProps) {
         window.scrollTo(0, 0);
         const guideName = nextProps.params.doc || "intro";
@@ -49,6 +54,7 @@ export default React.createClass({
             });
         this.setState({ markdown: null });
     },
+
     render() {
         if (this.state.markdown !== null) {
             return (

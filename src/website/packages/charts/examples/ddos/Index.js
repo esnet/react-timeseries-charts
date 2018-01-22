@@ -66,16 +66,15 @@ const style = styler([
     { key: "requests", color: "#9467bd", width: 2 }
 ]);
 
-const ddos = React.createClass({
-    getInitialState() {
-        return {
-            active: {
-                requests: true,
-                connections: true
-            }
-        };
-    },
-    renderChart() {
+class ddos extends React.Component {
+    state = {
+        active: {
+            requests: true,
+            connections: true
+        }
+    };
+
+    renderChart = () => {
         let charts = [];
         let max = 100;
         if (this.state.active.requests) {
@@ -137,9 +136,7 @@ const ddos = React.createClass({
                         width="60"
                         type="linear"
                     />
-                    <Charts>
-                        {charts}
-                    </Charts>
+                    <Charts>{charts}</Charts>
                     <YAxis
                         id="axis2"
                         label="Connections"
@@ -155,12 +152,14 @@ const ddos = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
-    handleActiveChange(key) {
+    };
+
+    handleActiveChange = key => {
         const active = this.state.active;
         active[key] = !active[key];
         this.setState({ active });
-    },
+    };
+
     render() {
         const legend = [
             {
@@ -192,15 +191,13 @@ const ddos = React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
-                        <Resizable>
-                            {this.renderChart()}
-                        </Resizable>
+                        <Resizable>{this.renderChart()}</Resizable>
                     </div>
                 </div>
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { ddos, ddos_docs, ddos_thumbnail };

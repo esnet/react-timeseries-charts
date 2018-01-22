@@ -51,19 +51,20 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
 
 const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
 
-const traffic = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            timerange: trafficSeries.range()
-        };
-    },
-    handleTrackerChanged(t) {
+class traffic extends React.Component {
+    state = {
+        tracker: null,
+        timerange: trafficSeries.range()
+    };
+
+    handleTrackerChanged = t => {
         this.setState({ tracker: t });
-    },
-    handleTimeRangeChange(timerange) {
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
+    };
+
     render() {
         const dateStyle = {
             fontSize: 12,
@@ -100,7 +101,6 @@ const traffic = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
-
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 trackerPosition={this.state.tracker}
@@ -136,14 +136,13 @@ const traffic = React.createClass({
                                     />
                                 </ChartRow>
                             </ChartContainer>
-
                         </Resizable>
                     </div>
                 </div>
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { traffic, traffic_docs, traffic_thumbnail };

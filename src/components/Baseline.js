@@ -113,6 +113,7 @@ export default class Baseline extends React.Component {
 }
 
 Baseline.defaultProps = {
+    visible: true,
     value: 0,
     label: "",
     position: "left",
@@ -121,37 +122,48 @@ Baseline.defaultProps = {
 
 Baseline.propTypes = {
     /**
-   * Reference to the axis which provides the vertical scale for drawing. e.g.
-   * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
-   */
-    axis: PropTypes.string.isRequired, // eslint-disable-line
+     * Show or hide this chart
+     */
+    visible: PropTypes.bool,
+
     /**
-   * An object describing the style of the baseline of the form
-   * { label, line }. "label" and "line" are both objects containing
-   * the inline CSS for that part of the baseline.
-   */
+     * Reference to the axis which provides the vertical scale for drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
+    axis: PropTypes.string.isRequired, // eslint-disable-line
+
+    /**
+     * An object describing the style of the baseline of the form
+     * { label, line }. "label" and "line" are both objects containing
+     * the inline CSS for that part of the baseline.
+     */
     style: PropTypes.shape({
         label: PropTypes.object, // eslint-disable-line
         line: PropTypes.object // eslint-disable-line
     }),
+
     /**
-   * The y-value to display the line at.
-   */
+     * The y-value to display the line at.
+     */
     value: PropTypes.number,
+
     /**
-   * The label to display with the axis.
-   */
+     * The label to display with the axis.
+     */
     label: PropTypes.string,
+
     /**
-   * Whether to display the label on the "left" or "right".
-   */
+     * Whether to display the label on the "left" or "right".
+     */
     position: PropTypes.oneOf(["left", "right"]),
+
     /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
+     * [Internal] The yScale supplied by the associated YAxis
+     */
     yScale: PropTypes.func,
+
     /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
+     * [Internal] The width supplied by the surrounding ChartContainer
+     */
     width: PropTypes.number
 };

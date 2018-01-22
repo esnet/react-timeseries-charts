@@ -63,39 +63,46 @@ export default class TimeRangeMarker extends React.Component {
     }
 
     render() {
-        return (
-            <g>
-                {this.renderBand()}
-            </g>
-        );
+        return <g>{this.renderBand()}</g>;
     }
 }
 
 TimeRangeMarker.propTypes = {
     /**
-   * The timerange to mark. This is in the form of a Pond TimeRange.
-   */
+     * Show or hide this marker
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * The timerange to mark. This is in the form of a
+     * [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange)
+     */
     timerange: PropTypes.instanceOf(TimeRange).isRequired,
+
     /**
-   * The style of the rect that will be rendered as a SVG <Rect>. This
-   * object is the inline CSS for that rect.
-   */
+     * The style of the rect that will be rendered as a SVG <Rect>. This
+     * object is the inline CSS for that rect.
+     */
     style: PropTypes.object, // eslint-disable-line
+
     /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale: PropTypes.func.isRequired,
+
     /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
+     * [Internal] The width supplied by the surrounding ChartContainer
+     */
     width: PropTypes.number.isRequired,
+
     /**
-   * [Internal] The height supplied by the surrounding ChartContainer
-   */
+     * [Internal] The height supplied by the surrounding ChartContainer
+     */
     height: PropTypes.number.isRequired
 };
 
 TimeRangeMarker.defaultProps = {
+    visible: true,
     spacing: 1,
     offset: 0,
     style: { fill: "rgba(70, 130, 180, 0.25);" }

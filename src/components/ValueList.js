@@ -22,6 +22,10 @@ import PropTypes from "prop-types";
 const ValueList = props => {
     const { align, style, width, height } = props;
 
+    if (!props.values.length) {
+        return <g />;
+    }
+
     const textStyle = {
         fontSize: 11,
         textAnchor: "left",
@@ -80,8 +84,8 @@ ValueList.defaultProps = {
 ValueList.propTypes = {
     align: PropTypes.oneOf(["center", "left"]),
     /**
-   * An array of label value pairs to render
-   */
+     * An array of label value pairs to render
+     */
     values: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string, // eslint-disable-line
@@ -93,16 +97,16 @@ ValueList.propTypes = {
         })
     ).isRequired,
     /**
-   * CSS object to be applied to the ValueList surrounding box
-   */
+     * CSS object to be applied to the ValueList surrounding box
+     */
     style: PropTypes.object, // eslint-disable-line
     /**
-   * The width of the rectangle to render into
-   */
+     * The width of the rectangle to render into
+     */
     width: PropTypes.number,
     /**
-   * The height of the rectangle to render into
-   */
+     * The height of the rectangle to render into
+     */
     height: PropTypes.number
 };
 

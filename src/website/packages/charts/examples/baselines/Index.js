@@ -55,19 +55,20 @@ const baselineStyleLite = {
     }
 };
 
-const baselines = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            timerange: series.range()
-        };
-    },
-    handleTrackerChanged(tracker) {
+class baselines extends React.Component {
+    state = {
+        tracker: null,
+        timerange: series.range()
+    };
+
+    handleTrackerChanged = tracker => {
         this.setState({ tracker });
-    },
-    handleTimeRangeChange(timerange) {
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
+    };
+
     render() {
         return (
             <Resizable>
@@ -120,7 +121,7 @@ const baselines = React.createClass({
             </Resizable>
         );
     }
-});
+}
 
 // Export example
 export default { baselines, baselines_docs, baselines_thumbnail };

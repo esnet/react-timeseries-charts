@@ -11,18 +11,19 @@
 /* eslint max-len:0 */
 
 import React from "react";
+import createReactClass from "create-react-class";
 import { Link } from "react-router";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
-import Highlighter from "./highlighter";
+import Highlighter from "./Highlighter";
 import APIDoc from "./APIDoc";
 
 import Meta from "../packages/charts/examples/examples.json";
 import Examples from "../packages/charts/examples/examples.js";
 import docsFile from "../packages/charts/api/docs.json";
 
-const Example = React.createClass({
+class Example extends React.Component {
     render() {
         const style = {
             display: "inline-block",
@@ -44,15 +45,13 @@ const Example = React.createClass({
                 <div style={style}>
                     <img src={img} alt={`${name}`} />
                 </div>
-                <div style={{ paddingLeft: 5, fontSize: "smaller" }}>
-                    {link}
-                </div>
+                <div style={{ paddingLeft: 5, fontSize: "smaller" }}>{link}</div>
             </Flexbox>
         );
     }
-});
+}
 
-const TaggedExamples = React.createClass({
+class TaggedExamples extends React.Component {
     render() {
         const exampleList = [];
         _.forEach(Meta, (value, key) => {
@@ -78,10 +77,12 @@ const TaggedExamples = React.createClass({
             return <div />;
         }
     }
-});
+}
 
-export default React.createClass({
+export default createReactClass({
+    displayName: "API",
     mixins: [Highlighter],
+
     render() {
         const component = this.props.params.component;
         const path = `src/components/${component}.js`;

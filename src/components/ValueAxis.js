@@ -12,13 +12,18 @@ import React from "react";
 import PropTypes from "prop-types";
 
 /**
- * Renders a 'axis' that display a label for a current tracker value
- *
+ * Renders a 'axis' that display a label for a current tracker value:
+ * ```
  *      ----+----------------+
  *          |     56.2G      |
  *          |      bps       |
  *          |                |
  *      ----+----------------+
+ * ```
+ * This would be used when you have many rows of data and the user is required
+ * to interact with the data to see actual values. You would use this at the
+ * end of the row and supply it with the current value. See the cycling example
+ * for how that would all work.
  */
 const ValueAxis = ({ width, height, value, detail }) => {
     const labelStyle = {
@@ -59,21 +64,34 @@ const ValueAxis = ({ width, height, value, detail }) => {
 
 ValueAxis.propTypes = {
     /**
-   * If values are numbers, use this format string
-   */
+     * Show or hide this
+     */
+    visible: PropTypes.bool,
+
+    /**
+     * If values are numbers, use this format string
+     */
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
     /**
-   * If values are numbers, use this format string
-   */
+     * Use this to show what units are being used. It will appear below
+     * the value.
+     */
     detail: PropTypes.string,
+
     /**
-   * The width of the axis
-   */
+     * The width of the axis
+     */
     width: PropTypes.number,
+
     /**
-   * The height of the axis
-   */
+     * [Internal] The height of the axis
+     */
     height: PropTypes.number
+};
+
+ValueAxis.defaultProps = {
+    visible: true
 };
 
 export default ValueAxis;

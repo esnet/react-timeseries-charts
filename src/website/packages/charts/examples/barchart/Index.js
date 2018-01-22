@@ -62,8 +62,9 @@ const series = new TimeSeries({
     points: data.map(([d, value]) => [Index.getIndexString("1h", new Date(d)), value])
 });
 
-const barchart = React.createClass({
-    displayName: "BarChartExample",
+class barchart extends React.Component {
+    static displayName = "BarChartExample";
+
     render() {
         const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
 
@@ -106,7 +107,7 @@ const barchart = React.createClass({
             </div>
         );
     }
-});
+}
 
 // Export example
 export default { barchart, barchart_docs, barchart_thumbnail };
