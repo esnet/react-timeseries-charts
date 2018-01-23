@@ -396,7 +396,10 @@ YAxis.propTypes = {
     labelOffset: PropTypes.number,
 
     /**
-     * d3.format for the axis labels. e.g. `format="$,.2f"`
+     * If a string, the d3.format for the axis labels (e.g. `format=\"$,.2f\"`).
+     * If a function, that function will be called with each tick value and
+     * should generate a formatted string for that value to be used as the label
+     * for that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).
      */
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
