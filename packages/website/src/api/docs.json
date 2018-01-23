@@ -827,7 +827,8 @@
           "name": "shape",
           "value": {
             "size": {
-              "name": "string",
+              "name": "instanceOf",
+              "value": "Window",
               "required": false
             },
             "reducers": {
@@ -1388,7 +1389,7 @@
           ]
         },
         "required": false,
-        "description": "Provides several options as to the format of the time axis labels.\n\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, some options exist:\n\n - setting format to \"day\", \"month\" or \"year\" will show only ticks on those,\nand every one of those intervals. For example maybe you are showing a bar\nchart for October 2014 then setting the format to \"day\" will insure that a\nlabel is placed for each and every day\n\n - setting format to \"relative\" interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time\n\n - setting the format to a d3 format string will use that format\n\n - supplying a function for format will cause that function to be called\nwhenever rendering a time"
+        "description": "Provides several options as to the format of the time axis labels.\n\nIn general the time axis will generate an appropriate time scale based\non the timeRange prop and there is no need to set this.\n\nHowever, some options exist:\n\n - setting format to either of the six special options that exist such as \n\"second\", \"hour\", day\", \"month\" or \"year\" will show only ticks on those,\nand every one of those intervals. For example maybe you are showing a bar\nchart for October 2014 then setting the format to \"day\" will insure that a\nlabel is placed for each and every day\n\n - setting format to \"duration\" interprets the time as a duration. This\nis good for data that is specified relative to its start time, rather than\nas an actual date/time\n\n - setting the format to a d3 format string will use that format\n\n - supplying a function for format will cause that function to be called\nwhenever rendering a time. The function will be passed the date\nit is rendering. It expects the return result to be a an object describing\nthe resulting tick. For example:\n\n```js\n    format = (d) => ({\n        label: moment(d).format(h:mm a),\n        size: 15,\n        labelAlign: \"adjacent\"\n    });\n```"
       },
       "transition": {
         "type": {
@@ -3900,68 +3901,7 @@
   },
   "src/components/YAxis.js": {
     "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
-    "methods": [
-      {
-        "name": "updateAxis",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "align",
-            "type": null
-          },
-          {
-            "name": "scale",
-            "type": null
-          },
-          {
-            "name": "width",
-            "type": null
-          },
-          {
-            "name": "absolute",
-            "type": null
-          },
-          {
-            "name": "type",
-            "type": null
-          },
-          {
-            "name": "fmt",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderAxis",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "align",
-            "type": null
-          },
-          {
-            "name": "scale",
-            "type": null
-          },
-          {
-            "name": "width",
-            "type": null
-          },
-          {
-            "name": "absolute",
-            "type": null
-          },
-          {
-            "name": "fmt",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
+    "methods": [],
     "props": {
       "id": {
         "type": {

@@ -12,6 +12,7 @@ import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
+import Immutable from "immutable";
 import { Event, TimeEvent, IndexedEvent, max, median, min, percentile, TimeSeries, duration, window } from "pondjs";
 
 import EventMarker from "./EventMarker";
@@ -91,7 +92,7 @@ function getSeries(series, column) {
             default:
                 console.error("Tried to make boxchart from invalid array");
         }
-        const ee = new IndexedEvent(e.index(), d);
+        const ee = new Event(e.index(), Immutable.Map(d));
         return ee;
     });
 }
@@ -210,7 +211,7 @@ export default class BoxChart extends React.Component {
     constructor(props) {
         super(props);
         if (
-            props.series._collection._type === TimeEvent // eslint-disable-line
+            props.series._collection.at(0).keyType() === "time" // eslint-disable-line
         ) {
             this.series = getAggregatedSeries(props.series, props.column, props.aggregation);
         } else {

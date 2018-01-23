@@ -81,6 +81,7 @@
     "prettier": "^0.22.0",
     "raw-loader": "^0.5.1",
     "react": "^15.6.1",
+    "react-axis": "^0.2.5",
     "react-docgen": "^2.9.1",
     "react-dom": "^15.6.1",
     "react-markdown": "^2.4.4",

@@ -26,6 +26,8 @@ var _d3Scale = require("d3-scale");
 
 var _pondjs = require("pondjs");
 
+var _reactAxis = require("react-axis");
+
 var _Brush = require("./Brush");
 
 var _Brush2 = _interopRequireDefault(_Brush);
@@ -41,10 +43,6 @@ var _Charts2 = _interopRequireDefault(_Charts);
 var _EventHandler = require("./EventHandler");
 
 var _EventHandler2 = _interopRequireDefault(_EventHandler);
-
-var _TimeAxis = require("./TimeAxis");
-
-var _TimeAxis2 = _interopRequireDefault(_TimeAxis);
 
 var _TimeMarker = require("./TimeMarker");
 
@@ -349,17 +347,28 @@ var ChartContainer = function (_React$Component) {
                 pointerEvents: "none"
             };
 
+            var timezone = void 0;
+            if (this.props.utc === true) {
+                timezone = "Etc/UTC";
+            } else {
+                timezone = "America/Los_Angeles";
+            }
+
+            var gridHeight = this.props.tickExtend ? chartsHeight : 0;
             var timeAxis = _react2.default.createElement(
                 "g",
                 { transform: "translate(" + leftWidth + "," + chartsHeight + ")" },
                 _react2.default.createElement("line", { x1: -leftWidth, y1: 0.5, x2: this.props.width, y2: 0.5, style: xStyle }),
-                _react2.default.createElement(_TimeAxis2.default, {
-                    scale: timeScale,
-                    utc: this.props.utc,
-                    style: this.props.timeAxisStyle,
+                _react2.default.createElement(_reactAxis.TimeAxis, {
                     format: this.props.format,
-                    showGrid: this.props.showGrid,
-                    gridHeight: chartsHeight
+                    timezone: timezone,
+                    position: "bottom",
+                    beginTime: new Date(this.props.timeRange.begin().getTime()),
+                    endTime: new Date(this.props.timeRange.end().getTime()),
+                    width: timeAxisWidth,
+                    margin: 0,
+                    height: 50,
+                    tickExtend: gridHeight
                 })
             );
 
@@ -480,19 +489,30 @@ ChartContainer.propTypes = {
     *
     * However, some options exist:
     * 
-    *  - setting format to "day", "month" or "year" will show only ticks on those,
+    *  - setting format to either of the six special options that exist such as 
+    * "second", "hour", day", "month" or "year" will show only ticks on those,
     * and every one of those intervals. For example maybe you are showing a bar
     * chart for October 2014 then setting the format to "day" will insure that a
     * label is placed for each and every day
     *
-    *  - setting format to "relative" interprets the time as a duration. This
+    *  - setting format to "duration" interprets the time as a duration. This
     * is good for data that is specified relative to its start time, rather than
     * as an actual date/time
     * 
     *  - setting the format to a d3 format string will use that format
     * 
     *  - supplying a function for format will cause that function to be called
-    * whenever rendering a time
+    * whenever rendering a time. The function will be passed the date
+    * it is rendering. It expects the return result to be a an object describing
+    * the resulting tick. For example:
+    *
+    * ```js
+    *     format = (d) => ({
+    *         label: moment(d).format(h:mm a),
+    *         size: 15,
+    *         labelAlign: "adjacent"
+    *     });
+    * ```
     */
     format: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]),
     /**

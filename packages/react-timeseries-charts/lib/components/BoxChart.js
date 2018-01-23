@@ -32,6 +32,10 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _immutable = require("immutable");
+
+var _immutable2 = _interopRequireDefault(_immutable);
+
 var _pondjs = require("pondjs");
 
 var _EventMarker = require("./EventMarker");
@@ -119,7 +123,7 @@ function getSeries(series, column) {
             default:
                 console.error("Tried to make boxchart from invalid array");
         }
-        var ee = new _pondjs.IndexedEvent(e.index(), d);
+        var ee = new _pondjs.Event(e.index(), _immutable2.default.Map(d));
         return ee;
     });
 }
@@ -248,7 +252,7 @@ var BoxChart = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (BoxChart.__proto__ || Object.getPrototypeOf(BoxChart)).call(this, props));
 
-        if (props.series._collection._type === _pondjs.TimeEvent // eslint-disable-line
+        if (props.series._collection.at(0).keyType() === "time" // eslint-disable-line
         ) {
                 _this.series = getAggregatedSeries(props.series, props.column, props.aggregation);
             } else {

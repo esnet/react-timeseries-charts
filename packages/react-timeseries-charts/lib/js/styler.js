@@ -375,7 +375,7 @@ var Styler = exports.Styler = function () {
 
             var c = color || colorLookup[i % colorLookup.length];
             return {
-                labelColor: c
+                fill: c
             };
         }
     }, {
