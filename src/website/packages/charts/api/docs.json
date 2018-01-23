@@ -4123,10 +4123,18 @@
       },
       "format": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
-        "description": "d3.format for the axis labels. e.g. `format=\"$,.2f\"`",
+        "description": "If a string, the d3.format for the axis labels (e.g. `format=\"$,.2f\"`). If a function, that function will be called with each tick value and should generate a formatted string for that value to be used as the label for that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).",
         "defaultValue": {
           "value": "\".2s\"",
           "computed": false
