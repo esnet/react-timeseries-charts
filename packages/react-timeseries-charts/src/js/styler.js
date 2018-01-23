@@ -346,6 +346,6 @@ export class Styler {
     }
 }
 
-export default function styler(columns, scheme) {
+export function styler(columns, scheme) {
     return new Styler(columns, scheme);
 }

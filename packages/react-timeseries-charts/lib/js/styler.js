@@ -17,7 +17,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *  LICENSE file in the root directory of this source tree.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-exports.default = styler;
+exports.styler = styler;
 
 var _underscore = require("underscore");
 
