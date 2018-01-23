@@ -14,12 +14,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
+import { TimeAxis } from "react-axis";
 
 import Brush from "./Brush";
 import ChartRow from "./ChartRow";
 import Charts from "./Charts";
 import EventHandler from "./EventHandler";
-import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
@@ -285,16 +285,25 @@ export default class ChartContainer extends React.Component {
             pointerEvents: "none"
         };
 
+        let timezone;
+        if (this.props.utc === true) {
+            timezone = "Etc/UTC";
+        } else {
+            timezone = "America/Los_Angeles";
+        }
+
         const timeAxis = (
             <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5} style={xStyle} />
                 <TimeAxis
-                    scale={timeScale}
-                    utc={this.props.utc}
-                    style={this.props.timeAxisStyle}
                     format={this.props.format}
-                    showGrid={this.props.showGrid}
-                    gridHeight={chartsHeight}
+                    timezone={timezone}
+                    position="bottom"
+                    beginTime={this.props.timeRange.begin()}
+                    endTime={this.props.timeRange.end()}
+                    width={timeAxisWidth}
+                    margin={0}
+                    height={50}
                 />
             </g>
         );
@@ -399,19 +408,30 @@ ChartContainer.propTypes = {
    *
    * However, some options exist:
    * 
-   *  - setting format to "day", "month" or "year" will show only ticks on those,
+   *  - setting format to either of the six special options that exist such as 
+   * "second", "hour", day", "month" or "year" will show only ticks on those,
    * and every one of those intervals. For example maybe you are showing a bar
    * chart for October 2014 then setting the format to "day" will insure that a
    * label is placed for each and every day
    *
-   *  - setting format to "relative" interprets the time as a duration. This
+   *  - setting format to "duration" interprets the time as a duration. This
    * is good for data that is specified relative to its start time, rather than
    * as an actual date/time
    * 
    *  - setting the format to a d3 format string will use that format
    * 
    *  - supplying a function for format will cause that function to be called
-   * whenever rendering a time
+   * whenever rendering a time. The function will be passed the date
+   * it is rendering. It expects the return result to be a an object describing
+   * the resulting tick. For example:
+   *
+   * ```js
+   *     format = (d) => ({
+   *         label: moment(d).format(h:mm a),
+   *         size: 15,
+   *         labelAlign: "adjacent"
+   *     });
+   * ```
    */
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     /**

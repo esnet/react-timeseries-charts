@@ -271,7 +271,7 @@ const volume = React.createClass({
                                     </Charts>
                                     <YAxis
                                         id="traffic-rate"
-                                        label="Avg Traffic Rate In (bps)"
+                                        label="Avg Rate In (bps)"
                                         min={0}
                                         max={max / (24 * 60 * 60) * 8}
                                         width="70"

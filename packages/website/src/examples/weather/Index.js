@@ -178,6 +178,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                     <Charts>
                                         <LineChart
@@ -203,6 +204,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                 </ChartRow>
@@ -218,6 +220,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
 
                                     <Charts>
@@ -249,6 +252,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.1f"
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 
@@ -263,6 +267,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
+                                        tickCount={5}
                                     />
                                     <Charts>
                                         <AreaChart
@@ -290,6 +295,7 @@ const weather = React.createClass({
                                         width="80"
                                         type="linear"
                                         format=",.2f"
+                                        tickCount={5}
                                     />
                                 </ChartRow>
 

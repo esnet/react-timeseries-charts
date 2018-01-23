@@ -130,6 +130,7 @@ const climate = React.createClass({
                 timeRange={temperatureSeries.range()}
                 timeAxisStyle={axisStyle}
                 onTrackerChanged={this.handleTrackerChanged}
+                format="decade"
             >
                 <ChartRow height="300">
                     <YAxis
