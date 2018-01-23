@@ -165,6 +165,7 @@ const weather = React.createClass({
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
+                                tickExtend={500}
                             >
 
                                 <ChartRow height="150">
@@ -246,7 +247,7 @@ const weather = React.createClass({
                                         id="wind"
                                         label="Wind (mph)"
                                         labelOffset={5}
-                                        style={{ labelColor: scheme.wind }}
+                                        style={{ fill: scheme.wind }}
                                         min={0}
                                         max={50}
                                         width="80"

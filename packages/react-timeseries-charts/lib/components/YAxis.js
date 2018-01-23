@@ -8,10 +8,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 require("d3-transition");
 
-var _merge = require("merge");
-
-var _merge2 = _interopRequireDefault(_merge);
-
 var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
@@ -24,19 +20,7 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _d3Array = require("d3-array");
-
-var _d3Axis = require("d3-axis");
-
-var _d3Ease = require("d3-ease");
-
-var _d3Format = require("d3-format");
-
-var _d3Selection = require("d3-selection");
-
 var _reactAxis = require("react-axis");
-
-var _util = require("../js/util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -56,8 +40,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // eslint-disable-line
 
-
-var MARGIN = 0;
 
 var defaultStyle = {
   labels: {

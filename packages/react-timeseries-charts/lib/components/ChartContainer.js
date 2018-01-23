@@ -354,6 +354,7 @@ var ChartContainer = function (_React$Component) {
                 timezone = "America/Los_Angeles";
             }
 
+            var gridHeight = this.props.tickExtend ? chartsHeight : 0;
             var timeAxis = _react2.default.createElement(
                 "g",
                 { transform: "translate(" + leftWidth + "," + chartsHeight + ")" },
@@ -362,11 +363,12 @@ var ChartContainer = function (_React$Component) {
                     format: this.props.format,
                     timezone: timezone,
                     position: "bottom",
-                    beginTime: this.props.timeRange.begin(),
-                    endTime: this.props.timeRange.end(),
+                    beginTime: new Date(this.props.timeRange.begin().getTime()),
+                    endTime: new Date(this.props.timeRange.end().getTime()),
                     width: timeAxisWidth,
                     margin: 0,
-                    height: 50
+                    height: 50,
+                    tickExtend: gridHeight
                 })
             );
 

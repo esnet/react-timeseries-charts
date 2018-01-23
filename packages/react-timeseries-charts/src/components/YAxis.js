@@ -9,20 +9,10 @@
  */
 
 import "d3-transition";
-import merge from "merge";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
-import { range } from "d3-array";
-import { axisLeft, axisRight } from "d3-axis";
-import { easeSinOut } from "d3-ease";
-import { format } from "d3-format";
-import { select } from "d3-selection";
 import { Axis } from "react-axis";
-
-import { scaleAsString } from "../js/util";
-
-const MARGIN = 0;
 
 const defaultStyle = {
     labels: {
