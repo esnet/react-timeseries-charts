@@ -23,7 +23,7 @@
         "flexbox-react": "^4.0.0",
         "immutable": "^3.8.2",
         "merge": "^1.2.0",
-        "pondjs": "^1.0.0-alpha.1",
+        "pondjs": "^1.0.0-alpha.4",
         "raw-loader": "^0.5.1",
         "react-timeseries-charts": "^1.0.0",
         "react-select": "^1.0.0-beta14",
