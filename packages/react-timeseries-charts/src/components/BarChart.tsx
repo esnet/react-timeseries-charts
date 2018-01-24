@@ -11,17 +11,57 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
-import PropTypes from "prop-types";
-import { TimeSeries, IndexedEvent, Event } from "pondjs";
+import { TimeSeries, Time, Event, Key } from "pondjs";
 
-import EventMarker from "./EventMarker";
+import { EventMarker } from "./EventMarker";
 import { Styler } from "../js/styler";
 
-const defaultStyle = {
+export type CSSProperties = { [key: string]: any };
+
+export type BarChartStyle = {
+    normal: CSSProperties;
+    highlighted: CSSProperties;
+    selected: CSSProperties;
+    muted: CSSProperties;
+}
+
+const defaultStyle: BarChartStyle = {
     normal: { fill: "steelblue", opacity: 0.8 },
     highlighted: { fill: "steelblue", opacity: 1.0 },
     selected: { fill: "steelblue", opacity: 1.0 },
     muted: { fill: "steelblue", opacity: 0.4 }
+};
+
+type BarChartProps = {
+    series: TimeSeries<Key>,
+    spacing?: number,
+    offset?: number,
+    columns?: string[],
+    style?: BarChartStyle | ((column: string) => BarChartStyle) | Styler,
+    info?: {
+        label?: string,
+        value?: string
+    }[],
+    stemStyle?: object,
+    infoStyle?: object,
+    infoWidth?: number,
+    infoHeight?: number,
+    infoTimeFormat?: string | ((...args: any[]) => any),
+    markerRadius?: number,
+    markerStyle?: object,
+    size?: number,
+    selected?: {
+        event?: any,
+        column?: string
+    },
+    onSelectionChange?: (...args: any[]) => any,
+    highlighted?: {
+        event?: any,
+        column?: string
+    },
+    onHighlightChange?: (...args: any[]) => any,
+    timeScale?: (...args: any[]) => any,
+    yScale?: (...args: any[]) => any
 };
 
 /**
@@ -133,7 +173,31 @@ const defaultStyle = {
  * the box, it's up to you: it can either be a simple string or an array of
  * {label, value} pairs.
  */
-export default class BarChart extends React.Component {
+export default class BarChart extends React.Component<BarChartProps> {
+
+    static defaultProps: Partial<BarChartProps> = {
+        columns: ["value"],
+        spacing: 1.0,
+        offset: 0,
+        infoStyle: {
+            stroke: "#999",
+            fill: "white",
+            opacity: 0.9,
+            pointerEvents: "none"
+        },
+        stemStyle: {
+            stroke: "#999",
+            cursor: "crosshair",
+            pointerEvents: "none"
+        },
+        markerStyle: {
+            fill: "#999"
+        },
+        markerRadius: 2,
+        infoWidth: 90,
+        infoHeight: 30
+    };
+
     handleHover(e, event, column) {
         const bar = { event, column };
         if (this.props.onHighlightChange) {
@@ -155,8 +219,8 @@ export default class BarChart extends React.Component {
         e.stopPropagation();
     }
 
-    providedStyleMap(column) {
-        let style = {};
+    providedStyleMap(column: string): BarChartStyle {
+        let style: BarChartStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
@@ -170,20 +234,19 @@ export default class BarChart extends React.Component {
     }
 
     /**
-   * Returns the style used for drawing the path
-   */
+     * Returns the style used for drawing the path
+     */
     style(column, event) {
         let style;
         const styleMap = this.providedStyleMap(column);
-
-        const isHighlighted = this.props.highlighted &&
+        const isHighlighted =
+            this.props.highlighted &&
             column === this.props.highlighted.column &&
             Event.is(this.props.highlighted.event, event);
-
-        const isSelected = this.props.selected &&
+        const isSelected =
+            this.props.selected &&
             column === this.props.selected.column &&
             Event.is(this.props.selected.event, event);
-
         if (this.props.selected) {
             if (isSelected) {
                 style = merge(
@@ -209,7 +272,6 @@ export default class BarChart extends React.Component {
         } else {
             style = merge(true, defaultStyle.normal, styleMap.normal ? styleMap.normal : {});
         }
-
         return style;
     }
 
@@ -220,27 +282,22 @@ export default class BarChart extends React.Component {
         const timeScale = this.props.timeScale;
         const yScale = this.props.yScale;
         const columns = this.props.columns || ["value"];
-
         const bars = [];
         let eventMarker;
-
         for (const event of series.collection().eventList()) {
             const begin = event.begin();
             const end = event.end();
             const beginPos = timeScale(begin) + spacing;
             const endPos = timeScale(end) - spacing;
-
             let width;
             if (this.props.size) {
                 width = this.props.size;
             } else {
                 width = endPos - beginPos;
             }
-
             if (width < 1) {
                 width = 1;
             }
-
             let x;
             if (this.props.size) {
                 const center = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
@@ -248,7 +305,6 @@ export default class BarChart extends React.Component {
             } else {
                 x = timeScale(begin) + spacing + offset;
             }
-
             const yBase = yScale(0);
             let yposPositive = yBase;
             let yposNegative = yBase;
@@ -258,16 +314,15 @@ export default class BarChart extends React.Component {
                     const key = `${series.name()}-${index}-${column}`;
                     const value = event.get(column);
                     const style = this.style(column, event);
-
                     let height = yScale(0) - yScale(value);
                     // Allow negative values. Minimum bar height = 1 pixel.
                     // Stack negative bars below X-axis and positive above X-Axis
                     const positiveBar = height >= 0;
                     height = Math.max(Math.abs(height), 1);
                     const y = positiveBar ? yposPositive - height : yposNegative;
-
                     // Event marker if info provided and hovering
-                    const isHighlighted = this.props.highlighted &&
+                    const isHighlighted =
+                        this.props.highlighted &&
                         column === this.props.highlighted.column &&
                         Event.is(this.props.highlighted.event, event);
                     if (isHighlighted && this.props.info) {
@@ -281,9 +336,12 @@ export default class BarChart extends React.Component {
                             />
                         );
                     }
-
                     const box = { x, y, width, height };
-                    const barProps = { key, ...box, style };
+                    const barProps: React.SVGProps<SVGRectElement> = {
+                        key,
+                        ...box,
+                        style
+                    };
 
                     if (this.props.onSelectionChange) {
                         barProps.onClick = e => this.handleClick(e, event, column);
@@ -293,7 +351,9 @@ export default class BarChart extends React.Component {
                         barProps.onMouseLeave = () => this.handleHoverLeave();
                     }
 
-                    bars.push(<rect {...barProps} />);
+                    bars.push(
+                        <rect {...barProps} />
+                    );
 
                     if (positiveBar) {
                         yposPositive -= height;
@@ -312,181 +372,6 @@ export default class BarChart extends React.Component {
     }
 
     render() {
-        return (
-            <g>
-                {this.renderBars()}
-            </g>
-        );
+        return <g>{this.renderBars()}</g>;
     }
 }
-
-BarChart.propTypes = {
-    /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries)
-   * data to visualize
-   */
-    series: PropTypes.instanceOf(TimeSeries).isRequired,
-    /**
-   * The distance in pixels to inset the bar chart from its actual timerange
-   */
-    spacing: PropTypes.number,
-    /**
-   * The distance in pixels to offset the bar from its center position within the timerange
-   * it represents
-   */
-    offset: PropTypes.number,
-    /**
-   * A list of columns within the series that will be stacked on top of each other
-   */
-    columns: PropTypes.arrayOf(PropTypes.string),
-    /**
-   * The style of the bar chart drawing (using SVG CSS properties).
-   * This is an object with a key for each column which is being drawn,
-   * per the `columns` prop. For each column a style is defined for
-   * each state the bar may be in. This style is the CSS properties for
-   * the underlying SVG <Rect>, so most likely you'll define fill and
-   * opacity.
-   *
-   * For example:
-   * ```
-   * style = {
-   *     columnName: {
-   *         normal: {
-   *             fill: "steelblue",
-   *             opacity: 0.8,
-   *         },
-   *         highlighted: {
-   *             fill: "#a7c4dd",
-   *             opacity: 1.0,
-   *         },
-   *         selected: {
-   *             fill: "orange",
-   *             opacity: 1.0,
-   *         },
-   *         muted: {
-   *             fill: "grey",
-   *             opacity: 0.5
-   *         }
-   *     }
-   * }
-   * ```
-   *
-   * You can also supply a function, which will be called with an event
-   * and column. The function should return an object containing the
-   * four states (normal, highlighted, selected and muted) and the corresponding
-   * CSS properties.
-   */
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
-    /**
-   * The values to show in the info box. This is an array of
-   * objects, with each object specifying the label and value
-   * to be shown in the info box.
-   */
-    info: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string, //eslint-disable-line
-            value: PropTypes.string //eslint-disable-line
-        })
-    ),
-    /**
-   * The style of the info box itself. Typically you'd want to
-   * specify a fill color, and stroke color / width here.
-   */
-    infoStyle: PropTypes.object, //eslint-disable-line
-    /**
-   * The width of the info box
-   */
-    infoWidth: PropTypes.number, //eslint-disable-line
-    /**
-   * The height of the info box
-   */
-    infoHeight: PropTypes.number, //eslint-disable-line
-    /**
-   * Alter the format of the timestamp shown on the info box.
-   * This may be either a function or a string. If you provide a function
-   * that will be passed an Index and should return a string. For example:
-   * ```
-   *     index => moment(index.begin()).format("Do MMM 'YY")
-   * ```
-   * Alternatively you can pass in a d3 format string. That will be applied
-   * to the begin time of the Index range.
-   */
-    infoTimeFormat: PropTypes.oneOfType([
-        //eslint-disable-line
-        PropTypes.string, //eslint-disable-line
-        PropTypes.func //eslint-disable-line
-    ]),
-    /**
-   * The radius of the infoBox dot at the end of the marker
-   */
-    markerRadius: PropTypes.number,
-    /**
-   * The style of the infoBox dot at the end of the marker
-   */
-    markerStyle: PropTypes.object,
-    /**
-   * If size is specified, then the bar will be this number of pixels wide. This
-   * prop takes priority over "spacing".
-   */
-    size: PropTypes.number,
-    /**
-   * The selected item, which will be rendered in the "selected" style.
-   * If a bar is selected, all other bars will be rendered in the "muted" style.
-   *
-   * See also `onSelectionChange`
-   */
-    selected: PropTypes.shape({
-        event: PropTypes.instanceOf(IndexedEvent),
-        column: PropTypes.string
-    }),
-    /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
-    onSelectionChange: PropTypes.func,
-    /**
-   * The highlighted item, which will be rendered in the "highlighted" style.
-   *
-   * See also `onHighlightChange`
-   */
-    highlighted: PropTypes.shape({
-        event: PropTypes.instanceOf(IndexedEvent),
-        column: PropTypes.string
-    }),
-    /**
-   * A callback that will be called when the hovered over bar changes.
-   * It will be called with an object containing the event and column.
-   */
-    onHighlightChange: PropTypes.func,
-    /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
-    timeScale: PropTypes.func,
-    /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
-    yScale: PropTypes.func
-};
-
-BarChart.defaultProps = {
-    columns: ["value"],
-    spacing: 1.0,
-    offset: 0,
-    infoStyle: {
-        stroke: "#999",
-        fill: "white",
-        opacity: 0.90,
-        pointerEvents: "none"
-    },
-    stemStyle: {
-        stroke: "#999",
-        cursor: "crosshair",
-        pointerEvents: "none"
-    },
-    markerStyle: {
-        fill: "#999"
-    },
-    markerRadius: 2,
-    infoWidth: 90,
-    infoHeight: 30
-};

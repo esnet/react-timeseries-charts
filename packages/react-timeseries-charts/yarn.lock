@@ -8,6 +8,10 @@
   dependencies:
     "@types/d3-time" "*"
 
+"@types/d3-time-format@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/d3-time-format/-/d3-time-format-2.1.0.tgz#011e0fb7937be34a9a8f580ae1e2f2f1336a8a22"
+
 "@types/d3-time@*":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-1.0.7.tgz#4266d7c9be15fa81256a88d1d052d61cd8dc572c"

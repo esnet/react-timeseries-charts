@@ -37,6 +37,7 @@
     ],
     "license": "BSD-3-Clause-LBNL",
     "dependencies": {
+        "@types/d3-time-format": "^2.1.0",
         "array.prototype.fill": "^1.0.1",
         "babel-runtime": "^6.23.0",
         "colorbrewer": "^1.0.0",
