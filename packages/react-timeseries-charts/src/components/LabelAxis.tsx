@@ -9,10 +9,24 @@
  */
 
 import React from "react";
-import PropTypes from "prop-types";
 import { format } from "d3-format";
 
 import ValueList from "./ValueList";
+
+type LabelAxisProps = {
+    label: string,
+    hideScale?: boolean,
+    values: {
+        label?: string,
+        value?: number | string
+    }[],
+    valWidth?: number,
+    max: number,
+    min: number,
+    format?: string,
+    width?: number,
+    height?: number
+};
 
 /**
  * Renders a 'axis' that display a label for a data channel and a
@@ -25,17 +39,23 @@ import ValueList from "./ValueList";
  *      +----------------+-----+------- ...
  * ```
  */
-export default class LabelAxis extends React.Component {
+export default class LabelAxis extends React.Component<LabelAxisProps, {}> {
+
+    static defaultProps: Partial<LabelAxisProps> = {
+        hideScale: false,
+        values: [],
+        valWidth: 40,
+        format: ".2f"
+    };
+
     renderAxis() {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
-
         const style = {
             fontSize: 11,
             textAnchor: "left",
             fill: "#bdbdbd"
         };
-
         if (this.props.hideScale) {
             return <g />;
         }
@@ -43,7 +63,6 @@ export default class LabelAxis extends React.Component {
         const fmt = this.props.format;
         const maxStr = format(fmt)(this.props.max);
         const minStr = format(fmt)(this.props.min);
-
         return (
             <g>
                 <text x={valXPos} y={0} dy="1.2em" style={style}>
@@ -59,17 +78,15 @@ export default class LabelAxis extends React.Component {
     render() {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
-
         const labelStyle = {
             fontSize: 12,
             textAnchor: "middle",
             fill: "#838383"
         };
-
         let valueList = null;
         let labelYPos;
         if (this.props.values) {
-            labelYPos = Math.max(parseInt(this.props.height / 4, 10), 10);
+            labelYPos = Math.max(Math.round(this.props.height / 4), 10);
             valueList = (
                 <ValueList
                     style={{ fill: "none", stroke: "none" }}
@@ -78,9 +95,8 @@ export default class LabelAxis extends React.Component {
                 />
             );
         } else {
-            labelYPos = parseInt(this.props.height / 2, 10);
+            labelYPos = Math.round(this.props.height / 2);
         }
-
         return (
             <g>
                 <rect
@@ -90,72 +106,13 @@ export default class LabelAxis extends React.Component {
                     height={this.props.height}
                     style={{ fill: "none", stroke: "none" }}
                 />
-                <text x={parseInt(rectWidth / 2, 10)} y={labelYPos} style={labelStyle}>
+                <text x={Math.round(rectWidth / 2)} y={labelYPos} style={labelStyle}>
                     {this.props.label}
                 </text>
-                <g transform={`translate(0,${labelYPos + 2})`}>
-                    {valueList}
-                </g>
+                <g transform={`translate(0,${labelYPos + 2})`}>{valueList}</g>
 
                 {this.renderAxis()}
             </g>
         );
     }
 }
-
-LabelAxis.propTypes = {
-    /**
-   * The label to show as the axis.
-   */
-    label: PropTypes.string.isRequired,
-    /**
-   * Show or hide the max/min values that appear alongside the label
-   */
-    hideScale: PropTypes.bool,
-    /**
-   * Supply a list of label value pairs to render within the LabelAxis.
-   * This expects an array of objects. Each object is of the form:
-   *     {label: "Speed", value: "26.2 mph"}.
-   */
-    values: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string, // eslint-disable-line
-            value: PropTypes.oneOfType([
-                // eslint-disable-line
-                PropTypes.number,
-                PropTypes.string
-            ])
-        })
-    ).isRequired,
-    /**
-   * Width to provide the values
-   */
-    valWidth: PropTypes.number,
-    /**
-   * Max value of the axis scale
-   */
-    max: PropTypes.number.isRequired,
-    /**
-   * Min value of the axis scale
-   */
-    min: PropTypes.number.isRequired,
-    /**
-   * If values are numbers, use this format string
-   */
-    format: PropTypes.string,
-    /**
-   * The width of the axis
-   */
-    width: PropTypes.number,
-    /**
-   * The height of the axis
-   */
-    height: PropTypes.number
-};
-
-LabelAxis.defaultProps = {
-    hideScale: false,
-    values: [],
-    valWidth: 40,
-    format: ".2f"
-};
