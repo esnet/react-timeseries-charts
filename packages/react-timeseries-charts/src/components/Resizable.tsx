@@ -7,16 +7,21 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import React from "react";
-import PropTypes from "prop-types";
+
+type ResizableState = {
+    width: number
+};
 
 /**
  * This takes a single child and inserts a prop 'width' on it that is the
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-export default class Resizable extends React.Component {
+export default class Resizable extends React.Component<{}, ResizableState> {
+
+    container: HTMLElement;
+
     constructor(props) {
         super(props);
         this.state = { width: 0 };
@@ -45,18 +50,9 @@ export default class Resizable extends React.Component {
             ? React.cloneElement(child, { width: this.state.width })
             : null;
         return (
-            <div
-                ref={c => {
-                    this.container = c;
-                }}
-                {...this.props}
-            >
+            <div ref={c => { this.container = c; }}{...this.props}>
                 {childElement}
             </div>
         );
     }
 }
-
-Resizable.propTypes = {
-    children: PropTypes.node
-};

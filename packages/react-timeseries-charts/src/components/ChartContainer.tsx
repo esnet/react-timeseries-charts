@@ -14,7 +14,7 @@ import React, { ReactElement, ReactNode } from "react";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
 
-import Brush from "./Brush";
+import { Brush } from "./Brush";
 import { ChartRow, ChartRowProps } from "./ChartRow";
 import { Charts, ChartsProps } from "./Charts";
 import { EventHandler } from "./EventHandler";

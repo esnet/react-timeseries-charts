@@ -13,7 +13,7 @@ import React, { ReactElement, ReactNode } from "react";
 import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
 
-import Brush from "./Brush";
+import { Brush } from "./Brush";
 import { Charts, ChartsProps, ChartProps } from "./Charts";
 import { TimeMarker, TimeMarkerProps, InfoValues } from "./TimeMarker";
 import { YAxis, YAxisProps } from "./YAxis";
