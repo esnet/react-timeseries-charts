@@ -11,7 +11,7 @@
 import React from "react";
 import createReactClass from "create-react-class";
 import Markdown from "react-markdown";
-import Highlighter from "./Highlighter";
+import Highlighter from "./highlighter";
 import Examples from "../packages/charts/examples/examples.js";
 import Meta from "../packages/charts/examples/examples.json";
 

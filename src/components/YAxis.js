@@ -9,6 +9,7 @@
  */
 
 import "d3-transition";
+import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
@@ -115,8 +116,18 @@ export default class YAxis extends React.Component {
         return false;
     }
 
+    yformat(fmt) {
+        if (_.isString(fmt)) {
+            return format(fmt);
+        } else if (_.isFunction(fmt)) {
+            return fmt;
+        } else {
+            return format("");
+        }
+    }
+
     updateAxis(align, scale, width, absolute, type, fmt) {
-        const yformat = format(fmt);
+        const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
 
         const axisStyle = merge(
@@ -175,7 +186,7 @@ export default class YAxis extends React.Component {
     }
 
     renderAxis(align, scale, width, absolute, fmt) {
-        const yformat = format(fmt);
+        const yformat = this.yformat(fmt);
         let axisGenerator;
         const axis = align === "left" ? axisLeft : axisRight;
         if (this.props.type === "linear" || this.props.type === "power") {
@@ -385,9 +396,12 @@ YAxis.propTypes = {
     labelOffset: PropTypes.number,
 
     /**
-     * d3.format for the axis labels. e.g. `format="$,.2f"`
+     * If a string, the d3.format for the axis labels (e.g. `format=\"$,.2f\"`).
+     * If a function, that function will be called with each tick value and
+     * should generate a formatted string for that value to be used as the label
+     * for that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).
      */
-    format: PropTypes.string,
+    format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
     /**
      * If the chart should be rendered to with the axis on the left or right.
