@@ -5,11 +5,9 @@
 
 ### 2.1 How to Install
 
-This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/). It expects React to be present, as well as our TimeSeries abstraction library, [pond.js](https://esnet-pondjs.appspot.com/#/). More on this below. To install:
+This charts library is intended to be installed with [npm](https://www.npmjs.com/) and the built into your project with a tool like [Webpack](https://webpack.github.io/). It expects React to be present, as well as our TimeSeries abstraction library, [pond.js](http://software.es.net/pond). More on this below. To install:
 
     npm install react-timeseries-charts pondjs --save
-
-Note that this version of the charts code depends on v0.8.x of the Pond library [documentation]((https://esnet-pondjs.appspot.com/#/) and not v1.0 (alpha). This newer version has been rewritten in Typescript and has a different API. A future version of this library is expected to use that library. When this happens there will be some minor API changes associated. 
 
 ### 2.2 Imports
 
