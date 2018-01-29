@@ -7,35 +7,22 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+
 import merge from "merge";
 import React from "react";
 import _ from "underscore";
-const defaultStyle = {
-    label: {
-        fill: "#8B7E7E",
-        fontWeight: 100,
-        fontSize: 11,
-        pointerEvents: "none"
-    },
-    line: {
-        stroke: "#626262",
-        strokeWidth: 1,
-        strokeDasharray: "5,3",
-        pointerEvents: "none"
-    }
-};
-type BaselineProps = {
+
+import { ChartProps } from "./Charts";
+import { BaselineStyle, baselineDefaultStyle as defaultStyle } from "./style";
+
+type BaselineProps = ChartProps & {
     axis: string,
-    style?: {
-        label?: object,
-        line?: object
-    },
+    style?: BaselineStyle,
     value?: number,
     label?: string,
     position?: "left" | "right",
-    yScale?: (...args: any[]) => any,
-    width?: number
 };
+
 /**
  *
  * The BaseLine component displays a simple horizontal line at a value.
@@ -62,7 +49,15 @@ type BaselineProps = {
  * </ChartContainer>
  * ```
  */
-export default class Baseline extends React.Component<BaselineProps, {}> {
+export default class Baseline extends React.Component<BaselineProps> {
+
+    static defaultProps: Partial<BaselineProps> = {
+        value: 0,
+        label: "",
+        position: "left",
+        style: defaultStyle
+    };
+
     render() {
         if (!this.props.yScale || _.isUndefined(this.props.value)) {
             return null;
@@ -112,9 +107,3 @@ export default class Baseline extends React.Component<BaselineProps, {}> {
         );
     }
 }
-Baseline.defaultProps = {
-    value: 0,
-    label: "",
-    position: "left",
-    style: defaultStyle
-};

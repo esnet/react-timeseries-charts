@@ -7,12 +7,31 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
-import PropTypes from "prop-types";
-import { TimeSeries, Event } from "pondjs";
+import { TimeSeries, Event, Key } from "pondjs";
+
+import { ChartProps } from "./Charts";
+import { EventChartStyle } from "./style";
+
+type EventChartProps = ChartProps & {
+    series: TimeSeries<Key>,
+    label?: string | ((...args: any[]) => any),
+    size?: number,
+    spacing?: number,
+    hoverMarkerWidth?: number,
+    textOffsetX?: number,
+    textOffsetY?: number,
+    style?: EventChartStyle,
+    onSelectionChange?: (e: Event<Key>) => any,
+    onMouseOver?: (e: Event<Key>) => any,
+    onMouseLeave?: (b: boolean) => any,
+};
+
+type EventChartState = {
+    hover: any
+};
 
 /**
  * Renders an event view that shows the supplied set of events along a time axis.
@@ -20,7 +39,18 @@ import { TimeSeries, Event } from "pondjs";
  * That series may contain regular TimeEvents, TimeRangeEvents
  * or IndexedEvents.
  */
-export default class EventChart extends React.Component {
+export default class EventChart extends React.Component<EventChartProps, EventChartState> {
+
+    static defaultProps = {
+        size: 30,
+        spacing: 0,
+        textOffsetX: 0,
+        textOffsetY: 0,
+        hoverMarkerWidth: 5
+    };
+
+    hover: Event<Key>;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -29,9 +59,9 @@ export default class EventChart extends React.Component {
     }
 
     /**
-   * Continues a hover event on a specific bar of the bar chart.
-   */
-    onMouseOver(e, event) {
+     * Continues a hover event on a specific bar of the bar chart.
+     */
+    onMouseOver(e, event: Event<Key>) {
         if (this.props.onMouseOver) {
             this.props.onMouseOver(event);
         }
@@ -39,8 +69,8 @@ export default class EventChart extends React.Component {
     }
 
     /**
-   * Handle mouse leave and calls onMouseLeave callback if one is provided
-   */
+     * Handle mouse leave and calls onMouseLeave callback if one is provided
+     */
     onMouseLeave() {
         if (this.props.onMouseLeave) {
             this.props.onMouseLeave(this.state.hover);
@@ -49,10 +79,10 @@ export default class EventChart extends React.Component {
     }
 
     /**
-   * Handle click will call the onSelectionChange callback if one is provided
-   * as a prop. It will be called with the event selected.
-   */
-    handleClick(e, event) {
+     * Handle click will call the onSelectionChange callback if one is provided
+     * as a prop. It will be called with the event selected.
+     */
+    handleClick(e, event: Event<Key>) {
         e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(event);
@@ -71,7 +101,6 @@ export default class EventChart extends React.Component {
             const end = event.end();
             const beginPos = scale(begin) >= 0 ? scale(begin) : 0;
             const endPos = scale(end) <= this.props.width ? scale(end) : this.props.width;
-
             const transform = `translate(${beginPos},0)`;
             const isHover = this.state.hover ? Event.is(event, this.state.hover) : false;
 
@@ -104,12 +133,15 @@ export default class EventChart extends React.Component {
             width = width < 0 ? 0 : width;
             const height = this.props.size;
 
-            const eventLabelStyle = {
-                fontWeight: 100,
-                fontSize: 11
-            };
-
             let text = null;
+
+            const textStyle: React.CSSProperties = {
+                fontSize: 11,
+                fontWeight: 100,
+                pointerEvents: "none",
+                fill: "#444"
+            }
+
             if (isHover) {
                 text = (
                     <g>
@@ -122,11 +154,7 @@ export default class EventChart extends React.Component {
                             style={merge(true, barNormalStyle, { pointerEvents: "none" })}
                         />
                         <text
-                            style={{
-                                pointerEvents: "none",
-                                fill: "#444",
-                                ...eventLabelStyle
-                            }}
+                            style={textStyle}
                             x={8 + textOffsetX}
                             y={15 + textOffsetY}
                         >
@@ -135,7 +163,6 @@ export default class EventChart extends React.Component {
                     </g>
                 );
             }
-
             eventMarkers.push(
                 <g transform={transform} key={i}>
                     <rect
@@ -152,78 +179,8 @@ export default class EventChart extends React.Component {
                     {text}
                 </g>
             );
-
             i += 1;
         }
-
-        return (
-            <g>
-                {eventMarkers}
-            </g>
-        );
+        return <g>{eventMarkers}</g>;
     }
 }
-
-EventChart.defaultProps = {
-    size: 30,
-    spacing: 0,
-    textOffsetX: 0,
-    textOffsetY: 0,
-    hoverMarkerWidth: 5
-};
-
-EventChart.propTypes = {
-    /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
-   */
-    series: PropTypes.instanceOf(TimeSeries).isRequired,
-    /**
-   * Set hover label text
-   * When label is function callback it will be called with current event.
-   */
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    /**
-   * The height in pixels for the event bar
-   */
-    size: PropTypes.number,
-    /**
-   * The distance in pixels to inset the event bar from its actual timerange
-   */
-    spacing: PropTypes.number,
-    /**
-   * Marker width on hover
-   */
-    hoverMarkerWidth: PropTypes.number,
-    /**
-   * Hover text offset position X
-   */
-    textOffsetX: PropTypes.number,
-    /**
-   * Hover text offset position Y
-   */
-    textOffsetY: PropTypes.number,
-    /**
-   * A function that should return the style of the event box
-   */
-    style: PropTypes.func,
-    /**
-   * Event selection on click. Will be called with selected event.
-   */
-    onSelectionChange: PropTypes.func,
-    /**
-   * Mouse leave at end of hover event
-   */
-    onMouseLeave: PropTypes.func,
-    /**
-   * Mouse over event callback
-   */
-    onMouseOver: PropTypes.func,
-    /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
-    timeScale: PropTypes.func,
-    /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
-    width: PropTypes.number
-};

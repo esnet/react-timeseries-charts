@@ -2,11 +2,21 @@
 # yarn lockfile v1
 
 
+"@types/d3-path@*":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/d3-path/-/d3-path-1.0.6.tgz#c1a7d2dc07b295fdd1c84dabe4404df991b48693"
+
 "@types/d3-scale@^1.0.11":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@types/d3-scale/-/d3-scale-1.0.11.tgz#8d92f2d07d9f225596e551d0c2f8d1459571cebf"
   dependencies:
     "@types/d3-time" "*"
+
+"@types/d3-shape@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/d3-shape/-/d3-shape-1.2.1.tgz#cac2d9f0122f173220c32c8c152dc42ee9349df2"
+  dependencies:
+    "@types/d3-path" "*"
 
 "@types/d3-time-format@^2.1.0":
   version "2.1.0"

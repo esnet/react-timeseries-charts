@@ -11,19 +11,43 @@
 import _ from "underscore";
 import merge from "merge";
 import React from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import { TimeSeries, Event } from "pondjs";
+import { EventMarker } from "./EventMarker";
 
-import EventMarker from "./EventMarker";
 import { getElementOffset } from "../js/util";
 import { Styler } from "../js/styler";
+import { ChartProps } from "./charts";
+import {
+    ScatterChartStyle,
+    defaultScatterChartStyle as defaultStyle,
+    ChannelStyle,
+    TimeMarkerStyle
+} from "./style";
 
-const defaultStyle = {
-    normal: { fill: "steelblue", opacity: 0.8 },
-    highlighted: { fill: "steelblue", opacity: 1.0 },
-    selected: { fill: "steelblue", opacity: 1.0 },
-    muted: { fill: "steelblue", opacity: 0.4 }
+type ScatterChartProps = ChartProps & {
+    series: any,
+    columns?: string[],
+    axis: string,
+    radius?: number | ((...args: any[]) => any) | any,
+    style?: ScatterChartStyle | ((channel: string) => ChannelStyle) | Styler,
+    infoStyle?: TimeMarkerStyle,
+    infoWidth?: number,
+    infoHeight?: number,
+    info?: {
+        label?: string,
+        value?: string
+    }[],
+    selected?: {
+        event?: any,
+        column?: string
+    }[],
+    onSelectionChange?: (...args: any[]) => any,
+    highlight?: {
+        event?: any,
+        column?: string
+    },
+    onMouseNear?: (...args: any[]) => any,
 };
 
 /**
@@ -70,14 +94,37 @@ const defaultStyle = {
  * the `infoWidth` and `infoHeight` props you can control the size of the box, which
  * is fixed.
  */
-export default class ScatterChart extends React.Component {
+export default class ScatterChart extends React.Component<ScatterChartProps> {
+
+    static defaultProps: Partial<ScatterChartProps> = {
+        columns: ["value"],
+        radius: 2.0,
+        infoStyle: {
+            stroke: "#999",
+            fill: "white",
+            opacity: 0.9,
+            pointerEvents: "none"
+        },
+        stemStyle: {
+            stroke: "#999",
+            cursor: "crosshair",
+            pointerEvents: "none"
+        },
+        markerStyle: {
+            fill: "#999"
+        },
+        infoWidth: 90,
+        infoHeight: 30
+    };
+
+    // Stored reference to event rect
+    eventrect: SVGRectElement;
+
     constructor(props) {
         super(props);
-
         this.handleHover = this.handleHover.bind(this);
         this.handleHoverLeave = this.handleHoverLeave.bind(this);
     }
-
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e) {
         const offset = getElementOffset(this.eventrect);
@@ -85,21 +132,17 @@ export default class ScatterChart extends React.Component {
         const y = e.pageY - offset.top;
         return [Math.round(x), Math.round(y)];
     }
-
     //
     // Event handlers
     //
-
     handleClick(e, event, column) {
         const point = { event, column };
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(point);
         }
     }
-
     handleHover(e) {
         const [x, y] = this.getOffsetMousePosition(e);
-
         let point;
         let minDistance = Infinity;
         for (const column of this.props.columns) {
@@ -115,22 +158,18 @@ export default class ScatterChart extends React.Component {
                 }
             }
         }
-
         if (this.props.onMouseNear) {
             this.props.onMouseNear(point);
         }
     }
-
     handleHoverLeave() {
         if (this.props.onMouseNear) {
             this.props.onMouseNear(null);
         }
     }
-
     //
     // Internal methods
     //
-
     providedStyleMap(column, event) {
         let style = {};
         if (this.props.style) {
@@ -144,22 +183,20 @@ export default class ScatterChart extends React.Component {
         }
         return style;
     }
-
     /**
-   * Returns the style used for drawing the path
-   */
+     * Returns the style used for drawing the path
+     */
     style(column, event) {
         let style;
-
         const styleMap = this.providedStyleMap(column, event);
-
-        const isHighlighted = this.props.highlight &&
+        const isHighlighted =
+            this.props.highlight &&
             column === this.props.highlight.column &&
             Event.is(this.props.highlight.event, event);
-        const isSelected = this.props.selected &&
+        const isSelected =
+            this.props.selected &&
             column === this.props.selected.column &&
             Event.is(this.props.selected.event, event);
-
         if (this.props.selected) {
             if (isSelected) {
                 style = merge(
@@ -185,22 +222,17 @@ export default class ScatterChart extends React.Component {
         } else {
             style = merge(true, defaultStyle.normal, styleMap.normal ? styleMap.normal : {});
         }
-
         return style;
     }
-
     //
     // Render
     //
-
     renderScatter() {
         const { series, timeScale, yScale } = this.props;
         const points = [];
         let hoverOverlay;
-
         // if selectionChange is enabled, pointerEvents should be enabled as well
         const pointerEvents = this.props.onSelectionChange ? "auto" : "none";
-
         this.props.columns.forEach(column => {
             let key = 1;
             for (const event of series.collection().eventList()) {
@@ -209,18 +241,15 @@ export default class ScatterChart extends React.Component {
                 );
                 const value = event.get(column);
                 const style = this.style(column, event);
-
                 const x = timeScale(t);
                 const y = yScale(value);
-
                 const radius = _.isFunction(this.props.radius)
                     ? this.props.radius(event, column)
                     : +this.props.radius;
-
-                const isHighlighted = this.props.highlight &&
+                const isHighlighted =
+                    this.props.highlight &&
                     Event.is(this.props.highlight.event, event) &&
                     column === this.props.highlight.column;
-
                 // Hover info. Note that we just pass all of our props down
                 // into the EventMarker here, but the interesting ones are:
                 // * the info values themselves
@@ -232,12 +261,11 @@ export default class ScatterChart extends React.Component {
                             {...this.props}
                             event={event}
                             column={column}
-                            marker="circle"
+                            type="point"
                             markerRadius={0}
                         />
                     );
                 }
-
                 points.push(
                     <circle
                         key={`${column}-${key}`}
@@ -250,11 +278,9 @@ export default class ScatterChart extends React.Component {
                         onClick={e => this.handleClick(e, event, column)}
                     />
                 );
-
                 key += 1;
             }
         });
-
         return (
             <g>
                 {points}
@@ -262,7 +288,6 @@ export default class ScatterChart extends React.Component {
             </g>
         );
     }
-
     render() {
         return (
             <g>
@@ -284,170 +309,3 @@ export default class ScatterChart extends React.Component {
         );
     }
 }
-
-ScatterChart.propTypes = {
-    /**
-   * What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize
-   */
-    series: PropTypes.instanceOf(TimeSeries).isRequired,
-    /**
-   * Which columns of the series to render
-   */
-    columns: PropTypes.arrayOf(PropTypes.string),
-    /**
-   * Reference to the axis which provides the vertical scale for drawing. e.g.
-   * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
-   */
-    axis: PropTypes.string.isRequired, // eslint-disable-line
-    /**
-   * The radius of the points in the scatter chart.
-   *
-   * If this is a number it will be used as the radius for every point.
-   * If this is a function it will be called for each event.
-   *
-   * The function is called with the event and the column name and must return a number.
-   *
-   * For example this function will use the radius column of the event:
-   *
-   * ```
-   * const radius = (event, column) => {
-   *    return event.get("radius");
-   * }
-   * ```
-   */
-    radius: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.instanceOf(Styler)]),
-    /**
-   * The style of the scatter chart drawing (using SVG CSS properties).
-   * This is an object with a key for each column which is being plotted,
-   * per the `columns` prop. Each of those keys has an object as its
-   * value which has keys which are style properties for an SVG <Circle> and
-   * the value to use.
-   *
-   * For example:
-   * ```
-   * style = {
-   *     columnName: {
-   *         normal: {
-   *             fill: "steelblue",
-   *             opacity: 0.8,
-   *         },
-   *         highlighted: {
-   *             fill: "#a7c4dd",
-   *             opacity: 1.0,
-   *         },
-   *         selected: {
-   *             fill: "orange",
-   *             opacity: 1.0,
-   *         },
-   *         muted: {
-   *             fill: "grey",
-   *             opacity: 0.5
-   *         }
-   *     }
-   * }
-   * ```
-   *
-   * You can also supply a function, which will be called with an event
-   * and column. The function should return an object containing the
-   * 4 states (normal, highlighted, selected and muted) and the corresponding
-   * CSS properties.
-   */
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-    /**
-   * The style of the info box and connecting lines. The style should
-   * be an object of the form { line, box }. Line and box are both objects
-   * containing the inline CSS for those elements of the info tracker.
-   */
-    infoStyle: PropTypes.shape({
-        line: PropTypes.object, // eslint-disable-line
-        box: PropTypes.object // eslint-disable-line
-    }),
-    /**
-   * The width of the hover info box
-   */
-    infoWidth: PropTypes.number, // eslint-disable-line
-    /**
-   * The height of the hover info box
-   */
-    infoHeight: PropTypes.number, // eslint-disable-line
-    /**
-   * The values to show in the info box. This is an array of
-   * objects, with each object specifying the label and value
-   * to be shown in the info box.
-   */
-    info: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string, // eslint-disable-line
-            value: PropTypes.string // eslint-disable-line
-        })
-    ),
-    /**
-   * The selected dot, which will be rendered in the "selected" style.
-   * If a dot is selected, all other dots will be rendered in the "muted" style.
-   *
-   * See also `onSelectionChange`
-   */
-    selected: PropTypes.arrayOf(
-        PropTypes.shape({
-            event: PropTypes.instanceOf(Event),
-            column: PropTypes.string
-        })
-    ),
-    /**
-   * A callback that will be called when the selection changes. It will be called
-   * with an object containing the event and column.
-   */
-    onSelectionChange: PropTypes.func,
-    /**
-   * The highlighted dot, as an object containing the { event, column },
-   * which will be rendered in the "highlighted" style.
-   *
-   * See also the prop `onMouseNear`.
-   */
-    highlight: PropTypes.shape({
-        event: PropTypes.instanceOf(Event),
-        column: PropTypes.string
-    }),
-    /**
-   * Will be called with the nearest point to the cursor. The callback
-   * will contain the point, which is a map of { event, column }.
-   */
-    onMouseNear: PropTypes.func,
-    /**
-   * [Internal] The timeScale supplied by the surrounding ChartContainer
-   */
-    timeScale: PropTypes.func,
-    /**
-   * [Internal] The yScale supplied by the associated YAxis
-   */
-    yScale: PropTypes.func,
-    /**
-   * [Internal] The width supplied by the surrounding ChartContainer
-   */
-    width: PropTypes.number,
-    /**
-   * [Internal] The height supplied by the surrounding ChartContainer
-   */
-    height: PropTypes.number
-};
-
-ScatterChart.defaultProps = {
-    columns: ["value"],
-    radius: 2.0,
-    infoStyle: {
-        stroke: "#999",
-        fill: "white",
-        opacity: 0.90,
-        pointerEvents: "none"
-    },
-    stemStyle: {
-        stroke: "#999",
-        cursor: "crosshair",
-        pointerEvents: "none"
-    },
-    markerStyle: {
-        fill: "#999"
-    },
-    infoWidth: 90,
-    infoHeight: 30
-};

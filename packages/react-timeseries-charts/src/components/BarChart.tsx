@@ -13,35 +13,20 @@ import merge from "merge";
 import React from "react";
 import { TimeSeries, Time, Event, Key } from "pondjs";
 
-import { EventMarker } from "./EventMarker";
+import { ChartProps } from "./Charts";
+import { EventMarker, EventMarkerProps } from "./EventMarker";
 import { Styler } from "../js/styler";
 
-export type CSSProperties = { [key: string]: any };
+import { BarChartStyle, ChannelStyle, defaultBarChartStyle as defaultStyle } from "./style";
+import { LabelValueList } from "./types";
 
-export type BarChartStyle = {
-    normal: CSSProperties;
-    highlighted: CSSProperties;
-    selected: CSSProperties;
-    muted: CSSProperties;
-}
-
-const defaultStyle: BarChartStyle = {
-    normal: { fill: "steelblue", opacity: 0.8 },
-    highlighted: { fill: "steelblue", opacity: 1.0 },
-    selected: { fill: "steelblue", opacity: 1.0 },
-    muted: { fill: "steelblue", opacity: 0.4 }
-};
-
-type BarChartProps = {
+type BarChartProps = ChartProps & {
     series: TimeSeries<Key>,
     spacing?: number,
     offset?: number,
     columns?: string[],
-    style?: BarChartStyle | ((column: string) => BarChartStyle) | Styler,
-    info?: {
-        label?: string,
-        value?: string
-    }[],
+    style?: BarChartStyle | ((column: string) => ChannelStyle) | Styler,
+    info?: LabelValueList | string,
     stemStyle?: object,
     infoStyle?: object,
     infoWidth?: number,
@@ -60,8 +45,6 @@ type BarChartProps = {
         column?: string
     },
     onHighlightChange?: (...args: any[]) => any,
-    timeScale?: (...args: any[]) => any,
-    yScale?: (...args: any[]) => any
 };
 
 /**
@@ -219,8 +202,8 @@ export default class BarChart extends React.Component<BarChartProps> {
         e.stopPropagation();
     }
 
-    providedStyleMap(column: string): BarChartStyle {
-        let style: BarChartStyle;
+    providedStyleMap(column: string): ChannelStyle {
+        let style: ChannelStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
@@ -281,9 +264,11 @@ export default class BarChart extends React.Component<BarChartProps> {
         const series = this.props.series;
         const timeScale = this.props.timeScale;
         const yScale = this.props.yScale;
-        const columns = this.props.columns || ["value"];
+        const columns = this.props.columns;
+
         const bars = [];
         let eventMarker;
+
         for (const event of series.collection().eventList()) {
             const begin = event.begin();
             const end = event.end();
@@ -315,33 +300,41 @@ export default class BarChart extends React.Component<BarChartProps> {
                     const value = event.get(column);
                     const style = this.style(column, event);
                     let height = yScale(0) - yScale(value);
+
                     // Allow negative values. Minimum bar height = 1 pixel.
                     // Stack negative bars below X-axis and positive above X-Axis
                     const positiveBar = height >= 0;
                     height = Math.max(Math.abs(height), 1);
                     const y = positiveBar ? yposPositive - height : yposNegative;
-                    // Event marker if info provided and hovering
+
+                    // Event marker if `info` provided and we are hovering over this bar
                     const isHighlighted =
                         this.props.highlighted &&
                         column === this.props.highlighted.column &&
                         Event.is(this.props.highlighted.event, event);
                     if (isHighlighted && this.props.info) {
+                        const eventMarkerProps: EventMarkerProps = {
+                            key,
+                            event,
+                            column,
+                            type: "flag",
+                            info: this.props.info,
+                            style,
+                            width: this.props.width,
+                            height: this.props.height,
+                            infoWidth: this.props.infoWidth,
+                            infoHeight: this.props.infoWidth,
+                            infoTimeFormat: this.props.infoTimeFormat,
+                            markerRadius: this.props.markerRadius,
+                            offsetX: offset,
+                            offsetY: yBase - (positiveBar ? yposPositive : yposNegative),
+                        }
                         eventMarker = (
-                            <EventMarker
-                                {...this.props}
-                                event={event}
-                                column={column}
-                                offsetX={offset}
-                                offsetY={yBase - (positiveBar ? yposPositive : yposNegative)}
-                            />
+                            <EventMarker {...eventMarkerProps} />
                         );
                     }
                     const box = { x, y, width, height };
-                    const barProps: React.SVGProps<SVGRectElement> = {
-                        key,
-                        ...box,
-                        style
-                    };
+                    const barProps: React.SVGProps<SVGRectElement> = { key, ...box, style };
 
                     if (this.props.onSelectionChange) {
                         barProps.onClick = e => this.handleClick(e, event, column);
@@ -372,6 +365,8 @@ export default class BarChart extends React.Component<BarChartProps> {
     }
 
     render() {
-        return <g>{this.renderBars()}</g>;
+        return (
+            <g>{this.renderBars()}</g>
+        );
     }
 }

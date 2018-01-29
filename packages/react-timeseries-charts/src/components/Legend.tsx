@@ -14,6 +14,7 @@ import Flexbox from "flexbox-react";
 
 import { LegendItem } from "./LegendItem";
 import { Styler } from "../js/styler";
+import { LegendStyle, defaultLegendStyle as defaultStyle, CategoryStyle } from "./style";
 
 export type Category = {
     key: string,
@@ -23,44 +24,6 @@ export type Category = {
     style?: object,
     labelStyle?: object
 }
-
-export type CSSProperties = { [key: string]: any };
-
-export type ModeStyle = {
-    normal: CSSProperties;
-    highlighted: CSSProperties;
-    selected: CSSProperties;
-    muted: CSSProperties;
-}
-
-export type CategoryStyle = {
-    symbol: ModeStyle;
-    label: ModeStyle;
-    value: ModeStyle;
-}
-
-export type LegendStyle = { [key: string]: CategoryStyle }
-
-const defaultStyle: CategoryStyle = {
-    symbol: {
-        normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
-        highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
-        selected: { stroke: "steelblue", fill: "none", strokeWidth: 2 },
-        muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
-    },
-    label: {
-        normal: { fontSize: "normal", color: "#333" },
-        highlighted: { fontSize: "normal", color: "#222" },
-        selected: { fontSize: "normal", color: "#333" },
-        muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
-    },
-    value: {
-        normal: { fontSize: "normal", color: "#333" },
-        highlighted: { fontSize: "normal", color: "#222" },
-        selected: { fontSize: "normal", color: "#333" },
-        muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
-    }
-};
 
 export type LegendProps = {
     type?: "swatch" | "line" | "dot",
@@ -173,7 +136,7 @@ export type LegendProps = {
  * be called with the columnName and you should return the map
  * containing symbol, label and value styles.
  */
-export class Legend extends React.Component<LegendProps, {}> {
+export class Legend extends React.Component<LegendProps> {
 
     static defaultProps: Partial<LegendProps> = {
         style: {},
@@ -182,25 +145,6 @@ export class Legend extends React.Component<LegendProps, {}> {
         symbolWidth: 16,
         symbolHeight: 16
     };
-
-    handleClick(e, key) {
-        e.stopPropagation();
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(key);
-        }
-    }
-
-    handleHover(e, key) {
-        if (this.props.onHighlightChange) {
-            this.props.onHighlightChange(key);
-        }
-    }
-
-    handleHoverLeave() {
-        if (this.props.onHighlightChange) {
-            this.props.onHighlightChange(null);
-        }
-    }
 
     /**
      * For each category item we get the users stle preference. This
@@ -231,7 +175,7 @@ export class Legend extends React.Component<LegendProps, {}> {
      * state of the item, and returns the mode it should be
      * rendered in: normal, selected, highlighted, or muted
      */
-    styleMode(category) {
+    styleMode(category: Category) {
         const isHighlighted = this.props.highlight && category.key === this.props.highlight;
         const isSelected = this.props.selection && category.key === this.props.selection;
         const isDisabled = category.disabled;
@@ -252,7 +196,7 @@ export class Legend extends React.Component<LegendProps, {}> {
         return mode;
     }
 
-    symbolStyle(category) {
+    symbolStyle(category: Category) {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
         return merge(
@@ -262,7 +206,7 @@ export class Legend extends React.Component<LegendProps, {}> {
         );
     }
 
-    labelStyle(category) {
+    labelStyle(category: Category) {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
         return merge(
@@ -272,7 +216,7 @@ export class Legend extends React.Component<LegendProps, {}> {
         );
     }
 
-    valueStyle(category) {
+    valueStyle(category: Category) {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
         return merge(
@@ -284,6 +228,7 @@ export class Legend extends React.Component<LegendProps, {}> {
 
     render() {
         const { type, symbolWidth, symbolHeight } = this.props;
+
         const items = this.props.categories.map(category => {
             const { key, label, value } = category;
             const symbolStyle = this.symbolStyle(category);
@@ -306,7 +251,9 @@ export class Legend extends React.Component<LegendProps, {}> {
                 />
             );
         });
+
         const align = this.props.align === "left" ? "flex-start" : "flex-end";
+
         return (
             <Flexbox justifyContent={align}>
                 {items}

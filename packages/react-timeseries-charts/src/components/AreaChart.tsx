@@ -7,64 +7,40 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+
 import "array.prototype.fill";
+
 import _ from "underscore";
 import { area, line } from "d3-shape";
+import { TimeSeries, Time, Key } from "pondjs";
 import merge from "merge";
 import React from "react";
-import { TimeSeries, Time } from "pondjs";
 
+import { AreaChartStyle, defaultAreaChartStyle as defaultStyle } from "./style";
 import { ChartProps } from "./Charts";
+import { CurveInterpolation, AreaChartColumns } from "./types";
 import { scaleAsString } from "../js/util";
 import { Styler } from "../js/styler";
 import curves from "../js/curve";
 
-export type CSSProperties = { [key: string]: any };
+import "@types/d3-shape";
 
-export type lineStyle = {
-    normal: CSSProperties;
-    highlighted: CSSProperties;
-    selected: CSSProperties;
-    muted: CSSProperties;
+type AreaData = {
+    x0: number,
+    y0: number,
+    y1: number
 }
 
-export type areaStyle = {
-    normal: CSSProperties;
-    highlighted: CSSProperties;
-    selected: CSSProperties;
-    muted: CSSProperties;
-}
-
-interface AreaChartStyle {
-    line: lineStyle;
-    area: areaStyle;
-}
-
-const defaultStyle: AreaChartStyle = {
-    line: {
-        normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
-        highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
-        selected: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
-        muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
-    },
-    area: {
-        normal: { fill: "steelblue", stroke: "none", opacity: 0.75 },
-        highlighted: { fill: "#5a98cb", stroke: "none", opacity: 0.75 },
-        selected: { fill: "steelblue", stroke: "none", opacity: 0.75 },
-        muted: { fill: "steelblue", stroke: "none", opacity: 0.25 },
-    }
-};
-
-interface AreaChartColumns {
-    up: string[];
-    down: string[];
+enum StyleType {
+    Line = "line",
+    Area = "area"
 }
 
 type AreaChartProps = ChartProps & {
-    series: TimeSeries<Time>;
+    series: TimeSeries<Key>;
     columns: AreaChartColumns;
     style: AreaChartStyle;
-    interpolation: any;
+    interpolation: CurveInterpolation;
     axis: string;
     stack?: boolean;
     highlight?: string;
@@ -124,9 +100,9 @@ type AreaChartProps = ChartProps & {
 export default class AreaChart extends React.Component<AreaChartProps> {
 
     defaultProps = {
-        interpolation: "curveLinear",
+        interpolation: CurveInterpolation.curveLinear,
         columns: {
-            up: ["value"],
+            up: [],
             down: []
         },
         stack: true
@@ -188,7 +164,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         }
     }
 
-    providedAreaStyleMap(column) {
+    providedAreaStyleMap(column: string) {
         let style = defaultStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
@@ -207,17 +183,17 @@ export default class AreaChart extends React.Component<AreaChartProps> {
     /**
      * Returns the style used for drawing the path
      */
-    style(column, type) {
+    style(column: string, type: StyleType) {
         let style;
         const styleMap = this.providedAreaStyleMap(column);
 
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
 
-        if (!_.has(styleMap, "line")) {
+        if (!_.has(styleMap, StyleType.Line)) {
             console.error("Provided style for AreaChart does not define a style for the outline:", styleMap, column);
         }
-        if (!_.has(styleMap, "area")) {
+        if (!_.has(styleMap, StyleType.Area)) {
             console.error("Provided style for AreaChart does not define a style for the area:", styleMap);
         }
         if (this.props.selection) {
@@ -241,11 +217,11 @@ export default class AreaChart extends React.Component<AreaChartProps> {
     }
 
     pathStyle(column) {
-        return this.style(column, "line");
+        return this.style(column, StyleType.Line);
     }
 
     areaStyle(column) {
-        return this.style(column, "area");
+        return this.style(column, StyleType.Area);
     }
 
     renderPaths(columnList: string[], direction: string) {
@@ -257,7 +233,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
             const pathStyle = this.pathStyle(column);
 
             // Stack the series columns to get our data in x0, y0, y1 format
-            const data = [];
+            const data: AreaData[] = [];
             for (let j = 0; j < this.props.series.size(); j += 1) {
                 const seriesPoint = this.props.series.at(j);
                 data.push({
@@ -271,7 +247,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
             }
 
             // Use D3 to build an area generation function
-            const areaGenerator = area()
+            const areaGenerator = area<AreaData>()
                 .curve(curves[this.props.interpolation])
                 .x(d => d.x0)
                 .y0(d => d.y0)
@@ -282,7 +258,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
             const areaPath = areaGenerator(data);
 
             // Outline the top of the curve
-            const lineGenerator = line()
+            const lineGenerator = line<AreaData>()
                 .curve(curves[this.props.interpolation])
                 .x(d => d.x0)
                 .y(d => d.y1);
@@ -304,7 +280,8 @@ export default class AreaChart extends React.Component<AreaChartProps> {
                         onMouseLeave={() => this.handleHoverLeave()}
                         onMouseMove={e => this.handleHover(e, column)}
                     />
-                </g>);
+                </g>
+            );
         });
     }
 

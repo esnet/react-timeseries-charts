@@ -33,47 +33,7 @@ import { Styler } from "../js/styler";
 import { scaleAsString } from "../js/util";
 import { ReducerFunction } from "pondjs/lib/types";
 
-const defaultFillStyle = {
-    fill: "steelblue",
-    stroke: "none"
-};
-
-const defaultMutedStyle = {
-    fill: "grey",
-    stroke: "none"
-};
-
-export type CSSProperties = { [mode: string]: any };
-
-export type ChannelStyle = {
-    normal: CSSProperties;
-    highlighted: CSSProperties;
-    selected: CSSProperties;
-    muted: CSSProperties;
-}[];
-
-export type BoxChartStyle = { [channel: string]: ChannelStyle }
-
-const defaultStyle: ChannelStyle = [
-    {
-        normal: { ...defaultFillStyle, opacity: 0.2 },
-        highlighted: { ...defaultFillStyle, opacity: 0.3 },
-        selected: { ...defaultFillStyle, opacity: 0.3 },
-        muted: { ...defaultMutedStyle, opacity: 0.1 },
-    },
-    {
-        normal: { ...defaultFillStyle, opacity: 0.5 },
-        highlighted: { ...defaultFillStyle, opacity: 0.6 },
-        selected: { ...defaultFillStyle, opacity: 0.6 },
-        muted: { ...defaultMutedStyle, opacity: 0.2 }
-    },
-    {
-        normal: { ...defaultFillStyle, opacity: 0.9 },
-        highlighted: { ...defaultFillStyle, opacity: 1.0 },
-        selected: { ...defaultFillStyle, opacity: 1.0 },
-        muted: { ...defaultMutedStyle, opacity: 0.2 }
-    }
-];
+import { BoxChartStyle, BoxChartChannelStyle as ChannelStyle, LevelStyle, defaultBoxChartStyle as defaultStyle } from "./style";
 
 /**
  * A structure the user can pass into this Chart to automatically build the
@@ -344,8 +304,15 @@ export default class BoxChart extends React.Component<BoxChartProps> {
         infoHeight: 30
     };
 
+    // Cached series
     series: TimeSeries<Index>;
+
+    // Cached styles
     providedStyle: ChannelStyle;
+    selectedStyle: ChannelStyle;
+    highlightedStyle: ChannelStyle;
+    mutedStyle: ChannelStyle;
+    normalStyle: ChannelStyle;
 
     constructor(props: BoxChartProps) {
         super(props);
@@ -466,26 +433,32 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             } else if (_.isFunction(this.props.style)) {
                 style = this.props.style(column);
             } else if (_.isObject(this.props.style)) {
-                style = this.props.style ? this.props.style[column] : defaultStyle;
+                style = this.props.style[column];
             }
         }
         return style;
     }
 
     /**
-     * Returns the style used for drawing the path
+     * Returns the style of a specific column, at a specific level taking into
+     * account the mode of the Event (selected, highlighted etc). This is the
+     * style used for drawing the box itself.
      */
-    style(column, event, level) {
-        let style;
+    style(column: string, event: Event<Index>, level: number): LevelStyle {
+        let style: LevelStyle;
+
         if (!this.providedStyle) {
             this.providedStyle = this.providedStyleArray(this.props.column);
         }
         if (!_.isNull(this.providedStyle) && (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)) {
             console.warn("Provided style to BoxChart should be an array of 3 objects");
-            return defaultStyle;
+            return defaultStyle[level];
         }
+
+        // Is the event highlighted or selected?
         const isHighlighted = this.props.highlighted && Event.is(this.props.highlighted, event);
         const isSelected = this.props.selected && Event.is(this.props.selected, event);
+
         if (this.props.selected) {
             if (isSelected) {
                 if (!this.selectedStyle || !this.selectedStyle[level]) {
@@ -548,12 +521,14 @@ export default class BoxChart extends React.Component<BoxChartProps> {
 
     renderBars() {
         const { timeScale, yScale, column } = this.props;
+
         const innerSpacing = +this.props.innerSpacing;
         const outerSpacing = +this.props.outerSpacing;
         const innerSize = +this.props.innerSize;
         const outerSize = +this.props.outerSize;
         const bars = [];
         let eventMarker;
+
         for (const event of this.series.collection().eventList()) {
             const index = event.index();
             const begin = event.begin();
@@ -601,7 +576,7 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             if (_.isNull(center)) {
                 hasCenter = false;
             }
-            let ymax = 0;
+            let ymax = null;
             if (hasOuter) {
                 let level = 0;
                 if (!hasInner) {
@@ -619,10 +594,10 @@ export default class BoxChart extends React.Component<BoxChartProps> {
                     rx: 2,
                     ry: 2
                 };
-                const barOuterProps = {
+                const barOuterProps: any = {
                     key: keyOuter,
+                    style: styles[level],
                     ...boxOuter,
-                    style: styles[level]
                 };
                 if (this.props.onSelectionChange) {
                     barOuterProps.onClick = e => this.handleClick(e, event);
@@ -648,7 +623,7 @@ export default class BoxChart extends React.Component<BoxChartProps> {
                     rx: 1,
                     ry: 1
                 };
-                const barInnerProps = {
+                const barInnerProps: any = {
                     key: keyInner,
                     ...boxInner,
                     style: styles[level]

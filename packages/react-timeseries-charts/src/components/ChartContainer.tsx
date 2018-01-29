@@ -119,21 +119,37 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
             this.props.onTimeRangeChanged(timerange);
         }
     }
-    handleMouseMove(t) {
+
+    /**
+     * Called from the EventHandler.onMouseMove with the cursor
+     * position as a Date.
+     */
+    handleMouseMove(t: Date) {
         if (this.props.onTrackerChanged) {
             this.props.onTrackerChanged(t);
         }
     }
+
+    /**
+     * Called from the EventHandler.onMouseOut when the cursor leaves
+     * the chart area.
+     */
     handleMouseOut() {
         if (this.props.onTrackerChanged) {
             this.props.onTrackerChanged(null);
         }
     }
+
+    /**
+     * Called from the EventHandler (onMouseClick callback) when the user clicks on
+     * an area without a chart.
+     */
     handleBackgroundClick() {
         if (this.props.onBackgroundClick) {
             this.props.onBackgroundClick();
         }
     }
+
     handleZoom(timerange) {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
@@ -310,24 +326,26 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         //
         // Event handler
         //
-        const rows = (<g transform={`translate(${leftWidth},${0})`}>
-            <EventHandler
-                key="event-handler"
-                width={chartsWidth}
-                height={chartsHeight + timeAxisHeight}
-                scale={timeScale}
-                enablePanZoom={this.props.enablePanZoom}
-                minDuration={this.props.minDuration}
-                minTime={this.props.minTime}
-                maxTime={this.props.maxTime}
-                onMouseOut={() => this.handleMouseOut()}
-                onMouseMove={d => this.handleMouseMove(d)}
-                onMouseClick={() => this.handleBackgroundClick()}
-                onZoom={tr => this.handleZoom(tr)}
-            >
-                {chartRows}
-            </EventHandler>
-        </g>);
+        const rows = (
+            <g transform={`translate(${leftWidth},${0})`}>
+                <EventHandler
+                    key="event-handler"
+                    width={chartsWidth}
+                    height={chartsHeight + timeAxisHeight}
+                    scale={timeScale}
+                    enablePanZoom={this.props.enablePanZoom}
+                    minDuration={this.props.minDuration}
+                    minTime={this.props.minTime}
+                    maxTime={this.props.maxTime}
+                    onMouseOut={() => this.handleMouseOut()}
+                    onMouseMove={d => this.handleMouseMove(d)}
+                    onMouseClick={() => this.handleBackgroundClick()}
+                    onZoom={tr => this.handleZoom(tr)}
+                >
+                    {chartRows}
+                </EventHandler>
+            </g>
+        );
 
         //
         // Final render of the ChartContainer is composed of a number of

@@ -15,8 +15,10 @@ import PropTypes from "prop-types";
 import { timeFormat } from "d3-time-format";
 import "moment-duration-format";
 
+import { ChartProps } from "./charts";
 import ValueList from "./ValueList";
 import Label from "./Label";
+import { TimeMarkerStyle, defaultTimeMarkerStyle } from "./style";
 
 import "@types/moment-duration-format";
 
@@ -24,19 +26,16 @@ export type StringPair = [string, string];
 export type InfoValues = string | StringPair[];
 export type TimeFormatCallback = (d: Date) => string;
 
-export type CSSProperties = { [key: string]: any };
-
-interface TimeMarkerStyle {
-    line: CSSProperties;
-    box: CSSProperties;
-    dot: CSSProperties;
-}
-
-export type TimeMarkerProps = {
+export type TimeMarkerProps = ChartProps & {
     /**
      * A Javascript Date object to position the marker
      */
     time: Date;
+
+    /**
+     * The style of the info box and connecting lines
+     */
+    style?: Partial<TimeMarkerStyle>;
 
     /**
      * The format to display the time of the marker in
@@ -61,13 +60,6 @@ export type TimeMarkerProps = {
     infoWidth?: number;
 
     /**
-     * The style of the info box and connecting lines. This is an object of the
-     * form { line, box, dot }. Line, box and dot are themselves objects representing
-     * inline CSS for each of the pieces of the info marker.
-     */
-    infoStyle?: Partial<TimeMarkerStyle>;
-
-    /**
      * Display the info box at all. If you don't have any values to show and
      * just want a line and a time (for example), you can set this to false.
      */
@@ -87,66 +79,38 @@ export type TimeMarkerProps = {
      * just don't like it.
      */
     showTime?: boolean;
-
-    /**
-     * [Internal] The `timeScale` supplied by the surrounding `ChartContainer`
-     */
-    timeScale?: (...args: any[]) => any;
-
-    /**
-     * [Internal] The width supplied by the surrounding ChartContainer
-     */
-    width?: number;
-
-    /**
-     * [Internal] The height supplied by the surrounding ChartContainer
-     */
-    height?: number;
 };
 
+/**
+ * An overlay marker that marks a specific `time` with a line, time label
+ * and info box containing data
+ */
 export class TimeMarker extends React.Component<TimeMarkerProps> {
 
     static defaultProps: Partial<TimeMarkerProps> = {
         showInfoBox: true,
         showLine: true,
         showTime: true,
-        infoStyle: {
-            line: {
-                stroke: "#999",
-                cursor: "crosshair",
-                pointerEvents: "none"
-            },
-            box: {
-                fill: "white",
-                opacity: 0.9,
-                stroke: "#999",
-                pointerEvents: "none"
-            },
-            dot: {
-                fill: "#999"
-            }
-        },
+        style: defaultTimeMarkerStyle,
         infoWidth: 90,
         infoHeight: 25
     };
 
     renderLine(posx) {
+        const { style } = this.props;
         return (
             <line
-                style={this.props.infoStyle.line}
+                style={style.line}
                 x1={posx}
                 y1={0}
                 x2={posx}
                 y2={this.props.height}
-            />);
+            />
+        );
     }
 
     renderTimeMarker(d: Date) {
-        const textStyle = {
-            fontSize: 11,
-            textAnchor: "left",
-            fill: "#bdbdbd"
-        };
+        const { style } = this.props;
         let dateStr = `${d}`;
         if (this.props.timeFormat === "day") {
             const formatter = timeFormat("%d");
@@ -171,14 +135,16 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
             const fn = this.props.timeFormat as TimeFormatCallback;
             dateStr = fn(d);
         }
-        return (<text x={0} y={0} dy="1.2em" style={textStyle}>
-            {dateStr}
-        </text>);
+        return (
+            <text x={0} y={0} dy="1.2em" style={style.text}>
+                {dateStr}
+            </text>
+        );
     }
 
     renderInfoBox(posx) {
         const w = this.props.infoWidth;
-        const infoBoxProps = {
+        const infoBoxProps: InfoBoxProps = {
             align: "left",
             style: this.props.infoStyle.box,
             width: this.props.infoWidth,
