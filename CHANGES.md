@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.1
+> January 29, 2018
+ * Support for React 16
+ * Ability to hide and show charts, rows and axes with a single flag
+ * Ability to supply format function to y-axis scales ([@ethanroday](https://github.com/ethanroday) in [#211](https://github.com/esnet/react-timeseries-charts/pull/212))
+
 ## v0.12.6
 > July 14, 2017
 
