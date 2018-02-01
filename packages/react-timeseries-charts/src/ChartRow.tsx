@@ -11,19 +11,20 @@ import _ from "underscore";
 import PropTypes from "prop-types";
 import React, { ReactElement, ReactNode } from "react";
 import { easeSinOut } from "d3-ease";
-import { scaleLinear, scaleLog, scalePow } from "d3-scale";
+import { scaleLinear, scaleLog, scalePow, ScaleTime, ScaleLogarithmic, ScaleLinear } from "d3-scale";
 
 import { Brush } from "./Brush";
-import { Charts, ChartsProps, ChartProps } from "./Charts";
+import { Charts, ChartsProps, ChartProps, AxisProps, ScaleType } from "./Charts";
 import { TimeMarker, TimeMarkerProps, InfoValues } from "./TimeMarker";
 import { YAxis, YAxisProps } from "./YAxis";
-import ScaleInterpolator from "../js/interpolators";
+import ScaleInterpolator from "./interpolators";
 
+import "@types/d3-scale";
 import "@types/underscore";
 
 const AXIS_MARGIN = 5;
 
-function createScale(yaxis, type, min, max, y0, y1) {
+function createScale(yaxis: React.ReactElement<any>, type: string, min, max, y0, y1): Scale {
     let scale;
     if (_.isUndefined(min) || _.isUndefined(max)) {
         scale = null;
@@ -46,7 +47,7 @@ export type ChartRowProps = {
     children?: any;
     width?: number;
     height?: number;
-    timeScale?: (...args: any[]) => any;
+    timeScale?: ScaleTime<number, number>;
     trackerTime?: Date;
     trackerTimeFormat?: string;
     timeFormat?: string;
@@ -131,7 +132,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
 
         React.Children.forEach(this.props.children, (child: ReactElement<any>) => {
             if ((child.type === YAxis || _.has(child.props, "min")) && _.has(child.props, "max")) {
-                const { id, max, min, transition = 0, type = "linear" } = child.props;
+                const { id, max, min, transition = 0, type = ScaleType.Linear } = child.props as AxisProps;
                 const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
                     const yAxisScalerMap = this.state.yAxisScalerMap;
@@ -142,6 +143,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                 this.scaleMap[id].setScale(cacheKey, initialScale);
             }
         });
+
         const scalerMap = {};
         _.forEach(this.scaleMap, (interpolator, id) => {
             scalerMap[id] = interpolator.scaler();
@@ -376,11 +378,13 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         if (this.props.trackerTime) {
             const timeFormat = this.props.trackerTimeFormat || this.props.timeFormat;
             const timeMarkerProps: TimeMarkerProps = {
+                key: "tracker",
                 timeFormat,
                 showLine: false,
                 showTime: this.props.trackerShowTime,
                 time: this.props.trackerTime,
                 timeScale: this.props.timeScale,
+                height: this.props.height,
                 width: chartWidth
             };
             if (this.props.trackerInfoValues) {

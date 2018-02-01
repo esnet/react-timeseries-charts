@@ -8,15 +8,49 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import React from "react";
+import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
+import "@types/d3-scale";
+
+//
+// Axis types
+//
+
+export type Scale = ScaleLogarithmic<number, number> |
+    ScaleLinear<number, number> |
+    ScaleLogarithmic<number, number>;
+
+export enum ScaleType {
+    Linear = "LINEAR",
+    Power = "POWER",
+    Log = "LOG"
+}
+
+export type AxisProps = {
+    type: ScaleType;
+    id: string;
+    max: number;
+    min: number;
+    transition?: number;
+    height: number;
+    width: number;
+};
+
+//
+// Props shared by all charts
+//
 
 export type ChartProps = {
     key: string | number;
     width: number;
     height: number;
-    timeScale?: (...args: any[]) => any;
-    yScale?: (...args: any[]) => any;
+    timeScale?: ScaleTime<number, number>;
+    yScale?: ScaleLinear<number, number>;
     timeFormat?: string
 };
+
+//
+// The <Charts> container
+//
 
 export type ChartsProps = {
     children?: any;

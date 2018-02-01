@@ -13,19 +13,15 @@ import React from "react";
 import { timerange, TimeRange } from "pondjs";
 import { ScaleTime } from "d3-scale";
 
+import { ChartProps } from "./charts";
 import { getElementOffset } from "../js/util";
 
-import "@types/d3-scale";
-
-export type BrushProps = {
+export type BrushProps = ChartProps & {
     style?: object;
     timeRange?: TimeRange;
     handleSize?: number;
     allowSelectionClear?: boolean;
     onTimeRangeChanged?: (d?: TimeRange) => any;
-    timeScale?: ScaleTime<number, number>;
-    width?: number;
-    height?: number;
 };
 
 type BrushState = {
@@ -41,7 +37,7 @@ type BrushState = {
  */
 export class Brush extends React.Component<BrushProps, BrushState> {
 
-    static defaultProps: BrushProps = {
+    static defaultProps: Partial<BrushProps> = {
         handleSize: 6,
         allowSelectionClear: false
     };

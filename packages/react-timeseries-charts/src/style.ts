@@ -8,6 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { Event, Key } from "pondjs"
+
 // Default colors
 const primaryColor = "steelblue";
 const highlightColor = "#5a98cb";
@@ -138,7 +140,7 @@ export const defaultScatterChartStyle: ChannelStyle = {
 // EventChart
 //
 
-export type EventChartStyle = (channel: string) => React.CSSProperties;
+export type EventChartStyle = (event: Event<Key>, mode: string) => React.CSSProperties;
 
 //
 // Baseline
@@ -227,7 +229,6 @@ export const defaultTimeMarkerStyle = {
 //
 // Legend
 //
-
 
 export type CategoryStyle = {
     symbol: ChannelStyle;

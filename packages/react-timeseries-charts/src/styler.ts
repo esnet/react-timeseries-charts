@@ -11,6 +11,20 @@
 import _ from "underscore";
 import colorbrewer from "colorbrewer";
 
+import "@types/underscore";
+
+export type KeyedStyle = {
+    key: string
+}
+
+export type StylerStyle = {
+    color: string;
+    width: number;
+    dashed: boolean;
+}
+
+export type Column = string | KeyedStyle;
+
 /**
  * For our Style we want to represent two things:
  *
@@ -38,25 +52,30 @@ import colorbrewer from "colorbrewer";
  *
  */
 export class Styler {
+
+    colorScheme: string;
+    columnNames: any[];
+    columnStyles: {};
+
     /**
-   * The columns define the style associated with a particular
-   * quantity, such as "inTraffic" or "temperature". The columns
-   * are an array, with each element being either a string, or
-   * and object defining the style.
-   *
-   *  * Using a string makes the assumption that you want to use a
-   * color scheme, so you need to define that if you don't want the
-   * default. A color will be then assigned to each column based
-   * on the scheme. The string is the column name.
-   *
-   *  * In the second case of providing an object, you define properties
-   * of the style yourself. Each object should contain a "key" property
-   * which is the column name and optionally the `width` and `dashed`
-   * property. If you don't supply the color, then the color
-   * will come from the scheme.
-   *
-   */
-    constructor(columns, scheme = "Paired") {
+     * The `column`s define the style associated with a particular
+     * quantity, such as "inTraffic" or "temperature". The columns
+     * are an array, with each element being either a `string`, or
+     * and `object` defining the style.
+     *
+     *  * Using a string makes the assumption that you want to use a
+     * color scheme, so you need to define that if you don't want the
+     * default. A color will be then assigned to each column based
+     * on the scheme. The string is the column name.
+     *
+     *  * In the second case of providing an object, you define properties
+     * of the style yourself. Each object should contain a "key" property
+     * which is the column name and optionally the `width` and `dashed`
+     * property. If you don't supply the color, then the color
+     * will come from the scheme.
+     *
+     */
+    constructor(columns: Column[], scheme = "Paired") {
         this.columnStyles = {};
         if (_.isArray(columns)) {
             columns.forEach(column => {
@@ -84,14 +103,12 @@ export class Styler {
     }
 
     /**
-   * Returns the color scheme with the appropiate number of colors.
-   * If there are more columns than the largest set in the scheme then
-   * just the largest scheme set will be returned.
-   * If there are less columns than the smallest set in the scheme then
-   * just the smallest scheme will be returned.
-   * @param  {number} columnCount The number of columns to apply the scheme to
-   * @return {array}              An array with the scheme colors in it.
-   */
+     * Returns the color scheme with the appropiate number of colors.
+     * If there are more columns than the largest set in the scheme then
+     * just the largest scheme set will be returned.
+     * If there are less columns than the smallest set in the scheme then
+     * just the smallest scheme will be returned.
+     */
     colorLookup(columnCount) {
         const colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
         const minSchemeSize = _.min(colorSchemeKeys);
@@ -102,7 +119,8 @@ export class Styler {
     }
 
     /**
-   */
+     * 
+     */
     legendStyle(column, type) {
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
@@ -111,7 +129,7 @@ export class Styler {
         const { color, width = 1, dashed = false } = this.columnStyles[columnName];
         const c = color || colorLookup[i % colorLookup.length];
 
-        let styleSymbol = {};
+        let styleSymbol: React.CSSProperties = {};
         if (type === "swatch" || type === "dot") {
             styleSymbol = {
                 fill: c,
@@ -174,12 +192,12 @@ export class Styler {
         let i = 0;
         _.forEach(this.columnStyles, ({ color, selected, width = 1, dashed = false }, column) => {
             const c = color || colorLookup[i % colorLookup.length];
-            const styleLine = {
+            const styleLine: React.CSSProperties = {
                 stroke: c,
                 fill: "none",
                 strokeWidth: width
             };
-            const styleSelectedLine = {
+            const styleSelectedLine: React.CSSProperties = {
                 stroke: selected || color,
                 fill: "none",
                 strokeWidth: width
@@ -187,11 +205,11 @@ export class Styler {
             if (dashed) {
                 styleLine.strokeDasharray = "4,2";
             }
-            const styleArea = {
+            const styleArea: React.CSSProperties = {
                 fill: c,
                 stroke: "none"
             };
-            const styleSelectedArea = {
+            const styleSelectedArea: React.CSSProperties = {
                 fill: selected || color,
                 stroke: "none"
             };
@@ -221,12 +239,12 @@ export class Styler {
         _.forEach(this.columnStyles, ({ color, selected, width = 1, dashed = false }, column) => {
             const i = _.indexOf(this.columnNames, column);
             const c = color || colorLookup[i % colorLookup.length];
-            const styleLine = {
+            const styleLine: React.CSSProperties = {
                 stroke: c,
                 strokeWidth: width,
                 fill: "none"
             };
-            const styleSelectedLine = {
+            const styleSelectedLine: React.CSSProperties = {
                 stroke: selected || c,
                 strokeWidth: width,
                 fill: "none"
@@ -252,10 +270,10 @@ export class Styler {
         _.forEach(this.columnStyles, ({ color, selected }, column) => {
             const i = _.indexOf(this.columnNames, column);
             const c = color || colorLookup[i % colorLookup.length];
-            const fillStyle = {
+            const fillStyle: React.CSSProperties = {
                 fill: c
             };
-            const selectedStyle = {
+            const selectedStyle: React.CSSProperties = {
                 fill: selected || c
             };
             style[column] = {
@@ -275,10 +293,10 @@ export class Styler {
         _.forEach(this.columnStyles, ({ color, selected }, column) => {
             const i = _.indexOf(this.columnNames, column);
             const c = color || colorLookup[i % colorLookup.length];
-            const fillStyle = {
+            const fillStyle: React.CSSProperties = {
                 fill: c
             };
-            const selectedStyle = {
+            const selectedStyle: React.CSSProperties = {
                 fill: selected || c
             };
             style[column] = {
@@ -312,11 +330,11 @@ export class Styler {
         let i = 0;
         _.forEach(this.columnStyles, ({ color, selected }, column) => {
             const c = color || colorLookup[i % colorLookup.length];
-            const styleArea = {
+            const styleArea: React.CSSProperties = {
                 fill: c,
                 stroke: "none"
             };
-            const styleSelectedArea = {
+            const styleSelectedArea: React.CSSProperties = {
                 fill: selected || color,
                 stroke: "none"
             };

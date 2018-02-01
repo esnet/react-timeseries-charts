@@ -28,12 +28,20 @@ import {
 } from "pondjs";
 
 import { ChartProps } from "./Charts";
-import { EventMarker } from "./EventMarker";
-import { Styler } from "../js/styler";
-import { scaleAsString } from "../js/util";
-import { ReducerFunction } from "pondjs/lib/types";
+import { EventMarker, EventMarkerProps } from "./EventMarker";
+import { LabelValueList } from "./types";
+import { Styler } from "./styler";
+import { scaleAsString } from "./util";
 
-import { BoxChartStyle, BoxChartChannelStyle as ChannelStyle, LevelStyle, defaultBoxChartStyle as defaultStyle } from "./style";
+import {
+    BoxChartStyle,
+    BoxChartChannelStyle as ChannelStyle,
+    LevelStyle,
+    defaultBoxChartStyle as defaultStyle,
+    EventMarkerStyle
+} from "./style";
+
+import { ReducerFunction } from "pondjs/lib/types";
 
 /**
  * A structure the user can pass into this Chart to automatically build the
@@ -191,13 +199,12 @@ type BoxChartProps = ChartProps & {
     column?: string,
     aggregation?: AggregationSpec,
     style?: BoxChartStyle | ((channel: string) => ChannelStyle) | Styler,
-    infoStyle?: object,
+    info?: LabelValueList | string,
+    infoStyle?: EventMarkerStyle,
+    infoTimeFormat?: ((date: Date) => string) | string,
     infoWidth?: number,
     infoHeight?: number,
-    info?: {
-        label?: string,
-        value?: string
-    }[],
+    infoMarkerRadius?: number,
     innerSpacing?: number,
     outerSpacing?: number,
     innerSize?: number,
@@ -299,7 +306,7 @@ export default class BoxChart extends React.Component<BoxChartProps> {
         markerStyle: {
             fill: "#999"
         },
-        markerRadius: 2,
+        infoMarkerRadius: 2,
         infoWidth: 90,
         infoHeight: 30
     };
@@ -534,10 +541,12 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             const begin = event.begin();
             const end = event.end();
             const d = event.getData();
+
             const beginPosInner = timeScale(begin) + innerSpacing;
             const endPosInner = timeScale(end) - innerSpacing;
             const beginPosOuter = timeScale(begin) + outerSpacing;
             const endPosOuter = timeScale(end) - outerSpacing;
+
             let innerWidth = innerSize || endPosInner - beginPosInner;
             if (innerWidth < 1) {
                 innerWidth = 1;
@@ -546,6 +555,7 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             if (outerWidth < 1) {
                 outerWidth = 1;
             }
+
             const c = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
             let xInner = timeScale(begin) + innerSpacing;
             if (innerSize) {
@@ -555,6 +565,7 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             if (outerSize) {
                 xOuter = c - outerSize / 2;
             }
+
             const styles = [];
             styles[0] = this.style(column, event, 0);
             styles[1] = this.style(column, event, 1);
@@ -665,15 +676,24 @@ export default class BoxChart extends React.Component<BoxChartProps> {
             // Event marker if info provided and hovering
             const isHighlighted = this.props.highlighted && Event.is(this.props.highlighted, event);
             if (isHighlighted && this.props.info) {
+
+                const eventMarkerProps: EventMarkerProps = {
+                    key: `marker-${index}`,
+                    event,
+                    column,
+                    type: "point",
+                    info: this.props.info,
+                    style: this.props.infoStyle,
+                    yValueFunc: e => e.get(ymax),
+                    width: this.props.width,
+                    height: this.props.height,
+                    infoWidth: this.props.infoWidth,
+                    infoHeight: this.props.infoWidth,
+                    infoTimeFormat: this.props.infoTimeFormat,
+                    markerRadius: this.props.infoMarkerRadius
+                }
                 eventMarker = (
-                    <EventMarker
-                        {...this.props}
-                        yValueFunc={e => e.get(ymax)}
-                        event={event}
-                        column={column}
-                        type="point"
-                        markerRadius={2}
-                    />
+                    <EventMarker {...eventMarkerProps} />
                 );
             }
         }

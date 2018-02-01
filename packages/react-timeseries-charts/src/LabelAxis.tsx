@@ -11,7 +11,8 @@
 import React from "react";
 import { format } from "d3-format";
 
-import ValueList from "./ValueList";
+import { ValueList } from "./ValueList";
+import { InfoBoxStyle } from "./style";
 
 type LabelAxisProps = {
     label: string,
@@ -39,7 +40,7 @@ type LabelAxisProps = {
  *      +----------------+-----+------- ...
  * ```
  */
-export default class LabelAxis extends React.Component<LabelAxisProps, {}> {
+export default class LabelAxis extends React.Component<LabelAxisProps> {
 
     static defaultProps: Partial<LabelAxisProps> = {
         hideScale: false,
@@ -76,20 +77,27 @@ export default class LabelAxis extends React.Component<LabelAxisProps, {}> {
     }
 
     render() {
-        const valueWidth = this.props.valWidth;
-        const rectWidth = this.props.width - valueWidth;
-        const labelStyle = {
+        const textStyle = {
             fontSize: 12,
             textAnchor: "middle",
             fill: "#838383"
         };
+        const valueWidth = this.props.valWidth;
+        const rectWidth = this.props.width - valueWidth;
         let valueList = null;
         let labelYPos;
         if (this.props.values) {
             labelYPos = Math.max(Math.round(this.props.height / 4), 10);
+            const style: InfoBoxStyle = {
+                text: textStyle,
+                box: {
+                    fill: "none",
+                    stroke: "none"
+                }
+            }
             valueList = (
                 <ValueList
-                    style={{ fill: "none", stroke: "none" }}
+                    style={style}
                     values={this.props.values}
                     width={rectWidth}
                 />
@@ -97,6 +105,7 @@ export default class LabelAxis extends React.Component<LabelAxisProps, {}> {
         } else {
             labelYPos = Math.round(this.props.height / 2);
         }
+
         return (
             <g>
                 <rect
@@ -106,7 +115,7 @@ export default class LabelAxis extends React.Component<LabelAxisProps, {}> {
                     height={this.props.height}
                     style={{ fill: "none", stroke: "none" }}
                 />
-                <text x={Math.round(rectWidth / 2)} y={labelYPos} style={labelStyle}>
+                <text x={Math.round(rectWidth / 2)} y={labelYPos} style={textStyle}>
                     {this.props.label}
                 </text>
                 <g transform={`translate(0,${labelYPos + 2})`}>{valueList}</g>

@@ -65,10 +65,9 @@ type ChartContainerProps = {
     trackerValues?: InfoValues;
     trackerInfoWidth?: number;
     trackerInfoHeight?: number;
-    onTrackerChanged?: (...args: any[]) => any;
-    onTimeRangeChanged?: (...args: any[]) => any;
-    onChartResize?: (...args: any[]) => any;
-    onBackgroundClick?: (...args: any[]) => any;
+    onTrackerChanged?: (time: Date) => any;
+    onTimeRangeChanged?: (timerange: TimeRange) => any;
+    onBackgroundClick?: () => any;
 };
 
 /**
@@ -103,23 +102,6 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         timeAxisStyle: defaultTimeAxisStyle
     };
 
-    handleTrackerChanged(t) {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(t);
-        }
-    }
-
-    /**
-     * Within the charts library the time range of the x axis is kept as a begin
-     * and end time (Javascript Date objects). But the interface is Pond based,
-     * so this callback returns a Pond TimeRange.
-     */
-    handleTimeRangeChanged(timerange) {
-        if (this.props.onTimeRangeChanged) {
-            this.props.onTimeRangeChanged(timerange);
-        }
-    }
-
     /**
      * Called from the EventHandler.onMouseMove with the cursor
      * position as a Date.
@@ -150,14 +132,9 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         }
     }
 
-    handleZoom(timerange) {
+    handleZoom(timerange: TimeRange) {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
-        }
-    }
-    handleResize(width, height) {
-        if (this.props.onChartResize) {
-            this.props.onChartResize(width, height);
         }
     }
 
@@ -287,15 +264,16 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
             tracker = (<g key="tracker-group" style={{ pointerEvents: "none" }} transform={`translate(${leftWidth},0)`}>
                 <TimeMarker
+                    key="marker"
                     width={chartsWidth}
                     height={chartsHeight}
                     showInfoBox={false}
                     time={this.props.trackerTime}
                     timeScale={timeScale}
                     timeFormat={this.props.timeFormat}
+                    infoValues={this.props.trackerValues}
                     infoWidth={this.props.trackerInfoWidth}
                     infoHeight={this.props.trackerInfoHeight}
-                    infoValues={this.props.trackerValues}
                 />
             </g>);
         }

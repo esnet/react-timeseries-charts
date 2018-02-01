@@ -18,7 +18,8 @@ import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
 import { select } from "d3-selection";
 
-import { scaleAsString } from "../js/util";
+import { scaleAsString } from "./util";
+import { AxisProps, ScaleType } from "./Charts";
 
 type CSSProperties = { [key: string]: any };
 
@@ -38,27 +39,17 @@ const defaultStyle: YAxisStyle = {
     }
 };
 
-export enum YAxisType {
-    Linear = "LINEAR",
-    Power = "POWER",
-    Log = "LOG"
-}
-
-export type YAxisProps = {
-    id: string;
+export type YAxisProps = AxisProps & {
     label?: string;
-    type?: YAxisType;
     min: number;
     max: number;
     width: number;
     style?: YAxisStyle;
     absolute?: boolean;
-    transition?: number;
     labelOffset?: number;
     format?: string;
     align?: string;
     scale?: (...args: any[]) => any;
-    height?: number;
     tickCount?: number;
 };
 
@@ -111,12 +102,12 @@ export type YAxisProps = {
  */
 export class YAxis extends React.Component<YAxisProps> {
 
-    static defaultProps: YAxisProps = {
+    static defaultProps: Partial<YAxisProps> = {
         id: "yaxis",
         align: "left",
         min: 0,
         max: 1,
-        type: YAxisType.Linear,
+        type: ScaleType.Linear,
         absolute: false,
         format: ".2s",
         labelOffset: 0,

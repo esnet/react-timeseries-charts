@@ -11,7 +11,7 @@ import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
 import { ScaleTime } from "d3-scale";
-import { TimeRange } from "pondjs";
+import { timerange, TimeRange } from "pondjs";
 
 import "@types/d3-scale";
 
@@ -25,7 +25,7 @@ export type EventHandlerProps = {
     minDuration?: number;
     minTime?: Date,
     maxTime?: Date,
-    onZoom?: (...args: any[]) => any;
+    onZoom?: (timerange: TimeRange) => any;
     onMouseMove?: (d: Date) => any;
     onMouseOut?: () => any;
     onMouseClick?: () => any;
@@ -128,7 +128,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         }
         const newBegin = new Date(beginScaled);
         const newEnd = new Date(endScaled);
-        const newTimeRange = new TimeRange(newBegin, newEnd);
+        const newTimeRange = timerange(newBegin, newEnd);
         if (this.props.onZoom) {
             this.props.onZoom(newTimeRange);
         }

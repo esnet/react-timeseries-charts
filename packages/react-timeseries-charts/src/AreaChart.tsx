@@ -134,6 +134,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
+
         return seriesChanged ||
             timeScaleChanged ||
             widthChanged ||
