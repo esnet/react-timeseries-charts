@@ -9,14 +9,14 @@
  */
 
 export type LabelValueList = {
-    label?: string,
-    value?: number | string
+    label?: string;
+    value?: number | string;
 }[];
 
 export type LineData = {
-    x: Date,
-    y: number
-}
+    x: Date;
+    y: number;
+};
 
 export interface AreaChartColumns {
     up: string[];

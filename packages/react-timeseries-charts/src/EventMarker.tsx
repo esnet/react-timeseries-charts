@@ -7,11 +7,12 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import _ from "underscore";
+
+import * as _ from "lodash";
+import * as React from "react";
+
 import { index, Event, Index, TimeRange, Time, Key } from "pondjs";
 import { timeFormat } from "d3-time-format";
-import merge from "merge";
-import React from "react";
 
 import { ChartProps } from "./charts";
 import { InfoBox, InfoBoxProps } from "./info";
@@ -28,18 +29,18 @@ const textStyle = {
 };
 
 type EventTimeProps = {
-    time?: Date,
-    format?: ((date: Date) => string) | string
+    time?: Date;
+    format?: ((date: Date) => string) | string;
 };
 
 type EventTimeRangeProps = {
-    timerange?: TimeRange,
-    format?: ((date: Date) => string) | string
+    timerange?: TimeRange;
+    format?: ((date: Date) => string) | string;
 };
 
 type EventIndexProps = {
-    index?: Index,
-    format?: ((date: Date) => string) | string
+    index?: Index;
+    format?: ((date: Date) => string) | string;
 };
 
 /**
@@ -110,20 +111,20 @@ const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" 
 };
 
 export type EventMarkerProps = ChartProps & {
-    event: Event<Key>,
-    column?: string,
-    type?: "point" | "flag",
-    info?: LabelValueList | string,
-    style?: EventMarkerStyle,
-    infoWidth?: number,
-    infoHeight?: number,
-    infoTimeFormat?: ((date: Date) => string) | string,
-    markerLabel?: string,
-    markerLabelAlign?: "left" | "right" | "top" | "bottom",
-    markerRadius?: number,
-    yValueFunc?: (...args: any[]) => any,
-    offsetX?: number,
-    offsetY?: number,
+    event: Event<Key>;
+    column?: string;
+    type?: "point" | "flag";
+    info?: LabelValueList | string;
+    style?: EventMarkerStyle;
+    infoWidth?: number;
+    infoHeight?: number;
+    infoTimeFormat?: ((date: Date) => string) | string;
+    markerLabel?: string;
+    markerLabelAlign?: "left" | "right" | "top" | "bottom";
+    markerRadius?: number;
+    yValueFunc?: (...args: any[]) => any;
+    offsetX?: number;
+    offsetY?: number;
 };
 
 /**
@@ -157,7 +158,6 @@ export type EventMarkerProps = ChartProps & {
  * override either the x or y position by a number of pixels.
  */
 export class EventMarker extends React.Component<EventMarkerProps> {
-
     static defaultProps: Partial<EventMarkerProps> = {
         type: "flag",
         column: "value",
@@ -170,12 +170,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
 
     renderTime(event: Event<Key>) {
         if (event.keyType() === "time") {
-            return (
-                <EventTime
-                    time={event.timestamp()}
-                    format={this.props.infoTimeFormat}
-                />
-            );
+            return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
         } else if (event.keyType() === "index") {
             return (
                 <EventIndex
@@ -185,16 +180,13 @@ export class EventMarker extends React.Component<EventMarkerProps> {
             );
         } else if (event.keyType() === "timerange") {
             return (
-                <EventTimeRange
-                    timerange={event.timerange()}
-                    format={this.props.infoTimeFormat}
-                />
+                <EventTimeRange timerange={event.timerange()} format={this.props.infoTimeFormat} />
             );
         }
         return <g />;
     }
 
-    renderMarker(event: Event<Key>, column: string, info) {
+    renderMarker(event: Event<Key>, column: string, info: string | LabelValueList) {
         let t;
         if (event.keyType() === "time") {
             t = event.timestamp();
@@ -281,7 +273,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 default:
             }
 
-            const tstyle = merge(true, textDefaultStyle, this.props.style.text);
+            const tstyle = _.merge(textDefaultStyle, this.props.style.text);
 
             dot = (
                 <circle
@@ -387,10 +379,6 @@ export class EventMarker extends React.Component<EventMarkerProps> {
         if (!event) {
             return <g />;
         }
-        return (
-            <g>
-                {this.renderMarker(event, column, info)}
-            </g>
-        );
+        return <g>{this.renderMarker(event, column, info)}</g>;
     }
 }

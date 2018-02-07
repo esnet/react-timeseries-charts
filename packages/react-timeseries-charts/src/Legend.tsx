@@ -7,35 +7,40 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import _ from "underscore";
-import merge from "merge";
-import React from "react";
+import * as _ from "lodash";
+import * as React from "react";
+
 import Flexbox from "flexbox-react";
 
-import { LegendItem } from "./LegendItem";
-import { Styler } from "../js/styler";
-import { LegendStyle, defaultLegendStyle as defaultStyle, CategoryStyle } from "./style";
+import { LegendItem, LegendItemType } from "./LegendItem";
+import { Styler } from "./styler";
+import {
+    LegendStyle,
+    defaultLegendCategoryStyle as defaultStyle,
+    CategoryStyle,
+    StyleMode
+} from "./style";
 
-export type Category = {
-    key: string,
-    label: string,
-    value: string,
-    disabled?: boolean,
-    style?: object,
-    labelStyle?: object
-}
+export type LegendCategory = {
+    key: string;
+    label: string;
+    value: string;
+    disabled?: boolean;
+    style?: object;
+    labelStyle?: object;
+};
 
 export type LegendProps = {
-    type?: "swatch" | "line" | "dot",
-    align?: "left" | "right",
-    style?: LegendStyle | ((column: string) => CategoryStyle) | Styler,
-    categories: Category[],
-    symbolWidth?: number,
-    symbolHeight?: number,
-    highlight?: string,
-    selection?: string,
-    onSelectionChange?: (...args: any[]) => any,
-    onHighlightChange?: (...args: any[]) => any
+    type?: LegendItemType;
+    align?: "left" | "right";
+    style?: LegendStyle | ((column: string) => CategoryStyle) | Styler;
+    categories: LegendCategory[];
+    symbolWidth?: number;
+    symbolHeight?: number;
+    highlight?: string;
+    selection?: string;
+    onSelectionChange?: (...args: any[]) => any;
+    onHighlightChange?: (...args: any[]) => any;
 };
 
 /**
@@ -137,31 +142,31 @@ export type LegendProps = {
  * containing symbol, label and value styles.
  */
 export class Legend extends React.Component<LegendProps> {
-
     static defaultProps: Partial<LegendProps> = {
         style: {},
-        type: "swatch",
+        type: LegendItemType.Swatch,
         align: "left",
         symbolWidth: 16,
         symbolHeight: 16
     };
 
     /**
-     * For each category item we get the users stle preference. This
+     * For each category item we get the users style preference. This
      * can be supplied in a number of ways:
-     *  * Typically you would get the legend style from a `Style` instance;
+     *  * Typically you would get the legend style from a `Styler` instance;
      *  * Alternatively, you can pass in a style object which has your
      *    category in it mapped to the associated style;
      *  * Finally, the provided style can also be a function which will
      *    be passes a category and should return the associated style.
      *    i.e. (category: string) => CategoryStyle
      */
-    providedStyle(category: Category, type: string): CategoryStyle {
+    providedStyle(category: LegendCategory, type: LegendItemType): CategoryStyle {
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 return this.props.style.legendStyle(category.key, type);
             } else if (_.isObject(this.props.style)) {
-                return this.props.style[category.key];
+                const s = this.props.style as LegendStyle;
+                return s[category.key];
             } else {
                 const fn = this.props.style as (category: string) => CategoryStyle;
                 return fn(category.key);
@@ -170,16 +175,18 @@ export class Legend extends React.Component<LegendProps> {
     }
 
     /**
-     * For each category this function takes the current
-     * selected and highlighted item, along with the disabled
-     * state of the item, and returns the mode it should be
-     * rendered in: normal, selected, highlighted, or muted
+     * For each category this function takes the current selected and highlighted item, along
+     * with the disabled state of the item, and returns the mode it should be rendered in:
+     *  * normal
+     *  * selected
+     *  * highlighted, or
+     *  * muted
      */
-    styleMode(category: Category) {
+    styleMode(category: LegendCategory): StyleMode {
         const isHighlighted = this.props.highlight && category.key === this.props.highlight;
         const isSelected = this.props.selection && category.key === this.props.selection;
         const isDisabled = category.disabled;
-        let mode = "normal";
+        let mode: StyleMode = "normal";
         if (this.props.selection) {
             if (isSelected) {
                 mode = "selected";
@@ -196,31 +203,28 @@ export class Legend extends React.Component<LegendProps> {
         return mode;
     }
 
-    symbolStyle(category: Category) {
+    symbolStyle(category: LegendCategory) {
         const styleMap = this.providedStyle(category, this.props.type);
-        const styleMode = this.styleMode(category);
-        return merge(
-            true,
+        const styleMode = this.styleMode(category) as string;
+        return _.merge(
             defaultStyle[styleMode],
             styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {}
         );
     }
 
-    labelStyle(category: Category) {
+    labelStyle(category: LegendCategory) {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
-        return merge(
-            true,
+        return _.merge(
             defaultStyle[styleMode],
             styleMap.label[styleMode] ? styleMap.label[styleMode] : {}
         );
     }
 
-    valueStyle(category: Category) {
+    valueStyle(category: LegendCategory) {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
-        return merge(
-            true,
+        return _.merge(
             defaultStyle[styleMode],
             styleMap.value[styleMode] ? styleMap.value[styleMode] : {}
         );
@@ -254,10 +258,6 @@ export class Legend extends React.Component<LegendProps> {
 
         const align = this.props.align === "left" ? "flex-start" : "flex-end";
 
-        return (
-            <Flexbox justifyContent={align}>
-                {items}
-            </Flexbox>
-        );
+        return <Flexbox justifyContent={align}>{items}</Flexbox>;
     }
 }

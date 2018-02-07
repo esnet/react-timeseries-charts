@@ -8,6 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import "@types/d3-shape";
+
 import {
     curveBasisClosed,
     curveBasisOpen,
@@ -26,10 +28,17 @@ import {
     curveNatural,
     curveStep,
     curveStepAfter,
-    curveStepBefore
+    curveStepBefore,
+    CurveFactory,
+    CurveGeneratorLineOnly,
+    CurveBundleFactory
 } from "d3-shape";
 
-export default {
+//type Curve = CurveFactory | CurveGeneratorLineOnly | CurveBundleFactory;
+
+export type CurveLookup = { [name: string]: any };
+
+const curves: CurveLookup = {
     curveBasisClosed,
     curveBasisOpen,
     curveBasis,
@@ -49,3 +58,5 @@ export default {
     curveStepAfter,
     curveStepBefore
 };
+
+export default curves;

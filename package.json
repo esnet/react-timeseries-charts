@@ -5,7 +5,12 @@
         "prettier": "prettier --print-width 100 --tab-width 4 --write \"packages/pond/src/**/*.ts\""
     },
     "devDependencies": {
+        "@types/moment-timezone": "^0.5.3",
         "lerna": "^2.5.1",
-        "prettier": "^1.7.0"
+        "prettier": "^1.7.0",
+        "typescript": "^2.7.1"
+    },
+    "dependencies": {
+        "react-axis": "0.2.5"
     }
 }

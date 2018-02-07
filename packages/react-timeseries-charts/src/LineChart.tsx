@@ -7,35 +7,49 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import _ from "underscore";
+import * as _ from "lodash";
 import { line } from "d3-shape";
-import merge from "merge";
-import React from "react";
+import * as React from "react";
 import { TimeSeries } from "pondjs";
 
-import { Styler } from "../js/styler";
-import { scaleAsString } from "../js/util";
-import { ChartProps } from "./Charts"
-
+import { Styler } from "./styler";
+import { scaleAsString } from "./util";
+import { ChartProps } from "./Charts";
+import curves from "./curve";
 import { CurveInterpolation, LineData } from "./types";
-import { ChannelStyle, LineChartStyle, defaultLineChartStyle as defaultStyle } from "./style";
-
-import curves from "../js/curve";
+import {
+    LineChartChannelStyle,
+    LineChartStyle,
+    defaultLineChartChannelStyle as defaultStyle
+} from "./style";
 
 import "@types/d3-shape";
 
 export type LineChartProps = ChartProps & {
-    series: any,
-    axis: string,
-    columns?: string[],
-    style?: LineChartStyle | ((column: string) => ChannelStyle) | Styler,
-    interpolation?: CurveInterpolation,
-    breakLine?: boolean,
-    selection?: string,
-    onSelectionChange?: (...args: any[]) => any,
-    highlight?: string,
-    onHighlightChange?: (...args: any[]) => any,
+    series: any;
+    axis: string;
+    columns?: string[];
+    style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
+    interpolation?: CurveInterpolation;
+    breakLine?: boolean;
+    selection?: string;
+    onSelectionChange?: (...args: any[]) => any;
+    highlight?: string;
+    onHighlightChange?: (...args: any[]) => any;
 };
+
+/**
+ * @private
+ */
+export type Point = {
+    x: Date;
+    y: number;
+};
+
+/**
+ * @private
+ */
+export type PointData = Point[];
 
 /**
  * The `<LineChart>` component is able to display multiple columns of a TimeSeries
@@ -63,15 +77,14 @@ export type LineChartProps = ChartProps & {
   </ChartContainer>
  * ```
  */
-export default class LineChart extends React.Component<LineChartProps, {}> {
-
+export class LineChart extends React.Component<LineChartProps, {}> {
     static defaultProps: Partial<LineChartProps> = {
         columns: ["value"],
         interpolation: CurveInterpolation.curveLinear,
         breakLine: true
     };
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps: LineChartProps) {
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;
         const width = nextProps.width;
@@ -109,7 +122,7 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
         );
     }
 
-    handleHover(e, column) {
+    handleHover(e: React.MouseEvent<SVGPathElement>, column: string) {
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(column);
         }
@@ -121,7 +134,7 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
         }
     }
 
-    handleClick(e, column) {
+    handleClick(e: React.MouseEvent<SVGPathElement>, column: string) {
         e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(column);
@@ -132,14 +145,15 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
      * Fetch the supplied style as a LineChartStyle, given a provided
      * LineChartStyle, Styler, or function, for the `column` provided.
      */
-    providedPathStyleMap(column: string): ChannelStyle {
+    providedPathStyleMap(column: string): LineChartChannelStyle {
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 return this.props.style.lineChartStyle()[column];
             } else if (_.isObject(this.props.style)) {
-                return this.props.style[column];
+                const s = this.props.style as LineChartStyle;
+                return s[column];
             } else {
-                const fn = this.props.style as (c: string) => ChannelStyle;
+                const fn = this.props.style as (c: string) => LineChartChannelStyle;
                 return fn(column);
             }
         }
@@ -148,41 +162,33 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
     /**
      * Returns the style used for drawing the path
      */
-    pathStyle(column) {
+    pathStyle(column: string) {
         let style;
-        const styleMap = this.providedPathStyleMap(column);
+
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
+
+        const s = this.providedPathStyleMap(column).line;
+        const d = defaultStyle.line;
+
         if (this.props.selection) {
             if (isSelected) {
-                style = merge(
-                    true,
-                    defaultStyle.selected,
-                    styleMap.selected ? styleMap.selected : {}
-                );
+                style = _.merge(d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = merge(
-                    true,
-                    defaultStyle.highlighted,
-                    styleMap.highlighted ? styleMap.highlighted : {}
-                );
+                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = merge(true, defaultStyle.muted, styleMap.muted ? styleMap.muted : {});
+                style = _.merge(d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = merge(
-                true,
-                defaultStyle.highlighted,
-                styleMap.highlighted ? styleMap.highlighted : {}
-            );
+            style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = merge(true, defaultStyle.normal, styleMap.normal);
+            style = _.merge(true, d.normal, s.normal);
         }
         style.pointerEvents = "none";
         return style;
     }
 
-    renderPath(data, column, key) {
+    renderPath(data: PointData, column: string, key: number) {
         const hitStyle = {
             stroke: "white",
             fill: "none",
@@ -200,10 +206,7 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
 
         return (
             <g key={key}>
-                <path
-                    d={path}
-                    style={this.pathStyle(column)}
-                />
+                <path d={path} style={this.pathStyle(column)} />
                 <path
                     d={path}
                     style={hitStyle}
@@ -219,12 +222,12 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
         return _.map(this.props.columns, column => this.renderLine(column));
     }
 
-    renderLine(column) {
+    renderLine(column: string) {
         const pathLines = [];
         let count = 1;
         if (this.props.breakLine) {
             // Remove nulls and NaNs from the line by generating a break in the line
-            let currentPoints = null;
+            let currentPoints: PointData = null;
             for (const d of this.props.series.collection().eventList()) {
                 const timestamp = new Date(
                     d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
@@ -262,18 +265,10 @@ export default class LineChart extends React.Component<LineChartProps, {}> {
             pathLines.push(this.renderPath(cleanedPoints, column, count));
             count += 1;
         }
-        return (
-            <g key={column}>
-                {pathLines}
-            </g>
-        );
+        return <g key={column}>{pathLines}</g>;
     }
 
     render() {
-        return (
-            <g>
-                {this.renderLines()}
-            </g>
-        );
+        return <g>{this.renderLines()}</g>;
     }
 }

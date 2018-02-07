@@ -8,45 +8,47 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "underscore";
-import merge from "merge";
-import React from "react";
-import ReactDOM from "react-dom"; // eslint-disable-line
+import * as _ from "lodash";
+import * as React from "react";
+
 import { TimeSeries, Event, Key } from "pondjs";
 import { EventMarker, EventMarkerProps } from "./EventMarker";
 
-import { getElementOffset } from "../js/util";
-import { Styler } from "../js/styler";
+import { getElementOffset } from "./util";
+import { LabelValueList } from "./types";
+import { Styler } from "./styler";
 import { ChartProps } from "./charts";
 import {
     ScatterChartStyle,
-    defaultScatterChartStyle as defaultStyle,
-    ChannelStyle,
+    defaultScatterChartChannelStyle as defaultStyle,
+    ScatterChartChannelStyle,
     EventMarkerStyle,
     defaultEventMarkerStyle
 } from "./style";
-import { LabelValueList } from "./types";
 
-type EventColumnPair = {
+export type EventColumnPair = {
     event?: Event<Key>;
     column?: string;
-}
+};
 
-type ScatterChartProps = ChartProps & {
-    series: any,
-    columns?: string[],
-    axis: string,
-    radius?: number | ((...args: any[]) => any) | any,
-    style?: ScatterChartStyle | ((channel: string, event?: Event<Key>) => ChannelStyle) | Styler,
-    info?: LabelValueList | string,
-    infoStyle?: EventMarkerStyle,
-    infoWidth?: number,
-    infoHeight?: number,
-    infoTimeFormat?: ((date: Date) => string) | string,
-    selected?: EventColumnPair,
-    onSelectionChange?: (...args: any[]) => any,
-    highlight?: EventColumnPair,
-    onMouseNear?: (...args: any[]) => any,
+export type ScatterChartProps = ChartProps & {
+    series: any;
+    columns?: string[];
+    axis: string;
+    radius?: number | ((...args: any[]) => any) | any;
+    style?:
+        | ScatterChartStyle
+        | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle)
+        | Styler;
+    info?: LabelValueList | string;
+    infoStyle?: EventMarkerStyle;
+    infoWidth?: number;
+    infoHeight?: number;
+    infoTimeFormat?: ((date: Date) => string) | string;
+    selected?: EventColumnPair;
+    onSelectionChange?: (...args: any[]) => any;
+    highlight?: EventColumnPair;
+    onMouseNear?: (...args: any[]) => any;
 };
 
 /**
@@ -93,8 +95,7 @@ type ScatterChartProps = ChartProps & {
  * the `infoWidth` and `infoHeight` props you can control the size of the box, which
  * is fixed.
  */
-export default class ScatterChart extends React.Component<ScatterChartProps> {
-
+export class ScatterChart extends React.Component<ScatterChartProps> {
     static defaultProps: Partial<ScatterChartProps> = {
         columns: ["value"],
         radius: 2.0,
@@ -106,28 +107,32 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
     // Stored reference to event rect
     eventrect: SVGRectElement;
 
-    constructor(props) {
+    constructor(props: ScatterChartProps) {
         super(props);
         this.handleHover = this.handleHover.bind(this);
         this.handleHoverLeave = this.handleHoverLeave.bind(this);
     }
+
     // get the event mouse position relative to the event rect
-    getOffsetMousePosition(e) {
+    getOffsetMousePosition(e: React.MouseEvent<SVGElement>) {
         const offset = getElementOffset(this.eventrect);
         const x = e.pageX - offset.left;
         const y = e.pageY - offset.top;
         return [Math.round(x), Math.round(y)];
     }
+
     //
     // Event handlers
     //
-    handleClick(e, event, column) {
+
+    handleClick(e: React.MouseEvent<SVGCircleElement>, event: Event<Key>, column: string) {
         const point = { event, column };
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(point);
         }
     }
-    handleHover(e) {
+
+    handleHover(e: React.MouseEvent<SVGElement>) {
         const [x, y] = this.getOffsetMousePosition(e);
         let point;
         let minDistance = Infinity;
@@ -154,7 +159,7 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
         }
     }
 
-    providedStyleMap(column: string, event: Event): ChannelStyle {
+    providedStyleMap(column: string, event: Event<Key>): ScatterChartChannelStyle {
         let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
@@ -170,9 +175,13 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
     /**
      * Returns the style used for drawing the path
      */
-    style(column, event) {
+    style(column: string, event: Event<Key>) {
         let style;
         const styleMap = this.providedStyleMap(column, event);
+
+        const s = styleMap.point;
+        const d = defaultStyle.point;
+
         const isHighlighted =
             this.props.highlight &&
             column === this.props.highlight.column &&
@@ -181,30 +190,19 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
             this.props.selected &&
             column === this.props.selected.column &&
             Event.is(this.props.selected.event, event);
+
         if (this.props.selected) {
             if (isSelected) {
-                style = merge(
-                    true,
-                    defaultStyle.selected,
-                    styleMap.selected ? styleMap.selected : {}
-                );
+                style = _.merge(d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = merge(
-                    true,
-                    defaultStyle.highlighted,
-                    styleMap.highlighted ? styleMap.highlighted : {}
-                );
+                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = merge(true, defaultStyle.muted, styleMap.muted ? styleMap.muted : {});
+                style = _.merge(d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = merge(
-                true,
-                defaultStyle.highlighted,
-                styleMap.highlighted ? styleMap.highlighted : {}
-            );
+            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = merge(true, defaultStyle.normal, styleMap.normal ? styleMap.normal : {});
+            style = _.merge(d.normal, s.normal ? s.normal : {});
         }
         return style;
     }
@@ -213,7 +211,7 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
     //
     renderScatter() {
         const { series, timeScale, yScale } = this.props;
-        const points = [];
+        const points: JSX.Element[] = [];
         let eventMarker;
         // if selectionChange is enabled, pointerEvents should be enabled as well
         const pointerEvents = this.props.onSelectionChange ? "auto" : "none";
@@ -253,12 +251,10 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
                         infoHeight: this.props.infoWidth,
                         infoTimeFormat: this.props.infoTimeFormat,
                         markerRadius: 0
-                    }
-                    eventMarker = (
-                        <EventMarker {...eventMarkerProps} />
-                    );
+                    };
+                    eventMarker = <EventMarker {...eventMarkerProps} />;
                 }
-                points.push(
+                const point = (
                     <circle
                         key={`${column}-${key}`}
                         cx={x}
@@ -266,10 +262,11 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
                         r={radius}
                         style={style}
                         pointerEvents={pointerEvents}
-                        onMouseMove={this.handleHover}
+                        onMouseMove={e => this.handleHover(e)}
                         onClick={e => this.handleClick(e, event, column)}
                     />
                 );
+                points.push(point);
                 key += 1;
             }
         });
@@ -293,8 +290,8 @@ export default class ScatterChart extends React.Component<ScatterChartProps> {
                     y={0}
                     width={this.props.width}
                     height={this.props.height}
-                    onMouseMove={this.handleHover}
-                    onMouseLeave={this.handleHoverLeave}
+                    onMouseMove={e => this.handleHover(e)}
+                    onMouseLeave={e => this.handleHoverLeave()}
                 />
                 {this.renderScatter()}
             </g>

@@ -8,25 +8,27 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import * as React from "react";
 import { format } from "d3-format";
 
 import { ValueList } from "./ValueList";
 import { InfoBoxStyle } from "./style";
 
-type LabelAxisProps = {
-    label: string,
-    hideScale?: boolean,
+import "@types/d3-format";
+
+export type LabelAxisProps = {
+    label: string;
+    hideScale?: boolean;
     values: {
-        label?: string,
-        value?: number | string
-    }[],
-    valWidth?: number,
-    max: number,
-    min: number,
-    format?: string,
-    width?: number,
-    height?: number
+        label?: string;
+        value?: number | string;
+    }[];
+    valWidth?: number;
+    max: number;
+    min: number;
+    format?: string;
+    width?: number;
+    height?: number;
 };
 
 /**
@@ -40,8 +42,7 @@ type LabelAxisProps = {
  *      +----------------+-----+------- ...
  * ```
  */
-export default class LabelAxis extends React.Component<LabelAxisProps> {
-
+export class LabelAxis extends React.Component<LabelAxisProps> {
     static defaultProps: Partial<LabelAxisProps> = {
         hideScale: false,
         values: [],
@@ -94,14 +95,8 @@ export default class LabelAxis extends React.Component<LabelAxisProps> {
                     fill: "none",
                     stroke: "none"
                 }
-            }
-            valueList = (
-                <ValueList
-                    style={style}
-                    values={this.props.values}
-                    width={rectWidth}
-                />
-            );
+            };
+            valueList = <ValueList style={style} values={this.props.values} width={rectWidth} />;
         } else {
             labelYPos = Math.round(this.props.height / 2);
         }

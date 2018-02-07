@@ -8,20 +8,26 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "underscore";
-import invariant from "invariant";
-import React, { ReactElement, ReactNode } from "react";
+import * as _ from "lodash";
+import * as invariant from "invariant";
+import * as moment from "moment-timezone";
+import * as React from "react";
+
+import { ReactElement, ReactNode } from "react";
 import { scaleTime, scaleUtc } from "d3-scale";
+import { TimeAxis } from "react-axis"; // ts-ignore-line
 import { TimeRange } from "pondjs";
 
 import { Brush } from "./Brush";
 import { ChartRow, ChartRowProps } from "./ChartRow";
 import { Charts, ChartsProps } from "./Charts";
 import { EventHandler } from "./EventHandler";
-import { TimeAxis, TimeAxisStyle } from "./TimeAxis";
-import { TimeMarker, InfoValues } from "./TimeMarker";
+import { LabelValueList } from "./types";
+import { TimeMarker } from "./TimeMarker";
 
 import "@types/d3-scale";
+import "@types/moment-timezone";
+import "@types/invariant";
 
 const defaultTimeAxisStyle = {
     labels: {
@@ -35,34 +41,35 @@ const defaultTimeAxisStyle = {
     }
 };
 
-interface StyleTargets {
+export type StyleTargets = {
     labels: any;
     axis: any;
-}
-type StyleTargetKeys = keyof StyleTargets;
-export type TimeAxisStyleType = {[K in StyleTargetKeys]: object };
+};
 
-enum ShowGridPosition {
+export type StyleTargetKeys = keyof StyleTargets;
+export type TimeAxisStyleType = { [K in StyleTargetKeys]: object };
+
+export enum ShowGridPosition {
     Over = "OVER",
     Under = "UNDER"
 }
 
-type ChartContainerProps = {
+export type ChartContainerProps = {
     children?: any;
     timeRange: TimeRange;
-    utc?: boolean;
+    timezone?: string;
     width?: number;
     minTime?: Date;
     maxTime?: Date;
     timeFormat?: string;
-    timeAxisStyle: TimeAxisStyle;
+    timeAxisStyle: any; // TODO
     enablePanZoom?: boolean;
     minDuration?: number;
     transition?: number;
     showGrid?: boolean;
     showGridPosition: ShowGridPosition;
     trackerTime?: Date;
-    trackerValues?: InfoValues;
+    trackerInfo?: LabelValueList | string;
     trackerInfoWidth?: number;
     trackerInfoHeight?: number;
     onTrackerChanged?: (time: Date) => any;
@@ -91,12 +98,11 @@ type ChartContainerProps = {
  * </ChartContainer>
  * ```
  */
-export default class ChartContainer extends React.Component<ChartContainerProps> {
-
+export class ChartContainer extends React.Component<ChartContainerProps> {
     static defaultProps: Partial<ChartContainerProps> = {
         width: 800,
         enablePanZoom: false,
-        utc: false,
+        timezone: "Etc/UTC",
         showGrid: false,
         showGridPosition: ShowGridPosition.Under,
         timeAxisStyle: defaultTimeAxisStyle
@@ -139,7 +145,7 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
     }
 
     render() {
-        const chartRows = [];
+        const chartRows: JSX.Element[] = [];
         const leftAxisWidths: number[] = [];
         const rightAxisWidths: number[] = [];
 
@@ -170,8 +176,7 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
                     if (child.type === Charts) {
                         countCharts += 1;
                         align = "right";
-                    }
-                    else if (child.type !== Brush) {
+                    } else if (child.type !== Brush) {
                         if (align === "left") {
                             countLeft += 1;
                         }
@@ -196,8 +201,7 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
                                 ? Math.max(width, leftAxisWidths[pos])
                                 : width;
                             pos -= 1;
-                        }
-                        else if (align === "right") {
+                        } else if (align === "right") {
                             rightAxisWidths[pos] = rightAxisWidths[pos]
                                 ? Math.max(width, rightAxisWidths[pos])
                                 : width;
@@ -215,20 +219,29 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         //
         // Time scale
         //
+
         const timeAxisHeight = 35;
         const timeAxisWidth = this.props.width - leftWidth - rightWidth;
+
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
+
         console.log("timerange ", this.props.timeRange);
-        const timeScale = this.props.utc
-            ? scaleUtc()
-                .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
-                .range([0, timeAxisWidth])
-            : scaleTime()
-                .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
-                .range([0, timeAxisWidth]);
+
+        // TODO: We need a time scalar that is timezone aware
+        // This might help: https://github.com/metocean/d3-chronological/blob/master/scale.js
+
+        const timeScale =
+            this.props.timezone === "Etc/UTC"
+                ? scaleUtc()
+                      .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
+                      .range([0, timeAxisWidth])
+                : scaleTime()
+                      .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
+                      .range([0, timeAxisWidth]);
         let i = 0;
+
         let yPosition = 0;
         React.Children.forEach(this.props.children, (child: ReactElement<any>) => {
             if (child.type === ChartRow) {
@@ -247,9 +260,11 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
                     trackerTimeFormat: this.props.timeFormat
                 };
                 const transform = `translate(${-leftWidth},${yPosition})`;
-                chartRows.push(<g transform={transform} key={rowKey}>
-                    {React.cloneElement(chartRow, props)}
-                </g>);
+                chartRows.push(
+                    <g transform={transform} key={rowKey}>
+                        {React.cloneElement(chartRow, props)}
+                    </g>
+                );
                 yPosition += parseInt(child.props.height, 10);
             }
             i += 1;
@@ -262,41 +277,54 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         //
         let tracker;
         if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
-            tracker = (<g key="tracker-group" style={{ pointerEvents: "none" }} transform={`translate(${leftWidth},0)`}>
-                <TimeMarker
-                    key="marker"
-                    width={chartsWidth}
-                    height={chartsHeight}
-                    showInfoBox={false}
-                    time={this.props.trackerTime}
-                    timeScale={timeScale}
-                    timeFormat={this.props.timeFormat}
-                    infoValues={this.props.trackerValues}
-                    infoWidth={this.props.trackerInfoWidth}
-                    infoHeight={this.props.trackerInfoHeight}
-                />
-            </g>);
+            tracker = (
+                <g
+                    key="tracker-group"
+                    style={{ pointerEvents: "none" }}
+                    transform={`translate(${leftWidth},0)`}
+                >
+                    <TimeMarker
+                        key="marker"
+                        width={chartsWidth}
+                        height={chartsHeight}
+                        showInfoBox={false}
+                        time={this.props.trackerTime}
+                        timeScale={timeScale}
+                        timeFormat={this.props.timeFormat}
+                        info={this.props.trackerInfo}
+                        infoWidth={this.props.trackerInfoWidth}
+                        infoHeight={this.props.trackerInfoHeight}
+                    />
+                </g>
+            );
         }
 
         //
         // TimeAxis
         //
+
         const xStyle = {
             stroke: this.props.timeAxisStyle.axis.axisColor,
             strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
             fill: "none",
             pointerEvents: "none"
         };
+
+        const gridHeight = this.props.showGrid ? chartsHeight : 0;
+        const timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
+
         const timeAxis = (
             <g transform={`translate(${leftWidth},${chartsHeight})`}>
                 <line x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5} style={xStyle} />
                 <TimeAxis
-                    scale={timeScale}
-                    utc={this.props.utc}
-                    style={this.props.timeAxisStyle}
-                    format={this.props.timeFormat}
-                    showGrid={this.props.showGrid}
-                    gridHeight={chartsHeight}
+                    timezone={timezone}
+                    position="bottom"
+                    beginTime={new Date(this.props.timeRange.begin().getTime())}
+                    endTime={new Date(this.props.timeRange.end().getTime())}
+                    width={timeAxisWidth}
+                    margin={0}
+                    height={50}
+                    tickExtend={gridHeight}
                 />
             </g>
         );
@@ -331,16 +359,18 @@ export default class ChartContainer extends React.Component<ChartContainerProps>
         //
         const svgWidth = this.props.width;
         const svgHeight = yPosition + timeAxisHeight;
-        return this.props.showGridPosition === ShowGridPosition.Over
-            ? <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
+        return this.props.showGridPosition === ShowGridPosition.Over ? (
+            <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
                 {rows}
                 {tracker}
                 {timeAxis}
             </svg>
-            : <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
+        ) : (
+            <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
                 {timeAxis}
                 {rows}
                 {tracker}
-            </svg>;
+            </svg>
+        );
     }
 }

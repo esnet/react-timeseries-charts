@@ -8,16 +8,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
+import * as React from "react";
+
 import { LabelValueList } from "./types";
 import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
 
-type ValueListProps = {
-    align?: "center" | "left",
-    values: LabelValueList,
-    style?: InfoBoxStyle,
-    width?: number,
-    height?: number
+export type ValueListProps = {
+    align?: "center" | "left";
+    values: LabelValueList;
+    style?: InfoBoxStyle;
+    width?: number;
+    height?: number;
 };
 
 /**
@@ -27,7 +28,6 @@ type ValueListProps = {
  * applied to the box.
  */
 export class ValueList extends React.Component<ValueListProps> {
-
     static defaultProps: Partial<ValueListProps> = {
         align: "center",
         width: 100,
@@ -68,9 +68,7 @@ export class ValueList extends React.Component<ValueListProps> {
                 </g>
             );
         });
-        const box = (
-            <rect style={style.box} x={0} y={0} width={width} height={height} />
-        );
+        const box = <rect style={style.box} x={0} y={0} width={width} height={height} />;
         return (
             <g>
                 {box}
@@ -78,4 +76,4 @@ export class ValueList extends React.Component<ValueListProps> {
             </g>
         );
     }
-};
+}

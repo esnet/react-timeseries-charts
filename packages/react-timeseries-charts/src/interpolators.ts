@@ -8,14 +8,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "underscore";
+import * as _ from "lodash";
+
 import { Scale } from "./Charts";
 
-export type ScalerFunction = (number) => number;
-export type AnimationCallback = (ScalerFunction) => any;
+export type ScalerFunction = (v: number) => number;
+export type AnimationCallback = (f: ScalerFunction) => any;
 
 export default class ScaleInterpolator {
-
     private initialTimestamp: number;
 
     private cacheKey: string;
@@ -24,9 +24,9 @@ export default class ScaleInterpolator {
     private targetScale: Scale;
     private sourceScale: Scale;
 
-    private callback: AnimationCallback;          // the callback when animating
-    private transitionTime: number;               // time taken to transition to a new scale
-    private ease: (x: number) => number;          // the ease curve
+    private callback: AnimationCallback; // the callback when animating
+    private transitionTime: number; // time taken to transition to a new scale
+    private ease: (x: number) => number; // the ease curve
 
     constructor(transition: number, ease: (x: number) => number, callback: AnimationCallback) {
         this.ease = ease;
@@ -48,7 +48,9 @@ export default class ScaleInterpolator {
             animationTime = window.performance.now() - this.initialTimestamp;
         }
 
-        const animationPosition = this.transitionTime ? Math.min(animationTime / this.transitionTime, 1.0) : 1.0;
+        const animationPosition = this.transitionTime
+            ? Math.min(animationTime / this.transitionTime, 1.0)
+            : 1.0;
 
         if (!this.targetScale) {
             return;
@@ -83,7 +85,7 @@ export default class ScaleInterpolator {
     /**
      * A new (or initial) scale is set on the interpolator
      */
-    setScale(key: string, scale) {
+    setScale(key: string, scale: Scale) {
         // Initial scale
         if (!this.sourceScale) {
             this.sourceScale = scale;

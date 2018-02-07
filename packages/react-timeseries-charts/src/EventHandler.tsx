@@ -7,15 +7,14 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from "react";
-import ReactDOM from "react-dom"; // eslint-disable-line
-import PropTypes from "prop-types";
+import * as React from "react";
+
 import { ScaleTime } from "d3-scale";
 import { timerange, TimeRange } from "pondjs";
 
 import "@types/d3-scale";
 
-import { getElementOffset } from "../js/util";
+import { getElementOffset } from "./util";
 
 export type EventHandlerProps = {
     enablePanZoom?: boolean;
@@ -23,15 +22,15 @@ export type EventHandlerProps = {
     width: number;
     height: number;
     minDuration?: number;
-    minTime?: Date,
-    maxTime?: Date,
+    minTime?: Date;
+    maxTime?: Date;
     onZoom?: (timerange: TimeRange) => any;
     onMouseMove?: (d: Date) => any;
     onMouseOut?: () => any;
     onMouseClick?: () => any;
 };
 
-type EventHandlerState = {
+export type EventHandlerState = {
     isPanning: boolean;
     initialPanBegin: any;
     initialPanEnd: any;
@@ -47,14 +46,13 @@ type EventHandlerState = {
  * and hover actions.
  */
 export class EventHandler extends React.Component<EventHandlerProps, EventHandlerState> {
-
     static defaultProps: Partial<EventHandlerProps> = {
         enablePanZoom: false
     };
 
     eventRect: SVGRectElement;
 
-    constructor(props) {
+    constructor(props: EventHandlerProps) {
         super(props);
         this.state = {
             isPanning: false,
@@ -69,16 +67,18 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         this.handleMouseMove = this.handleMouseMove.bind(this);
     }
     // get the event mouse position relative to the event rect
-    getOffsetMousePosition(e) {
+    getOffsetMousePosition(e: React.MouseEvent<SVGGElement>) {
         const offset = getElementOffset(this.eventRect);
         const x = e.pageX - offset.left;
         const y = e.pageY - offset.top;
         return [Math.round(x), Math.round(y)];
     }
+
     //
     // Event handlers
     //
-    handleScrollWheel(e) {
+
+    handleScrollWheel(e: React.WheelEvent<SVGGElement>) {
         if (!this.props.enablePanZoom) {
             return;
         }
@@ -93,7 +93,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         }
         const xy = this.getOffsetMousePosition(e);
 
-        const d = this.props.scale.range()[0]
+        const d = this.props.scale.range()[0];
 
         const begin: number = this.props.scale.domain()[0].getTime();
         const end: number = this.props.scale.domain()[1].getTime();
@@ -133,7 +133,8 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             this.props.onZoom(newTimeRange);
         }
     }
-    handleMouseDown(e) {
+
+    handleMouseDown(e: React.MouseEvent<SVGGElement>) {
         if (!this.props.enablePanZoom) {
             return;
         }
@@ -143,8 +144,8 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         const xy0 = [Math.round(x), Math.round(y)];
         const begin = this.props.scale.domain()[0].getTime();
         const end = this.props.scale.domain()[1].getTime();
-        document.addEventListener("mouseover", this.handleMouseMove);
-        document.addEventListener("mouseup", this.handleMouseUp);
+        document.addEventListener("mouseover", this.handleMouseMove as any);
+        document.addEventListener("mouseup", this.handleMouseUp as any);
         this.setState({
             isPanning: true,
             initialPanBegin: begin,
@@ -153,17 +154,20 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         });
         return false;
     }
-    handleMouseUp(e) {
+
+    handleMouseUp(e: React.MouseEvent<SVGGElement>) {
         if (!this.props.enablePanZoom) {
             return;
         }
         e.stopPropagation();
-        document.removeEventListener("mouseover", this.handleMouseMove);
-        document.removeEventListener("mouseup", this.handleMouseUp);
+        document.removeEventListener("mouseover", this.handleMouseMove as any); //XXX
+        document.removeEventListener("mouseup", this.handleMouseUp as any); //XXX
         const x = e.pageX;
-        if (this.props.onMouseClick &&
+        if (
+            this.props.onMouseClick &&
             this.state.initialPanPosition &&
-            Math.abs(x - this.state.initialPanPosition[0]) < 2) {
+            Math.abs(x - this.state.initialPanPosition[0]) < 2
+        ) {
             this.props.onMouseClick();
         }
         this.setState({
@@ -173,20 +177,23 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             initialPanPosition: null
         });
     }
-    handleMouseOut(e) {
+
+    handleMouseOut(e: React.MouseEvent<SVGGElement>) {
         e.preventDefault();
         if (this.props.onMouseOut) {
             this.props.onMouseOut();
         }
     }
-    handleMouseMove(e) {
+
+    handleMouseMove(e: React.MouseEvent<SVGGElement>) {
         e.preventDefault();
         const x = e.pageX;
         const y = e.pageY;
         const xy = [Math.round(x), Math.round(y)];
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
-            const timeOffset = this.props.scale.invert(xy[0]).getTime() -
+            const timeOffset =
+                this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
             let newBegin = Math.round(this.state.initialPanBegin - timeOffset);
             let newEnd = Math.round(this.state.initialPanEnd - timeOffset);
@@ -203,8 +210,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
-        }
-        else if (this.props.onMouseMove) {
+        } else if (this.props.onMouseMove) {
             const trackerPosition = this.getOffsetMousePosition(e)[0];
             const time: Date = this.props.scale.invert(trackerPosition);
             if (this.props.onMouseMove) {
@@ -212,23 +218,33 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
             }
         }
     }
+
     //
     // Render
     //
+
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
-        const handlers = {
-            onWheel: this.handleScrollWheel,
-            onMouseDown: this.handleMouseDown,
-            onMouseMove: this.handleMouseMove,
-            onMouseOut: this.handleMouseOut,
-            onMouseUp: this.handleMouseUp
-        };
         return (
-            <g pointerEvents="all" {...handlers}>
-                <rect key="handler-hit-rect" ref={c => {
-                    this.eventRect = c;
-                }} style={{ opacity: 0.0, cursor }} x={0} y={0} width={this.props.width} height={this.props.height} />
+            <g
+                pointerEvents="all"
+                onWheel={e => this.handleScrollWheel(e)}
+                onMouseDown={e => this.handleMouseDown(e)}
+                onMouseUp={e => this.handleMouseUp(e)}
+                onMouseMove={e => this.handleMouseMove(e)}
+                onMouseOut={e => this.handleMouseOut(e)}
+            >
+                <rect
+                    key="handler-hit-rect"
+                    ref={c => {
+                        this.eventRect = c;
+                    }}
+                    style={{ opacity: 0.0, cursor }}
+                    x={0}
+                    y={0}
+                    width={this.props.width}
+                    height={this.props.height}
+                />
                 {this.props.children}
             </g>
         );

@@ -7,16 +7,17 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from "react";
+import * as React from "react";
 import { TimeRange } from "pondjs";
+
 import { ChartProps } from "./Charts";
 
-type TimeRangeMarkerProps = ChartProps & {
-    timerange: TimeRange,
-    style?: React.CSSProperties,
-    timeScale: (...args: any[]) => any,
-    width: number,
-    height: number
+export type TimeRangeMarkerProps = ChartProps & {
+    timerange: TimeRange;
+    style?: React.CSSProperties;
+    timeScale: (...args: any[]) => any;
+    width: number;
+    height: number;
 };
 
 /**
@@ -29,8 +30,7 @@ type TimeRangeMarkerProps = ChartProps & {
  * See also the Brush component for a `TimeRange` marker that you can
  * resize interactively.
  */
-export default class TimeRangeMarker extends React.Component<TimeRangeMarkerProps> {
-
+export class TimeRangeMarker extends React.Component<TimeRangeMarkerProps> {
     static defaultProps: Partial<TimeRangeMarkerProps> = {
         style: { fill: "rgba(70, 130, 180, 0.25);" }
     };

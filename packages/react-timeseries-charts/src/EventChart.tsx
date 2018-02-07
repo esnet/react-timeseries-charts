@@ -7,30 +7,33 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import _ from "underscore";
-import merge from "merge";
-import React from "react";
+import * as _ from "lodash";
+import * as React from "react";
+
 import { TimeSeries, Event, Key } from "pondjs";
 
 import { ChartProps } from "./Charts";
 import { EventChartStyle } from "./style";
 
-type EventChartProps = ChartProps & {
-    series: TimeSeries<Key>,
-    label?: string | ((...args: any[]) => any),
-    size?: number,
-    spacing?: number,
-    hoverMarkerWidth?: number,
-    textOffsetX?: number,
-    textOffsetY?: number,
-    style?: EventChartStyle,
-    onSelectionChange?: (e: Event<Key>) => any,
-    onMouseOver?: (e: Event<Key>) => any,
-    onMouseLeave?: (b: boolean) => any,
+export type EventChartProps = ChartProps & {
+    series: TimeSeries<Key>;
+    label?: string | ((...args: any[]) => any);
+    size?: number;
+    spacing?: number;
+    hoverMarkerWidth?: number;
+    textOffsetX?: number;
+    textOffsetY?: number;
+    style?: EventChartStyle;
+    onSelectionChange?: (e: Event<Key>) => any;
+    onMouseOver?: (e: Event<Key>) => any;
+    onMouseLeave?: (b: boolean) => any;
 };
 
-type EventChartState = {
-    hover: any
+/**
+ * @private
+ */
+export type EventChartState = {
+    hover: any;
 };
 
 /**
@@ -39,8 +42,7 @@ type EventChartState = {
  * That series may contain regular TimeEvents, TimeRangeEvents
  * or IndexedEvents.
  */
-export default class EventChart extends React.Component<EventChartProps, EventChartState> {
-
+export class EventChart extends React.Component<EventChartProps, EventChartState> {
     static defaultProps = {
         size: 30,
         spacing: 0,
@@ -51,7 +53,7 @@ export default class EventChart extends React.Component<EventChartProps, EventCh
 
     hover: Event<Key>;
 
-    constructor(props) {
+    constructor(props: EventChartProps) {
         super(props);
         this.state = {
             hover: null
@@ -61,7 +63,7 @@ export default class EventChart extends React.Component<EventChartProps, EventCh
     /**
      * Continues a hover event on a specific bar of the bar chart.
      */
-    onMouseOver(e, event: Event<Key>) {
+    onMouseOver(e: React.MouseEvent<SVGRectElement>, event: Event<Key>) {
         if (this.props.onMouseOver) {
             this.props.onMouseOver(event);
         }
@@ -82,7 +84,7 @@ export default class EventChart extends React.Component<EventChartProps, EventCh
      * Handle click will call the onSelectionChange callback if one is provided
      * as a prop. It will be called with the event selected.
      */
-    handleClick(e, event: Event<Key>) {
+    handleClick(e: React.MouseEvent<SVGRectElement>, event: Event<Key>) {
         e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(event);
@@ -92,95 +94,95 @@ export default class EventChart extends React.Component<EventChartProps, EventCh
     render() {
         const { series, textOffsetX, textOffsetY, hoverMarkerWidth } = this.props;
         const scale = this.props.timeScale;
-        const eventMarkers = [];
+        const eventMarkers: JSX.Element[] = [];
 
         // Create and array of markers, one for each event
         let i = 0;
-        for (const event of series.collection().eventList()) {
-            const begin = event.begin();
-            const end = event.end();
-            const beginPos = scale(begin) >= 0 ? scale(begin) : 0;
-            const endPos = scale(end) <= this.props.width ? scale(end) : this.props.width;
-            const transform = `translate(${beginPos},0)`;
-            const isHover = this.state.hover ? Event.is(event, this.state.hover) : false;
+        series
+            .collection()
+            .eventList()
+            .forEach(event => {
+                const begin = event.begin();
+                const end = event.end();
+                const beginPos = scale(begin) >= 0 ? scale(begin) : 0;
+                const endPos = scale(end) <= this.props.width ? scale(end) : this.props.width;
+                const transform = `translate(${beginPos},0)`;
+                const isHover = this.state.hover ? Event.is(event, this.state.hover) : false;
 
-            let state;
-            if (isHover) {
-                state = "hover";
-            } else {
-                state = "normal";
-            }
-
-            let barNormalStyle = {};
-            let barStyle = {};
-            if (this.props.style) {
-                barNormalStyle = this.props.style(event, "normal");
-                barStyle = this.props.style(event, state);
-            }
-
-            let label = "";
-            if (this.props.label) {
-                if (_.isString(this.props.label)) {
-                    label = this.props.label;
-                } else if (_.isFunction(this.props.label)) {
-                    label = this.props.label(event);
+                let state;
+                if (isHover) {
+                    state = "hover";
+                } else {
+                    state = "normal";
                 }
-            }
 
-            const x = this.props.spacing;
-            const y = 0;
-            let width = endPos - beginPos - 2 * this.props.spacing;
-            width = width < 0 ? 0 : width;
-            const height = this.props.size;
+                let barNormalStyle = {};
+                let barStyle = {};
+                if (this.props.style) {
+                    barNormalStyle = this.props.style(event, "normal");
+                    barStyle = this.props.style(event, state);
+                }
 
-            let text = null;
+                let label = "";
+                if (this.props.label) {
+                    if (_.isString(this.props.label)) {
+                        label = this.props.label;
+                    } else if (_.isFunction(this.props.label)) {
+                        label = this.props.label(event);
+                    }
+                }
 
-            const textStyle: React.CSSProperties = {
-                fontSize: 11,
-                fontWeight: 100,
-                pointerEvents: "none",
-                fill: "#444"
-            }
+                const x = this.props.spacing;
+                const y = 0;
+                let width = endPos - beginPos - 2 * this.props.spacing;
+                width = width < 0 ? 0 : width;
+                const height = this.props.size;
 
-            if (isHover) {
-                text = (
-                    <g>
+                let text = null;
+
+                const textStyle: React.CSSProperties = {
+                    fontSize: 11,
+                    fontWeight: 100,
+                    pointerEvents: "none",
+                    fill: "#444"
+                };
+
+                if (isHover) {
+                    text = (
+                        <g>
+                            <rect
+                                className="eventchart-marker"
+                                x={x}
+                                y={y}
+                                width={hoverMarkerWidth}
+                                height={height + 4}
+                                style={_.merge(barNormalStyle, { pointerEvents: "none" })}
+                            />
+                            <text style={textStyle} x={8 + textOffsetX} y={15 + textOffsetY}>
+                                {label}
+                            </text>
+                        </g>
+                    );
+                }
+                const marker = (
+                    <g transform={transform} key={i}>
                         <rect
                             className="eventchart-marker"
                             x={x}
                             y={y}
-                            width={hoverMarkerWidth}
-                            height={height + 4}
-                            style={merge(true, barNormalStyle, { pointerEvents: "none" })}
+                            width={width}
+                            height={height}
+                            style={barStyle}
+                            onClick={e => this.handleClick(e, event)}
+                            onMouseLeave={() => this.onMouseLeave()}
+                            onMouseOver={e => this.onMouseOver(e, event)}
                         />
-                        <text
-                            style={textStyle}
-                            x={8 + textOffsetX}
-                            y={15 + textOffsetY}
-                        >
-                            {label}
-                        </text>
+                        {text}
                     </g>
                 );
-            }
-            eventMarkers.push(
-                <g transform={transform} key={i}>
-                    <rect
-                        className="eventchart-marker"
-                        x={x}
-                        y={y}
-                        width={width}
-                        height={height}
-                        style={barStyle}
-                        onClick={e => this.handleClick(e, event)}
-                        onMouseLeave={() => this.onMouseLeave()}
-                        onMouseOver={e => this.onMouseOver(e, event)}
-                    />
-                    {text}
-                </g>
-            );
-            i += 1;
-        }
+                eventMarkers.push(marker);
+                i += 1;
+            });
         return <g>{eventMarkers}</g>;
     }
 }

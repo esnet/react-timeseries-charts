@@ -7,35 +7,40 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import _ from "underscore";
-import merge from "merge";
-import React from "react";
-import Flexbox from "flexbox-react";
 
-import { Styler } from "../js/styler";
+import * as _ from "lodash";
+import * as React from "react";
+import Flexbox from "flexbox-react";
+import { ElementStyle } from "./style";
+
+export enum LegendItemType {
+    Swatch = "SWATCH",
+    Line = "LINE",
+    Dot = "DOT"
+}
 
 export type LegendItemProps = {
     itemKey: string;
-    type: "swatch" | "line" | "dot";
+    type: LegendItemType;
     label: string;
     value: string;
     symbolWidth: number;
     symbolHeight: number;
-    symbolStyle: object;
-    labelStyle: object;
-    valueStyle: object;
+    symbolStyle: ElementStyle;
+    labelStyle: ElementStyle;
+    valueStyle: ElementStyle;
     onSelectionChange: (key: string) => any;
     onHighlightChange: (key: string) => any;
-}
+};
 
 export class LegendItem extends React.Component<LegendItemProps> {
-    handleClick(e, key) {
+    handleClick(e: React.MouseEvent<HTMLDivElement>, key: string) {
         e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(key);
         }
     }
-    handleHover(e, key) {
+    handleHover(e: React.MouseEvent<HTMLDivElement>, key: string) {
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(key);
         }
@@ -45,7 +50,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
             this.props.onHighlightChange(null);
         }
     }
-    renderLine(style) {
+    renderLine(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -61,7 +66,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
             </svg>
         );
     }
-    renderSwatch(style) {
+    renderSwatch(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -77,7 +82,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
             </svg>
         );
     }
-    renderDot(style) {
+    renderDot(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -95,13 +100,13 @@ export class LegendItem extends React.Component<LegendItemProps> {
         const { symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
         let symbol;
         switch (this.props.type) {
-            case "swatch":
+            case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
                 break;
-            case "line":
+            case LegendItemType.Line:
                 symbol = this.renderLine(symbolStyle);
                 break;
-            case "dot":
+            case LegendItemType.Dot:
                 symbol = this.renderDot(symbolStyle);
                 break;
             default:

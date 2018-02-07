@@ -8,37 +8,35 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
-import _ from "underscore";
+import * as _ from "lodash";
+import * as React from "react";
 
 import { LabelValueList } from "./types";
 import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
 
-type BoxProps = {
-    align?: "center" | "left",
-    style?: InfoBoxStyle,
-    width?: number,
-    height?: number
-}
+export type BoxProps = {
+    align?: "center" | "left";
+    style?: InfoBoxStyle;
+    width?: number;
+    height?: number;
+};
 
 export type InfoBoxProps = BoxProps & {
-    info: string | LabelValueList,
-
+    info: string | LabelValueList;
 };
 
 export type LabelProps = BoxProps & {
-    label: string,
+    label: string;
 };
 
-type ValueListProps = BoxProps & {
-    values: LabelValueList,
+export type ValueListProps = BoxProps & {
+    values: LabelValueList;
 };
 
 /**
- * Renders a single label surrounded by a box of size `width` and `height` 
+ * Renders a single label surrounded by a box of size `width` and `height`
  */
 export class Label extends React.Component<LabelProps> {
-
     static defaultProps: Partial<LabelProps> = {
         align: "center",
         width: 100,
@@ -70,9 +68,7 @@ export class Label extends React.Component<LabelProps> {
             </text>
         );
 
-        const box = (
-            <rect x={0} y={0} style={boxStyle} width={width} height={height} />
-        );
+        const box = <rect x={0} y={0} style={boxStyle} width={width} height={height} />;
 
         return (
             <g>
@@ -81,7 +77,7 @@ export class Label extends React.Component<LabelProps> {
             </g>
         );
     }
-};
+}
 
 /**
  * Renders a box of size `width` and `height` and places a list of label
@@ -90,7 +86,6 @@ export class Label extends React.Component<LabelProps> {
  * applied to the box.
  */
 export class ValueList extends React.Component<ValueListProps> {
-
     static defaultProps: Partial<ValueListProps> = {
         align: "center",
         width: 100,
@@ -131,9 +126,7 @@ export class ValueList extends React.Component<ValueListProps> {
                 </g>
             );
         });
-        const box = (
-            <rect style={style.box} x={0} y={0} width={width} height={height} />
-        );
+        const box = <rect style={style.box} x={0} y={0} width={width} height={height} />;
         return (
             <g>
                 {box}
@@ -141,7 +134,7 @@ export class ValueList extends React.Component<ValueListProps> {
             </g>
         );
     }
-};
+}
 
 /**
  * Renders a box of size `width` and `height` and places a list of label
@@ -150,7 +143,6 @@ export class ValueList extends React.Component<ValueListProps> {
  * applied to the box.
  */
 export class InfoBox extends React.Component<InfoBoxProps> {
-
     static defaultProps: Partial<InfoBoxProps> = {
         align: "center",
         width: 150,
@@ -161,13 +153,9 @@ export class InfoBox extends React.Component<InfoBoxProps> {
     render() {
         const { info, ...props } = this.props;
         if (_.isString(info)) {
-            return (
-                <Label label={info} {...props} />
-            );
+            return <Label label={info} {...props} />;
         } else {
-            return (
-                <ValueList values={info} {...props} />
-            )
+            return <ValueList values={info} {...props} />;
         }
     }
-};
+}

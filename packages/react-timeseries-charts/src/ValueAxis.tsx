@@ -7,16 +7,17 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from "react";
 
-type ValueAxisProps = {
-    value?: string | number,
-    detail?: string,
-    width?: number,
-    height?: number
+import * as React from "react";
+
+export type ValueAxisProps = {
+    value?: string | number;
+    detail?: string;
+    width?: number;
+    height?: number;
 };
 
-export default class ValueAxis extends React.Component<ValueAxisProps> {
+export class ValueAxis extends React.Component<ValueAxisProps> {
     render() {
         const { width, height, value, detail } = this.props;
         const labelStyle = {
@@ -54,4 +55,4 @@ export default class ValueAxis extends React.Component<ValueAxisProps> {
             </g>
         );
     }
-};
+}

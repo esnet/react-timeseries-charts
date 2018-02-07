@@ -10,33 +10,33 @@
 
 import "array.prototype.fill";
 
-import _ from "underscore";
+import * as _ from "lodash";
+import * as React from "react";
+
 import { area, line } from "d3-shape";
 import { TimeSeries, Time, Key } from "pondjs";
-import merge from "merge";
-import React from "react";
 
 import { AreaChartStyle, defaultAreaChartStyle as defaultStyle } from "./style";
 import { ChartProps } from "./Charts";
 import { CurveInterpolation, AreaChartColumns } from "./types";
-import { scaleAsString } from "../js/util";
-import { Styler } from "../js/styler";
-import curves from "../js/curve";
+import { scaleAsString } from "./util";
+import { Styler } from "./styler";
+import curves from "./curve";
 
 import "@types/d3-shape";
 
 type AreaData = {
-    x0: number,
-    y0: number,
-    y1: number
-}
+    x0: number;
+    y0: number;
+    y1: number;
+};
 
-enum StyleType {
+export enum StyleType {
     Line = "line",
     Area = "area"
 }
 
-type AreaChartProps = ChartProps & {
+export type AreaChartProps = ChartProps & {
     series: TimeSeries<Key>;
     columns: AreaChartColumns;
     style: AreaChartStyle;
@@ -47,7 +47,7 @@ type AreaChartProps = ChartProps & {
     selection?: string;
     onHighlightChange?: (column: string) => any;
     onSelectionChange?: (column: string) => any;
-}
+};
 
 /**
  * The `<AreaChart>` component is able to display single or multiple stacked
@@ -97,9 +97,8 @@ type AreaChartProps = ChartProps & {
  * Note: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,
  * rather than hard coding the width as in the above example.
  */
-export default class AreaChart extends React.Component<AreaChartProps> {
-
-    defaultProps = {
+export class AreaChart extends React.Component<AreaChartProps> {
+    defaultProps: Partial<AreaChartProps> = {
         interpolation: CurveInterpolation.curveLinear,
         columns: {
             up: [],
@@ -108,7 +107,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         stack: true
     };
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps: AreaChartProps) {
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;
         const width = nextProps.width;
@@ -130,12 +129,12 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         let seriesChanged = false;
         if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
-        }
-        else {
+        } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
 
-        return seriesChanged ||
+        return (
+            seriesChanged ||
             timeScaleChanged ||
             widthChanged ||
             interpolationChanged ||
@@ -143,10 +142,11 @@ export default class AreaChart extends React.Component<AreaChartProps> {
             styleChanged ||
             yAxisScaleChanged ||
             highlightChanged ||
-            selectionChanged;
+            selectionChanged
+        );
     }
 
-    handleHover(e, column) {
+    handleHover(e: React.MouseEvent<SVGPathElement>, column: string) {
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(column);
         }
@@ -158,7 +158,7 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         }
     }
 
-    handleClick(e, column: string) {
+    handleClick(e: React.MouseEvent<SVGPathElement>, column: string) {
         e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(column);
@@ -170,11 +170,9 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.areaChartStyle()[column];
-            }
-            else if (_.isObject(this.props.style)) {
+            } else if (_.isObject(this.props.style)) {
                 style = this.props.style[column];
-            }
-            else if (_.isFunction(this.props.style)) {
+            } else if (_.isFunction(this.props.style)) {
                 style = this.props.style[column];
             }
         }
@@ -192,36 +190,54 @@ export default class AreaChart extends React.Component<AreaChartProps> {
         const isSelected = this.props.selection && column === this.props.selection;
 
         if (!_.has(styleMap, StyleType.Line)) {
-            console.error("Provided style for AreaChart does not define a style for the outline:", styleMap, column);
+            console.error(
+                "Provided style for AreaChart does not define a style for the outline:",
+                styleMap,
+                column
+            );
         }
         if (!_.has(styleMap, StyleType.Area)) {
-            console.error("Provided style for AreaChart does not define a style for the area:", styleMap);
+            console.error(
+                "Provided style for AreaChart does not define a style for the area:",
+                styleMap
+            );
         }
         if (this.props.selection) {
             if (isSelected) {
-                style = merge(true, defaultStyle[type].selected, styleMap[type].selected ? styleMap[type].selected : {});
+                style = _.merge(
+                    defaultStyle[type].selected,
+                    styleMap[type].selected ? styleMap[type].selected : {}
+                );
+            } else if (isHighlighted) {
+                style = _.merge(
+                    defaultStyle[type].highlighted,
+                    styleMap[type].highlighted ? styleMap[type].highlighted : {}
+                );
+            } else {
+                style = _.merge(
+                    defaultStyle[type].muted,
+                    styleMap[type].muted ? styleMap[type].muted : {}
+                );
             }
-            else if (isHighlighted) {
-                style = merge(true, defaultStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
-            }
-            else {
-                style = merge(true, defaultStyle[type].muted, styleMap[type].muted ? styleMap[type].muted : {});
-            }
-        }
-        else if (isHighlighted) {
-            style = merge(true, defaultStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
-        }
-        else {
-            style = merge(true, defaultStyle[type].normal, styleMap[type].normal ? styleMap[type].normal : {});
+        } else if (isHighlighted) {
+            style = _.merge(
+                defaultStyle[type].highlighted,
+                styleMap[type].highlighted ? styleMap[type].highlighted : {}
+            );
+        } else {
+            style = _.merge(
+                defaultStyle[type].normal,
+                styleMap[type].normal ? styleMap[type].normal : {}
+            );
         }
         return style;
     }
 
-    pathStyle(column) {
+    pathStyle(column: string) {
         return this.style(column, StyleType.Line);
     }
 
-    areaStyle(column) {
+    areaStyle(column: string) {
         return this.style(column, StyleType.Area);
     }
 
@@ -298,11 +314,6 @@ export default class AreaChart extends React.Component<AreaChartProps> {
     }
 
     render() {
-        return (
-            <g>
-                {this.renderAreas()}
-            </g>
-        );
+        return <g>{this.renderAreas()}</g>;
     }
 }
-

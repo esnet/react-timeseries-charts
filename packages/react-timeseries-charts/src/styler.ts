@@ -8,20 +8,35 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "underscore";
-import colorbrewer from "colorbrewer";
+import * as _ from "lodash";
+import * as colorbrewer from "colorbrewer";
+import * as chroma from "chroma-js";
 
-import "@types/underscore";
+import {
+    AreaChartStyle,
+    BarChartStyle,
+    LegendStyle,
+    CategoryStyle,
+    ScatterChartStyle,
+    BoxChartStyle,
+    LineChartStyle
+} from "./style";
+import { LegendItemType } from "./LegendItem";
+
+import "@types/colorbrewer";
 
 export type KeyedStyle = {
-    key: string
-}
+    key: string;
+};
 
 export type StylerStyle = {
-    color: string;
-    width: number;
-    dashed: boolean;
-}
+    key: string;
+    style?: StylerStyle;
+    color?: string;
+    selected?: string;
+    width?: number;
+    dashed?: boolean;
+};
 
 export type Column = string | KeyedStyle;
 
@@ -52,10 +67,9 @@ export type Column = string | KeyedStyle;
  *
  */
 export class Styler {
-
     colorScheme: string;
     columnNames: any[];
-    columnStyles: {};
+    columnStyles: { [columnName: string]: StylerStyle };
 
     /**
      * The `column`s define the style associated with a particular
@@ -80,14 +94,16 @@ export class Styler {
         if (_.isArray(columns)) {
             columns.forEach(column => {
                 if (_.isString(column)) {
-                    this.columnStyles[column] = { key: column };
+                    const c = column as string;
+                    this.columnStyles[c] = { key: c };
                 } else if (_.isObject(column)) {
-                    const { key, ...style } = column;
-                    this.columnStyles[key] = style;
+                    const c = column as KeyedStyle;
+                    const { key, ...style } = c;
+                    this.columnStyles[key] = style as StylerStyle;
                 }
             });
         }
-        this.columnNames = _.map(columns, c => {
+        this.columnNames = columns.map(c => {
             const cc = _.isString(c) ? c : c.key;
             return cc;
         });
@@ -109,19 +125,22 @@ export class Styler {
      * If there are less columns than the smallest set in the scheme then
      * just the smallest scheme will be returned.
      */
-    colorLookup(columnCount) {
-        const colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
+    colorLookup(columnCount: number): string[] {
+        return [];
+        /*
+        const scale = chroma.scale(this.colorScheme);
         const minSchemeSize = _.min(colorSchemeKeys);
         const maxSchemeSize = _.max(colorSchemeKeys);
         let colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
         colorLookupSize = _.max([colorLookupSize, minSchemeSize]);
         return this.colorScheme ? colorbrewer[this.colorScheme][colorLookupSize] : [];
+        */
     }
 
     /**
-     * 
+     *
      */
-    legendStyle(column, type) {
+    legendStyle(column: string, type: LegendItemType): CategoryStyle {
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
         const i = _.indexOf(this.columnNames, column);
@@ -130,14 +149,14 @@ export class Styler {
         const c = color || colorLookup[i % colorLookup.length];
 
         let styleSymbol: React.CSSProperties = {};
-        if (type === "swatch" || type === "dot") {
+        if (type === LegendItemType.Swatch || type === LegendItemType.Dot) {
             styleSymbol = {
                 fill: c,
                 opacity: 0.9,
                 stroke: c,
                 cursor: "pointer"
             };
-        } else if (type === "line") {
+        } else if (type === LegendItemType.Line) {
             styleSymbol = {
                 opacity: 0.9,
                 stroke: c,
@@ -160,7 +179,7 @@ export class Styler {
             color: "#999",
             cursor: "pointer"
         };
-        const legendStyle = {
+        const legendStyle: CategoryStyle = {
             symbol: {
                 normal: { ...styleSymbol, opacity: 0.7 },
                 highlighted: { ...styleSymbol, opacity: 0.8 },
@@ -183,8 +202,8 @@ export class Styler {
         return legendStyle;
     }
 
-    areaChartStyle() {
-        const style = {};
+    areaChartStyle(): AreaChartStyle {
+        const style: AreaChartStyle = {};
 
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
@@ -232,10 +251,12 @@ export class Styler {
         return style;
     }
 
-    lineChartStyle() {
+    lineChartStyle(): LineChartStyle {
+        const style: LineChartStyle = {};
+
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
-        const style = {};
+
         _.forEach(this.columnStyles, ({ color, selected, width = 1, dashed = false }, column) => {
             const i = _.indexOf(this.columnNames, column);
             const c = color || colorLookup[i % colorLookup.length];
@@ -254,19 +275,51 @@ export class Styler {
                 styleLine.strokeDasharray = "4,2";
             }
             style[column] = {
-                normal: { ...styleLine, opacity: 0.8, strokeWidth: width },
-                highlighted: { ...styleLine, opacity: 1.0, strokeWidth: width },
-                selected: { ...styleSelectedLine, opacity: 1.0, strokeWidth: width },
-                muted: { ...styleLine, opacity: 0.2, strokeWidth: width }
+                line: {
+                    normal: { ...styleLine, opacity: 0.8, strokeWidth: width },
+                    highlighted: { ...styleLine, opacity: 1.0, strokeWidth: width },
+                    selected: { ...styleSelectedLine, opacity: 1.0, strokeWidth: width },
+                    muted: { ...styleLine, opacity: 0.2, strokeWidth: width }
+                }
             };
         });
         return style;
     }
 
-    barChartStyle() {
+    barChartStyle(): BarChartStyle {
+        const style: BarChartStyle = {};
+
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
-        const style = {};
+
+        _.forEach(this.columnStyles, (s: StylerStyle, column: string) => {
+            const { color, selected } = s;
+            const i = _.indexOf(this.columnNames, column);
+            const c = color || colorLookup[i % colorLookup.length];
+            const fillStyle: React.CSSProperties = {
+                fill: c
+            };
+            const selectedStyle: React.CSSProperties = {
+                fill: selected || c
+            };
+            style[column] = {
+                bar: {
+                    normal: { ...fillStyle, opacity: 0.8 },
+                    highlighted: { ...fillStyle, opacity: 1.0 },
+                    selected: { ...selectedStyle, opacity: 1.0 },
+                    muted: { ...fillStyle, opacity: 0.2 }
+                }
+            };
+        });
+        return style;
+    }
+
+    scatterChartStyle(): ScatterChartStyle {
+        const style: ScatterChartStyle = {};
+
+        const numColumns = this.numColumns();
+        const colorLookup = this.colorLookup(numColumns);
+
         _.forEach(this.columnStyles, ({ color, selected }, column) => {
             const i = _.indexOf(this.columnNames, column);
             const c = color || colorLookup[i % colorLookup.length];
@@ -277,39 +330,18 @@ export class Styler {
                 fill: selected || c
             };
             style[column] = {
-                normal: { ...fillStyle, opacity: 0.8 },
-                highlighted: { ...fillStyle, opacity: 1.0 },
-                selected: { ...selectedStyle, opacity: 1.0 },
-                muted: { ...fillStyle, opacity: 0.2 }
+                point: {
+                    normal: { ...fillStyle, opacity: 0.8 },
+                    highlighted: { ...fillStyle, opacity: 1.0 },
+                    selected: { ...selectedStyle, opacity: 1.0 },
+                    muted: { ...fillStyle, opacity: 0.2 }
+                }
             };
         });
         return style;
     }
 
-    scatterChartStyle() {
-        const numColumns = this.numColumns();
-        const colorLookup = this.colorLookup(numColumns);
-        const style = {};
-        _.forEach(this.columnStyles, ({ color, selected }, column) => {
-            const i = _.indexOf(this.columnNames, column);
-            const c = color || colorLookup[i % colorLookup.length];
-            const fillStyle: React.CSSProperties = {
-                fill: c
-            };
-            const selectedStyle: React.CSSProperties = {
-                fill: selected || c
-            };
-            style[column] = {
-                normal: { ...fillStyle, opacity: 0.8 },
-                highlighted: { ...fillStyle, opacity: 1.0 },
-                selected: { ...selectedStyle, opacity: 1.0 },
-                muted: { ...fillStyle, opacity: 0.2 }
-            };
-        });
-        return style;
-    }
-
-    axisStyle(column) {
+    axisStyle(column: string) {
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
         const i = _.indexOf(this.columnNames, column);
@@ -317,12 +349,12 @@ export class Styler {
         const { color } = this.columnStyles[columnName];
         const c = color || colorLookup[i % colorLookup.length];
         return {
-            labelColor: c
+            fill: c
         };
     }
 
-    boxChartStyle() {
-        const style = {};
+    boxChartStyle(): BoxChartStyle {
+        const style: BoxChartStyle = {};
 
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
@@ -364,6 +396,6 @@ export class Styler {
     }
 }
 
-export default function styler(columns, scheme) {
+export default function styler(columns: Column[], scheme?: string) {
     return new Styler(columns, scheme);
 }

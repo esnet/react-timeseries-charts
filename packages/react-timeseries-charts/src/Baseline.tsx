@@ -8,19 +8,18 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import merge from "merge";
-import React from "react";
-import _ from "underscore";
+import * as _ from "lodash";
+import * as React from "react";
 
 import { ChartProps } from "./Charts";
 import { BaselineStyle, baselineDefaultStyle as defaultStyle } from "./style";
 
-type BaselineProps = ChartProps & {
-    axis: string,
-    style?: BaselineStyle,
-    value?: number,
-    label?: string,
-    position?: "left" | "right",
+export type BaselineProps = ChartProps & {
+    axis: string;
+    style?: BaselineStyle;
+    value?: number;
+    label?: string;
+    position?: "left" | "right";
 };
 
 /**
@@ -49,8 +48,7 @@ type BaselineProps = ChartProps & {
  * </ChartContainer>
  * ```
  */
-export default class Baseline extends React.Component<BaselineProps> {
-
+export class Baseline extends React.Component<BaselineProps> {
     static defaultProps: Partial<BaselineProps> = {
         value: 0,
         label: "",
@@ -79,16 +77,16 @@ export default class Baseline extends React.Component<BaselineProps> {
         pts.push("0 0");
         pts.push(`${this.props.width} 0`);
         const points = pts.join(" ");
+
         //
         // Style
         //
-        const labelStyle = merge(
-            true,
+
+        const labelStyle = _.merge(
             defaultStyle.label,
             this.props.style.label ? this.props.style.label : {}
         );
-        const lineStyle = merge(
-            true,
+        const lineStyle = _.merge(
             defaultStyle.line,
             this.props.style.line ? this.props.style.line : {}
         );

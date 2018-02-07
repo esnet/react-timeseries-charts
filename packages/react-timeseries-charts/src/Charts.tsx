@@ -7,17 +7,22 @@
  *  This source code is licensed under the BSD-style license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from "react";
+
+import * as React from "react";
+
 import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
+import { ScalerFunction } from "./interpolators";
+
 import "@types/d3-scale";
 
 //
 // Axis types
 //
 
-export type Scale = ScaleLogarithmic<number, number> |
-    ScaleLinear<number, number> |
-    ScaleLogarithmic<number, number>;
+export type Scale =
+    | ScaleLogarithmic<number, number>
+    | ScaleLinear<number, number>
+    | ScaleLogarithmic<number, number>;
 
 export enum ScaleType {
     Linear = "LINEAR",
@@ -44,8 +49,8 @@ export type ChartProps = {
     width: number;
     height: number;
     timeScale?: ScaleTime<number, number>;
-    yScale?: ScaleLinear<number, number>;
-    timeFormat?: string
+    yScale?: ScalerFunction;
+    timeFormat?: string;
 };
 
 //
@@ -105,8 +110,8 @@ export class Charts extends React.Component<ChartsProps> {
     render() {
         return (
             <g>
-                `${this.constructor.name} elements are for configuration only
-and should not be rendered`
+                `${this.constructor.name} elements are for configuration only and should not be
+                rendered`
             </g>
         );
     }
