@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import * as React from "react";
 import { Event, Key } from "pondjs";
 import { LabelValueList } from "./types";
@@ -33,10 +34,7 @@ export declare class ScatterChart extends React.Component<ScatterChartProps> {
     handleHover(e: React.MouseEvent<SVGElement>): void;
     handleHoverLeave(): void;
     providedStyleMap(column: string, event: Event<Key>): ScatterChartChannelStyle;
-    style(column: string, event: Event<Key>): {
-        fill: string;
-        opacity: number;
-    } & React.CSSProperties;
+    style(column: string, event: Event<Key>): any;
     renderScatter(): JSX.Element;
     render(): JSX.Element;
 }

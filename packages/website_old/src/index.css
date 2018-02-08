@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+pre {
+    display: block;
+    margin: 0 0 10px;
+    padding: 0px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #333333;
+    background-color: #f8f8f8;
+    border-style: none;
+    border-radius: 0px;
+    border-left-color: #64a0af;
+    border-left-style: solid;
+    border-left-width: 3px;
+    padding-left: 10px;
+}

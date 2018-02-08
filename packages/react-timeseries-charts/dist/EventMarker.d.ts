@@ -1,9 +1,9 @@
+/// <reference types="react" />
 import * as React from "react";
 import { Event, Key } from "pondjs";
 import { ChartProps } from "./charts";
 import { EventMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
-import "@types/d3-time-format";
 export declare type EventMarkerProps = ChartProps & {
     event: Event<Key>;
     column?: string;

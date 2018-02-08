@@ -11,16 +11,16 @@
 import * as _ from "lodash";
 import * as moment from "moment";
 import * as React from "react";
-
 import { timeFormat } from "d3-time-format";
 import "moment-duration-format";
 
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
+
 import { InfoBox, InfoBoxProps } from "./info";
 import { TimeMarkerStyle, defaultTimeMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 
-import "@types/moment-duration-format";
+// import "@types/moment-duration-format";
 
 export type StringPair = [string, string];
 

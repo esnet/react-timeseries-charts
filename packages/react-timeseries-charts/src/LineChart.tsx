@@ -23,7 +23,7 @@ import {
     defaultLineChartChannelStyle as defaultStyle
 } from "./style";
 
-import "@types/d3-shape";
+// import "@types/d3-shape";
 
 export type LineChartProps = ChartProps & {
     series: any;

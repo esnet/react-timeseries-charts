@@ -1,9 +1,7 @@
+/// <reference types="react" />
 import * as React from "react";
 import { TimeRange } from "pondjs";
 import { LabelValueList } from "./types";
-import "@types/d3-scale";
-import "@types/moment-timezone";
-import "@types/invariant";
 export declare type StyleTargets = {
     labels: any;
     axis: any;

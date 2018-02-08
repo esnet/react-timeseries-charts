@@ -11,6 +11,7 @@
 import "array.prototype.fill";
 
 import * as _ from "lodash";
+
 import * as React from "react";
 
 import { area, line } from "d3-shape";
@@ -23,7 +24,7 @@ import { scaleAsString } from "./util";
 import { Styler } from "./styler";
 import curves from "./curve";
 
-import "@types/d3-shape";
+// import "@types/d3-shape";
 
 type AreaData = {
     x0: number;

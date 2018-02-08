@@ -12,12 +12,13 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { TimeSeries, Event, Key } from "pondjs";
+
 import { EventMarker, EventMarkerProps } from "./EventMarker";
+import { ChartProps } from "./Charts";
 
 import { getElementOffset } from "./util";
 import { LabelValueList } from "./types";
 import { Styler } from "./styler";
-import { ChartProps } from "./charts";
 import {
     ScatterChartStyle,
     defaultScatterChartChannelStyle as defaultStyle,

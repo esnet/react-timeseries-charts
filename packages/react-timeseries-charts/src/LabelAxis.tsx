@@ -14,7 +14,7 @@ import { format } from "d3-format";
 import { ValueList } from "./ValueList";
 import { InfoBoxStyle } from "./style";
 
-import "@types/d3-format";
+// import "@types/d3-format";
 
 export type LabelAxisProps = {
     label: string;

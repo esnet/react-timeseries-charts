@@ -27,8 +27,7 @@ import { TimeMarker, TimeMarkerProps } from "./TimeMarker";
 import { YAxis, YAxisProps } from "./YAxis";
 import ScaleInterpolator, { ScalerFunction } from "./interpolators";
 
-import "@types/d3-scale";
-import "@types/underscore";
+// import "@types/d3-scale";
 
 import { LabelValueList } from "./types";
 
@@ -171,13 +170,15 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                     type = ScaleType.Linear
                 } = child.props as AxisProps;
                 const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
-                this.scaleInterpolatorMap[
-                    id
-                ] = new ScaleInterpolator(transition, easeSinOut, (s: ScalerFunction) => {
-                    const yAxisScalerMap = this.state.yAxisScalerMap;
-                    yAxisScalerMap[id] = s;
-                    this.setState(yAxisScalerMap);
-                });
+                this.scaleInterpolatorMap[id] = new ScaleInterpolator(
+                    transition,
+                    easeSinOut,
+                    (s: ScalerFunction) => {
+                        const yAxisScalerMap = this.state.yAxisScalerMap;
+                        yAxisScalerMap[id] = s;
+                        this.setState(yAxisScalerMap);
+                    }
+                );
                 const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
                 this.scaleInterpolatorMap[id].setScale(cacheKey, initialScale);
             }
@@ -209,13 +210,15 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                 const scale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 if (!_.has(this.scaleInterpolatorMap, id)) {
                     // No scale map yet, create one on this.state.yAxisScalarMap
-                    this.scaleInterpolatorMap[
-                        id
-                    ] = new ScaleInterpolator(transition, easeSinOut, s => {
-                        const yAxisScalerMap = this.state.yAxisScalerMap;
-                        yAxisScalerMap[id] = s;
-                        this.setState(yAxisScalerMap);
-                    });
+                    this.scaleInterpolatorMap[id] = new ScaleInterpolator(
+                        transition,
+                        easeSinOut,
+                        s => {
+                            const yAxisScalerMap = this.state.yAxisScalerMap;
+                            yAxisScalerMap[id] = s;
+                            this.setState(yAxisScalerMap);
+                        }
+                    );
                 }
                 const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
                 this.scaleInterpolatorMap[id].setScale(cacheKey, scale);

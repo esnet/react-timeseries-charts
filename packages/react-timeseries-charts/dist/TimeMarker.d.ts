@@ -1,9 +1,9 @@
+/// <reference types="react" />
 import * as React from "react";
 import "moment-duration-format";
 import { ChartProps } from "./charts";
 import { TimeMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
-import "@types/moment-duration-format";
 export declare type StringPair = [string, string];
 export declare type TimeFormatCallback = (d: Date) => string;
 export declare type TimeMarkerProps = ChartProps & {

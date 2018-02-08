@@ -1,7 +1,7 @@
+/// <reference types="react" />
 import * as React from "react";
 import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
 import { ScalerFunction } from "./interpolators";
-import "@types/d3-scale";
 export declare type Scale = ScaleLogarithmic<number, number> | ScaleLinear<number, number> | ScaleLogarithmic<number, number>;
 export declare enum ScaleType {
     Linear = "LINEAR",

@@ -9,7 +9,6 @@
  */
 
 import * as _ from "lodash";
-import * as colorbrewer from "colorbrewer";
 import * as chroma from "chroma-js";
 
 import {
@@ -22,8 +21,6 @@ import {
     LineChartStyle
 } from "./style";
 import { LegendItemType } from "./LegendItem";
-
-import "@types/colorbrewer";
 
 export type KeyedStyle = {
     key: string;
@@ -108,10 +105,10 @@ export class Styler {
             return cc;
         });
 
-        if (scheme && !_.has(colorbrewer, scheme)) {
-            throw new Error(`Unknown scheme '${scheme}' supplied to Style constructor`);
-        }
-        this.colorScheme = scheme;
+        //if (scheme && !_.has(colorbrewer, scheme)) {
+        //    throw new Error(`Unknown scheme '${scheme}' supplied to Style constructor`);
+        //}
+        //this.colorScheme = scheme;
     }
 
     numColumns() {

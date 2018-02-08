@@ -14,7 +14,7 @@ import * as React from "react";
 import { timerange, TimeRange } from "pondjs";
 import { ScaleTime } from "d3-scale";
 
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
 import { getElementOffset } from "./util";
 
 export type BrushProps = ChartProps & {

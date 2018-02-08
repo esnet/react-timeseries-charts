@@ -1,0 +1,153 @@
+/**
+ *  Copyright (c) 2017, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+h2 {
+    font-size: 27px;
+    font-weight: 400;
+    color: #333;
+}
+
+h4 {
+    padding-top: 20px;
+}
+
+/* react-select dropdown conflicts with Bootstrap controls */
+
+.list-group-item.active,
+.list-group-item.active:focus,
+.list-group-item.active:hover {
+    z-index: 0;
+}
+
+/* Hamburger sidebar expander */
+
+.sidebar-icon {
+    font-size: 25px;
+    margin-right: 45px;
+    color: #a4a4a4;
+}
+
+.sidebar-icon:hover,
+.sidebar-icon.active {
+    color: #4ec1e0;
+}
+
+.sidebar-link {
+    display: block;
+    font-weight: 500;
+    font-family: "Open Sans Condensed", sans-serif;
+    font-size: 14px;
+    padding: 5px 0px;
+    color: #757575;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-link:hover {
+    color: #4ec1e0;
+    text-decoration: none;
+    cursor: hand;
+}
+
+.sidebar-link.active {
+    color: #4ec1e0;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Header customization */
+
+.navbar {
+    height: 80px;
+    background: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #fafafa),
+        color-stop(1, #f5f5f5)
+    );
+    background: linear-gradient(to bottom, #fafafa, #f5f5f5);
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+}
+
+.navbar-brand {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #6d6e71;
+}
+
+/* ESnet fasterdata and ESnet main site links */
+
+.tools-links > li:first-child a {
+    border-left: 0;
+}
+
+.tools-links > li > a {
+    text-align: left;
+    font-size: 14px;
+    margin-top: 20px;
+    padding: 8px 10px;
+    background-color: #6d6e71;
+    border-left: 1px solid #fff;
+    color: #fff;
+    width: 119px;
+    height: 34px;
+    display: block;
+}
+
+.tools-links {
+    margin-right: 10px !important;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    text-align: right;
+    font-size: 0;
+}
+
+.tools-links > li a.selected,
+.tools-links > li a:hover {
+    background-color: #4ec1e0;
+}
+
+/* Navigation pills altered to look like the links above */
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:focus,
+.nav-pills > li.active > a:hover {
+    background-color: #8c8d93 !important;
+}
+
+.nav-pills > li > a {
+    border-radius: 0px !important;
+}
+
+.nav > li > a {
+    padding: 7px 15px;
+}
+
+/* Hide the footer on small screens */
+@media (max-width: 600px) {
+    .footer {
+        display: none;
+    }
+}

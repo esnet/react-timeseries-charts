@@ -12,7 +12,7 @@ import * as React from "react";
 import { ScaleTime } from "d3-scale";
 import { timerange, TimeRange } from "pondjs";
 
-import "@types/d3-scale";
+// import "@types/d3-scale";
 
 import { getElementOffset } from "./util";
 

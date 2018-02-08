@@ -9,7 +9,6 @@
  */
 
 import * as _ from "lodash";
-import * as invariant from "invariant";
 import * as moment from "moment-timezone";
 import * as React from "react";
 
@@ -25,9 +24,9 @@ import { EventHandler } from "./EventHandler";
 import { LabelValueList } from "./types";
 import { TimeMarker } from "./TimeMarker";
 
-import "@types/d3-scale";
-import "@types/moment-timezone";
-import "@types/invariant";
+// import "@types/d3-scale";
+// import "@types/moment-timezone";
+// import "@types/console.error";
 
 const defaultTimeAxisStyle = {
     labels: {
@@ -55,19 +54,19 @@ export enum ShowGridPosition {
 }
 
 export type ChartContainerProps = {
-    children?: any;
+    children: any;
     timeRange: TimeRange;
     timezone?: string;
     width?: number;
     minTime?: Date;
     maxTime?: Date;
     timeFormat?: string;
-    timeAxisStyle: any; // TODO
+    timeAxisStyle?: any; // TODO
     enablePanZoom?: boolean;
     minDuration?: number;
     transition?: number;
     showGrid?: boolean;
-    showGridPosition: ShowGridPosition;
+    showGridPosition?: ShowGridPosition;
     trackerTime?: Date;
     trackerInfo?: LabelValueList | string;
     trackerInfoWidth?: number;
@@ -184,7 +183,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                 });
                 if (countCharts !== 1) {
                     const msg = "ChartRow should have one and only one <Charts> tag within it";
-                    invariant(false, msg, childRow.constructor.name);
+                    console.error(msg);
                 }
                 align = "left";
                 let pos = countLeft - 1;

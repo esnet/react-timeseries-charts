@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import * as React from "react";
 import { TimeRange } from "pondjs";
 import { ChartProps } from "./charts";

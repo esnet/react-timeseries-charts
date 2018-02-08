@@ -14,12 +14,12 @@ import * as React from "react";
 import { index, Event, Index, TimeRange, Time, Key } from "pondjs";
 import { timeFormat } from "d3-time-format";
 
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
 import { InfoBox, InfoBoxProps } from "./info";
 import { EventMarkerStyle, defaultEventMarkerStyle as defaultStyle } from "./style";
 import { LabelValueList } from "./types";
 
-import "@types/d3-time-format";
+// import "@types/d3-time-format";
 
 const textStyle = {
     fontSize: 11,
