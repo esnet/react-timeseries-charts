@@ -15,6 +15,7 @@ import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
 
 import Brush from "./Brush";
+import MultiBrush from "./MultiBrush";
 import Charts from "./Charts";
 import TimeMarker from "./TimeMarker";
 import YAxis from "./YAxis";
@@ -350,16 +351,21 @@ export default class ChartRow extends React.Component {
         //
 
         const brushList = [];
+        const multiBrushList = [];
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Brush) {
+            if (child.type === Brush || child.type === MultiBrush) {
                 const brushProps = {
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: this.props.timeScale
                 };
-                brushList.push(React.cloneElement(child, brushProps));
+                if (child.type === Brush) {
+                    brushList.push(React.cloneElement(child, brushProps));
+                } else {
+                    multiBrushList.push(React.cloneElement(child, brushProps));
+                }
             }
             keyCount += 1;
         });
@@ -389,6 +395,15 @@ export default class ChartRow extends React.Component {
         const brushes = (
             <g transform={chartTransform} key="brush-group">
                 {brushList}
+            </g>
+        );
+
+        //
+        // Multi Brush
+        //
+        const multiBrushes = (
+            <g transform={chartTransform} key="multi-brush-group">
+                {multiBrushList}
             </g>
         );
 
@@ -430,6 +445,7 @@ export default class ChartRow extends React.Component {
                 {axes}
                 {charts}
                 {brushes}
+                {multiBrushes}
                 {tracker}
             </g>
         );
