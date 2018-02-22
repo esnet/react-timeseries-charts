@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "declarationDir": "dist",
+        "outDir": "dist",
+        "target": "es5",
+        "jsx": "react",
+        "lib": ["es2015", "dom"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noFallthroughCasesInSwitch": true,
+        "pretty": true,
+        "removeComments": true,
+        "sourceMap": true,
+        "types": ["react"],
+        "allowSyntheticDefaultImports": true,
+        "emitDecoratorMetadata": false,
+        "experimentalDecorators": false,
+        "stripInternal": true
+    },
+    "include": ["src", "./typings.d.ts"],
+    "exclude": ["node_modules", "dist"]
+}

@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as React from "react";
 import { Event, Key } from "pondjs";
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
 import { EventMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 export declare type EventMarkerProps = ChartProps & {

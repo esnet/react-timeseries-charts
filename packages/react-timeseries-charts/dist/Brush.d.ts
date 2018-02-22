@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as React from "react";
 import { TimeRange } from "pondjs";
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
 export declare type BrushProps = ChartProps & {
     style?: object;
     timeRange?: TimeRange;

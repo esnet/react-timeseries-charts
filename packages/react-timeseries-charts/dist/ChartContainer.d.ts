@@ -15,19 +15,19 @@ export declare enum ShowGridPosition {
     Under = "UNDER",
 }
 export declare type ChartContainerProps = {
-    children?: any;
+    children: any;
     timeRange: TimeRange;
     timezone?: string;
     width?: number;
     minTime?: Date;
     maxTime?: Date;
     timeFormat?: string;
-    timeAxisStyle: any;
+    timeAxisStyle?: any;
     enablePanZoom?: boolean;
     minDuration?: number;
     transition?: number;
     showGrid?: boolean;
-    showGridPosition: ShowGridPosition;
+    showGridPosition?: ShowGridPosition;
     trackerTime?: Date;
     trackerInfo?: LabelValueList | string;
     trackerInfoWidth?: number;

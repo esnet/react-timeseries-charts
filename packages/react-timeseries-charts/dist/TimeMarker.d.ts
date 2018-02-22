@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as React from "react";
 import "moment-duration-format";
-import { ChartProps } from "./charts";
+import { ChartProps } from "./Charts";
 import { TimeMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 export declare type StringPair = [string, string];

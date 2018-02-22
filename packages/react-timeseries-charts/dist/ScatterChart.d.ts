@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import * as React from "react";
 import { Event, Key } from "pondjs";
+import { ChartProps } from "./Charts";
 import { LabelValueList } from "./types";
 import { Styler } from "./styler";
-import { ChartProps } from "./charts";
 import { ScatterChartStyle, ScatterChartChannelStyle, EventMarkerStyle } from "./style";
 export declare type EventColumnPair = {
     event?: Event<Key>;

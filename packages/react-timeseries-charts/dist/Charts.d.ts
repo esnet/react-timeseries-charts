@@ -18,9 +18,9 @@ export declare type AxisProps = {
     width: number;
 };
 export declare type ChartProps = {
-    key: string | number;
-    width: number;
-    height: number;
+    key?: string | number;
+    width?: number;
+    height?: number;
     timeScale?: ScaleTime<number, number>;
     yScale?: ScalerFunction;
     timeFormat?: string;

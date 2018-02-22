@@ -9,7 +9,7 @@
  */
 
 import * as React from "react";
-import { TimeSeries } from "pondjs";
+import { timeSeries } from "pondjs";
 import {
     ChartContainer,
     ChartRow,
@@ -21,7 +21,7 @@ import {
     TimeAxisStyleType
 } from "react-timeseries-charts";
 
-const series = new TimeSeries({
+const series = timeSeries({
     name: "chart",
     columns: ["time", "value"],
     points: [
@@ -35,6 +35,8 @@ const series = new TimeSeries({
         [1416787200000, 1.1663]
     ]
 });
+
+// console.log(series.toJSON());
 
 export default class Chart extends React.Component {
     render() {
