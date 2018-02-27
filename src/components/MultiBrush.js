@@ -123,14 +123,22 @@ export default class MultiBrush extends React.Component {
         document.removeEventListener("mouseover", this.handleMouseMove);
         document.removeEventListener("mouseup", this.handleMouseUp);
 
-        this.setState({
-            isBrushing: false,
-            brushingInitializationSite: null,
-            initialBrushBeginTime: null,
-            initialBrushEndTime: null,
-            initialBrushXYPosition: null,
-            brushIndex: null
-        });
+        const brushing_is = this.state.brushIndex;
+        this.setState(
+            {
+                isBrushing: false,
+                brushingInitializationSite: null,
+                initialBrushBeginTime: null,
+                initialBrushEndTime: null,
+                initialBrushXYPosition: null,
+                brushIndex: null
+            },
+            () => {
+                if (this.props.onUserMouseUp) {
+                    this.props.onUserMouseUp(brushing_is);
+                }
+            }
+        );
     }
 
     handleMouseMove(e) {
@@ -405,6 +413,10 @@ MultiBrush.propTypes = {
      * the brush in the timeRanges prop.
      */
     onTimeRangeChanged: PropTypes.func,
+    /**
+     * when user stop drawing or dragging box
+     */
+    onUserMouseUp: PropTypes.func,
     /**
      * [Internal] The timeScale supplied by the surrounding ChartContainer
      */
