@@ -295,6 +295,7 @@ export default class ChartContainer extends React.Component {
                     format={this.props.format}
                     showGrid={this.props.showGrid}
                     gridHeight={chartsHeight}
+                    tickCount={this.props.timeAxisTickCount}
                 />
             </g>
         );
@@ -452,6 +453,13 @@ ChartContainer.propTypes = {
      * with respect to the charts
      */
     showGridPosition: PropTypes.oneOf(["over", "under"]),
+
+    /**
+     * Specify the number of ticks
+     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
+     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     */
+    timeAxisTickCount: PropTypes.number,
 
     /**
      * Adjust the time axis style. This is an object of the

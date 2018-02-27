@@ -65,30 +65,75 @@ export default class TimeAxis extends React.Component {
 
         const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
         const utc = this.props.utc;
+        const tickCount = this.props.tickCount;
 
-        if (format === "day") {
-            axis = axisBottom(scale)
-                .tickArguments([utc ? utcDay : timeDay, 1])
-                .tickFormat(timeFormat("%d"))
-                .tickSizeOuter(0);
-        } else if (format === "month") {
-            axis = axisBottom(scale)
-                .tickArguments([utc ? utcMonth : timeMonth, 1])
-                .tickFormat(timeFormat("%B"))
-                .tickSizeOuter(0);
-        } else if (format === "year") {
-            axis = axisBottom(scale)
-                .tickArguments([utc ? utcYear : timeYear, 1])
-                .tickFormat(timeFormat("%Y"))
-                .tickSizeOuter(0);
-        } else if (format === "relative") {
-            axis = axisBottom(scale).tickFormat(d => moment.duration(+d).format()).tickSizeOuter(0);
-        } else if (_.isString(format)) {
-            axis = axisBottom(scale).tickFormat(timeFormat(format)).tickSizeOuter(0);
-        } else if (_.isFunction(format)) {
-            axis = axisBottom(scale).tickFormat(format).tickSizeOuter(0);
+        if (tickCount > 0) {
+            if (format === "day") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcDay : timeDay, 1, tickCount])
+                    .tickFormat(timeFormat("%d"))
+                    .tickSizeOuter(0);
+            } else if (format === "month") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcMonth : timeMonth, 1, tickCount])
+                    .tickFormat(timeFormat("%B"))
+                    .tickSizeOuter(0);
+            } else if (format === "year") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcYear : timeYear, 1, tickCount])
+                    .tickFormat(timeFormat("%Y"))
+                    .tickSizeOuter(0);
+            } else if (format === "relative") {
+                axis = axisBottom(scale)
+                    .ticks(tickCount)
+                    .tickFormat(d => moment.duration(+d).format())
+                    .tickSizeOuter(0);
+            } else if (_.isString(format)) {
+                axis = axisBottom(scale)
+                    .ticks(tickCount)
+                    .tickFormat(timeFormat(format))
+                    .tickSizeOuter(0);
+            } else if (_.isFunction(format)) {
+                axis = axisBottom(scale)
+                    .ticks(tickCount)
+                    .tickFormat(format)
+                    .tickSizeOuter(0);
+            } else {
+                axis = axisBottom(scale)
+                    .ticks(tickCount)
+                    .tickSize(0);
+            }
         } else {
-            axis = axisBottom(scale).tickSize(0);
+            if (format === "day") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcDay : timeDay, 1])
+                    .tickFormat(timeFormat("%d"))
+                    .tickSizeOuter(0);
+            } else if (format === "month") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcMonth : timeMonth, 1])
+                    .tickFormat(timeFormat("%B"))
+                    .tickSizeOuter(0);
+            } else if (format === "year") {
+                axis = axisBottom(scale)
+                    .tickArguments([utc ? utcYear : timeYear, 1])
+                    .tickFormat(timeFormat("%Y"))
+                    .tickSizeOuter(0);
+            } else if (format === "relative") {
+                axis = axisBottom(scale)
+                    .tickFormat(d => moment.duration(+d).format())
+                    .tickSizeOuter(0);
+            } else if (_.isString(format)) {
+                axis = axisBottom(scale)
+                    .tickFormat(timeFormat(format))
+                    .tickSizeOuter(0);
+            } else if (_.isFunction(format)) {
+                axis = axisBottom(scale)
+                    .tickFormat(format)
+                    .tickSizeOuter(0);
+            } else {
+                axis = axisBottom(scale).tickSize(0);
+            }
         }
 
         // Style
@@ -107,7 +152,9 @@ export default class TimeAxis extends React.Component {
         const { labelColor, labelWeight, labelSize } = labelStyle;
 
         // Remove the old axis from under this DOM node
-        select(ReactDOM.findDOMNode(this)).selectAll("*").remove(); // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
+            .selectAll("*")
+            .remove(); // eslint-disable-line
         //
         // Draw the new axis
         //
@@ -130,7 +177,10 @@ export default class TimeAxis extends React.Component {
             .selectAll(".tick")
             .select("line")
             .style("stroke", axisColor);
-        select(ReactDOM.findDOMNode(this)).select("g").select("path").remove(); // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
+            .select("g")
+            .select("path")
+            .remove(); // eslint-disable-line
     }
 
     render() {
@@ -153,5 +203,6 @@ TimeAxis.propTypes = {
     style: PropTypes.shape({
         labels: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object // eslint-disable-line
-    })
+    }),
+    tickCount: PropTypes.number
 };
