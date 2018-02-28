@@ -59,7 +59,9 @@ const style = styler([
 class currency extends React.Component {
     state = {
         tracker: null,
-        timerange: currencySeries.range()
+        timerange: currencySeries.range(),
+        x: null,
+        y: null
     };
 
     handleTrackerChanged = tracker => {
@@ -68,6 +70,11 @@ class currency extends React.Component {
 
     handleTimeRangeChange = timerange => {
         this.setState({ timerange });
+    };
+
+    handleMouseMove = (x, y) => {
+        this.setState({ x, y });
+        console.log("x y ", x, y);
     };
 
     render() {
@@ -93,6 +100,10 @@ class currency extends React.Component {
                 <div className="row" style={{ height: 28 }}>
                     <div className="col-md-6" style={timeStyle}>
                         {this.state.tracker ? `${df(this.state.tracker)}` : ""}
+                        <br />
+                        {this.state.x ? `x is ${this.state.x} ` : ""}
+                        <br />
+                        {this.state.y ? `y is ${this.state.y} ` : ""}
                     </div>
                     <div className="col-md-6">
                         <Legend
@@ -123,6 +134,7 @@ class currency extends React.Component {
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
+                                onMouseMove={(x, y) => this.handleMouseMove(x, y)}
                                 minDuration={1000 * 60 * 60 * 24 * 30}
                             >
                                 <ChartRow height="500">
