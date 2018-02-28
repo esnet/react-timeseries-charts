@@ -13,6 +13,7 @@ export BarChart from "./components/BarChart";
 export BoxChart from "./components/BoxChart";
 export Baseline from "./components/Baseline";
 export Brush from "./components/Brush";
+export MultiBrush from "./components/MultiBrush";
 export ChartContainer from "./components/ChartContainer";
 export ChartRow from "./components/ChartRow";
 export Charts from "./components/Charts";

@@ -16,6 +16,7 @@ import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
 
 import Brush from "./Brush";
+import MultiBrush from "./MultiBrush";
 import ChartRow from "./ChartRow";
 import Charts from "./Charts";
 import EventHandler from "./EventHandler";
@@ -144,7 +145,7 @@ export default class ChartContainer extends React.Component {
                     if (child.type === Charts) {
                         countCharts += 1;
                         align = "right";
-                    } else if (child.type !== Brush) {
+                    } else if (child.type !== Brush && child.type !== MultiBrush) {
                         if (align === "left") {
                             countLeft += 1;
                         }
@@ -160,7 +161,11 @@ export default class ChartContainer extends React.Component {
                 let pos = countLeft - 1;
 
                 React.Children.forEach(childRow.props.children, child => {
-                    if (child.type === Charts || child.type === Brush) {
+                    if (
+                        child.type === Charts ||
+                        child.type === Brush ||
+                        child.type === MultiBrush
+                    ) {
                         if (child.type === Charts) {
                             align = "right";
                             pos = 0;
