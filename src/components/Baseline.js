@@ -66,7 +66,7 @@ export default class Baseline extends React.Component {
         let textPositionX;
         const pts = [];
 
-        const textPositionY = -3;
+        const textPositionY = y < 10 ? 10 : -3;
 
         if (this.props.position === "left") {
             textAnchor = "start";
