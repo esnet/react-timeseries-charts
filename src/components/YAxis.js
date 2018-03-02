@@ -162,6 +162,9 @@ export default class YAxis extends React.Component {
                 });
             }
         } else if (type === "log") {
+            if (this.props.min === 0) {
+                throw Error("In a log scale, minimum value can't be 0");
+            }
             axisGenerator = axis(scale).ticks(10, ".2s");
         }
 
@@ -227,6 +230,9 @@ export default class YAxis extends React.Component {
                 }
             }
         } else if (this.props.type === "log") {
+            if (this.props.min === 0) {
+                throw Error("In a log scale, minimum value can't be 0");
+            }
             axisGenerator = axis()
                 .scale(scale)
                 .ticks(10, ".2s")
