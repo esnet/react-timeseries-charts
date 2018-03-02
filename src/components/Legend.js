@@ -194,11 +194,11 @@ class LegendItem extends React.Component {
         const { symbolWidth, symbolHeight } = this.props;
         const w = parseInt(symbolWidth / 2, 10);
         const h = parseInt(symbolHeight / 2, 10);
-        const r = w * 0.75;
+        const radius = w * 0.75;
 
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
-                <circle style={style} cx={w} cy={h} r={r} />
+                <circle style={style} cx={w} cy={h} r={radius} />
             </svg>
         );
     }
