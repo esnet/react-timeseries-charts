@@ -26,6 +26,7 @@ import AreaChart from "../../../../../components/AreaChart";
 import LineChart from "../../../../../components/LineChart";
 import ScatterChart from "../../../../../components/ScatterChart";
 import Resizable from "../../../../../components/Resizable";
+import Legend from "../../../../../components/Legend";
 import styler from "../../../../../js/styler";
 
 // Weather data
@@ -167,7 +168,7 @@ class weather extends React.Component {
                 <hr />
 
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-10">
                         <Resizable>
                             <ChartContainer
                                 utc={this.state.mode === "utc"}
@@ -304,6 +305,22 @@ class weather extends React.Component {
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                    <div className="col-md-2">
+                        <Legend
+                            type="line"
+                            align="right"
+                            stack={true}
+                            style={style}
+                            categories={[
+                                { key: "temp", label: "Temperature" },
+                                { key: "pressure", label: "Pressure" },
+                                { key: "wind", label: "Wind speed" },
+                                { key: "gust", label: "Gust speed", symbolType: "dot" },
+                                { key: "rain", label: "Rainfall", symbolType: "swatch" },
+                                { key: "rainAccum", label: "Accumulated rainfall" }
+                            ]}
+                        />
                     </div>
                 </div>
             </div>

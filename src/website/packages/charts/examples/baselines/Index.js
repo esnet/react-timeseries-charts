@@ -72,7 +72,7 @@ class baselines extends React.Component {
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()} format="%b '%y">
+                <ChartContainer timeRange={series.range()} format="%b '%y" timeAxisTickCount={5}>
                     <ChartRow height="150">
                         <YAxis
                             id="price"

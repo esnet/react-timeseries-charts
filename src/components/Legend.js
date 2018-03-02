@@ -192,24 +192,22 @@ class LegendItem extends React.Component {
 
     renderDot(style) {
         const { symbolWidth, symbolHeight } = this.props;
+        const w = parseInt(symbolWidth / 2, 10);
+        const h = parseInt(symbolHeight / 2, 10);
+        const r = w * 0.75;
+
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
-                <ellipse
-                    style={style}
-                    cx={parseInt(symbolWidth / 2, 10) + 2}
-                    cy={parseInt(symbolHeight / 2, 10) + 1}
-                    rx={parseInt(symbolWidth / 2, 10) - 2}
-                    ry={parseInt(symbolHeight / 2, 10) - 2}
-                />
+                <circle style={style} cx={w} cy={h} r={r} />
             </svg>
         );
     }
 
     render() {
-        const { symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
+        const { symbolStyle, labelStyle, valueStyle, itemKey, symbolType } = this.props;
 
         let symbol;
-        switch (this.props.type) {
+        switch (symbolType) {
             case "swatch":
                 symbol = this.renderSwatch(symbolStyle);
                 break;
@@ -278,11 +276,11 @@ export default class Legend extends React.Component {
      *    category in it and the associated style
      *  * Finally, the provided style can also be a function
      */
-    providedStyle(category) {
+    providedStyle(category, type) {
         let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
-                style = this.props.style.legendStyle(category.key, this.props.type);
+                style = this.props.style.legendStyle(category.key, type);
             } else if (_.isObject(this.props.style)) {
                 style = this.props.style[category.key];
             } else if (_.isFunction(this.props.style)) {
@@ -320,8 +318,8 @@ export default class Legend extends React.Component {
         return mode;
     }
 
-    symbolStyle(category) {
-        const styleMap = this.providedStyle(category, this.props.type);
+    symbolStyle(category, type) {
+        const styleMap = this.providedStyle(category, type);
         const styleMode = this.styleMode(category);
         return merge(
             true,
@@ -351,10 +349,10 @@ export default class Legend extends React.Component {
     }
 
     render() {
-        const { type, symbolWidth, symbolHeight } = this.props;
+        const { type = "swatch", symbolWidth, symbolHeight } = this.props;
         const items = this.props.categories.map(category => {
-            const { key, label, value } = category;
-            const symbolStyle = this.symbolStyle(category);
+            const { key, label, value, symbolType = type } = category;
+            const symbolStyle = this.symbolStyle(category, symbolType);
             const labelStyle = this.labelStyle(category);
             const valueStyle = this.valueStyle(category);
             return (
@@ -364,6 +362,7 @@ export default class Legend extends React.Component {
                     itemKey={key}
                     label={label}
                     value={value}
+                    symbolType={symbolType}
                     symbolWidth={symbolWidth}
                     symbolHeight={symbolHeight}
                     symbolStyle={symbolStyle}
