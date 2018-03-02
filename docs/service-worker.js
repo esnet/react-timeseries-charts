@@ -1,17 +1,29 @@
 "use strict";
+function setOfCachedUrls(e) {
+    return e
+        .keys()
+        .then(function(e) {
+            return e.map(function(e) {
+                return e.url;
+            });
+        })
+        .then(function(e) {
+            return new Set(e);
+        });
+}
 var precacheConfig = [
-        ["/react-timeseries-charts/index.html", "9446ef6ffaabfff67413be36d20c0597"],
+        ["/react-timeseries-charts/index.html", "e5c203c3cb198b768db6e04b29326ee8"],
         [
-            "/react-timeseries-charts/static/css/main.06e0404f.css",
-            "8b26bb4a12d115baada9d26d9f909be5"
+            "/react-timeseries-charts/static/css/main.5b40b607.css",
+            "c24998f8f3b29502d68af2f5aef08ce4"
         ],
         [
-            "/react-timeseries-charts/static/media/1_introduction.0eb6f1ed.md",
-            "0eb6f1ed106ac6275a5aa0c37d2dbb36"
+            "/react-timeseries-charts/static/media/1_introduction.4b96f9a1.md",
+            "4b96f9a198af744d4726c0623277daad"
         ],
         [
-            "/react-timeseries-charts/static/media/2_getting_started.e976c36b.md",
-            "e976c36bf37dd127a6bc173fcd6a6c3a"
+            "/react-timeseries-charts/static/media/2_getting_started.906a806a.md",
+            "906a806a6639cbe9f39b720ab5eb0707"
         ],
         [
             "/react-timeseries-charts/static/media/3_styling.99c709f2.md",
@@ -201,18 +213,6 @@ var precacheConfig = [
             return [c.toString(), s];
         })
     );
-function setOfCachedUrls(e) {
-    return e
-        .keys()
-        .then(function(e) {
-            return e.map(function(e) {
-                return e.url;
-            });
-        })
-        .then(function(e) {
-            return new Set(e);
-        });
-}
 self.addEventListener("install", function(e) {
     e.waitUntil(
         caches
@@ -267,15 +267,14 @@ self.addEventListener("install", function(e) {
     self.addEventListener("fetch", function(e) {
         if ("GET" === e.request.method) {
             var t,
-                a = stripIgnoredUrlParameters(e.request.url, ignoreUrlParametersMatching),
-                c = "index.html";
+                a = stripIgnoredUrlParameters(e.request.url, ignoreUrlParametersMatching);
             (t = urlsToCacheKeys.has(a)) ||
-                ((a = addDirectoryIndex(a, c)), (t = urlsToCacheKeys.has(a)));
-            var s = "/react-timeseries-charts/index.html";
+                ((a = addDirectoryIndex(a, "index.html")), (t = urlsToCacheKeys.has(a)));
             !t &&
                 "navigate" === e.request.mode &&
                 isPathWhitelisted(["^(?!\\/__).*"], e.request.url) &&
-                ((a = new URL(s, self.location).toString()), (t = urlsToCacheKeys.has(a))),
+                ((a = new URL("/react-timeseries-charts/index.html", self.location).toString()),
+                (t = urlsToCacheKeys.has(a))),
                 t &&
                     e.respondWith(
                         caches

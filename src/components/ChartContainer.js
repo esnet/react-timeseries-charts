@@ -78,9 +78,13 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleMouseMove(t) {
+    handleMouseMove(x, y) {
         if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(t);
+            const time = this.timeScale.invert(x);
+            this.props.onTrackerChanged(time);
+        }
+        if (this.props.onMouseMove) {
+            this.props.onMouseMove(x, y);
         }
     }
 
@@ -202,13 +206,13 @@ export default class ChartContainer extends React.Component {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        const timeScale = this.props.utc
+        const timeScale = (this.timeScale = this.props.utc
             ? scaleUtc()
                   .domain(this.props.timeRange.toJSON())
                   .range([0, timeAxisWidth])
             : scaleTime()
                   .domain(this.props.timeRange.toJSON())
-                  .range([0, timeAxisWidth]);
+                  .range([0, timeAxisWidth]));
 
         let i = 0;
         let yPosition = 0;
@@ -300,6 +304,7 @@ export default class ChartContainer extends React.Component {
                     format={this.props.format}
                     showGrid={this.props.showGrid}
                     gridHeight={chartsHeight}
+                    tickCount={this.props.timeAxisTickCount}
                 />
             </g>
         );
@@ -320,7 +325,7 @@ export default class ChartContainer extends React.Component {
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
                     onMouseOut={e => this.handleMouseOut(e)}
-                    onMouseMove={e => this.handleMouseMove(e)}
+                    onMouseMove={(x, y) => this.handleMouseMove(x, y)}
                     onMouseClick={e => this.handleBackgroundClick(e)}
                     onZoom={tr => this.handleZoom(tr)}
                 >
@@ -457,6 +462,13 @@ ChartContainer.propTypes = {
      * with respect to the charts
      */
     showGridPosition: PropTypes.oneOf(["over", "under"]),
+
+    /**
+     * Specify the number of ticks
+     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
+     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     */
+    timeAxisTickCount: PropTypes.number,
 
     /**
      * Adjust the time axis style. This is an object of the

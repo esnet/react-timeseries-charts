@@ -210,51 +210,54 @@ export default class ScatterChart extends React.Component {
                     event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
                 );
                 const value = event.get(column);
+                const badPoint = _.isNull(value) || _.isNaN(value);
                 const style = this.style(column, event);
 
-                const x = timeScale(t);
-                const y = yScale(value);
+                if (!badPoint) {
+                    const x = timeScale(t);
+                    const y = yScale(value);
 
-                const radius = _.isFunction(this.props.radius)
-                    ? this.props.radius(event, column)
-                    : +this.props.radius;
+                    const radius = _.isFunction(this.props.radius)
+                        ? this.props.radius(event, column)
+                        : +this.props.radius;
 
-                const isHighlighted =
-                    this.props.highlight &&
-                    Event.is(this.props.highlight.event, event) &&
-                    column === this.props.highlight.column;
+                    const isHighlighted =
+                        this.props.highlight &&
+                        Event.is(this.props.highlight.event, event) &&
+                        column === this.props.highlight.column;
 
-                // Hover info. Note that we just pass all of our props down
-                // into the EventMarker here, but the interesting ones are:
-                // * the info values themselves
-                // * the infoStyle
-                // * infoWidth and infoHeight
-                if (isHighlighted && this.props.info) {
-                    hoverOverlay = (
-                        <EventMarker
-                            {...this.props}
-                            event={event}
-                            column={column}
-                            marker="circle"
-                            markerRadius={0}
+                    // Hover info. Note that we just pass all of our props down
+                    // into the EventMarker here, but the interesting ones are:
+                    // * the info values themselves
+                    // * the infoStyle
+                    // * infoWidth and infoHeight
+                    if (isHighlighted && this.props.info) {
+                        hoverOverlay = (
+                            <EventMarker
+                                {...this.props}
+                                event={event}
+                                column={column}
+                                marker="circle"
+                                markerRadius={0}
+                            />
+                        );
+                    }
+
+                    points.push(
+                        <circle
+                            key={`${column}-${key}`}
+                            cx={x}
+                            cy={y}
+                            r={radius}
+                            style={style}
+                            pointerEvents={pointerEvents}
+                            onMouseMove={this.handleHover}
+                            onClick={e => this.handleClick(e, event, column)}
                         />
                     );
+
+                    key += 1;
                 }
-
-                points.push(
-                    <circle
-                        key={`${column}-${key}`}
-                        cx={x}
-                        cy={y}
-                        r={radius}
-                        style={style}
-                        pointerEvents={pointerEvents}
-                        onMouseMove={this.handleHover}
-                        onClick={e => this.handleClick(e, event, column)}
-                    />
-                );
-
-                key += 1;
             }
         });
 

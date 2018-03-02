@@ -123,7 +123,7 @@
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize"
       },
       "axis": {
         "type": {
@@ -131,6 +131,17 @@
         },
         "required": true,
         "description": "Reference to the axis which provides the vertical scale for ## drawing. e.g.\nspecifying axis=\"trafficRate\" would refer the y-scale to the YAxis of id=\"trafficRate\"."
+      },
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
       },
       "columns": {
         "type": {
@@ -164,7 +175,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "Stack areas on top of each other",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -399,13 +410,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "series": {
         "type": {
           "name": "instanceOf",
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize"
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)\ndata to visualize"
       },
       "spacing": {
         "type": {
@@ -426,6 +448,17 @@
         "description": "The distance in pixels to offset the bar from its center position within the timerange\nit represents",
         "defaultValue": {
           "value": "0",
+          "computed": false
+        }
+      },
+      "minBarHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The minimum height of a bar given in pixels.\nBy default, the minimum height of a bar is 1 pixel",
+        "defaultValue": {
+          "value": "1",
           "computed": false
         }
       },
@@ -489,7 +522,7 @@
         "required": false,
         "description": "The style of the info box itself. Typically you'd want to\nspecify a fill color, and stroke color / width here.",
         "defaultValue": {
-          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.90,\n    pointerEvents: \"none\"\n}",
+          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.9,\n    pointerEvents: \"none\"\n}",
           "computed": false
         }
       },
@@ -635,6 +668,17 @@
     "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis\n          id=\"price\"\n          label=\"Price ($)\"\n          min={series.min()} max={series.max()}\n          width=\"60\" format=\"$,.2f\"\n        />\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style} />\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\" />\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()} />\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
     "methods": [],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "axis": {
         "type": {
           "name": "string"
@@ -803,13 +847,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "series": {
         "type": {
           "name": "custom",
           "raw": "(props, propName, componentName) => {\n    const value = props[propName];\n    if (!(value instanceof TimeSeries)) {\n        return new Error(\n            `A TimeSeries needs to be passed to ${componentName} as the 'series' prop.`\n        );\n    }\n\n    // TODO: Better detection of errors\n\n    // everything ok\n    return null;\n}"
         },
         "required": false,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize. See general notes on the BoxChart."
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)\ndata to visualize. See general notes on the BoxChart."
       },
       "column": {
         "type": {
@@ -885,7 +940,7 @@
         "required": false,
         "description": "The style of the info box and connecting lines",
         "defaultValue": {
-          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.90,\n    pointerEvents: \"none\"\n}",
+          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.9,\n    pointerEvents: \"none\"\n}",
           "computed": false
         }
       },
@@ -1243,7 +1298,11 @@
         "modifiers": [],
         "params": [
           {
-            "name": "t",
+            "name": "x",
+            "type": null
+          },
+          {
+            "name": "y",
             "type": null
           }
         ],
@@ -1274,22 +1333,6 @@
           }
         ],
         "returns": null
-      },
-      {
-        "name": "handleResize",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "width",
-            "type": null
-          },
-          {
-            "name": "height",
-            "type": null
-          }
-        ],
-        "returns": null
       }
     ],
     "props": {
@@ -1299,7 +1342,7 @@
           "value": "TimeRange"
         },
         "required": true,
-        "description": "A Pond TimeRange representing the begin and end time of the chart."
+        "description": "A [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange) representing the\nbegin and end time of the chart."
       },
       "utc": {
         "type": {
@@ -1428,6 +1471,13 @@
           "value": "\"over\"",
           "computed": false
         }
+      },
+      "timeAxisTickCount": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Specify the number of ticks\nThe default ticks for quantitative scales are multiples of 2, 5 and 10.\nSo, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10."
       },
       "timeAxisStyle": {
         "type": {
@@ -1559,6 +1609,66 @@
           "computed": false
         }
       },
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this row",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "trackerShowTime": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Should the time be shown on top of the tracker info box"
+      },
+      "trackerInfoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the tracker info box"
+      },
+      "trackerInfoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the tracker info box"
+      },
+      "trackerInfoValues": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "shape",
+                "value": {
+                  "label": {
+                    "name": "string",
+                    "required": false
+                  },
+                  "value": {
+                    "name": "string",
+                    "required": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": "Info box value or values to place next to the tracker line\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
+      },
       "children": {
         "type": {
           "name": "union",
@@ -1637,55 +1747,6 @@
         "required": false,
         "description": ""
       },
-      "trackerShowTime": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": "Should the time be shown on top of the tracker info box"
-      },
-      "trackerInfoWidth": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The width of the tracker info box"
-      },
-      "trackerInfoHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "The height of the tracker info box"
-      },
-      "trackerInfoValues": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "string"
-            },
-            {
-              "name": "arrayOf",
-              "value": {
-                "name": "shape",
-                "value": {
-                  "label": {
-                    "name": "string",
-                    "required": false
-                  },
-                  "value": {
-                    "name": "string",
-                    "required": false
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "required": false,
-        "description": "Info box value or values to place next to the tracker line\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
-      },
       "enablePanZoom": {
         "defaultValue": {
           "value": "false",
@@ -1741,13 +1802,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "series": {
         "type": {
           "name": "instanceOf",
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize"
       },
       "label": {
         "type": {
@@ -2120,7 +2192,7 @@
           ]
         },
         "required": false,
-        "description": "What [Pond Event](http://software.es.net/pond#event) to mark"
+        "description": "What [Pond Event](https://esnet-pondjs.appspot.com/#/event) to mark"
       },
       "column": {
         "type": {
@@ -2168,7 +2240,7 @@
         "required": false,
         "description": "The style of the info box itself. Typically you'd want to\nspecify a fill color, and stroke color/width here.",
         "defaultValue": {
-          "value": "{\n    fill: \"white\",\n    opacity: 0.90,\n    stroke: \"#999\",\n    pointerEvents: \"none\"\n}",
+          "value": "{\n    fill: \"white\",\n    opacity: 0.9,\n    stroke: \"#999\",\n    pointerEvents: \"none\"\n}",
           "computed": false
         }
       },
@@ -2343,7 +2415,7 @@
           ]
         },
         "required": false,
-        "description": "",
+        "description": "Where to position the label, either \"left\" or \"center\" within the box",
         "defaultValue": {
           "value": "\"center\"",
           "computed": false
@@ -2398,7 +2470,7 @@
     }
   },
   "src/components/LabelAxis.js": {
-    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value:\n```\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n```",
+    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value:\n```\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n```\n\nThis can be used for data channel style displays where the user will see many\nrows of data stacked on top of each other and will need to interact with the\ndata to see actual values. You can combine this with the `ValueAxis` to help\ndo that. See the Cycling example for exactly how to arrange that.",
     "methods": [
       {
         "name": "renderAxis",
@@ -2766,6 +2838,17 @@
         "required": false,
         "description": "Callback will be called with a legend item is highlighted (i.e. it is hovered\nover by the user)"
       },
+      "stack": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Defines whether to stack legend items vertically or not",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "labelStyle": {
         "defaultValue": {
           "value": "{}",
@@ -2881,13 +2964,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "series": {
         "type": {
           "name": "instanceOf",
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize"
       },
       "axis": {
         "type": {
@@ -3070,6 +3164,206 @@
       }
     }
   },
+  "src/components/MultiBrush.js": {
+    "description": "Renders a brush with the range defined in the prop `timeRange`.",
+    "methods": [
+      {
+        "name": "viewport",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleBrushMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "brush_idx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleOverlayMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHandleMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "handle",
+            "type": null
+          },
+          {
+            "name": "brush_idx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseUp",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleMouseMove",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderOverlay",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderBrush",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timeRange",
+            "type": null
+          },
+          {
+            "name": "idx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderHandles",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "timeRange",
+            "type": null
+          },
+          {
+            "name": "idx",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "timeRanges": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "instanceOf",
+            "value": "TimeRange"
+          }
+        },
+        "required": false,
+        "description": "The timeranges for the brushes. Typically you would maintain this\nas state on the surrounding page, since it would likely control\nanother page element, such as the range of the main chart. See\nalso `onTimeRangeChanged()` for receiving notification of the\nbrush range being changed by the user.\n\nTakes an array of Pond TimeRange object."
+      },
+      "styles": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The brush is rendered as an SVG rect. You can specify the style\nof this rect using this prop. Each brush style will be defined by the brush index in the timeRanges Array.\nWhich means that in this object, each key has to match an index position in the timeRanges prop."
+      },
+      "handleSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The size of the invisible side handles. Defaults to 6 pixels.",
+        "defaultValue": {
+          "value": "6",
+          "computed": false
+        }
+      },
+      "allowFreeDrawing": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If this prop is false, you will only be able to draw a new brush if the last position of the timeRanges\narray is equal to null, otherwise it will allow the free drawing and the index passed to onTimeRangeChanged\nwill the equal to the length of the timeRanges array",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "onTimeRangeChanged": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback which will be called if the brush range is changed by\nthe user. It is called with a Pond TimeRange object and the index position of\nthe brush in the timeRanges prop."
+      },
+      "onUserMouseUp": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "when user stop drawing or dragging box"
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The height supplied by the surrounding ChartContainer"
+      }
+    }
+  },
   "src/components/Resizable.js": {
     "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width.",
     "methods": [
@@ -3185,13 +3479,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "series": {
         "type": {
           "name": "instanceOf",
           "value": "TimeSeries"
         },
         "required": true,
-        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries) data to visualize"
+        "description": "What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize"
       },
       "columns": {
         "type": {
@@ -3269,7 +3574,7 @@
         "required": false,
         "description": "The style of the info box and connecting lines. The style should\nbe an object of the form { line, box }. Line and box are both objects\ncontaining the inline CSS for those elements of the info tracker.",
         "defaultValue": {
-          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.90,\n    pointerEvents: \"none\"\n}",
+          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.9,\n    pointerEvents: \"none\"\n}",
           "computed": false
         }
       },
@@ -3498,6 +3803,13 @@
           "value": "{\n    labels: {\n        labelColor: \"#8B7E7E\", // Default label color\n        labelWeight: 100,\n        labelSize: 11\n    },\n    axis: {\n        axisColor: \"#C0C0C0\"\n    }\n}",
           "computed": false
         }
+      },
+      "tickCount": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -3542,13 +3854,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this chart",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "time": {
         "type": {
           "name": "instanceOf",
           "value": "Date"
         },
         "required": false,
-        "description": ""
+        "description": "The time, expressed as a Javascript `Date` object, to display the marker"
       },
       "infoValues": {
         "type": {
@@ -3708,13 +4031,24 @@
       }
     ],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this marker",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "timerange": {
         "type": {
           "name": "instanceOf",
           "value": "TimeRange"
         },
         "required": true,
-        "description": "The timerange to mark. This is in the form of a Pond TimeRange."
+        "description": "The timerange to mark. This is in the form of a\n[Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange)"
       },
       "style": {
         "type": {
@@ -3763,9 +4097,20 @@
     }
   },
   "src/components/ValueAxis.js": {
-    "description": "Renders a 'axis' that display a label for a current tracker value\n\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+",
+    "description": "Renders a 'axis' that display a label for a current tracker value:\n```\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n```\nThis would be used when you have many rows of data and the user is required\nto interact with the data to see actual values. You would use this at the\nend of the row and supply it with the current value. See the cycling example\nfor how that would all work.",
     "methods": [],
     "props": {
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
       "value": {
         "type": {
           "name": "union",
@@ -3786,7 +4131,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "If values are numbers, use this format string"
+        "description": "Use this to show what units are being used. It will appear below\nthe value."
       },
       "width": {
         "type": {
@@ -3800,7 +4145,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "The height of the axis"
+        "description": "[Internal] The height of the axis"
       }
     }
   },
@@ -3899,8 +4244,20 @@
     }
   },
   "src/components/YAxis.js": {
-    "description": "The YAxis widget displays a vertical axis to the left or right\nof the charts. A YAxis always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear).\n\nEach axis also defines a scale through a `min` and `max` prop. Charts\nmay then refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear after the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
+    "description": "The `YAxis` widget displays a vertical axis to the left or right\nof the charts. A `YAxis` always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row. You do control how wide it is.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear). You can quicky turn\nit on and off with the `visible` prop.\n\nEach axis also defines a scale through a `min` and `max` prop. Chart\nthen refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\nThis is what ties them together. Many charts can use the same axis,\nor not.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear right of the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
     "methods": [
+      {
+        "name": "yformat",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "fmt",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
       {
         "name": "updateAxis",
         "docblock": null,
@@ -3973,6 +4330,13 @@
           "value": "\"yaxis\"",
           "computed": false
         }
+      },
+      "visible": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Show or hide this axis"
       },
       "label": {
         "type": {
@@ -4123,10 +4487,18 @@
       },
       "format": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
-        "description": "d3.format for the axis labels. e.g. `format=\"$,.2f\"`",
+        "description": "If a string, the d3.format for the axis labels (e.g. `format=\\\"$,.2f\\\"`).\nIf a function, that function will be called with each tick value and\nshould generate a formatted string for that value to be used as the label\nfor that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).",
         "defaultValue": {
           "value": "\".2s\"",
           "computed": false
