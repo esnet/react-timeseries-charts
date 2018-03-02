@@ -11,8 +11,9 @@
 /* eslint max-len:0 */
 
 import React from "react";
+import _ from "underscore";
+
 import { format } from "d3-format";
-import { timeFormat } from "d3-time-format";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -56,6 +57,23 @@ const style = styler([
     { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
+class CrossHairs extends React.Component {
+    render() {
+        const { x, y } = this.props;
+        const style = { pointerEvents: "none", stroke: "#ccc" };
+        if (!_.isNull(x) && !_.isNull(y)) {
+            return (
+                <g>
+                    <line style={style} x1={0} y1={y} x2={this.props.width} y2={y} />
+                    <line style={style} x1={x} y1={0} x2={x} y2={this.props.height} />
+                </g>
+            );
+        } else {
+            return <g />;
+        }
+    }
+}
+
 class currency extends React.Component {
     state = {
         tracker: null,
@@ -65,7 +83,11 @@ class currency extends React.Component {
     };
 
     handleTrackerChanged = tracker => {
-        this.setState({ tracker });
+        if (!tracker) {
+            this.setState({ tracker, x: null, y: null });
+        } else {
+            this.setState({ tracker });
+        }
     };
 
     handleTimeRangeChange = timerange => {
@@ -74,18 +96,11 @@ class currency extends React.Component {
 
     handleMouseMove = (x, y) => {
         this.setState({ x, y });
-        console.log("x y ", x, y);
     };
 
     render() {
         const f = format("$,.2f");
-        const df = timeFormat("%b %d %Y %X");
         const range = this.state.timerange;
-
-        const timeStyle = {
-            fontSize: "1.2rem",
-            color: "#999"
-        };
 
         let euroValue, audValue;
         if (this.state.tracker) {
@@ -97,31 +112,6 @@ class currency extends React.Component {
 
         return (
             <div>
-                <div className="row" style={{ height: 28 }}>
-                    <div className="col-md-6" style={timeStyle}>
-                        {this.state.tracker ? `${df(this.state.tracker)}` : ""}
-                        <br />
-                        {this.state.x ? `x is ${this.state.x} ` : ""}
-                        <br />
-                        {this.state.y ? `y is ${this.state.y} ` : ""}
-                    </div>
-                    <div className="col-md-6">
-                        <Legend
-                            type="line"
-                            align="right"
-                            style={style}
-                            highlight={this.state.highlight}
-                            onHighlightChange={highlight => this.setState({ highlight })}
-                            selection={this.state.selection}
-                            onSelectionChange={selection => this.setState({ selection })}
-                            categories={[
-                                { key: "aud", label: "AUD", value: audValue },
-                                { key: "euro", label: "Euro", value: euroValue }
-                            ]}
-                        />
-                    </div>
-                </div>
-                <hr />
                 <div className="row">
                     <div className="col-md-12">
                         <Resizable>
@@ -129,7 +119,6 @@ class currency extends React.Component {
                                 timeRange={range}
                                 maxTime={currencySeries.range().end()}
                                 minTime={currencySeries.range().begin()}
-                                trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 enablePanZoom={true}
@@ -137,7 +126,7 @@ class currency extends React.Component {
                                 onMouseMove={(x, y) => this.handleMouseMove(x, y)}
                                 minDuration={1000 * 60 * 60 * 24 * 30}
                             >
-                                <ChartRow height="500">
+                                <ChartRow height="400">
                                     <YAxis
                                         id="y"
                                         label="Price ($)"
@@ -164,6 +153,7 @@ class currency extends React.Component {
                                                 this.setState({ selection })
                                             }
                                         />
+                                        <CrossHairs x={this.state.x} y={this.state.y} />
                                         <Baseline
                                             axis="y"
                                             value={1.0}
@@ -174,6 +164,25 @@ class currency extends React.Component {
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <span>
+                            <Legend
+                                type="line"
+                                align="right"
+                                style={style}
+                                highlight={this.state.highlight}
+                                onHighlightChange={highlight => this.setState({ highlight })}
+                                selection={this.state.selection}
+                                onSelectionChange={selection => this.setState({ selection })}
+                                categories={[
+                                    { key: "aud", label: "AUD", value: audValue },
+                                    { key: "euro", label: "Euro", value: euroValue }
+                                ]}
+                            />
+                        </span>
                     </div>
                 </div>
             </div>
