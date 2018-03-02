@@ -56,45 +56,43 @@ const defaultStyle = {
  */
 export default class Baseline extends React.Component {
     render() {
-        if (!this.props.yScale || _.isUndefined(this.props.value)) {
+        const { vposition, yScale, value, position, style, width } = this.props;
+
+        if (!yScale || _.isUndefined(value)) {
             return null;
         }
 
-        const y = this.props.yScale(this.props.value);
+        const y = yScale(value);
         const transform = `translate(0 ${y})`;
         let textAnchor;
         let textPositionX;
         const pts = [];
 
-        const textPositionY = y < 10 ? 10 : -3;
+        const labelBelow = (vposition === "auto" && y < 15) || vposition === "below";
+        const textPositionY = labelBelow ? 2 : -2;
+        const alignmentBaseline = labelBelow ? "hanging" : "auto";
 
-        if (this.props.position === "left") {
+        if (position === "left") {
             textAnchor = "start";
             textPositionX = 5;
         }
-        if (this.props.position === "right") {
+        if (position === "right") {
             textAnchor = "end";
-            textPositionX = this.props.width - 5;
+            textPositionX = width - 5;
         }
 
         pts.push("0 0");
-        pts.push(`${this.props.width} 0`);
+        pts.push(`${width} 0`);
         const points = pts.join(" ");
 
         //
         // Style
         //
 
-        const labelStyle = merge(
-            true,
-            defaultStyle.label,
-            this.props.style.label ? this.props.style.label : {}
-        );
-        const lineStyle = merge(
-            true,
-            defaultStyle.line,
-            this.props.style.line ? this.props.style.line : {}
-        );
+        const baseLabelStyle = { ...defaultStyle.label, alignmentBaseline };
+
+        const labelStyle = merge(true, baseLabelStyle, style.label ? style.label : {});
+        const lineStyle = merge(true, defaultStyle.line, style.line ? style.line : {});
 
         return (
             <g className="baseline" transform={transform}>
@@ -117,6 +115,7 @@ Baseline.defaultProps = {
     value: 0,
     label: "",
     position: "left",
+    vposition: "auto",
     style: defaultStyle
 };
 
@@ -156,6 +155,13 @@ Baseline.propTypes = {
      * Whether to display the label on the "left" or "right".
      */
     position: PropTypes.oneOf(["left", "right"]),
+
+    /**
+     * Whether to display the label above or below the line. The default is "auto",
+     * which will show it above the line unless the position is near to the top
+     * of the chart.
+     */
+    vposition: PropTypes.oneOf(["above", "below", "auto"]),
 
     /**
      * [Internal] The yScale supplied by the associated YAxis
