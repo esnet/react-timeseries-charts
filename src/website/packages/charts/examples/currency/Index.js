@@ -117,8 +117,11 @@ class currency extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={range}
+                                paddingRight={100}
                                 maxTime={currencySeries.range().end()}
                                 minTime={currencySeries.range().begin()}
+                                timeAxisAngledLabels={true}
+                                timeAxisHeight={65}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 enablePanZoom={true}

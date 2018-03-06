@@ -165,6 +165,8 @@ export default class ChartRow extends React.Component {
     }
 
     render() {
+        const { paddingLeft, paddingRight } = this.props;
+
         const axes = []; // Contains all the yAxis elements used in the render
         const chartList = []; // Contains all the Chart elements used in the render
         // Dimensions
@@ -241,7 +243,7 @@ export default class ChartRow extends React.Component {
             posx -= colWidth;
             if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
-                transform = `translate(${posx},0)`;
+                transform = `translate(${posx + paddingLeft},0)`;
 
                 // Additional props for left aligned axes
                 props = {
@@ -271,7 +273,7 @@ export default class ChartRow extends React.Component {
             const colWidth = this.props.rightAxisWidths[rightColumnIndex];
             if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
-                transform = `translate(${posx},0)`;
+                transform = `translate(${posx + paddingLeft},0)`;
 
                 // Additional props for right aligned axes
                 props = {
@@ -301,8 +303,8 @@ export default class ChartRow extends React.Component {
         // current value is stored in the component state.
         //
 
-        const chartWidth = this.props.width - leftWidth - rightWidth;
-        const chartTransform = `translate(${leftWidth},0)`;
+        const chartWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
+        const chartTransform = `translate(${leftWidth + paddingLeft},0)`;
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
@@ -430,7 +432,7 @@ export default class ChartRow extends React.Component {
             const trackerStyle = {
                 pointerEvents: "none"
             };
-            const trackerTransform = `translate(${leftWidth},0)`;
+            const trackerTransform = `translate(${leftWidth + paddingLeft},0)`;
 
             tracker = (
                 <g key="tracker-group" style={trackerStyle} transform={trackerTransform}>

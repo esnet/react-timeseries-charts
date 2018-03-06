@@ -111,6 +111,9 @@ export default class ChartContainer extends React.Component {
     //
 
     render() {
+        const { padding } = this.props;
+        const { paddingLeft = padding, paddingRight = padding } = this.props;
+
         const chartRows = [];
         const leftAxisWidths = [];
         const rightAxisWidths = [];
@@ -199,8 +202,10 @@ export default class ChartContainer extends React.Component {
         // Time scale
         //
 
-        const timeAxisHeight = 35;
-        const timeAxisWidth = this.props.width - leftWidth - rightWidth;
+        const { timeAxisHeight = 35 } = this.props;
+
+        const timeAxisWidth =
+            this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
@@ -224,6 +229,8 @@ export default class ChartContainer extends React.Component {
                 const isVisible = child.props.visible;
                 const props = {
                     timeScale,
+                    paddingLeft,
+                    paddingRight,
                     leftAxisWidths,
                     rightAxisWidths,
                     width: this.props.width,
@@ -239,7 +246,7 @@ export default class ChartContainer extends React.Component {
                     onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
                     onTrackerChanged: t => this.handleTrackerChanged(t)
                 };
-                const transform = `translate(${-leftWidth},${yPosition})`;
+                const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
                 if (isVisible) {
                     chartRows.push(
                         <g transform={transform} key={rowKey}>
@@ -254,7 +261,7 @@ export default class ChartContainer extends React.Component {
         });
 
         const chartsHeight = yPosition;
-        const chartsWidth = this.props.width - leftWidth - rightWidth;
+        const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
         // Hover tracker line
         let tracker;
@@ -266,7 +273,7 @@ export default class ChartContainer extends React.Component {
                 <g
                     key="tracker-group"
                     style={{ pointerEvents: "none" }}
-                    transform={`translate(${leftWidth},0)`}
+                    transform={`translate(${leftWidth + paddingLeft},0)`}
                 >
                     <TimeMarker
                         width={chartsWidth}
@@ -295,11 +302,18 @@ export default class ChartContainer extends React.Component {
         };
 
         const timeAxis = (
-            <g transform={`translate(${leftWidth},${chartsHeight})`}>
-                <line x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5} style={xStyle} />
+            <g transform={`translate(${leftWidth + paddingLeft},${chartsHeight})`}>
+                <line
+                    x1={-leftWidth}
+                    y1={0.5}
+                    x2={chartsWidth + rightWidth}
+                    y2={0.5}
+                    style={xStyle}
+                />
                 <TimeAxis
                     scale={timeScale}
                     utc={this.props.utc}
+                    angled={this.props.timeAxisAngledLabels}
                     style={this.props.timeAxisStyle}
                     format={this.props.format}
                     showGrid={this.props.showGrid}
@@ -314,7 +328,7 @@ export default class ChartContainer extends React.Component {
         //
 
         const rows = (
-            <g transform={`translate(${leftWidth},${0})`}>
+            <g transform={`translate(${leftWidth + paddingLeft},${0})`}>
                 <EventHandler
                     key="event-handler"
                     width={chartsWidth}
@@ -494,6 +508,11 @@ ChartContainer.propTypes = {
         labels: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object
     }),
+
+    /**
+     * Angle the time axis labels
+     */
+    timeAxisAngledLabels: PropTypes.bool,
 
     /**
      * The width of the tracker info box
