@@ -132,7 +132,7 @@ export default class EventHandler extends React.Component {
         document.addEventListener("mouseup", this.handleMouseUp);
 
         this.setState({
-            isPanning: this.props.enablePanZoom && true,
+            isPanning: this.props.enablePanZoom,
             initialPanBegin: begin,
             initialPanEnd: end,
             initialPanPosition: xy0
