@@ -58,6 +58,11 @@ handleTrackerChanged(t, scale) {
 Then, we can use `this.state.trackerX` to position any component, like a custom time marker, in sync with the current tracker position:
 
 ```jsx
+<div style={{position: 'relative'}}>
+    <div style={{position: 'absolute', left: this.state.trackerX}}>
+        { this.state.tracker && this.state.tracker.toLocaleDateString() }
+    </div>
+</div>
 <ChartContainer
     trackerPosition={this.state.tracker}
     onTrackerChanged={this.handleTrackerChanged}
@@ -65,9 +70,6 @@ Then, we can use `this.state.trackerX` to position any component, like a custom 
 >
 ...
 </ChartContainer>
-<div style={{position: 'relative', left: this.state.trackerX}}>
-    { this.state.tracker && this.state.tracker.toLocaleDateString() }
-</div>
 ```
 
 ### 4.2 Advanced tracker
