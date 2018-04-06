@@ -63,7 +63,12 @@ export default class ChartContainer extends React.Component {
 
     handleTrackerChanged(t) {
         if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(t);
+            this.props.onTrackerChanged(
+                t,
+                // Adjust the scaled time so that the result
+                // is the true x position relative to the whole chart
+                t => this.timeScale(t) + this.leftWidth
+            );
         }
     }
 
@@ -79,19 +84,14 @@ export default class ChartContainer extends React.Component {
     }
 
     handleMouseMove(x, y) {
-        if (this.props.onTrackerChanged) {
-            const time = this.timeScale.invert(x);
-            this.props.onTrackerChanged(time);
-        }
+        this.handleTrackerChanged(this.timeScale.invert(x));
         if (this.props.onMouseMove) {
             this.props.onMouseMove(x, y);
         }
     }
 
     handleMouseOut() {
-        if (this.props.onTrackerChanged) {
-            this.props.onTrackerChanged(null);
-        }
+        this.handleTrackerChanged(null);
     }
 
     handleBackgroundClick() {
@@ -192,8 +192,8 @@ export default class ChartContainer extends React.Component {
         });
 
         // Space used by columns on left and right of charts
-        const leftWidth = _.reduce(leftAxisWidths, (a, b) => a + b, 0);
-        const rightWidth = _.reduce(rightAxisWidths, (a, b) => a + b, 0);
+        const leftWidth = (this.leftWidth = _.reduce(leftAxisWidths, (a, b) => a + b, 0));
+        const rightWidth = (this.rightWidth = _.reduce(rightAxisWidths, (a, b) => a + b, 0));
 
         //
         // Time scale
@@ -532,8 +532,12 @@ ChartContainer.propTypes = {
     /**
      * Will be called when the user hovers over a chart. The callback will
      * be called with the timestamp (a Date object) of the position hovered
-     * over. This maybe then used as the trackerPosition (see above), or to
-     * information data about the time hovered over within the greater page.
+     * over as well as the current time axis' time scale. The timestamp may
+     * be used as the trackerPosition (see above), or to provide information
+     * about the time hovered over within the greater page. The time scale
+     * may be used to translate the timestamp into an x coordinate, which
+     * can then be used to position arbitrary components in sync with the
+     * current tracker position.
      * Commonly we might do something like this:
      * ```
      *   <ChartContainer

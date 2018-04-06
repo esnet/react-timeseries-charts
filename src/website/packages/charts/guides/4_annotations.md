@@ -35,6 +35,41 @@ handleTrackerChanged(t) {
 
 Using this mechanism allows us to display additional data outside of the chart. For instance we can use the Date stored in `this.state.tracker` to lookup the values at that time, to synchronize the trackers of multiple charts, or adjust the tracker time to snap to specific times or events.
 
+The `onTrackerChanged` prop is also called with a second argument: the current time scale of the time axis. This is a function that takes one argument - a Date - and translates it into an x coordinate, which can then be used to horizontally position arbitrary components in sync with the tracker, or any other date. For example:
+
+```js
+handleTrackerChanged(t, scale) {
+    if (t) {
+        // Snap the current time to the nearest day
+        const midnight = new Date(t);
+        midnight.setHours(0, 0, 0, 0);
+        // Get the x coordinate for that date
+        const trackerX = scale(midnight);
+        this.setState({
+            tracker: midnight,
+            trackerX
+        })
+    } else {
+        this.setState({tracker: t});
+    }
+},
+```
+
+Then, we can use `this.state.trackerX` to position any component, like a custom time marker, in sync with the current tracker position:
+
+```jsx
+<ChartContainer
+    trackerPosition={this.state.tracker}
+    onTrackerChanged={this.handleTrackerChanged}
+    ...
+>
+...
+</ChartContainer>
+<div style={{position: 'relative', left: this.state.trackerX}}>
+    { this.state.tracker && this.state.tracker.toLocaleDateString() }
+</div>
+```
+
 ### 4.2 Advanced tracker
 
 The tracker can also show a value list or label, along with the time, as an overlay next to the tracker line. These are added per-row.
