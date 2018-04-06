@@ -192,24 +192,22 @@ class LegendItem extends React.Component {
 
     renderDot(style) {
         const { symbolWidth, symbolHeight } = this.props;
+        const w = parseInt(symbolWidth / 2, 10);
+        const h = parseInt(symbolHeight / 2, 10);
+        const radius = w * 0.75;
+
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
-                <ellipse
-                    style={style}
-                    cx={parseInt(symbolWidth / 2, 10) + 2}
-                    cy={parseInt(symbolHeight / 2, 10) + 1}
-                    rx={parseInt(symbolWidth / 2, 10) - 2}
-                    ry={parseInt(symbolHeight / 2, 10) - 2}
-                />
+                <circle style={style} cx={w} cy={h} r={radius} />
             </svg>
         );
     }
 
     render() {
-        const { symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
+        const { symbolStyle, labelStyle, valueStyle, itemKey, symbolType } = this.props;
 
         let symbol;
-        switch (this.props.type) {
+        switch (symbolType) {
             case "swatch":
                 symbol = this.renderSwatch(symbolStyle);
                 break;
@@ -234,19 +232,13 @@ class LegendItem extends React.Component {
                     onMouseLeave={() => this.handleHoverLeave()}
                 >
                     <Flexbox flexDirection="row">
-                        <Flexbox width="20px">
-                            {symbol}
-                        </Flexbox>
+                        <Flexbox width="20px">{symbol}</Flexbox>
                         <Flexbox flexDirection="column">
                             <Flexbox>
-                                <div style={labelStyle}>
-                                    {this.props.label}
-                                </div>
+                                <div style={labelStyle}>{this.props.label}</div>
                             </Flexbox>
                             <Flexbox>
-                                <div style={valueStyle}>
-                                    {this.props.value}
-                                </div>
+                                <div style={valueStyle}>{this.props.value}</div>
                             </Flexbox>
                         </Flexbox>
                     </Flexbox>
@@ -277,18 +269,18 @@ export default class Legend extends React.Component {
     }
 
     /**
-   * For each category item we get the users stle preference. This
-   * can be supplied in a number of ways:
-   *  * Typically you would get the legend stle from a Style instance
-   *  * Alternatively, you can pass in a style object which has your
-   *    category in it and the associated style
-   *  * Finally, the provided style can also be a function
-   */
-    providedStyle(category) {
+     * For each category item we get the users stle preference. This
+     * can be supplied in a number of ways:
+     *  * Typically you would get the legend stle from a Style instance
+     *  * Alternatively, you can pass in a style object which has your
+     *    category in it and the associated style
+     *  * Finally, the provided style can also be a function
+     */
+    providedStyle(category, type) {
         let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
-                style = this.props.style.legendStyle(category.key, this.props.type);
+                style = this.props.style.legendStyle(category.key, type);
             } else if (_.isObject(this.props.style)) {
                 style = this.props.style[category.key];
             } else if (_.isFunction(this.props.style)) {
@@ -299,11 +291,11 @@ export default class Legend extends React.Component {
     }
 
     /**
-   * For each category this function takes the current
-   * selected and highlighted item, along with the disabled
-   * state of the item, and returns the mode it should be
-   * rendered in: normal, selected, highlighted, or muted
-   */
+     * For each category this function takes the current
+     * selected and highlighted item, along with the disabled
+     * state of the item, and returns the mode it should be
+     * rendered in: normal, selected, highlighted, or muted
+     */
     styleMode(category) {
         const isHighlighted = this.props.highlight && category.key === this.props.highlight;
         const isSelected = this.props.selection && category.key === this.props.selection;
@@ -326,8 +318,8 @@ export default class Legend extends React.Component {
         return mode;
     }
 
-    symbolStyle(category) {
-        const styleMap = this.providedStyle(category, this.props.type);
+    symbolStyle(category, type) {
+        const styleMap = this.providedStyle(category, type);
         const styleMode = this.styleMode(category);
         return merge(
             true,
@@ -357,10 +349,10 @@ export default class Legend extends React.Component {
     }
 
     render() {
-        const { type, symbolWidth, symbolHeight } = this.props;
+        const { type = "swatch", symbolWidth, symbolHeight } = this.props;
         const items = this.props.categories.map(category => {
-            const { key, label, value } = category;
-            const symbolStyle = this.symbolStyle(category);
+            const { key, label, value, symbolType = type } = category;
+            const symbolStyle = this.symbolStyle(category, symbolType);
             const labelStyle = this.labelStyle(category);
             const valueStyle = this.valueStyle(category);
             return (
@@ -370,6 +362,7 @@ export default class Legend extends React.Component {
                     itemKey={key}
                     label={label}
                     value={value}
+                    symbolType={symbolType}
                     symbolWidth={symbolWidth}
                     symbolHeight={symbolHeight}
                     symbolStyle={symbolStyle}
@@ -383,47 +376,54 @@ export default class Legend extends React.Component {
 
         const align = this.props.align === "left" ? "flex-start" : "flex-end";
 
-        return (
-            <Flexbox justifyContent={align}>
-                {items}
-            </Flexbox>
-        );
+        if (this.props.stack) {
+            return (
+                <Flexbox justifyContent={align} flexDirection={"column"} marginBottom={"20px"}>
+                    {items}
+                </Flexbox>
+            );
+        } else {
+            return (
+                <Flexbox justifyContent={align} flexWrap={"wrap"} marginBottom={"20px"}>
+                    {items}
+                </Flexbox>
+            );
+        }
     }
 }
 
 Legend.propTypes = {
     /**
-   * The overall style of the legend items, either a color "swatch", a
-   * colored "line", or a "dot".
-   */
+     * The overall style of the legend items, either a color "swatch", a
+     * colored "line", or a "dot".
+     */
     type: PropTypes.oneOf(["swatch", "line", "dot"]),
+
     /**
-   * Alignment of the legend within the available space. Either left or right.
-   */
+     * Alignment of the legend within the available space. Either left or right.
+     */
     align: PropTypes.oneOf(["left", "right"]),
-    style: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.func,
-        PropTypes.instanceOf(Styler)
-    ]).isRequired,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)])
+        .isRequired,
+
     /**
-   * The categories array specifies details and style for each item in the legend. For each item:
-   *  * "key" - (required) the name by which the legend will be known
-   *  * "label" - (required) the displayed label
-   *  * "style" - the swatch, dot, or line style. Typically you'd just
-   *              specify {backgroundColor: "#1f77b4"}
-   *  * "labelStyle" - the label style
-   *  * "disabled" - a disabled state
-   *
-   * ```
-   * const categories = [
-   *    {key: "aust", label: "AUD", disabled: this.state.disabled["aust"],
-   *      style: {backgroundColor: "#1f77b4"}},
-   *    {key: "usa", label: "USD", disabled: this.state.disabled["usa"],
-   *      style: {backgroundColor: "#aec7e8"}}
-   * ];
-   * ```
-   */
+     * The categories array specifies details and style for each item in the legend. For each item:
+     *  * "key" - (required) the name by which the legend will be known
+     *  * "label" - (required) the displayed label
+     *  * "style" - the swatch, dot, or line style. Typically you'd just
+     *              specify {backgroundColor: "#1f77b4"}
+     *  * "labelStyle" - the label style
+     *  * "disabled" - a disabled state
+     *
+     * ```
+     * const categories = [
+     *    {key: "aust", label: "AUD", disabled: this.state.disabled["aust"],
+     *      style: {backgroundColor: "#1f77b4"}},
+     *    {key: "usa", label: "USD", disabled: this.state.disabled["usa"],
+     *      style: {backgroundColor: "#aec7e8"}}
+     * ];
+     * ```
+     */
     categories: PropTypes.arrayOf(
         PropTypes.shape({
             key: PropTypes.string.isRequired, // eslint-disable-line
@@ -433,32 +433,43 @@ Legend.propTypes = {
             labelStyle: PropTypes.object // eslint-disable-line
         })
     ).isRequired,
+
     /**
-   * The width of the legend symbol
-   */
+     * The width of the legend symbol
+     */
     symbolWidth: PropTypes.number,
+
     /**
-   * The height of the legend symbol
-   */
+     * The height of the legend symbol
+     */
     symbolHeight: PropTypes.number,
+
     /**
-   * Which item, specified by its key, should be rendered as highlighted
-   */
+     * Which item, specified by its key, should be rendered as highlighted
+     */
     highlight: PropTypes.string,
+
     /**
-   * Which item, specified by its key, should be rendered as selected
-   */
+     * Which item, specified by its key, should be rendered as selected
+     */
     selection: PropTypes.string,
+
     /**
-   * Callback will be called with a legend item is selected (i.e. it is clicked
-   * on by the user)
-   */
+     * Callback will be called with a legend item is selected (i.e. it is clicked
+     * on by the user)
+     */
     onSelectionChange: PropTypes.func,
+
     /**
-   * Callback will be called with a legend item is highlighted (i.e. it is hovered
-   * over by the user)
-   */
-    onHighlightChange: PropTypes.func
+     * Callback will be called with a legend item is highlighted (i.e. it is hovered
+     * over by the user)
+     */
+    onHighlightChange: PropTypes.func,
+
+    /**
+     * Defines whether to stack legend items vertically or not
+     */
+    stack: PropTypes.bool
 };
 
 Legend.defaultProps = {
@@ -467,5 +478,6 @@ Legend.defaultProps = {
     type: "swatch", // or "line" or "dot"
     align: "left",
     symbolWidth: 16,
-    symbolHeight: 16
+    symbolHeight: 16,
+    stack: false
 };

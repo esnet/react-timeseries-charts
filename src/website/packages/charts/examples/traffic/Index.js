@@ -12,9 +12,10 @@
 
 import React from "react";
 import _ from "underscore";
+import { format } from "d3-format";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { TimeSeries, TimeRange } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -23,6 +24,7 @@ import Charts from "../../../../../components/Charts";
 import YAxis from "../../../../../components/YAxis";
 import AreaChart from "../../../../../components/AreaChart";
 import Legend from "../../../../../components/Legend";
+import MultiBrush from "../../../../../components/MultiBrush";
 import Resizable from "../../../../../components/Resizable";
 import styler from "../../../../../js/styler";
 
@@ -54,7 +56,13 @@ const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color
 class traffic extends React.Component {
     state = {
         tracker: null,
-        timerange: trafficSeries.range()
+        timerange: trafficSeries.range(),
+        selected: 1,
+        selections: [
+            new TimeRange(1441059420000, 1441062390000),
+            new TimeRange(1441070850000, 1441088580000),
+            new TimeRange(1441127730000, 1441137540000)
+        ]
     };
 
     handleTrackerChanged = t => {
@@ -63,6 +71,12 @@ class traffic extends React.Component {
 
     handleTimeRangeChange = timerange => {
         this.setState({ timerange });
+    };
+
+    handleSelectionChange = (timerange, i) => {
+        const selections = this.state.selections;
+        selections[i] = timerange;
+        this.setState({ selections });
     };
 
     render() {
@@ -74,9 +88,9 @@ class traffic extends React.Component {
         };
 
         const max = _.max([trafficBNLtoNEWYSeries.max("in"), trafficNEWYtoBNLSeries.max("out")]);
-
         const axistype = "linear";
         const tracker = this.state.tracker ? `${this.state.tracker}` : "";
+        const formatter = format(".4s");
 
         return (
             <div>
@@ -105,7 +119,7 @@ class traffic extends React.Component {
                                 timeRange={this.state.timerange}
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
-                                enablePanZoom={true}
+                                enablePanZoom={false}
                                 maxTime={trafficSeries.range().end()}
                                 minTime={trafficSeries.range().begin()}
                                 minDuration={1000 * 60 * 60}
@@ -123,6 +137,19 @@ class traffic extends React.Component {
                                             }}
                                             style={upDownStyle}
                                         />
+                                        <MultiBrush
+                                            timeRanges={this.state.selections}
+                                            style={i => {
+                                                if (i === this.state.selected) {
+                                                    return { fill: "#46abff" };
+                                                } else {
+                                                    return { fill: "#cccccc" };
+                                                }
+                                            }}
+                                            allowSelectionClear
+                                            onTimeRangeChanged={this.handleSelectionChange}
+                                            onTimeRangeClicked={i => this.setState({ selected: i })}
+                                        />
                                     </Charts>
                                     <YAxis
                                         id="traffic"
@@ -137,6 +164,58 @@ class traffic extends React.Component {
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                    <div className="col-md-12">
+                        <hr />
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date range</th>
+                                    <th scope="col">In Avg</th>
+                                    <th scope="col">Out Avg</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.selections.map((tr, i) => {
+                                    return (
+                                        <tr
+                                            key={i}
+                                            style={
+                                                i === this.state.selected
+                                                    ? { background: "#46abff60" }
+                                                    : {}
+                                            }
+                                        >
+                                            <td
+                                                onClick={() => this.setState({ selected: i })}
+                                            >{`${tr.humanize()}`}</td>
+                                            <td style={{ padding: 10 }}>{`${formatter(
+                                                trafficSeries.crop(tr).avg("in")
+                                            )}b`}</td>
+                                            <td style={{ padding: 10 }}>{`${formatter(
+                                                trafficSeries.crop(tr).avg("out")
+                                            )}b`}</td>
+                                            <td>
+                                                <i
+                                                    className="glyphicon glyphicon-remove"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => {
+                                                        const selection = this.state.selections;
+                                                        this.setState({
+                                                            selections: selection.filter(
+                                                                (item, j) => j !== i
+                                                            ),
+                                                            selected: null
+                                                        });
+                                                    }}
+                                                />
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -33,7 +33,7 @@ First we need to import out data, which is in a CSV file that we read in as `wea
     const series = new TimeSeries({ name, new Collection(events) });
 ```
 
-We can then render our `series`:
+We can then render our `series`. Note that this example also demonstrates the ability to pass a function, rather than a d3 format string, as the `YAxis` format property.
 
 ```
     render() {
@@ -55,7 +55,8 @@ We can then render our `series`:
                             id="temp"
                             label="Temperature"
                             min={0} max={120}
-                            width="70" />
+                            width="70"
+                            format={ n => Number(n).toFixed() + "°F" } />
                     </ChartRow>
                 </ChartContainer>
             ...

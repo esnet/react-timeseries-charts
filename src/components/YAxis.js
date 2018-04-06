@@ -9,10 +9,12 @@
  */
 
 import "d3-transition";
+import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
+import { range } from "d3-array";
 import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
@@ -115,8 +117,18 @@ export default class YAxis extends React.Component {
         return false;
     }
 
+    yformat(fmt) {
+        if (_.isString(fmt)) {
+            return format(fmt);
+        } else if (_.isFunction(fmt)) {
+            return fmt;
+        } else {
+            return format("");
+        }
+    }
+
     updateAxis(align, scale, width, absolute, type, fmt) {
-        const yformat = format(fmt);
+        const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
 
         const axisStyle = merge(
@@ -150,6 +162,9 @@ export default class YAxis extends React.Component {
                 });
             }
         } else if (type === "log") {
+            if (this.props.min === 0) {
+                throw Error("In a log scale, minimum value can't be 0");
+            }
             axisGenerator = axis(scale).ticks(10, ".2s");
         }
 
@@ -175,14 +190,27 @@ export default class YAxis extends React.Component {
     }
 
     renderAxis(align, scale, width, absolute, fmt) {
-        const yformat = format(fmt);
+        const yformat = this.yformat(fmt);
         let axisGenerator;
         const axis = align === "left" ? axisLeft : axisRight;
         if (this.props.type === "linear" || this.props.type === "power") {
-            if (this.props.height <= 200) {
-                if (this.props.tickCount > 0) {
+            if (this.props.tickCount > 0) {
+                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
+                axisGenerator = axis(scale)
+                    .tickValues(
+                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
+                    )
+                    .tickFormat(d => {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    })
+                    .tickSizeOuter(0);
+            } else {
+                if (this.props.height <= 200) {
                     axisGenerator = axis(scale)
-                        .ticks(this.props.tickCount)
+                        .ticks(4)
                         .tickFormat(d => {
                             if (absolute) {
                                 return yformat(Math.abs(d));
@@ -192,7 +220,6 @@ export default class YAxis extends React.Component {
                         .tickSizeOuter(0);
                 } else {
                     axisGenerator = axis(scale)
-                        .ticks(5)
                         .tickFormat(d => {
                             if (absolute) {
                                 return yformat(Math.abs(d));
@@ -201,17 +228,11 @@ export default class YAxis extends React.Component {
                         })
                         .tickSizeOuter(0);
                 }
-            } else {
-                axisGenerator = axis(scale)
-                    .tickFormat(d => {
-                        if (absolute) {
-                            return yformat(Math.abs(d));
-                        }
-                        return yformat(d);
-                    })
-                    .tickSizeOuter(0);
             }
         } else if (this.props.type === "log") {
+            if (this.props.min === 0) {
+                throw Error("In a log scale, minimum value can't be 0");
+            }
             axisGenerator = axis()
                 .scale(scale)
                 .ticks(10, ".2s")
@@ -385,9 +406,12 @@ YAxis.propTypes = {
     labelOffset: PropTypes.number,
 
     /**
-     * d3.format for the axis labels. e.g. `format="$,.2f"`
+     * If a string, the d3.format for the axis labels (e.g. `format=\"$,.2f\"`).
+     * If a function, that function will be called with each tick value and
+     * should generate a formatted string for that value to be used as the label
+     * for that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).
      */
-    format: PropTypes.string,
+    format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
     /**
      * If the chart should be rendered to with the axis on the left or right.
