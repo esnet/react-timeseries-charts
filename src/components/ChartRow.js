@@ -101,6 +101,7 @@ export default class ChartRow extends React.Component {
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(props.children, child => {
             if (this.isChildYAxis(child)) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
                 if (!_.has(this.scaleMap, id)) {
                     // If necessary, initialize a ScaleInterpolator for this y-axis.
                     // When the yScale changes, we will update this interpolator.
@@ -117,7 +118,6 @@ export default class ChartRow extends React.Component {
                     scale = child.props.yScale;
                 } else {
                     // Otherwise, compute the scale based on the max and min props.
-                    const { id, max, min, transition = 0, type = "linear" } = child.props;
                     scale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 }
 
