@@ -101,18 +101,33 @@ export default class ChartRow extends React.Component {
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(props.children, child => {
             if (this.isChildYAxis(child)) {
-                const { id, max, min, transition = 0, type = "linear" } = child.props;
-                const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
-                this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
-                    const yAxisScalerMap = this.state.yAxisScalerMap;
-                    yAxisScalerMap[id] = s;
-                    this.setState(yAxisScalerMap);
-                });
+                if (!_.has(this.scaleMap, id)) {
+                    // If necessary, initialize a ScaleInterpolator for this y-axis.
+                    // When the yScale changes, we will update this interpolator.
+                    this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                        const yAxisScalerMap = this.state.yAxisScalerMap;
+                        yAxisScalerMap[id] = s;
+                        this.setState(yAxisScalerMap);
+                    });
+                }
+                // Get the vertical scale for this y-axis.
+                let scale;
+                if (_.has(child.props, "yScale")) {
+                    // If the yScale prop is passed explicitly, use that.
+                    scale = child.props.yScale;
+                } else {
+                    // Otherwise, compute the scale based on the max and min props.
+                    const { id, max, min, transition = 0, type = "linear" } = child.props;
+                    scale = createScale(child, type, min, max, rangeBottom, rangeTop);
+                }
+
+                // Update the scale on the interpolator for this y-axis.
                 const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
-                this.scaleMap[id].setScale(cacheKey, initialScale);
+                this.scaleMap[id].setScale(cacheKey, scale);
             }
         });
 
+        // Update the state with the newly interpolated scaler for each y-axis.
         const scalerMap = {};
         _.forEach(this.scaleMap, (interpolator, id) => {
             scalerMap[id] = interpolator.scaler();
