@@ -146,7 +146,7 @@ export default class ChartContainer extends React.Component {
                 console.log("chartRowType works");
             }
 
-            if (childRow.type === ChartRow) {
+            if (areComponentsEqual(childRow.type, ChartRow)) {
                 //
                 // Within this row, count the number of columns that will be
                 // left and right of the Charts tag, as well as the total number
@@ -159,10 +159,13 @@ export default class ChartContainer extends React.Component {
                 let align = "left";
 
                 React.Children.forEach(childRow.props.children, child => {
-                    if (child.type === Charts) {
+                    if (areComponentsEqual(child.type, Charts)) {
                         countCharts += 1;
                         align = "right";
-                    } else if (child.type !== Brush && child.type !== MultiBrush) {
+                    } else if (
+                        !areComponentsEqual(child.type, Brush) &&
+                        !areComponentsEqual(child.type, MultiBrush)
+                    ) {
                         if (align === "left") {
                             countLeft += 1;
                         }
@@ -179,11 +182,11 @@ export default class ChartContainer extends React.Component {
 
                 React.Children.forEach(childRow.props.children, child => {
                     if (
-                        child.type === Charts ||
-                        child.type === Brush ||
-                        child.type === MultiBrush
+                        areComponentsEqual(child.type, Charts) ||
+                        areComponentsEqual(child.type, Brush) ||
+                        areComponentsEqual(child.type, MultiBrush)
                     ) {
-                        if (child.type === Charts) {
+                        if (areComponentsEqual(child.type, Charts)) {
                             align = "right";
                             pos = 0;
                         }
@@ -234,7 +237,7 @@ export default class ChartContainer extends React.Component {
         let i = 0;
         let yPosition = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === ChartRow) {
+            if (areComponentsEqual(child.type, ChartRow)) {
                 const chartRow = child;
                 const rowKey = `chart-row-row-${i}`;
                 const firstRow = i === 0;
