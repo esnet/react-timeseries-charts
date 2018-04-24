@@ -14,7 +14,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
-
 import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";

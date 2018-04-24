@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
+import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import MultiBrush from "./MultiBrush";
@@ -104,7 +105,10 @@ export default class ChartRow extends React.Component {
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(this.props.children, child => {
-            if ((child.type === YAxis || _.has(child.props, "min")) && _.has(child.props, "max")) {
+            if (
+                (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
+                _.has(child.props, "max")
+            ) {
                 const { id, max, min, transition = 0, type = "linear" } = child.props;
                 const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
@@ -139,7 +143,10 @@ export default class ChartRow extends React.Component {
         // If we already have a ScaleInterpolator then we can set a new scale
         // target on it.
         React.Children.forEach(nextProps.children, child => {
-            if ((child.type === YAxis || _.has(child.props, "min")) && _.has(child.props, "max")) {
+            if (
+                (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
+                _.has(child.props, "max")
+            ) {
                 const { id, max, min, transition = 0, type = "linear" } = child.props;
 
                 const scale = createScale(child, type, min, max, rangeBottom, rangeTop);
@@ -187,13 +194,13 @@ export default class ChartRow extends React.Component {
         const rightAxisList = []; // Ordered list of right axes ids
         let alignLeft = true;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Charts) {
+            if (areComponentsEqual(child.type, Charts)) {
                 alignLeft = false;
             } else {
                 const id = child.props.id;
                 // Check to see if we think this 'axis' is actually an axis
                 if (
-                    (child.type === YAxis || _.has(child.props, "min")) &&
+                    (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
                     _.has(child.props, "max")
                 ) {
                     const yaxis = child;
@@ -306,7 +313,7 @@ export default class ChartRow extends React.Component {
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Charts) {
+            if (areComponentsEqual(child.type, Charts)) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
                     if (!_.has(chart.props, "visible") || chart.props.visible) {
@@ -354,14 +361,17 @@ export default class ChartRow extends React.Component {
         const multiBrushList = [];
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Brush || child.type === MultiBrush) {
+            if (
+                areComponentsEqual(child.type, Brush) ||
+                areComponentsEqual(child.type, MultiBrush)
+            ) {
                 const brushProps = {
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: this.props.timeScale
                 };
-                if (child.type === Brush) {
+                if (areComponentsEqual(child.type, Brush)) {
                     brushList.push(React.cloneElement(child, brushProps));
                 } else {
                     multiBrushList.push(React.cloneElement(child, brushProps));
