@@ -129,7 +129,7 @@ export default class ChartContainer extends React.Component {
         //
 
         React.Children.forEach(this.props.children, childRow => {
-            console.log("here ", chartRow.type, ChartRow);
+            console.log("here ", childRow.type, ChartRow);
             if (childRow.type === ChartRow) {
                 //
                 // Within this row, count the number of columns that will be
