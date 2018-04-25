@@ -130,28 +130,12 @@ export default class ChartContainer extends React.Component {
         //
 
         React.Children.forEach(this.props.children, childRow => {
-            console.log("here ", childRow.type, ChartRow);
-            const element = <ChartRow />;
-            if (areComponentsEqual(childRow.type, ChartRow)) {
-                console.log("areComponentsEqual works");
-            }
-
-            if (childRow.type === React.createElement(ChartRow).type) {
-                console.log("createElement works");
-            }
-
-            const ChartRowType = <ChartRow />.type;
-            if (childRow.type === ChartRowType) {
-                console.log("chartRowType works");
-            }
-
             if (areComponentsEqual(childRow.type, ChartRow)) {
                 //
                 // Within this row, count the number of columns that will be
                 // left and right of the Charts tag, as well as the total number
                 // of Charts tags for error handling
                 //
-                console.log("here inside");
                 let countLeft = 0;
                 let countCharts = 0;
 
