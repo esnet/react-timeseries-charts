@@ -228,65 +228,137 @@ export default class AreaChart extends React.Component {
         return this.style(column, "area");
     }
 
+    renderArea(data, column, key) {
+        // Use D3 to build an area generation function
+        const style = this.areaStyle(column);
+        const pathStyle = this.pathStyle(column);
+
+        const areaGenerator = area()
+            .curve(curves[this.props.interpolation])
+            .x(d => d.x0)
+            .y0(d => d.y0)
+            .y1(d => d.y1);
+
+        // Use the area generation function with our stacked data
+        // to get an SVG path
+        const areaPath = areaGenerator(data);
+
+        // Outline the top of the curve
+        const lineGenerator = line()
+            .curve(curves[this.props.interpolation])
+            .x(d => d.x0)
+            .y(d => d.y1);
+        const outlinePath = lineGenerator(data);
+
+        return (
+            <g key={`area-${key}`}>
+                <path d={areaPath} style={style} />
+                <path
+                    d={areaPath}
+                    style={style}
+                    onClick={e => this.handleClick(e, column)}
+                    onMouseLeave={() => this.handleHoverLeave()}
+                    onMouseMove={e => this.handleHover(e, column)}
+                />
+                <path
+                    d={outlinePath}
+                    style={pathStyle}
+                    onClick={e => this.handleClick(e, column)}
+                    onMouseLeave={() => this.handleHoverLeave()}
+                    onMouseMove={e => this.handleHover(e, column)}
+                />
+            </g>
+        );
+    }
+
     renderPaths(columnList, direction) {
         const dir = direction === "up" ? 1 : -1;
         const size = this.props.series.size();
         const offsets = new Array(size).fill(0);
+        const len = columnList.length;
 
         return columnList.map((column, i) => {
-            const style = this.areaStyle(column);
-            const pathStyle = this.pathStyle(column);
-
             // Stack the series columns to get our data in x0, y0, y1 format
-            const data = [];
-            for (let j = 0; j < this.props.series.size(); j += 1) {
-                const seriesPoint = this.props.series.at(j);
-                data.push({
-                    x0: this.props.timeScale(seriesPoint.timestamp()),
-                    y0: this.props.yScale(offsets[j]),
-                    y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
-                });
-                if (this.props.stack) {
-                    offsets[j] += dir * seriesPoint.get(column);
+            const pathAreas = [];
+            let count = 1;
+            if (this.props.breakArea) {
+                let currentPoints = null;
+                for (let j = 0; j < this.props.series.size(); j += 1) {
+                    const seriesPoint = this.props.series.at(j);
+                    const value = seriesPoint.get(column);
+                    const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+
+                    // Case 1:
+                    // When stacking is present with multiple area charts, then mark bad points as 0
+                    if (len > 1) {
+                        if (!currentPoints) currentPoints = [];
+                        if (!badPoint) {
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                        } else {
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j])
+                            });
+                        }
+                        if (this.props.stack) {
+                            offsets[j] += dir * seriesPoint.get(column);
+                        }
+                    }
+                    // Case Two
+                    // When only one area chart is to be drawn, then create different areas for each area and ignore nulls and NaNs
+                    else {
+                        if (!badPoint) {
+                            if (!currentPoints) currentPoints = [];
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                            if (this.props.stack) {
+                                offsets[j] += dir * seriesPoint.get(column);
+                            }
+                        } else if (currentPoints) {
+                            if (currentPoints.length > 1) {
+                                pathAreas.push(this.renderArea(currentPoints, column, count));
+                                count += 1;
+                            }
+                            currentPoints = null;
+                        }
+                    }
                 }
+                if (currentPoints && currentPoints.length > 1) {
+                    pathAreas.push(this.renderArea(currentPoints, column, count));
+                    count += 1;
+                }
+            } else {
+                // Ignore nulls and NaNs in the area chart
+                const cleanedPoints = [];
+                for (let j = 0; j < this.props.series.size(); j += 1) {
+                    const seriesPoint = this.props.series.at(j);
+                    const value = seriesPoint.get(column);
+                    const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                    if (!badPoint) {
+                        cleanedPoints.push({
+                            x0: this.props.timeScale(seriesPoint.timestamp()),
+                            y0: this.props.yScale(offsets[j]),
+                            y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                        });
+                        if (this.props.stack) {
+                            offsets[j] += dir * seriesPoint.get(column);
+                        }
+                    }
+                }
+
+                pathAreas.push(this.renderArea(cleanedPoints, column, count));
+                count += 1;
             }
 
-            // Use D3 to build an area generation function
-            const areaGenerator = area()
-                .curve(curves[this.props.interpolation])
-                .x(d => d.x0)
-                .y0(d => d.y0)
-                .y1(d => d.y1);
-
-            // Use the area generation function with our stacked data
-            // to get an SVG path
-            const areaPath = areaGenerator(data);
-
-            // Outline the top of the curve
-            const lineGenerator = line()
-                .curve(curves[this.props.interpolation])
-                .x(d => d.x0)
-                .y(d => d.y1);
-            const outlinePath = lineGenerator(data);
-
-            return (
-                <g key={`area-${i}`}>
-                    <path
-                        d={areaPath}
-                        style={style}
-                        onClick={e => this.handleClick(e, column)}
-                        onMouseLeave={() => this.handleHoverLeave()}
-                        onMouseMove={e => this.handleHover(e, column)}
-                    />
-                    <path
-                        d={outlinePath}
-                        style={pathStyle}
-                        onClick={e => this.handleClick(e, column)}
-                        onMouseLeave={() => this.handleHoverLeave()}
-                        onMouseMove={e => this.handleHover(e, column)}
-                    />
-                </g>
-            );
+            return <g key={column}>{pathAreas}</g>;
         });
     }
 
@@ -440,7 +512,16 @@ AreaChart.propTypes = {
     /**
      * [Internal] The width supplied by the surrounding ChartContainer
      */
-    width: PropTypes.number
+    width: PropTypes.number,
+
+    /**
+     * The determines how to handle bad/missing values in the supplied
+     * TimeSeries. A missing value can be null or NaN. If breakArea
+     * is set to true then the area chart will be broken on either side of
+     * the bad value(s). If breakArea is false (the default) bad values
+     * are simply removed and the adjoining points are connected.
+     */
+    breakArea: PropTypes.bool
 };
 
 AreaChart.defaultProps = {
@@ -450,5 +531,6 @@ AreaChart.defaultProps = {
         up: ["value"],
         down: []
     },
-    stack: true
+    stack: true,
+    breakArea: true
 };
