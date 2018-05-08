@@ -288,11 +288,9 @@ export default class AreaChart extends React.Component {
                     const value = seriesPoint.get(column);
                     const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
 
-                    // 2 cases
-                    // 1. When only one area chart to be drawn i.e. no stacking, then create different areas for each area
-                    // 2. When stacking present with multiple area charts, then mark bad points as 0 -> i.e. set breakArea as false
+                    // Case 1:
+                    // When stacking is present with multiple area charts, then mark bad points as 0
                     if (len > 1) {
-                        console.log("len > 1");
                         if (!currentPoints) currentPoints = [];
                         if (!badPoint) {
                             currentPoints.push({
@@ -310,7 +308,10 @@ export default class AreaChart extends React.Component {
                         if (this.props.stack) {
                             offsets[j] += dir * seriesPoint.get(column);
                         }
-                    } else {
+                    }
+                    // Case Two
+                    // When only one area chart is to be drawn, then create different areas for each area and ignore nulls and NaNs
+                    else {
                         if (!badPoint) {
                             if (!currentPoints) currentPoints = [];
                             currentPoints.push({
