@@ -275,34 +275,59 @@ export default class AreaChart extends React.Component {
         const dir = direction === "up" ? 1 : -1;
         const size = this.props.series.size();
         const offsets = new Array(size).fill(0);
+        const len = columnList.length;
 
         return columnList.map((column, i) => {
             // Stack the series columns to get our data in x0, y0, y1 format
             const pathAreas = [];
             let count = 1;
             if (this.props.breakArea) {
-                // Remove nulls and NaNs from the area chart by generating a break in the area chart
                 let currentPoints = null;
                 for (let j = 0; j < this.props.series.size(); j += 1) {
                     const seriesPoint = this.props.series.at(j);
                     const value = seriesPoint.get(column);
                     const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
-                    if (!badPoint) {
+
+                    // 2 cases
+                    // 1. When only one area chart to be drawn i.e. no stacking, then create different areas for each area
+                    // 2. When stacking present with multiple area charts, then mark bad points as 0 -> i.e. set breakArea as false
+                    if (len > 1) {
+                        console.log("len > 1");
                         if (!currentPoints) currentPoints = [];
-                        currentPoints.push({
-                            x0: this.props.timeScale(seriesPoint.timestamp()),
-                            y0: this.props.yScale(offsets[j]),
-                            y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
-                        });
+                        if (!badPoint) {
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                        } else {
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j])
+                            });
+                        }
                         if (this.props.stack) {
                             offsets[j] += dir * seriesPoint.get(column);
                         }
-                    } else if (currentPoints) {
-                        if (currentPoints.length > 1) {
-                            pathAreas.push(this.renderArea(currentPoints, column, count));
-                            count += 1;
+                    } else {
+                        if (!badPoint) {
+                            if (!currentPoints) currentPoints = [];
+                            currentPoints.push({
+                                x0: this.props.timeScale(seriesPoint.timestamp()),
+                                y0: this.props.yScale(offsets[j]),
+                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                            if (this.props.stack) {
+                                offsets[j] += dir * seriesPoint.get(column);
+                            }
+                        } else if (currentPoints) {
+                            if (currentPoints.length > 1) {
+                                pathAreas.push(this.renderArea(currentPoints, column, count));
+                                count += 1;
+                            }
+                            currentPoints = null;
                         }
-                        currentPoints = null;
                     }
                 }
                 if (currentPoints && currentPoints.length > 1) {
