@@ -364,6 +364,12 @@ YAxis.propTypes = {
     max: PropTypes.number.isRequired, // eslint-disable-line
 
     /**
+     * A d3 scale for the y-axis which you can use to transform your data in the y direction.
+     * If omitted, the scale will be automatically computed based on the max and min props.
+     */
+    yScale: PropTypes.func,
+
+    /**
      * Render all ticks on the axis as positive values.
      */
     absolute: PropTypes.bool, // eslint-disable-line
