@@ -55,7 +55,7 @@ export default class EventHandler extends React.Component {
     //
 
     handleScrollWheel(e) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
 
@@ -119,49 +119,103 @@ export default class EventHandler extends React.Component {
     }
 
     handleMouseDown(e) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+            return;
+        }
+
         e.preventDefault();
-
-        const x = e.pageX;
-        const y = e.pageY;
-        const xy0 = [Math.round(x), Math.round(y)];
-
-        const begin = this.props.scale.domain()[0].getTime();
-        const end = this.props.scale.domain()[1].getTime();
 
         document.addEventListener("mouseover", this.handleMouseMove);
         document.addEventListener("mouseup", this.handleMouseUp);
 
-        this.setState({
-            isPanning: this.props.enablePanZoom,
-            initialPanBegin: begin,
-            initialPanEnd: end,
-            initialPanPosition: xy0
-        });
+        if (this.props.enableDragZoom) {
+            const offsetxy = this.getOffsetMousePosition(e);
+            this.setState({
+                isDragging: true,
+                initialDragZoom: offsetxy[0],
+                currentDragZoom: offsetxy[0]
+            });
+        }
+
+        if (this.props.enablePanZoom) {
+            const x = e.pageX;
+            const y = e.pageY;
+            const xy0 = [Math.round(x), Math.round(y)];
+
+            const begin = this.props.scale.domain()[0].getTime();
+            const end = this.props.scale.domain()[1].getTime();
+
+            this.setState({
+                isPanning: true,
+                initialPanBegin: begin,
+                initialPanEnd: end,
+                initialPanPosition: xy0
+            });
+        }
 
         return false;
     }
 
     handleMouseUp(e) {
+        if (!this.props.onMouseClick && !this.props.enablePanZoom && !this.props.enableDragZoom) {
+            return;
+        }
+
         e.stopPropagation();
 
         document.removeEventListener("mouseover", this.handleMouseMove);
         document.removeEventListener("mouseup", this.handleMouseUp);
 
+        const offsetxy = this.getOffsetMousePosition(e);
+
         const x = e.pageX;
-        if (
-            this.props.onMouseClick &&
-            this.state.initialPanPosition &&
-            Math.abs(x - this.state.initialPanPosition[0]) < 2
-        ) {
+        const isPanning =
+            this.state.initialPanPosition && Math.abs(x - this.state.initialPanPosition[0]) > 2;
+        const isDragging =
+            this.state.initialDragZoom && Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
+
+        if (this.props.onMouseClick && !isPanning && !isDragging) {
             this.props.onMouseClick();
         }
 
-        this.setState({
-            isPanning: false,
-            initialPanBegin: null,
-            initialPanEnd: null,
-            initialPanPosition: null
-        });
+        if (this.props.enableDragZoom) {
+            if (isDragging) {
+                const start = this.props.scale.invert(this.state.initialDragZoom).getTime();
+                const end = this.props.scale.invert(this.state.currentDragZoom).getTime();
+
+                let newBegin = parseInt(start, 10);
+                let newEnd = parseInt(end, 10);
+
+                if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
+                    newBegin = this.props.minTime.getTime();
+                }
+
+                if (this.props.maxTime && newEnd > this.props.maxTime.getTime()) {
+                    newEnd = this.props.maxTime.getTime();
+                }
+
+                const newTimeRange = new TimeRange([newBegin, newEnd].sort());
+                if (this.props.onZoom) {
+                    this.props.onZoom(newTimeRange);
+                }
+            }
+
+            this.setState({
+                isDragging: false,
+                initialDragZoom: null,
+                initialPanEnd: null,
+                currentDragZoom: null
+            });
+        }
+
+        if (this.props.enablePanZoom) {
+            this.setState({
+                isPanning: false,
+                initialPanBegin: null,
+                initialPanEnd: null,
+                initialPanPosition: null
+            });
+        }
     }
 
     handleMouseOut(e) {
@@ -177,6 +231,12 @@ export default class EventHandler extends React.Component {
         const x = e.pageX;
         const y = e.pageY;
         const xy = [Math.round(x), Math.round(y)];
+        const offsetxy = this.getOffsetMousePosition(e);
+        if (this.state.isDragging) {
+            this.setState({
+                currentDragZoom: offsetxy[0]
+            });
+        }
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
             const timeOffset =
@@ -236,6 +296,15 @@ export default class EventHandler extends React.Component {
                     height={this.props.height}
                 />
                 {this.props.children}
+                {this.state.isDragging && (
+                    <rect
+                        style={{ opacity: 0.3, fill: "grey" }}
+                        x={Math.min(this.state.currentDragZoom, this.state.initialDragZoom)}
+                        y={0}
+                        width={Math.abs(this.state.currentDragZoom - this.state.initialDragZoom)}
+                        height={this.props.height}
+                    />
+                )}
             </g>
         );
     }
@@ -244,6 +313,7 @@ export default class EventHandler extends React.Component {
 EventHandler.propTypes = {
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     enablePanZoom: PropTypes.bool,
+    enableDragZoom: PropTypes.bool,
     scale: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
@@ -257,5 +327,6 @@ EventHandler.propTypes = {
 };
 
 EventHandler.defaultProps = {
-    enablePanZoom: false
+    enablePanZoom: false,
+    enableDragZoom: false
 };

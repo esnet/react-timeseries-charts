@@ -324,6 +324,7 @@ export default class ChartContainer extends React.Component {
                     height={chartsHeight + timeAxisHeight}
                     scale={timeScale}
                     enablePanZoom={this.props.enablePanZoom}
+                    enableDragZoom={this.props.enableDragZoom}
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
@@ -418,6 +419,11 @@ ChartContainer.propTypes = {
      * Boolean to turn on interactive pan and zoom behavior for the chart.
      */
     enablePanZoom: PropTypes.bool,
+
+    /**
+     * Boolean to turn on interactive drag to zoom behavior for the chart.
+     */
+    enableDragZoom: PropTypes.bool,
 
     /**
      * If this is set the timerange of the chart cannot be zoomed in further
@@ -577,6 +583,7 @@ ChartContainer.defaultProps = {
     width: 800,
     padding: 0,
     enablePanZoom: false,
+    enableDragZoom: false,
     utc: false,
     showGrid: false,
     showGridPosition: "over",
