@@ -583,6 +583,7 @@ ChartContainer.defaultProps = {
     width: 800,
     padding: 0,
     enablePanZoom: false,
+    enableDragZoom: false,
     utc: false,
     showGrid: false,
     showGridPosition: "over",
