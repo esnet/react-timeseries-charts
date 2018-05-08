@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.14.0
+> March 2, 2018
+ * Add MultiBrush component and update traffic example to implement the same [@barbaragomes](https://github.com/barbaragomes) in [#224](https://github.com/esnet/react-timeseries-charts/pull/224)
+ * Add prop to control position of labels in the Baseline component 
+ * Add chart legend functionality to stack legend items as well as specify legend item symbol type per item
+ * Add a crosshairs custom chart to the currency demo
+ * Ability to ignore null points in ScatterChart (#226)
+
+
 ## v0.13.1
 > January 29, 2018
  * Support for React 16
