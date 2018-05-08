@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
+import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import MultiBrush from "./MultiBrush";
@@ -93,7 +94,7 @@ export default class ChartRow extends React.Component {
     }
 
     isChildYAxis = child =>
-        child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"));
+        areComponentsEqual(child.type, YAxis) || (_.has(child.props, "min") && _.has(child.props, "max"));
 
     updateScales(props) {
         const innerHeight = +props.height - AXIS_MARGIN * 2;
@@ -102,6 +103,46 @@ export default class ChartRow extends React.Component {
         React.Children.forEach(props.children, child => {
             if (this.isChildYAxis(child)) {
                 const { id, max, min, transition = 0, type = "linear" } = child.props;
+                const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
+                this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
+                    const yAxisScalerMap = this.state.yAxisScalerMap;
+                    yAxisScalerMap[id] = s;
+                    this.setState(yAxisScalerMap);
+                });
+                const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
+                this.scaleMap[id].setScale(cacheKey, initialScale);
+            }
+        });
+
+        const scalerMap = {};
+        _.forEach(this.scaleMap, (interpolator, id) => {
+            scalerMap[id] = interpolator.scaler();
+        });
+
+        this.setState({ yAxisScalerMap: scalerMap });
+    }
+
+    /**
+     * When we get changes to the row's props we update our map of
+     * axis scales.
+     */
+    componentWillReceiveProps(nextProps) {
+        const innerHeight = +nextProps.height - AXIS_MARGIN * 2;
+        const rangeTop = AXIS_MARGIN;
+        const rangeBottom = innerHeight - AXIS_MARGIN;
+
+        // Loop over all the children who are YAxis. If this is our first
+        // time here, we'll populate the scaleMap with new ScaleInterpolators.
+        // If we already have a ScaleInterpolator then we can set a new scale
+        // target on it.
+        React.Children.forEach(nextProps.children, child => {
+            if (
+                (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
+                _.has(child.props, "max")
+            ) {
+                const { id, max, min, transition = 0, type = "linear" } = child.props;
+
+                const scale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 if (!_.has(this.scaleMap, id)) {
                     // If necessary, initialize a ScaleInterpolator for this y-axis.
                     // When the yScale changes, we will update this interpolator.
@@ -177,7 +218,7 @@ export default class ChartRow extends React.Component {
         const rightAxisList = []; // Ordered list of right axes ids
         let alignLeft = true;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Charts) {
+            if (areComponentsEqual(child.type, Charts)) {
                 alignLeft = false;
             } else {
                 const id = child.props.id;
@@ -293,7 +334,7 @@ export default class ChartRow extends React.Component {
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Charts) {
+            if (areComponentsEqual(child.type, Charts)) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
                     if (!_.has(chart.props, "visible") || chart.props.visible) {
@@ -341,14 +382,17 @@ export default class ChartRow extends React.Component {
         const multiBrushList = [];
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === Brush || child.type === MultiBrush) {
+            if (
+                areComponentsEqual(child.type, Brush) ||
+                areComponentsEqual(child.type, MultiBrush)
+            ) {
                 const brushProps = {
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: this.props.timeScale
                 };
-                if (child.type === Brush) {
+                if (areComponentsEqual(child.type, Brush)) {
                     brushList.push(React.cloneElement(child, brushProps));
                 } else {
                     multiBrushList.push(React.cloneElement(child, brushProps));
