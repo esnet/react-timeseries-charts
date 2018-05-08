@@ -93,22 +93,15 @@ export default class ChartRow extends React.Component {
         };
     }
 
-    componentWillMount() {
-        // Our chart scales are driven off a mapping between id of the axis
-        // and the scale that axis represents. Depending on the transition time,
-        // this scale will animate over time. The controller of this animation is
-        // the ScaleInterpolator. We create new Scale Interpolators here for each
-        // axis id.
-        this.scaleMap = {};
+    isChildYAxis = child =>
+        areComponentsEqual(child.type, YAxis) || (_.has(child.props, "min") && _.has(child.props, "max"));
 
-        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
+    updateScales(props) {
+        const innerHeight = +props.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
-        React.Children.forEach(this.props.children, child => {
-            if (
-                (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
-                _.has(child.props, "max")
-            ) {
+        React.Children.forEach(props.children, child => {
+            if (this.isChildYAxis(child)) {
                 const { id, max, min, transition = 0, type = "linear" } = child.props;
                 const initialScale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
@@ -151,24 +144,55 @@ export default class ChartRow extends React.Component {
 
                 const scale = createScale(child, type, min, max, rangeBottom, rangeTop);
                 if (!_.has(this.scaleMap, id)) {
-                    // No scale map yet, create one on this.state.yAxisScalarMap
+                    // If necessary, initialize a ScaleInterpolator for this y-axis.
+                    // When the yScale changes, we will update this interpolator.
                     this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
                         const yAxisScalerMap = this.state.yAxisScalerMap;
                         yAxisScalerMap[id] = s;
                         this.setState(yAxisScalerMap);
                     });
                 }
+                // Get the vertical scale for this y-axis.
+                let scale;
+                if (_.has(child.props, "yScale")) {
+                    // If the yScale prop is passed explicitly, use that.
+                    scale = child.props.yScale;
+                } else {
+                    // Otherwise, compute the scale based on the max and min props.
+                    scale = createScale(child, type, min, max, rangeBottom, rangeTop);
+                }
+
+                // Update the scale on the interpolator for this y-axis.
                 const cacheKey = `${type}-${min}-${max}-${rangeBottom}-${rangeTop}`;
                 this.scaleMap[id].setScale(cacheKey, scale);
             }
         });
 
+        // Update the state with the newly interpolated scaler for each y-axis.
         const scalerMap = {};
         _.forEach(this.scaleMap, (interpolator, id) => {
             scalerMap[id] = interpolator.scaler();
         });
 
         this.setState({ yAxisScalerMap: scalerMap });
+    }
+
+    componentWillMount() {
+        // Our chart scales are driven off a mapping between id of the axis
+        // and the scale that axis represents. Depending on the transition time,
+        // this scale will animate over time. The controller of this animation is
+        // the ScaleInterpolator. We create new Scale Interpolators here for each
+        // axis id.
+        this.scaleMap = {};
+        this.updateScales(this.props);
+    }
+
+    /**
+     * When we get changes to the row's props we update our map of
+     * axis scales.
+     */
+    componentWillReceiveProps(nextProps) {
+        this.updateScales(nextProps);
     }
 
     render() {
@@ -199,10 +223,7 @@ export default class ChartRow extends React.Component {
             } else {
                 const id = child.props.id;
                 // Check to see if we think this 'axis' is actually an axis
-                if (
-                    (areComponentsEqual(child.type, YAxis) || _.has(child.props, "min")) &&
-                    _.has(child.props, "max")
-                ) {
+                if (this.isChildYAxis(child)) {
                     const yaxis = child;
 
                     if (yaxis.props.id) {
