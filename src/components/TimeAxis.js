@@ -166,12 +166,28 @@ export default class TimeAxis extends React.Component {
             .style("font-weight", labelWeight)
             .style("font-size", labelSize)
             .call(axis.tickSize(tickSize));
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("text")
-            .style("fill", labelColor)
-            .style("stroke", "none");
+
+        if (this.props.angled) {
+            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+                .select("g")
+                .selectAll(".tick")
+                .select("text")
+                .style("fill", labelColor)
+                .style("stroke", "none")
+                .style("text-anchor", "end")
+                .attr("dx", "-1.2em")
+                .attr("dy", "0em")
+                .attr("transform", function(d) {
+                    return "rotate(-65)";
+                });
+        } else {
+            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+                .select("g")
+                .selectAll(".tick")
+                .select("text")
+                .style("fill", labelColor)
+                .style("stroke", "none");
+        }
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
@@ -191,12 +207,14 @@ export default class TimeAxis extends React.Component {
 
 TimeAxis.defaultProps = {
     showGrid: false,
-    style: defaultStyle
+    style: defaultStyle,
+    angled: false
 };
 
 TimeAxis.propTypes = {
     scale: PropTypes.func.isRequired,
     showGrid: PropTypes.bool,
+    angled: PropTypes.bool,
     gridHeight: PropTypes.number,
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     utc: PropTypes.bool,
