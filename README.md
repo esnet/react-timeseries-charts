@@ -121,6 +121,10 @@ Then, point your browser to:
 
 [http://localhost:3000/](http://localhost:3000/)
 
+Before submitting a Pull Request, run:
+    
+    npm run build
+
 License
 -------
 

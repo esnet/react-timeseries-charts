@@ -106,7 +106,14 @@ Later we use this state to control which `LineChart`s to display.
 
 Finally we implement the `render()` method of our component to return our final chart like this:
 
-    <ChartContainer timeRange={requestsSeries.range()}>
+    <ChartContainer
+      enableDragZoom
+      onTimeRangeChanged={this.handleTimeRangeChange}
+      timeRange={this.state.timerange}
+      maxTime={requestsSeries.range().end()}
+      minTime={requestsSeries.range().begin()}
+      timeAxisStyle={axisStyle}
+    >
         <ChartRow height="300">
             <YAxis id="axis1" label="Requests" style={{labelColor: scheme.requests}}
                    labelOffset={-10}  min={0} max={1000} format=",.0f" width="60" type="linear" />

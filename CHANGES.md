@@ -4,6 +4,9 @@
 
 > March 2, 2018
 
+* Add MultiBrush component and update traffic example to implement the same [@barbaragomes](https://github.com/barbaragomes) in [#224](https://github.com/esnet/react-timeseries-charts/pull/224)
+* Add a crosshairs custom chart to the currency demo
+* Ability to ignore null points in ScatterChart [#226]
 * Exposes hover x,y events in ChartContainer handleMouseMove [#199]
 * Added a control for TimeAxis tick count [#220]
 * Control minimum BarChart height [#218]

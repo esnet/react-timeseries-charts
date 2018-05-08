@@ -1400,12 +1400,23 @@
         "required": false,
         "description": "Constrain the timerange to not move forward in time than this Date. A\ncommon example is setting this to the current time or the end time\nof a fixed set of data."
       },
+      "enableDragZoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Boolean to turn on interactive drag to zoom behavior for the chart. Mousewheel will zoom in and out. Dragging will preview the area to be zoomed to, and releasing the drag will zoom to the selected region.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "enablePanZoom": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Boolean to turn on interactive pan and zoom behavior for the chart.",
+        "description": "Boolean to turn on interactive pan and zoom behavior for the chart. Mousewheel will zoom in and out. Dragging will pan the chart.",
         "defaultValue": {
           "value": "false",
           "computed": false

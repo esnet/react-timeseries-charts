@@ -71,7 +71,12 @@ class ddos extends React.Component {
         active: {
             requests: true,
             connections: true
-        }
+        },
+        timerange: requestsSeries.range()
+    };
+
+    handleTimeRangeChange = timerange => {
+        this.setState({ timerange });
     };
 
     renderChart = () => {
@@ -122,7 +127,14 @@ class ddos extends React.Component {
         const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
 
         return (
-            <ChartContainer timeRange={requestsSeries.range()} timeAxisStyle={axisStyle}>
+            <ChartContainer
+                enableDragZoom
+                onTimeRangeChanged={this.handleTimeRangeChange}
+                timeRange={this.state.timerange}
+                maxTime={requestsSeries.range().end()}
+                minTime={requestsSeries.range().begin()}
+                timeAxisStyle={axisStyle}
+            >
                 <ChartRow height="300">
                     <YAxis
                         id="axis1"

@@ -14,6 +14,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
+import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import MultiBrush from "./MultiBrush";
@@ -132,23 +133,25 @@ export default class ChartContainer extends React.Component {
         //
 
         React.Children.forEach(this.props.children, childRow => {
-            if (childRow.type === ChartRow) {
+            if (areComponentsEqual(childRow.type, ChartRow)) {
                 //
                 // Within this row, count the number of columns that will be
                 // left and right of the Charts tag, as well as the total number
                 // of Charts tags for error handling
                 //
-
                 let countLeft = 0;
                 let countCharts = 0;
 
                 let align = "left";
 
                 React.Children.forEach(childRow.props.children, child => {
-                    if (child.type === Charts) {
+                    if (areComponentsEqual(child.type, Charts)) {
                         countCharts += 1;
                         align = "right";
-                    } else if (child.type !== Brush && child.type !== MultiBrush) {
+                    } else if (
+                        !areComponentsEqual(child.type, Brush) &&
+                        !areComponentsEqual(child.type, MultiBrush)
+                    ) {
                         if (align === "left") {
                             countLeft += 1;
                         }
@@ -165,11 +168,11 @@ export default class ChartContainer extends React.Component {
 
                 React.Children.forEach(childRow.props.children, child => {
                     if (
-                        child.type === Charts ||
-                        child.type === Brush ||
-                        child.type === MultiBrush
+                        areComponentsEqual(child.type, Charts) ||
+                        areComponentsEqual(child.type, Brush) ||
+                        areComponentsEqual(child.type, MultiBrush)
                     ) {
-                        if (child.type === Charts) {
+                        if (areComponentsEqual(child.type, Charts)) {
                             align = "right";
                             pos = 0;
                         }
@@ -222,7 +225,7 @@ export default class ChartContainer extends React.Component {
         let i = 0;
         let yPosition = 0;
         React.Children.forEach(this.props.children, child => {
-            if (child.type === ChartRow) {
+            if (areComponentsEqual(child.type, ChartRow)) {
                 const chartRow = child;
                 const rowKey = `chart-row-row-${i}`;
                 const firstRow = i === 0;
@@ -335,6 +338,7 @@ export default class ChartContainer extends React.Component {
                     height={chartsHeight + timeAxisHeight}
                     scale={timeScale}
                     enablePanZoom={this.props.enablePanZoom}
+                    enableDragZoom={this.props.enableDragZoom}
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
@@ -429,6 +433,11 @@ ChartContainer.propTypes = {
      * Boolean to turn on interactive pan and zoom behavior for the chart.
      */
     enablePanZoom: PropTypes.bool,
+
+    /**
+     * Boolean to turn on interactive drag to zoom behavior for the chart.
+     */
+    enableDragZoom: PropTypes.bool,
 
     /**
      * If this is set the timerange of the chart cannot be zoomed in further
@@ -593,6 +602,7 @@ ChartContainer.defaultProps = {
     width: 800,
     padding: 0,
     enablePanZoom: false,
+    enableDragZoom: false,
     utc: false,
     showGrid: false,
     showGridPosition: "over",
