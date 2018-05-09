@@ -103,18 +103,14 @@ export default class YAxis extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const scale = nextProps.scale;
-        const align = nextProps.align;
-        const width = nextProps.width;
-        const absolute = nextProps.absolute;
-        const fmt = nextProps.format;
-        const type = nextProps.type;
+        const { scale, align, width, absolute, format, type } = nextProps;
 
         if (
             scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-            this.props.type !== nextProps.type
+            this.props.type !== type ||
+            this.props.width !== width
         ) {
-            this.updateAxis(align, scale, width, absolute, type, fmt);
+            this.updateAxis(align, scale, width, absolute, type, format);
         }
     }
 
@@ -203,6 +199,12 @@ export default class YAxis extends React.Component {
         );
         const { axisColor } = axisStyle;
         const { valueColor } = valueStyle;
+
+        const x = align === "left" ? width - MARGIN : 0;
+
+        select(ReactDOM.findDOMNode(this))
+            .select("g")
+            .attr("transform", `translate(${x},0)`);
 
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
