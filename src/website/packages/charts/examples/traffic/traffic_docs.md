@@ -16,24 +16,38 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
     seriesList: [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
 });
 
-const upDownStyle = styler([
-    { key: "in", color: "#C8D5B8" },
-    { key: "out", color: "#9BB8D7" }
-]);
+const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
 
-const traffic = React.createClass({
-    getInitialState() {
-        return {
-            tracker: null,
-            timerange: trafficSeries.range()
-        };
-    },
-    handleTrackerChanged(t) {
-        this.setState({ tracker: t });
-    },
-    handleTimeRangeChange(timerange) {
+class traffic extends React.Component {
+    state = {
+        tracker: null,
+        timerange: trafficSeries.range(),
+        selected: 1,
+        selections: [
+            new TimeRange(1441059420000, 1441062390000),
+            new TimeRange(1441070850000, 1441088580000),
+            new TimeRange(1441127730000, 1441137540000)
+        ]
+    };
+
+    handleTrackerChanged = (t, scale) => {
+        this.setState({
+          tracker: t,
+          trackerEventIn: t && trafficBNLtoNEWYSeries.at(trafficBNLtoNEWYSeries.bisect(t)),
+          trackerX: t && scale(t)
+        });
+    };
+
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
-    },
+    };
+
+    handleSelectionChange = (timerange, i) => {
+        const selections = this.state.selections;
+        selections[i] = timerange;
+        this.setState({ selections });
+    };
+
     render() {
         const dateStyle = {
             fontSize: 12,
@@ -42,13 +56,16 @@ const traffic = React.createClass({
             borderColor: "#F4F4F4"
         };
 
-        const max = _.max([
-            trafficBNLtoNEWYSeries.max("in"),
-            trafficNEWYtoBNLSeries.max("out")
-        ]);
+        const markerStyle = {
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          color: "#AAA",
+          marginLeft: "5px"
+        }
 
+        const max = _.max([trafficBNLtoNEWYSeries.max("in"), trafficNEWYtoBNLSeries.max("out")]);
         const axistype = "linear";
         const tracker = this.state.tracker ? `${this.state.tracker}` : "";
+        const formatter = format(".4s");
 
         return (
             <div>
@@ -72,18 +89,23 @@ const traffic = React.createClass({
 
                 <div className="row">
                     <div className="col-md-12">
+                        { this.state.tracker ?
+                            <div style={{position: 'relative'}}>
+                                <div style={{position: 'absolute', left: this.state.trackerX}}>
+                                    <div style={markerStyle}>Data In: {formatter(this.state.trackerEventIn.get('in'))}</div>
+                                </div>
+                            </div>
+                        : null }
                         <Resizable>
-
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 trackerPosition={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
-                                enablePanZoom={true}
+                                enablePanZoom={false}
                                 maxTime={trafficSeries.range().end()}
                                 minTime={trafficSeries.range().begin()}
                                 minDuration={1000 * 60 * 60}
-                                onBackgroundClick={() =>
-                                    this.setState({ selection: null })}
+                                onBackgroundClick={() => this.setState({ selection: null })}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                             >
                                 <ChartRow height="250" debug={false}>
@@ -96,6 +118,19 @@ const traffic = React.createClass({
                                                 down: ["out"]
                                             }}
                                             style={upDownStyle}
+                                        />
+                                        <MultiBrush
+                                            timeRanges={this.state.selections}
+                                            style={i => {
+                                                if (i === this.state.selected) {
+                                                    return { fill: "#46abff" };
+                                                } else {
+                                                    return { fill: "#cccccc" };
+                                                }
+                                            }}
+                                            allowSelectionClear
+                                            onTimeRangeChanged={this.handleSelectionChange}
+                                            onTimeRangeClicked={i => this.setState({ selected: i })}
                                         />
                                     </Charts>
                                     <YAxis
@@ -110,12 +145,63 @@ const traffic = React.createClass({
                                     />
                                 </ChartRow>
                             </ChartContainer>
-
                         </Resizable>
+                    </div>
+                    <div className="col-md-12">
+                        <hr />
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date range</th>
+                                    <th scope="col">In Avg</th>
+                                    <th scope="col">Out Avg</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.selections.map((tr, i) => {
+                                    return (
+                                        <tr
+                                            key={i}
+                                            style={
+                                                i === this.state.selected
+                                                    ? { background: "#46abff60" }
+                                                    : {}
+                                            }
+                                        >
+                                            <td
+                                                onClick={() => this.setState({ selected: i })}
+                                            >{`${tr.humanize()}`}</td>
+                                            <td style={{ padding: 10 }}>{`${formatter(
+                                                trafficSeries.crop(tr).avg("in")
+                                            )}b`}</td>
+                                            <td style={{ padding: 10 }}>{`${formatter(
+                                                trafficSeries.crop(tr).avg("out")
+                                            )}b`}</td>
+                                            <td>
+                                                <i
+                                                    className="glyphicon glyphicon-remove"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => {
+                                                        const selection = this.state.selections;
+                                                        this.setState({
+                                                            selections: selection.filter(
+                                                                (item, j) => j !== i
+                                                            ),
+                                                            selected: null
+                                                        });
+                                                    }}
+                                                />
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         );
     }
-});
+}
 ```
