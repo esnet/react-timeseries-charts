@@ -69,6 +69,7 @@ class traffic extends React.Component {
         this.setState({
             tracker: t,
             trackerEventIn: t && trafficBNLtoNEWYSeries.at(trafficBNLtoNEWYSeries.bisect(t)),
+            trackerEventOut: t && trafficNEWYtoBNLSeries.at(trafficNEWYtoBNLSeries.bisect(t)),
             trackerX: t && scale(t)
         });
     };
@@ -129,6 +130,17 @@ class traffic extends React.Component {
                                 <div style={{ position: "absolute", left: this.state.trackerX }}>
                                     <div style={markerStyle}>
                                         Data In: {formatter(this.state.trackerEventIn.get("in"))}
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        left: this.state.trackerX,
+                                        top: "220px"
+                                    }}
+                                >
+                                    <div style={markerStyle}>
+                                        Data Out: {formatter(this.state.trackerEventOut.get("out"))}
                                     </div>
                                 </div>
                             </div>

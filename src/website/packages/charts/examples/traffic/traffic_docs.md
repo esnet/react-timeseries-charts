@@ -16,7 +16,10 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
     seriesList: [trafficBNLtoNEWYSeries, trafficNEWYtoBNLSeries]
 });
 
-const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
+const upDownStyle = styler([
+    { key: "in", color: "#C8D5B8" }, 
+    { key: "out", color: "#9BB8D7" }
+]);
 
 class traffic extends React.Component {
     state = {
@@ -32,9 +35,10 @@ class traffic extends React.Component {
 
     handleTrackerChanged = (t, scale) => {
         this.setState({
-          tracker: t,
-          trackerEventIn: t && trafficBNLtoNEWYSeries.at(trafficBNLtoNEWYSeries.bisect(t)),
-          trackerX: t && scale(t)
+            tracker: t,
+            trackerEventIn: t && trafficBNLtoNEWYSeries.at(trafficBNLtoNEWYSeries.bisect(t)),
+            trackerEventOut: t && trafficNEWYtoBNLSeries.at(trafficNEWYtoBNLSeries.bisect(t)),
+            trackerX: t && scale(t)
         });
     };
 
@@ -93,6 +97,9 @@ class traffic extends React.Component {
                             <div style={{position: 'relative'}}>
                                 <div style={{position: 'absolute', left: this.state.trackerX}}>
                                     <div style={markerStyle}>Data In: {formatter(this.state.trackerEventIn.get('in'))}</div>
+                                </div>
+                                <div style={{position: 'absolute', left: this.state.trackerX, top: '220px' }}>
+                                    <div style={markerStyle}>Data In: {formatter(this.state.trackerEventOut.get('out'))}</div>
                                 </div>
                             </div>
                         : null }
