@@ -135,6 +135,12 @@ class wind extends React.Component {
             };
         };
 
+        const axisStyle = {
+            axis: { axisColor: "Orange" },
+            label: { labelColor: "Red", labelWeight: 100, labelSize: 11 },
+            values: { valueColor: "Red", valueWeight: 200, valueSize: 12 }
+        };
+
         return (
             <div>
                 <div className="row">
@@ -156,6 +162,7 @@ class wind extends React.Component {
                             >
                                 <ChartRow height="150" debug={false}>
                                     <YAxis
+                                        style={axisStyle}
                                         id="wind-gust"
                                         label="Wind gust (mph)"
                                         labelOffset={-5}
