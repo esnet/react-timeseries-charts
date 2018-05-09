@@ -102,6 +102,7 @@ export default class ChartRow extends React.Component {
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(props.children, child => {
+            if (child === null) return;
             if (this.isChildYAxis(child)) {
                 const { id, max, min, transition = 0, type = "linear" } = child.props;
                 if (!_.has(this.scaleMap, id)) {
@@ -181,6 +182,7 @@ export default class ChartRow extends React.Component {
         const rightAxisList = []; // Ordered list of right axes ids
         let alignLeft = true;
         React.Children.forEach(this.props.children, child => {
+            if (child === null) return;
             if (areComponentsEqual(child.type, Charts)) {
                 alignLeft = false;
             } else {
@@ -297,6 +299,7 @@ export default class ChartRow extends React.Component {
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
+            if (child === null) return;
             if (areComponentsEqual(child.type, Charts)) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
@@ -345,6 +348,7 @@ export default class ChartRow extends React.Component {
         const multiBrushList = [];
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
+            if (child === null) return;
             if (
                 areComponentsEqual(child.type, Brush) ||
                 areComponentsEqual(child.type, MultiBrush)

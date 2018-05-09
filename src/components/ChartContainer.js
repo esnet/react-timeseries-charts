@@ -145,6 +145,7 @@ export default class ChartContainer extends React.Component {
                 let align = "left";
 
                 React.Children.forEach(childRow.props.children, child => {
+                    if (child === null) return;
                     if (areComponentsEqual(child.type, Charts)) {
                         countCharts += 1;
                         align = "right";
@@ -167,6 +168,7 @@ export default class ChartContainer extends React.Component {
                 let pos = countLeft - 1;
 
                 React.Children.forEach(childRow.props.children, child => {
+                    if (child === null) return;
                     if (
                         areComponentsEqual(child.type, Charts) ||
                         areComponentsEqual(child.type, Brush) ||
