@@ -10,6 +10,7 @@
 
 import _ from "underscore";
 import invariant from "invariant";
+import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
@@ -25,10 +26,15 @@ import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
-    labels: {
-        labelColor: "#8B7E7E",
+    label: {
+        labelColor: "#8B7E7E", // Default label color
         labelWeight: 100,
-        labelSize: 11
+        labelSize: 12
+    },
+    values: {
+        valueColor: "#8B7E7E",
+        valueWeight: 100,
+        valueSize: 11
     },
     axis: {
         axisColor: "#C0C0C0",
@@ -299,9 +305,15 @@ export default class ChartContainer extends React.Component {
         // TimeAxis
         //
 
+        const axisStyle = merge(
+            true,
+            defaultTimeAxisStyle.axis,
+            this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
+        );
+
         const xStyle = {
-            stroke: this.props.timeAxisStyle.axis.axisColor,
-            strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
+            stroke: axisStyle.axisColor,
+            strokeWidth: axisStyle.axisWidth,
             fill: "none",
             pointerEvents: "none"
         };
@@ -497,16 +509,21 @@ ChartContainer.propTypes = {
 
     /**
      * Adjust the time axis style. This is an object of the
-     * form { labels, axis } where "label" and "axis" are objects
+     * form { label, values, axis } where "label", "values" and "axis" are objects
      * themselves. The options here are best represented by
      * an example:
      *
      * ```
      *  const axisStyle = {
-     *      labels: {
+     *      label: {
      *          labelColor: "grey",
      *          labelWeight: 100,
      *          labelSize: 11
+     *      },
+     *      values: {
+     *          valueColor: "red",
+     *          valueWeight: 100,
+     *          valueSize: 12
      *      },
      *      axis: {
      *          axisColor: "grey",
@@ -516,7 +533,8 @@ ChartContainer.propTypes = {
      * ```
      */
     timeAxisStyle: PropTypes.shape({
-        labels: PropTypes.object, // eslint-disable-line
+        label: PropTypes.object, // eslint-disable-line
+        values: PropTypes.object,
         axis: PropTypes.object
     }),
 
