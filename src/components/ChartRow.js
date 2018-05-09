@@ -497,7 +497,7 @@ ChartRow.propTypes = {
     rightAxisWidths: PropTypes.arrayOf(PropTypes.number),
     width: PropTypes.number,
     timeScale: PropTypes.func,
-    trackerTimeFormat: PropTypes.string,
-    timeFormat: PropTypes.string,
+    trackerTimeFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    timeFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     trackerTime: PropTypes.instanceOf(Date)
 };
