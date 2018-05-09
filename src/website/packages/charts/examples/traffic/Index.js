@@ -65,8 +65,13 @@ class traffic extends React.Component {
         ]
     };
 
-    handleTrackerChanged = t => {
-        this.setState({ tracker: t });
+    handleTrackerChanged = (t, scale) => {
+        this.setState({
+            tracker: t,
+            trackerEventIn: t && trafficBNLtoNEWYSeries.at(trafficBNLtoNEWYSeries.bisect(t)),
+            trackerEventOut: t && trafficNEWYtoBNLSeries.at(trafficNEWYtoBNLSeries.bisect(t)),
+            trackerX: t && scale(t)
+        });
     };
 
     handleTimeRangeChange = timerange => {
@@ -85,6 +90,12 @@ class traffic extends React.Component {
             color: "#AAA",
             borderWidth: 1,
             borderColor: "#F4F4F4"
+        };
+
+        const markerStyle = {
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            color: "#AAA",
+            marginLeft: "5px"
         };
 
         const max = _.max([trafficBNLtoNEWYSeries.max("in"), trafficNEWYtoBNLSeries.max("out")]);
@@ -114,6 +125,26 @@ class traffic extends React.Component {
 
                 <div className="row">
                     <div className="col-md-12">
+                        {this.state.tracker ? (
+                            <div style={{ position: "relative" }}>
+                                <div style={{ position: "absolute", left: this.state.trackerX }}>
+                                    <div style={markerStyle}>
+                                        Data In: {formatter(this.state.trackerEventIn.get("in"))}
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        left: this.state.trackerX,
+                                        top: "220px"
+                                    }}
+                                >
+                                    <div style={markerStyle}>
+                                        Data Out: {formatter(this.state.trackerEventOut.get("out"))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
                         <Resizable>
                             <ChartContainer
                                 timeRange={this.state.timerange}
