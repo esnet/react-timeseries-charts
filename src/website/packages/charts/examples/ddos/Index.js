@@ -112,8 +112,8 @@ class ddos extends React.Component {
         }
 
         const axisStyle = {
-            labels: {
-                labelColor: "grey", // Default label color
+            values: {
+                labelColor: "grey",
                 labelWeight: 100,
                 labelSize: 11
             },

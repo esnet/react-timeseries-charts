@@ -137,6 +137,60 @@ export default class YAxis extends React.Component {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
 
+        //
+        // Make an axis generator
+        //
+
+        let axisGenerator;
+        if (type === "linear" || type === "power") {
+            if (this.props.tickCount > 0) {
+                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
+                axisGenerator = axis(scale)
+                    .tickValues(
+                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
+                    )
+                    .tickFormat(d => {
+                        if (absolute) {
+                            return yformat(Math.abs(d));
+                        }
+                        return yformat(d);
+                    })
+                    .tickSizeOuter(0);
+            } else {
+                if (this.props.height <= 200) {
+                    axisGenerator = axis(scale)
+                        .ticks(4)
+                        .tickFormat(d => {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        })
+                        .tickSizeOuter(0);
+                } else {
+                    axisGenerator = axis(scale)
+                        .tickFormat(d => {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        })
+                        .tickSizeOuter(0);
+                }
+            }
+        } else if (type === "log") {
+            if (this.props.min === 0) {
+                throw Error("In a log scale, minimum value can't be 0");
+            }
+            axisGenerator = axis(scale)
+                .ticks(10, ".2s")
+                .tickSizeOuter(0);
+        }
+
+        //
+        // Style
+        //
+
         const valueStyle = merge(
             true,
             defaultStyle.values,
@@ -149,36 +203,6 @@ export default class YAxis extends React.Component {
         );
         const { axisColor } = axisStyle;
         const { valueColor } = valueStyle;
-
-        //
-        // Make an axis generator
-        //
-
-        let axisGenerator;
-        if (type === "linear" || type === "power") {
-            if (this.props.height <= 200) {
-                axisGenerator = axis(scale)
-                    .ticks(5)
-                    .tickFormat(d => {
-                        if (absolute) {
-                            return yformat(Math.abs(d));
-                        }
-                        return yformat(d);
-                    });
-            } else {
-                axisGenerator = axis(scale).tickFormat(d => {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    }
-                    return yformat(d);
-                });
-            }
-        } else if (type === "log") {
-            if (this.props.min === 0) {
-                throw Error("In a log scale, minimum value can't be 0");
-            }
-            axisGenerator = axis(scale).ticks(10, ".2s");
-        }
 
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
