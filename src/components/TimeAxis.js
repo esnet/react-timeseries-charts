@@ -26,10 +26,15 @@ function scaleAsString(scale) {
 }
 
 const defaultStyle = {
-    labels: {
+    label: {
         labelColor: "#8B7E7E", // Default label color
         labelWeight: 100,
-        labelSize: 11
+        labelSize: 12
+    },
+    values: {
+        valueColor: "#8B7E7E", // Default label color
+        valueWeight: 100,
+        valueSize: 11
     },
     axis: {
         axisColor: "#C0C0C0"
@@ -140,8 +145,13 @@ export default class TimeAxis extends React.Component {
 
         const labelStyle = merge(
             true,
-            defaultStyle.labels,
-            this.props.style.labels ? this.props.style.labels : {}
+            defaultStyle.label,
+            this.props.style.label ? this.props.style.label : {}
+        );
+        const valueStyle = merge(
+            true,
+            defaultStyle.values,
+            this.props.style.values ? this.props.style.values : {}
         );
         const axisStyle = merge(
             true,
@@ -149,6 +159,7 @@ export default class TimeAxis extends React.Component {
             this.props.style.axis ? this.props.style.axis : {}
         );
         const { axisColor } = axisStyle;
+        const { valueColor, valueWeight, valueSize } = valueStyle;
         const { labelColor, labelWeight, labelSize } = labelStyle;
 
         // Remove the old axis from under this DOM node
@@ -162,9 +173,9 @@ export default class TimeAxis extends React.Component {
             .append("g")
             .attr("class", "x axis")
             .style("stroke", "none")
-            .style("fill", labelColor)
-            .style("font-weight", labelWeight)
-            .style("font-size", labelSize)
+            .style("fill", valueColor)
+            .style("font-weight", valueWeight)
+            .style("font-size", valueSize)
             .call(axis.tickSize(tickSize));
 
         if (this.props.angled) {
@@ -172,7 +183,7 @@ export default class TimeAxis extends React.Component {
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .style("fill", labelColor)
+                .style("fill", valueColor)
                 .style("stroke", "none")
                 .style("text-anchor", "end")
                 .attr("dx", "-1.2em")
@@ -185,7 +196,7 @@ export default class TimeAxis extends React.Component {
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .style("fill", labelColor)
+                .style("fill", valueColor)
                 .style("stroke", "none");
         }
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
@@ -219,7 +230,8 @@ TimeAxis.propTypes = {
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     utc: PropTypes.bool,
     style: PropTypes.shape({
-        labels: PropTypes.object, // eslint-disable-line
+        label: PropTypes.object, // eslint-disable-line
+        values: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object // eslint-disable-line
     }),
     tickCount: PropTypes.number

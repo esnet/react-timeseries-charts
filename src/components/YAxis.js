@@ -28,8 +28,8 @@ const defaultStyle = {
     label: {
         labelColor: "#8B7E7E", // Default label color
         labelWeight: 100,
-        labelSize: 11,
-        labelFont: "sans-serif"
+        labelSize: 12,
+        labelFont: '"Goudy Bookletter 1911", sans-serif"'
     },
     values: {
         valueColor: "#8B7E7E", // Default value color
