@@ -39,23 +39,23 @@ import colorbrewer from "colorbrewer";
  */
 export class Styler {
     /**
-   * The columns define the style associated with a particular
-   * quantity, such as "inTraffic" or "temperature". The columns
-   * are an array, with each element being either a string, or
-   * and object defining the style.
-   *
-   *  * Using a string makes the assumption that you want to use a
-   * color scheme, so you need to define that if you don't want the
-   * default. A color will be then assigned to each column based
-   * on the scheme. The string is the column name.
-   *
-   *  * In the second case of providing an object, you define properties
-   * of the style yourself. Each object should contain a "key" property
-   * which is the column name and optionally the `width` and `dashed`
-   * property. If you don't supply the color, then the color
-   * will come from the scheme.
-   *
-   */
+     * The columns define the style associated with a particular
+     * quantity, such as "inTraffic" or "temperature". The columns
+     * are an array, with each element being either a string, or
+     * and object defining the style.
+     *
+     *  * Using a string makes the assumption that you want to use a
+     * color scheme, so you need to define that if you don't want the
+     * default. A color will be then assigned to each column based
+     * on the scheme. The string is the column name.
+     *
+     *  * In the second case of providing an object, you define properties
+     * of the style yourself. Each object should contain a "key" property
+     * which is the column name and optionally the `width` and `dashed`
+     * property. If you don't supply the color, then the color
+     * will come from the scheme.
+     *
+     */
     constructor(columns, scheme = "Paired") {
         this.columnStyles = {};
         if (_.isArray(columns)) {
@@ -84,14 +84,14 @@ export class Styler {
     }
 
     /**
-   * Returns the color scheme with the appropiate number of colors.
-   * If there are more columns than the largest set in the scheme then
-   * just the largest scheme set will be returned.
-   * If there are less columns than the smallest set in the scheme then
-   * just the smallest scheme will be returned.
-   * @param  {number} columnCount The number of columns to apply the scheme to
-   * @return {array}              An array with the scheme colors in it.
-   */
+     * Returns the color scheme with the appropiate number of colors.
+     * If there are more columns than the largest set in the scheme then
+     * just the largest scheme set will be returned.
+     * If there are less columns than the smallest set in the scheme then
+     * just the smallest scheme will be returned.
+     * @param  {number} columnCount The number of columns to apply the scheme to
+     * @return {array}              An array with the scheme colors in it.
+     */
     colorLookup(columnCount) {
         const colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
         const minSchemeSize = _.min(colorSchemeKeys);
@@ -102,7 +102,7 @@ export class Styler {
     }
 
     /**
-   */
+     */
     legendStyle(column, type) {
         const numColumns = this.numColumns();
         const colorLookup = this.colorLookup(numColumns);
@@ -299,7 +299,9 @@ export class Styler {
         const { color } = this.columnStyles[columnName];
         const c = color || colorLookup[i % colorLookup.length];
         return {
-            labelColor: c
+            label: {
+                labelColor: c
+            }
         };
     }
 

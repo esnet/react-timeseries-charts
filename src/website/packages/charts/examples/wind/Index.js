@@ -135,6 +135,16 @@ class wind extends React.Component {
             };
         };
 
+        const timeAxisStyle = {
+            values: { valueColor: "Green", valueWeight: 200, valueSize: 12 }
+        };
+
+        const YAxisStyle = {
+            axis: { axisColor: "#C0C0C0" },
+            label: { labelColor: "Blue", labelWeight: 100, labelSize: 12 },
+            values: { valueSize: 12 }
+        };
+
         return (
             <div>
                 <div className="row">
@@ -148,6 +158,7 @@ class wind extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={this.state.timerange}
+                                timeAxisStyle={timeAxisStyle}
                                 maxTime={series.range().end()}
                                 minTime={series.range().begin()}
                                 enablePanZoom={true}
@@ -161,6 +172,7 @@ class wind extends React.Component {
                                         labelOffset={-5}
                                         min={0}
                                         max={series.max("station1")}
+                                        style={YAxisStyle}
                                         width="70"
                                         type="linear"
                                         format=",.1f"
