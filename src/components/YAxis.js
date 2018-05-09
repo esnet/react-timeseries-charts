@@ -25,10 +25,16 @@ import { scaleAsString } from "../js/util";
 const MARGIN = 0;
 
 const defaultStyle = {
-    labels: {
+    label: {
         labelColor: "#8B7E7E", // Default label color
         labelWeight: 100,
-        labelSize: 11
+        labelSize: 12,
+        labelFont: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    values: {
+        valueColor: "#8B7E7E", // Default value color
+        valueWeight: 100,
+        valueSize: 11
     },
     axis: {
         axisColor: "#C0C0C0"
@@ -131,42 +137,72 @@ export default class YAxis extends React.Component {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
 
-        const axisStyle = merge(
-            true,
-            defaultStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
-        );
-        const { axisColor } = axisStyle;
-
         //
         // Make an axis generator
         //
 
         let axisGenerator;
         if (type === "linear" || type === "power") {
-            if (this.props.height <= 200) {
+            if (this.props.tickCount > 0) {
+                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
                 axisGenerator = axis(scale)
-                    .ticks(5)
+                    .tickValues(
+                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
+                    )
                     .tickFormat(d => {
                         if (absolute) {
                             return yformat(Math.abs(d));
                         }
                         return yformat(d);
-                    });
+                    })
+                    .tickSizeOuter(0);
             } else {
-                axisGenerator = axis(scale).tickFormat(d => {
-                    if (absolute) {
-                        return yformat(Math.abs(d));
-                    }
-                    return yformat(d);
-                });
+                if (this.props.height <= 200) {
+                    axisGenerator = axis(scale)
+                        .ticks(4)
+                        .tickFormat(d => {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        })
+                        .tickSizeOuter(0);
+                } else {
+                    axisGenerator = axis(scale)
+                        .tickFormat(d => {
+                            if (absolute) {
+                                return yformat(Math.abs(d));
+                            }
+                            return yformat(d);
+                        })
+                        .tickSizeOuter(0);
+                }
             }
         } else if (type === "log") {
             if (this.props.min === 0) {
                 throw Error("In a log scale, minimum value can't be 0");
             }
-            axisGenerator = axis(scale).ticks(10, ".2s");
+            axisGenerator = axis(scale)
+                .ticks(10, ".2s")
+                .tickSizeOuter(0);
         }
+
+        //
+        // Style
+        //
+
+        const valueStyle = merge(
+            true,
+            defaultStyle.values,
+            this.props.style.values ? this.props.style.values : {}
+        );
+        const axisStyle = merge(
+            true,
+            defaultStyle.axis,
+            this.props.style.axis ? this.props.style.axis : {}
+        );
+        const { axisColor } = axisStyle;
+        const { valueColor } = valueStyle;
 
         select(ReactDOM.findDOMNode(this))
             .select(".yaxis")
@@ -179,7 +215,7 @@ export default class YAxis extends React.Component {
             .select("g")
             .selectAll(".tick")
             .select("text")
-            .style("fill", axisColor)
+            .style("fill", valueColor)
             .style("stroke", "none");
 
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
@@ -254,8 +290,13 @@ export default class YAxis extends React.Component {
 
         const labelStyle = merge(
             true,
-            defaultStyle.labels,
-            this.props.style.labels ? this.props.style.labels : {}
+            defaultStyle.label,
+            this.props.style.label ? this.props.style.label : {}
+        );
+        const valueStyle = merge(
+            true,
+            defaultStyle.values,
+            this.props.style.values ? this.props.style.values : {}
         );
         const axisStyle = merge(
             true,
@@ -263,16 +304,17 @@ export default class YAxis extends React.Component {
             this.props.style.axis ? this.props.style.axis : {}
         );
         const { axisColor } = axisStyle;
-        const { labelColor, labelWeight, labelSize } = labelStyle;
+        const { valueColor, valueWeight, valueSize } = valueStyle;
+        const { labelColor, labelWeight, labelSize, labelFont } = labelStyle;
 
         this.axis = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .append("g")
             .attr("transform", `translate(${x},0)`)
             .style("stroke", "none")
             .attr("class", "yaxis")
-            .style("fill", labelColor)
-            .style("font-weight", labelWeight)
-            .style("font-size", labelSize)
+            .style("fill", valueColor)
+            .style("font-weight", valueWeight)
+            .style("font-size", valueSize)
             .call(axisGenerator)
             .append("text")
             .text(this.props.label)
@@ -280,22 +322,16 @@ export default class YAxis extends React.Component {
             .attr("y", labelOffset)
             .attr("dy", ".71em")
             .attr("text-anchor", "end")
-            .style("fill", this.props.style.labelColor)
-            .style(
-                "font-family",
-                this.props.style.labelFont || '"Goudy Bookletter 1911", sans-serif"'
-            )
-            .style("font-weight", this.props.style.labelWeight || 100)
-            .style(
-                "font-size",
-                this.props.style.labelSize ? `${this.props.style.width}px` : "12px"
-            );
+            .style("fill", labelColor)
+            .style("font-weight", labelWeight)
+            .style("font-size", labelSize)
+            .style("font-family", labelFont);
 
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
             .select("text")
-            .style("fill", axisColor)
+            .style("fill", valueColor)
             .style("stroke", "none");
 
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
@@ -376,21 +412,18 @@ YAxis.propTypes = {
 
     /**
      * Object specifying the available parameters by which the axis can be
-     * styled. The object can contain: "labels" and "axis". Each of these
-     * is an inline CSS style applied to the tick labels and axis lines
+     * styled. The object can contain: "label", "values" and "axis". Each of these
+     * is an inline CSS style applied to the axis label, axis values (ticks) and axis lines
      * respectively.
      *
-     * In addition the axis label itself can be styled with: "labelColor",
-     * "labelFont", "labelWidth" and "labelSize".
+     * In addition the axis label (i.e. title) itself can be styled with: "labelColor",
+     * "labelFont", "labelWeight" and "labelSize". The axis values (i.e. ticks) can
+     * styled with "valueColor", "valueWeight" and "valueSize".
      */
     style: PropTypes.shape({
-        labels: PropTypes.object, // eslint-disable-line
+        label: PropTypes.object, // eslint-disable-line
         axis: PropTypes.object, // eslint-disable-line
-        labelColor: PropTypes.string,
-        labelFont: PropTypes.string,
-        labelWeight: PropTypes.string,
-        labelSize: PropTypes.string,
-        width: PropTypes.number
+        values: PropTypes.object // esline-disable-line
     }),
 
     /**
