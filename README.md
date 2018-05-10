@@ -124,6 +124,10 @@ Then, point your browser to:
 Before submitting a Pull Request, run:
     
     npm run build
+    
+In case you want to demonstrate an issue with the library via an example, you can use [CodeSandBox](https://codesandbox.io/s/).
+
+A simple BarChart example has been built here - [https://codesandbox.io/s/3j0540mo5](https://codesandbox.io/s/3j0540mo5)
 
 License
 -------
