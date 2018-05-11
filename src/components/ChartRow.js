@@ -191,7 +191,7 @@ export default class ChartRow extends React.Component {
                 if (this.isChildYAxis(child)) {
                     const yaxis = child;
 
-                    if (yaxis.props.id) {
+                    if (yaxis.props.id && yaxis.props.visible !== false) {
                         // Relate id to the axis
                         yAxisMap[yaxis.props.id] = yaxis;
                     }
@@ -234,24 +234,26 @@ export default class ChartRow extends React.Component {
             posx -= colWidth;
             if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
-                transform = `translate(${posx + paddingLeft},0)`;
+                if (_.has(yAxisMap, id)) {
+                    transform = `translate(${posx + paddingLeft},0)`;
 
-                // Additional props for left aligned axes
-                props = {
-                    width: colWidth,
-                    height: innerHeight,
-                    align: "left",
-                    scale: this.scaleMap[id].latestScale()
-                };
+                    // Additional props for left aligned axes
+                    props = {
+                        width: colWidth,
+                        height: innerHeight,
+                        align: "left",
+                        scale: this.scaleMap[id].latestScale()
+                    };
 
-                // Cloned left axis
-                axis = React.cloneElement(yAxisMap[id], props);
+                    // Cloned left axis
+                    axis = React.cloneElement(yAxisMap[id], props);
 
-                axes.push(
-                    <g key={`y-axis-left-${leftColumnIndex}`} transform={transform}>
-                        {axis}
-                    </g>
-                );
+                    axes.push(
+                        <g key={`y-axis-left-${leftColumnIndex}`} transform={transform}>
+                            {axis}
+                        </g>
+                    );
+                }
             }
         }
 
@@ -264,24 +266,26 @@ export default class ChartRow extends React.Component {
             const colWidth = this.props.rightAxisWidths[rightColumnIndex];
             if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
-                transform = `translate(${posx + paddingLeft},0)`;
+                if (_.has(yAxisMap, id)) {
+                    transform = `translate(${posx + paddingLeft},0)`;
 
-                // Additional props for right aligned axes
-                props = {
-                    width: colWidth,
-                    height: innerHeight,
-                    align: "right",
-                    scale: this.scaleMap[id].latestScale()
-                };
+                    // Additional props for right aligned axes
+                    props = {
+                        width: colWidth,
+                        height: innerHeight,
+                        align: "right",
+                        scale: this.scaleMap[id].latestScale()
+                    };
 
-                // Cloned right axis
-                axis = React.cloneElement(yAxisMap[id], props);
+                    // Cloned right axis
+                    axis = React.cloneElement(yAxisMap[id], props);
 
-                axes.push(
-                    <g key={`y-axis-right-${rightColumnIndex}`} transform={transform}>
-                        {axis}
-                    </g>
-                );
+                    axes.push(
+                        <g key={`y-axis-right-${rightColumnIndex}`} transform={transform}>
+                            {axis}
+                        </g>
+                    );
+                }
             }
 
             posx += colWidth;
