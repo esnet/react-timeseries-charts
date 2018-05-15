@@ -1,23 +1,6 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var _ = require("lodash");
 var React = require("react");
 var pondjs_1 = require("pondjs");
@@ -26,7 +9,7 @@ var util_1 = require("./util");
 var styler_1 = require("./styler");
 var style_1 = require("./style");
 var ScatterChart = (function (_super) {
-    __extends(ScatterChart, _super);
+    tslib_1.__extends(ScatterChart, _super);
     function ScatterChart(props) {
         var _this = _super.call(this, props) || this;
         _this.handleHover = _this.handleHover.bind(_this);
@@ -152,7 +135,7 @@ var ScatterChart = (function (_super) {
                         infoTimeFormat: _this.props.infoTimeFormat,
                         markerRadius: 0
                     };
-                    eventMarker = React.createElement(EventMarker_1.EventMarker, __assign({}, eventMarkerProps));
+                    eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
                 }
                 var point = (React.createElement("circle", { key: column + "-" + key, cx: x, cy: y, r: radius, style: style, pointerEvents: pointerEvents, onMouseMove: function (e) { return _this.handleHover(e); }, onClick: function (e) { return _this.handleClick(e, event_2, column); } }));
                 points.push(point);

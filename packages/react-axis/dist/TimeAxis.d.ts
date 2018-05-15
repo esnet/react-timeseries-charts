@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import 'moment-timezone';
 import * as React from "react";
 import "./Axis.css";
 export declare type TimeAxisProps = {
@@ -22,7 +23,7 @@ export declare type TimeAxisProps = {
     transition?: boolean;
 };
 export declare class TimeAxis extends React.Component<TimeAxisProps> {
-    getDefaultProps(): {
+    static defaultProps: {
         width: number;
         height: number;
         tickCount: number;

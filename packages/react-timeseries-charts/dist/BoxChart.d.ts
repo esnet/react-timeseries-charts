@@ -6,7 +6,6 @@ import { LabelValueList } from "./types";
 import { Styler } from "./styler";
 import { BoxChartStyle, BoxChartChannelStyle as ChannelStyle, LevelStyle, EventMarkerStyle } from "./style";
 import { ReducerFunction } from "pondjs/lib/types";
-import { CSSProperties } from "react";
 export declare type AggregationSpec = {
     size: Window;
     reducers: {
@@ -66,11 +65,11 @@ export declare class BoxChart extends React.Component<BoxChartProps> {
         infoHeight: number;
     };
     series: TimeSeries<Index>;
-    providedStyle: CSSProperties;
-    selectedStyle: CSSProperties;
-    highlightedStyle: CSSProperties;
-    mutedStyle: CSSProperties;
-    normalStyle: CSSProperties;
+    providedStyle: any;
+    selectedStyle: any;
+    highlightedStyle: any;
+    mutedStyle: any;
+    normalStyle: any;
     constructor(props: BoxChartProps);
     componentWillReceiveProps(nextProps: BoxChartProps): void;
     shouldComponentUpdate(nextProps: BoxChartProps): boolean;

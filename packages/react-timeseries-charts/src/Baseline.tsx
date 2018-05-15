@@ -53,7 +53,7 @@ export class Baseline extends React.Component<BaselineProps> {
         value: 0,
         label: "",
         position: "left",
-        style: defaultStyle
+        style: defaultStyle as any
     };
 
     render() {

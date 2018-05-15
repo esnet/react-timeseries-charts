@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var moment_timezone_1 = require("moment-timezone");
+var moment = require("moment");
+require("moment-timezone");
 var formatterMap = {
     second: ":ss",
     minute: "h:mm a",
@@ -23,10 +24,10 @@ function default_1(type, timezone) {
         var t = type;
         while (t !== "year") {
             if (timezone) {
-                if (moment_timezone_1.default(date)
+                if (moment(date)
                     .tz(timezone)
                     .startOf(majors[t])
-                    .isSame(moment_timezone_1.default(date).tz(timezone))) {
+                    .isSame(moment(date).tz(timezone))) {
                     t = majors[t];
                 }
                 else {
@@ -35,9 +36,9 @@ function default_1(type, timezone) {
             }
             else {
                 if (!timezone &&
-                    moment_timezone_1.default(date)
+                    moment(date)
                         .startOf(majors[t])
-                        .isSame(moment_timezone_1.default(date))) {
+                        .isSame(moment(date))) {
                     t = majors[t];
                 }
                 else {
@@ -47,10 +48,10 @@ function default_1(type, timezone) {
         }
         var labelType = t !== type ? t : type;
         var label = timezone
-            ? moment_timezone_1.default(date)
+            ? moment(date)
                 .tz(timezone)
                 .format(formatterMap[labelType])
-            : moment_timezone_1.default(date).format(formatterMap[labelType]);
+            : moment(date).format(formatterMap[labelType]);
         var size = t !== type ? 25 : 15;
         var labelAlign = "adjacent";
         return { label: label, size: size, labelAlign: labelAlign };

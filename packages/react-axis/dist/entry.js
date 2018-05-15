@@ -1,6 +1,8 @@
 "use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = require("tslib");
-tslib_1.__exportStar(require("./Axis"), exports);
-tslib_1.__exportStar(require("./TimeAxis"), exports);
+__export(require("./Axis"));
+__export(require("./TimeAxis"));
 //# sourceMappingURL=entry.js.map

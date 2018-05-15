@@ -23,7 +23,9 @@ export interface YAxisStyle {
     axis: React.CSSProperties;
 }
 
-const defaultStyle: YAxisStyle = {
+console.log("axis is ", Axis);
+
+const defaultStyle: any = {
     labels: {
         labelColor: "#8B7E7E",
         labelWeight: 100,

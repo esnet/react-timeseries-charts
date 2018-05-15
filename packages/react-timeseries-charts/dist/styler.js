@@ -1,22 +1,6 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
-            t[p[i]] = s[p[i]];
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var _ = require("lodash");
 var LegendItem_1 = require("./LegendItem");
 var Styler = (function () {
@@ -32,7 +16,7 @@ var Styler = (function () {
                 }
                 else if (_.isObject(column)) {
                     var c = column;
-                    var key = c.key, style = __rest(c, ["key"]);
+                    var key = c.key, style = tslib_1.__rest(c, ["key"]);
                     _this.columnStyles[key] = style;
                 }
             });
@@ -88,22 +72,22 @@ var Styler = (function () {
         };
         var legendStyle = {
             symbol: {
-                normal: __assign({}, styleSymbol, { opacity: 0.7 }),
-                highlighted: __assign({}, styleSymbol, { opacity: 0.8 }),
-                selected: __assign({}, styleSymbol, { opacity: 0.8 }),
-                muted: __assign({}, styleSymbol, { opacity: 0.2 })
+                normal: tslib_1.__assign({}, styleSymbol, { opacity: 0.7 }),
+                highlighted: tslib_1.__assign({}, styleSymbol, { opacity: 0.8 }),
+                selected: tslib_1.__assign({}, styleSymbol, { opacity: 0.8 }),
+                muted: tslib_1.__assign({}, styleSymbol, { opacity: 0.2 })
             },
             label: {
-                normal: __assign({}, labelStyle, { opacity: 0.7 }),
-                highlighted: __assign({}, labelStyle, { opacity: 0.8 }),
-                selected: __assign({}, labelStyle, { opacity: 0.8 }),
-                muted: __assign({}, labelStyle, { opacity: 0.5 })
+                normal: tslib_1.__assign({}, labelStyle, { opacity: 0.7 }),
+                highlighted: tslib_1.__assign({}, labelStyle, { opacity: 0.8 }),
+                selected: tslib_1.__assign({}, labelStyle, { opacity: 0.8 }),
+                muted: tslib_1.__assign({}, labelStyle, { opacity: 0.5 })
             },
             value: {
-                normal: __assign({}, valueStyle, { opacity: 0.7 }),
-                highlighted: __assign({}, valueStyle, { opacity: 0.8 }),
-                selected: __assign({}, valueStyle, { opacity: 0.8 }),
-                muted: __assign({}, valueStyle, { opacity: 0.5 })
+                normal: tslib_1.__assign({}, valueStyle, { opacity: 0.7 }),
+                highlighted: tslib_1.__assign({}, valueStyle, { opacity: 0.8 }),
+                selected: tslib_1.__assign({}, valueStyle, { opacity: 0.8 }),
+                muted: tslib_1.__assign({}, valueStyle, { opacity: 0.5 })
             }
         };
         return legendStyle;
@@ -139,16 +123,16 @@ var Styler = (function () {
             };
             style[column] = {
                 line: {
-                    normal: __assign({}, styleLine, { opacity: 0.9 }),
-                    highlighted: __assign({}, styleLine, { opacity: 1.0 }),
-                    selected: __assign({}, styleSelectedLine, { opacity: 1.0 }),
-                    muted: __assign({}, styleLine, { opacity: 0.4 })
+                    normal: tslib_1.__assign({}, styleLine, { opacity: 0.9 }),
+                    highlighted: tslib_1.__assign({}, styleLine, { opacity: 1.0 }),
+                    selected: tslib_1.__assign({}, styleSelectedLine, { opacity: 1.0 }),
+                    muted: tslib_1.__assign({}, styleLine, { opacity: 0.4 })
                 },
                 area: {
-                    normal: __assign({}, styleArea, { opacity: 0.7 }),
-                    highlighted: __assign({}, styleArea, { opacity: 0.8 }),
-                    selected: __assign({}, styleSelectedArea, { opacity: 0.8 }),
-                    muted: __assign({}, styleArea, { opacity: 0.2 })
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.7 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 0.8 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 0.8 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.2 })
                 }
             };
             i += 1;
@@ -179,10 +163,10 @@ var Styler = (function () {
             }
             style[column] = {
                 line: {
-                    normal: __assign({}, styleLine, { opacity: 0.8, strokeWidth: width }),
-                    highlighted: __assign({}, styleLine, { opacity: 1.0, strokeWidth: width }),
-                    selected: __assign({}, styleSelectedLine, { opacity: 1.0, strokeWidth: width }),
-                    muted: __assign({}, styleLine, { opacity: 0.2, strokeWidth: width })
+                    normal: tslib_1.__assign({}, styleLine, { opacity: 0.8, strokeWidth: width }),
+                    highlighted: tslib_1.__assign({}, styleLine, { opacity: 1.0, strokeWidth: width }),
+                    selected: tslib_1.__assign({}, styleSelectedLine, { opacity: 1.0, strokeWidth: width }),
+                    muted: tslib_1.__assign({}, styleLine, { opacity: 0.2, strokeWidth: width })
                 }
             };
         });
@@ -205,10 +189,10 @@ var Styler = (function () {
             };
             style[column] = {
                 bar: {
-                    normal: __assign({}, fillStyle, { opacity: 0.8 }),
-                    highlighted: __assign({}, fillStyle, { opacity: 1.0 }),
-                    selected: __assign({}, selectedStyle, { opacity: 1.0 }),
-                    muted: __assign({}, fillStyle, { opacity: 0.2 })
+                    normal: tslib_1.__assign({}, fillStyle, { opacity: 0.8 }),
+                    highlighted: tslib_1.__assign({}, fillStyle, { opacity: 1.0 }),
+                    selected: tslib_1.__assign({}, selectedStyle, { opacity: 1.0 }),
+                    muted: tslib_1.__assign({}, fillStyle, { opacity: 0.2 })
                 }
             };
         });
@@ -231,10 +215,10 @@ var Styler = (function () {
             };
             style[column] = {
                 point: {
-                    normal: __assign({}, fillStyle, { opacity: 0.8 }),
-                    highlighted: __assign({}, fillStyle, { opacity: 1.0 }),
-                    selected: __assign({}, selectedStyle, { opacity: 1.0 }),
-                    muted: __assign({}, fillStyle, { opacity: 0.2 })
+                    normal: tslib_1.__assign({}, fillStyle, { opacity: 0.8 }),
+                    highlighted: tslib_1.__assign({}, fillStyle, { opacity: 1.0 }),
+                    selected: tslib_1.__assign({}, selectedStyle, { opacity: 1.0 }),
+                    muted: tslib_1.__assign({}, fillStyle, { opacity: 0.2 })
                 }
             };
         });
@@ -269,22 +253,22 @@ var Styler = (function () {
             };
             style[column] = [
                 {
-                    normal: __assign({}, styleArea, { opacity: 0.2 }),
-                    highlighted: __assign({}, styleArea, { opacity: 0.3 }),
-                    selected: __assign({}, styleSelectedArea, { opacity: 0.3 }),
-                    muted: __assign({}, styleArea, { opacity: 0.1 })
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.2 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 0.3 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 0.3 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.1 })
                 },
                 {
-                    normal: __assign({}, styleArea, { opacity: 0.5 }),
-                    highlighted: __assign({}, styleArea, { opacity: 0.6 }),
-                    selected: __assign({}, styleSelectedArea, { opacity: 0.6 }),
-                    muted: __assign({}, styleArea, { opacity: 0.2 })
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.5 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 0.6 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 0.6 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.2 })
                 },
                 {
-                    normal: __assign({}, styleArea, { opacity: 0.9 }),
-                    highlighted: __assign({}, styleArea, { opacity: 1.0 }),
-                    selected: __assign({}, styleSelectedArea, { opacity: 1.0 }),
-                    muted: __assign({}, styleArea, { opacity: 0.2 })
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.9 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 1.0 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 1.0 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.2 })
                 }
             ];
             i += 1;

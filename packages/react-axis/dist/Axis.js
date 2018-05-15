@@ -1,14 +1,23 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = require("tslib");
 var React = require("react");
-var react_transition_group_1 = require("react-transition-group");
+var ReactCSSTransitionGroup = require("react-addons-css-transition-group");
 var d3_format_1 = require("d3-format");
 var d3_scale_1 = require("d3-scale");
 var Tick_1 = require("./Tick");
 require("./Axis.css");
 var Axis = (function (_super) {
-    tslib_1.__extends(Axis, _super);
+    __extends(Axis, _super);
     function Axis(props) {
         return _super.call(this, props) || this;
     }
@@ -52,7 +61,7 @@ var Axis = (function (_super) {
         var _this = this;
         var p = this.props.position;
         var scale;
-        switch (this.props.type) {
+        switch (this.props.type.toLowerCase()) {
             case "linear":
                 scale = d3_scale_1.scaleLinear()
                     .domain([this.props.min, this.props.max])
@@ -92,10 +101,11 @@ var Axis = (function (_super) {
     Axis.prototype.renderAxis = function () {
         return (React.createElement("g", null,
             this.renderAxisLine(),
-            React.createElement(react_transition_group_1.CSSTransition, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
+            React.createElement(ReactCSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
             this.renderAxisLabel()));
     };
     Axis.prototype.render = function () {
+        console.log("render is ", Tick_1.Tick);
         if (this.props.standalone) {
             return (React.createElement("svg", { height: this.props.height, width: this.props.width }, this.renderAxis()));
         }

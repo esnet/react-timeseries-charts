@@ -8,11 +8,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import moment from "moment-timezone";
+import * as moment from 'moment';
+import 'moment-timezone';
+
+// import moment from "moment-timezone";
 import * as _ from "lodash";
 import * as React from "react";
 
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 import { scaleTime } from "d3-scale";
 
 import { Tick } from "./Tick";
@@ -125,25 +128,23 @@ export type TimeAxisProps = {
  *
  */
 export class TimeAxis extends React.Component<TimeAxisProps> {
-    getDefaultProps() {
-        return {
-            width: 100,
-            height: 100,
-            tickCount: 10,
-            tickMajor: 20,
-            tickMinor: 14,
-            tickExtend: 0,
-            margin: 10,
-            standalone: false,
-            labelPosition: 50,
-            labelStyle: {
-                fill: "grey",
-                stroke: "none",
-                pointerEvents: "none"
-            },
-            absolute: false,
-            smoothTransition: false
-        };
+    static defaultProps = {
+        width: 100,
+        height: 100,
+        tickCount: 10,
+        tickMajor: 20,
+        tickMinor: 14,
+        tickExtend: 0,
+        margin: 10,
+        standalone: false,
+        labelPosition: 50,
+        labelStyle: {
+            fill: "grey",
+            stroke: "none",
+            pointerEvents: "none"
+        },
+        absolute: false,
+        smoothTransition: false
     }
     renderAxisLabel() {
         const { width, height, position, labelPosition, labelStyle } = this.props;

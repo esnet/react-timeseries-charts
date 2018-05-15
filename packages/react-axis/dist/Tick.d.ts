@@ -16,7 +16,7 @@ export declare type TickProps = {
 };
 export declare class Tick extends React.Component<TickProps> {
     constructor(props: TickProps);
-    getDefaultProps(): Partial<TickProps>;
+    static defaultProps: Partial<TickProps>;
     renderLabel(label: string, isTop: boolean, tickSize: number): JSX.Element;
     renderVerticalTick(id: string, label: string, labelPosition: number, size: number, extend: number, isTop: boolean): JSX.Element;
     renderHorizontalTick(id: string, label: string, labelPosition: number, size: number, extend: number, isLeft: boolean): JSX.Element;

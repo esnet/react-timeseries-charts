@@ -53,9 +53,9 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
     renderAxis() {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
-        const style = {
+        const style: React.CSSProperties = {
             fontSize: 11,
-            textAnchor: "left",
+            textAnchor: "start",
             fill: "#bdbdbd"
         };
         if (this.props.hideScale) {
@@ -78,7 +78,7 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
     }
 
     render() {
-        const textStyle = {
+        const textStyle: React.CSSProperties = {
             fontSize: 12,
             textAnchor: "middle",
             fill: "#838383"

@@ -1,13 +1,6 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var primaryColor = "steelblue";
 var highlightColor = "#5a98cb";
 var selectedColor = primaryColor;
@@ -55,22 +48,22 @@ var defaultMutedBoxFillStyle = {
 };
 exports.defaultBoxChartStyle = [
     {
-        normal: __assign({}, defaultBoxFillStyle, { opacity: 0.2 }),
-        highlighted: __assign({}, defaultBoxFillStyle, { opacity: 0.3 }),
-        selected: __assign({}, defaultBoxFillStyle, { opacity: 0.3 }),
-        muted: __assign({}, defaultMutedBoxFillStyle, { opacity: 0.1 })
+        normal: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.2 }),
+        highlighted: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.3 }),
+        selected: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.3 }),
+        muted: tslib_1.__assign({}, defaultMutedBoxFillStyle, { opacity: 0.1 })
     },
     {
-        normal: __assign({}, defaultBoxFillStyle, { opacity: 0.5 }),
-        highlighted: __assign({}, defaultBoxFillStyle, { opacity: 0.6 }),
-        selected: __assign({}, defaultBoxFillStyle, { opacity: 0.6 }),
-        muted: __assign({}, defaultMutedBoxFillStyle, { opacity: 0.2 })
+        normal: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.5 }),
+        highlighted: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.6 }),
+        selected: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.6 }),
+        muted: tslib_1.__assign({}, defaultMutedBoxFillStyle, { opacity: 0.2 })
     },
     {
-        normal: __assign({}, defaultBoxFillStyle, { opacity: 0.9 }),
-        highlighted: __assign({}, defaultBoxFillStyle, { opacity: 1.0 }),
-        selected: __assign({}, defaultBoxFillStyle, { opacity: 1.0 }),
-        muted: __assign({}, defaultMutedBoxFillStyle, { opacity: 0.2 })
+        normal: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 0.9 }),
+        highlighted: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 1.0 }),
+        selected: tslib_1.__assign({}, defaultBoxFillStyle, { opacity: 1.0 }),
+        muted: tslib_1.__assign({}, defaultMutedBoxFillStyle, { opacity: 0.2 })
     }
 ];
 exports.defaultScatterChartChannelStyle = {
@@ -107,14 +100,14 @@ exports.defaultInfoBoxStyle = {
         pointerEvents: "none"
     }
 };
-exports.defaultEventMarkerStyle = __assign({ stem: {
+exports.defaultEventMarkerStyle = tslib_1.__assign({ stem: {
         stroke: "#999",
         cursor: "crosshair",
         pointerEvents: "none"
     }, marker: {
         fill: "#999"
     } }, exports.defaultInfoBoxStyle);
-exports.defaultTimeMarkerStyle = __assign({ line: {
+exports.defaultTimeMarkerStyle = tslib_1.__assign({ line: {
         stroke: "#999",
         cursor: "crosshair",
         pointerEvents: "none"

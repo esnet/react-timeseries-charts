@@ -8,7 +8,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import moment from "moment-timezone";
+import * as moment from 'moment';
+import 'moment-timezone';
+
+// import moment from "moment-timezone";
 
 const formatterMap = {
     second: ":ss",

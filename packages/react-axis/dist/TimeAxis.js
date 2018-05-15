@@ -1,10 +1,20 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = require("tslib");
-var moment_timezone_1 = require("moment-timezone");
+var moment = require("moment");
+require("moment-timezone");
 var _ = require("lodash");
 var React = require("react");
-var react_addons_css_transition_group_1 = require("react-addons-css-transition-group");
+var ReactCSSTransitionGroup = require("react-addons-css-transition-group");
 var d3_scale_1 = require("d3-scale");
 var Tick_1 = require("./Tick");
 var duration_format_1 = require("./util/duration-format");
@@ -56,30 +66,10 @@ var tickIntervals = [
     [500 * durationYear, "year", 250]
 ];
 var TimeAxis = (function (_super) {
-    tslib_1.__extends(TimeAxis, _super);
+    __extends(TimeAxis, _super);
     function TimeAxis() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    TimeAxis.prototype.getDefaultProps = function () {
-        return {
-            width: 100,
-            height: 100,
-            tickCount: 10,
-            tickMajor: 20,
-            tickMinor: 14,
-            tickExtend: 0,
-            margin: 10,
-            standalone: false,
-            labelPosition: 50,
-            labelStyle: {
-                fill: "grey",
-                stroke: "none",
-                pointerEvents: "none"
-            },
-            absolute: false,
-            smoothTransition: false
-        };
-    };
     TimeAxis.prototype.renderAxisLabel = function () {
         var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, labelStyle = _a.labelStyle;
         var translate;
@@ -143,8 +133,8 @@ var TimeAxis = (function (_super) {
         if (formatAsDuration) {
             formatter = duration_format_1.default();
         }
-        var starttz = timezone ? moment_timezone_1.default(start).tz(timezone) : moment_timezone_1.default(start);
-        var stoptz = timezone ? moment_timezone_1.default(stop).tz(timezone) : moment_timezone_1.default(stop);
+        var starttz = timezone ? moment(start).tz(timezone) : moment(start);
+        var stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);
         var startd = starttz.startOf(majors[type]).add(num, "type");
         var stopd = stoptz.endOf(type);
         var i = 0;
@@ -166,7 +156,7 @@ var TimeAxis = (function (_super) {
         if (this.props.transition === true) {
             return (React.createElement("g", null,
                 this.renderAxisLine(),
-                React.createElement(react_addons_css_transition_group_1.default, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
+                React.createElement(ReactCSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
                 this.renderAxisLabel()));
         }
         else {
@@ -183,6 +173,24 @@ var TimeAxis = (function (_super) {
         else {
             return this.renderAxis();
         }
+    };
+    TimeAxis.defaultProps = {
+        width: 100,
+        height: 100,
+        tickCount: 10,
+        tickMajor: 20,
+        tickMinor: 14,
+        tickExtend: 0,
+        margin: 10,
+        standalone: false,
+        labelPosition: 50,
+        labelStyle: {
+            fill: "grey",
+            stroke: "none",
+            pointerEvents: "none"
+        },
+        absolute: false,
+        smoothTransition: false
     };
     return TimeAxis;
 }(React.Component));

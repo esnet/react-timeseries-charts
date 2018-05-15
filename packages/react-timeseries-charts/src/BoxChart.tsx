@@ -309,11 +309,11 @@ export class BoxChart extends React.Component<BoxChartProps> {
     series: TimeSeries<Index>;
 
     // Cached styles
-    providedStyle: CSSProperties;
-    selectedStyle: CSSProperties;
-    highlightedStyle: CSSProperties;
-    mutedStyle: CSSProperties;
-    normalStyle: CSSProperties;
+    providedStyle: any;
+    selectedStyle: any;
+    highlightedStyle: any;
+    mutedStyle: any;
+    normalStyle: any;
 
     constructor(props: BoxChartProps) {
         super(props);

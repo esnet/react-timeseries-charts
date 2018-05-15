@@ -1,29 +1,34 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = require("tslib");
 var React = require("react");
 var Tick = (function (_super) {
-    tslib_1.__extends(Tick, _super);
+    __extends(Tick, _super);
     function Tick(props) {
         return _super.call(this, props) || this;
     }
-    Tick.prototype.getDefaultProps = function () {
-        return {
-            position: 0,
-            size: 15,
-            align: "bottom",
-            labelAlign: "adjacent",
-            tickSize: 15,
-            tickExtend: 0,
-            extend: 0,
-            smoothTransition: true
-        };
-    };
     Tick.prototype.renderLabel = function (label, isTop, tickSize) {
         var labelAlign = this.props.labelAlign;
         var textStyle = {
             fontSize: 11,
-            textAnchor: "left",
+            textAnchor: "start",
             fill: "#b0b0b0",
             pointerEvents: "none"
         };
@@ -31,7 +36,7 @@ var Tick = (function (_super) {
         if (labelAlign === "adjacent") {
             var x = 2;
             var y = isTop ? -6 : 6;
-            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "left", x: x, y: y, alignmentBaseline: baseLine }, label));
+            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "start", x: x, y: y, alignmentBaseline: baseLine }, label));
         }
         else if (labelAlign === "center") {
             var x = 0;
@@ -54,7 +59,7 @@ var Tick = (function (_super) {
         var groupKey = "grp-" + id + "}";
         var tickKey = "tick-" + id;
         return (React.createElement("g", { style: tickTransitionStyle, key: groupKey },
-            React.createElement("line", tslib_1.__assign({ key: tickKey, className: "tick-line", style: style }, line)),
+            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: style }, line)),
             this.renderLabel(label, isTop, size)));
     };
     Tick.prototype.renderHorizontalTick = function (id, label, labelPosition, size, extend, isLeft) {
@@ -67,7 +72,7 @@ var Tick = (function (_super) {
         };
         var textStyle = {
             fontSize: 11,
-            textAnchor: "left",
+            textAnchor: "start",
             fill: "#b0b0b0",
             pointerEvents: "none"
         };
@@ -78,7 +83,7 @@ var Tick = (function (_super) {
             transition: "transform 100ms"
         };
         return (React.createElement("g", { style: tickTransitionStyle, key: groupKey },
-            React.createElement("line", tslib_1.__assign({ key: tickKey, className: "tick-line", style: style }, line)),
+            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: style }, line)),
             React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: isLeft ? "end" : "begin", alignmentBaseline: "middle", x: isLeft ? -size - 3 : size + 3, y: 0 }, label)));
     };
     Tick.prototype.render = function () {
@@ -93,6 +98,16 @@ var Tick = (function (_super) {
             var transform = "translate(" + (align === "left" ? width : 0) + "px," + position + "px)";
             return (React.createElement("g", { style: smoothTransition ? { transform: transform, transition: transition } : { transform: transform } }, this.renderHorizontalTick(id, label, position, size, extend, align === "left")));
         }
+    };
+    Tick.defaultProps = {
+        position: 0,
+        size: 15,
+        align: "bottom",
+        labelAlign: "adjacent",
+        tickSize: 15,
+        tickExtend: 0,
+        extend: 0,
+        smoothTransition: true
     };
     return Tick;
 }(React.Component));

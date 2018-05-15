@@ -302,7 +302,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         // TimeAxis
         //
 
-        const xStyle = {
+        const xStyle: React.CSSProperties = {
             stroke: this.props.timeAxisStyle.axis.axisColor,
             strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
             fill: "none",

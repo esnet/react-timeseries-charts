@@ -1,15 +1,6 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var _ = require("lodash");
 var d3_shape_1 = require("d3-shape");
 var React = require("react");
@@ -20,7 +11,7 @@ var curve_1 = require("./curve");
 var types_1 = require("./types");
 var style_1 = require("./style");
 var LineChart = (function (_super) {
-    __extends(LineChart, _super);
+    tslib_1.__extends(LineChart, _super);
     function LineChart() {
         return _super !== null && _super.apply(this, arguments) || this;
     }

@@ -21,9 +21,9 @@ import { LabelValueList } from "./types";
 
 // import "@types/d3-time-format";
 
-const textStyle = {
+const textStyle: React.CSSProperties = {
     fontSize: 11,
-    textAnchor: "left",
+    textAnchor: "start",
     fill: "#bdbdbd",
     pointerEvents: "none"
 };
@@ -88,9 +88,9 @@ const EventTimeRange: React.SFC<EventTimeRangeProps> = ({ timerange, format = "%
  * Helper component to render a `index`'s begin time in the `format` provided
  */
 const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" }) => {
-    const textStyle = {
+    const textStyle: React.CSSProperties = {
         fontSize: 11,
-        textAnchor: "left",
+        textAnchor: "start",
         fill: "#bdbdbd",
         pointerEvents: "none"
     };

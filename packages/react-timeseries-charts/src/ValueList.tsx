@@ -37,12 +37,12 @@ export class ValueList extends React.Component<ValueListProps> {
 
     render() {
         const { align, style, width, height } = this.props;
-        const textStyle = {
+        const textStyle: React.CSSProperties = {
             ...style.text,
-            textAnchor: "left",
+            textAnchor: "start",
             pointerEvents: "none"
         };
-        const textStyleCentered = {
+        const textStyleCentered: React.CSSProperties = {
             ...style.text,
             textAnchor: "middle",
             pointerEvents: "none"

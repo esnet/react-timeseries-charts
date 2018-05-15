@@ -189,7 +189,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
     }
 
     renderPath(data: PointData, column: string, key: number) {
-        const hitStyle = {
+        const hitStyle: React.CSSProperties = {
             stroke: "white",
             fill: "none",
             opacity: 0.0,

@@ -32,18 +32,16 @@ export class Tick extends React.Component<TickProps> {
     constructor(props: TickProps) {
         super(props);
     }
-    getDefaultProps(): Partial<TickProps> {
-        return {
-            position: 0,
-            size: 15,
-            align: "bottom",
-            labelAlign: "adjacent",
-            tickSize: 15,
-            tickExtend: 0,
-            extend: 0,
-            smoothTransition: true
-            //transitionTime: 200
-        };
+    static defaultProps: Partial<TickProps> = {
+        position: 0,
+        size: 15,
+        align: "bottom",
+        labelAlign: "adjacent",
+        tickSize: 15,
+        tickExtend: 0,
+        extend: 0,
+        smoothTransition: true
+        //transitionTime: 200
     }
     /**
      *   ___________   or __________
@@ -52,9 +50,9 @@ export class Tick extends React.Component<TickProps> {
      */
     renderLabel(label: string, isTop: boolean, tickSize: number) {
         const { labelAlign } = this.props;
-        const textStyle = {
+        const textStyle: React.CSSProperties = {
             fontSize: 11,
-            textAnchor: "left",
+            textAnchor: "start",
             fill: "#b0b0b0",
             pointerEvents: "none"
         };
@@ -67,7 +65,7 @@ export class Tick extends React.Component<TickProps> {
                     key={`label-${label}`}
                     className="tick-label"
                     style={textStyle}
-                    textAnchor="left"
+                    textAnchor="start"
                     x={x}
                     y={y}
                     alignmentBaseline={baseLine}
@@ -136,9 +134,9 @@ export class Tick extends React.Component<TickProps> {
             x2: dir * size,
             y2: 0
         };
-        const textStyle = {
+        const textStyle: React.CSSProperties = {
             fontSize: 11,
-            textAnchor: "left",
+            textAnchor: "start",
             fill: "#b0b0b0",
             pointerEvents: "none"
         };

@@ -6,7 +6,7 @@
     },
     "devDependencies": {
         "@types/moment-timezone": "^0.5.3",
-        "lerna": "^2.5.1",
+        "lerna": "^2.0.0",
         "prettier": "^1.7.0",
         "typescript": "^2.7.1"
     },

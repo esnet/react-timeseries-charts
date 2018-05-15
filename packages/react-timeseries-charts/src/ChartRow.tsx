@@ -454,7 +454,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                 timeMarkerProps.info = this.props.trackerInfoValues;
                 timeMarkerProps.timeFormat = this.props.trackerTimeFormat;
             }
-            const trackerStyle = {
+            const trackerStyle: React.CSSProperties = {
                 pointerEvents: "none"
             };
             const trackerTransform = `translate(${leftWidth},0)`;

@@ -156,7 +156,7 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                                 y={y}
                                 width={hoverMarkerWidth}
                                 height={height + 4}
-                                style={_.merge(barNormalStyle, { pointerEvents: "none" })}
+                                style={_.merge(barNormalStyle, { pointerEvents: "none" } as React.CSSProperties)}
                             />
                             <text style={textStyle} x={8 + textOffsetX} y={15 + textOffsetY}>
                                 {label}

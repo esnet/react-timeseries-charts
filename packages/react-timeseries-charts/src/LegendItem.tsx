@@ -55,7 +55,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
                 <line
-                    style={style}
+                    style={style as React.CSSProperties}
                     x1={0}
                     y1={Math.round(symbolWidth / 2)}
                     x2={symbolWidth}
@@ -71,7 +71,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
                 <rect
-                    style={style}
+                    style={style as React.CSSProperties}
                     x={2}
                     y={2}
                     width={symbolWidth - 4}
@@ -87,7 +87,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
                 <ellipse
-                    style={style}
+                    style={style as React.CSSProperties}
                     cx={Math.round(symbolWidth / 2) + 2}
                     cy={Math.round(symbolHeight / 2) + 1}
                     rx={Math.round(symbolWidth / 2) - 2}
@@ -124,10 +124,10 @@ export class LegendItem extends React.Component<LegendItemProps> {
                         <Flexbox width="20px">{symbol}</Flexbox>
                         <Flexbox flexDirection="column">
                             <Flexbox>
-                                <div style={labelStyle}>{this.props.label}</div>
+                                <div style={labelStyle as React.CSSProperties}>{this.props.label}</div>
                             </Flexbox>
                             <Flexbox>
-                                <div style={valueStyle}>{this.props.value}</div>
+                                <div style={valueStyle as React.CSSProperties}>{this.props.value}</div>
                             </Flexbox>
                         </Flexbox>
                     </Flexbox>

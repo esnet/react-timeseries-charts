@@ -20,12 +20,12 @@ export type ValueAxisProps = {
 export class ValueAxis extends React.Component<ValueAxisProps> {
     render() {
         const { width, height, value, detail } = this.props;
-        const labelStyle = {
+        const labelStyle: React.CSSProperties = {
             fill: "#666",
             fontSize: 20,
             textAnchor: "middle"
         };
-        const detailStyle = {
+        const detailStyle: React.CSSProperties = {
             fontSize: 12,
             textAnchor: "middle",
             fill: "#9a9a9a"

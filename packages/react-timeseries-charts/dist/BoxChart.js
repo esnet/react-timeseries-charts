@@ -1,23 +1,6 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var _ = require("lodash");
 var Immutable = require("immutable");
 var React = require("react");
@@ -98,7 +81,7 @@ function getAggregatedSeries(series, column, aggregation) {
     });
 }
 var BoxChart = (function (_super) {
-    __extends(BoxChart, _super);
+    tslib_1.__extends(BoxChart, _super);
     function BoxChart(props) {
         var _this = _super.call(this, props) || this;
         _this.series = null;
@@ -348,7 +331,7 @@ var BoxChart = (function (_super) {
                     rx: 2,
                     ry: 2
                 };
-                var barOuterProps = __assign({ key: keyOuter, style: styles[level] }, boxOuter);
+                var barOuterProps = tslib_1.__assign({ key: keyOuter, style: styles[level] }, boxOuter);
                 if (_this.props.onSelectionChange) {
                     barOuterProps.onClick = function (e) {
                         return _this.handleClick(e, event);
@@ -360,7 +343,7 @@ var BoxChart = (function (_super) {
                     };
                     barOuterProps.onMouseLeave = function () { return _this.handleHoverLeave(); };
                 }
-                bars.push(React.createElement("rect", __assign({}, barOuterProps)));
+                bars.push(React.createElement("rect", tslib_1.__assign({}, barOuterProps)));
                 ymax = "outerMax";
             }
             if (hasInner) {
@@ -377,7 +360,7 @@ var BoxChart = (function (_super) {
                     rx: 1,
                     ry: 1
                 };
-                var barInnerProps = __assign({ key: keyInner }, boxInner, { style: styles[level] });
+                var barInnerProps = tslib_1.__assign({ key: keyInner }, boxInner, { style: styles[level] });
                 if (_this.props.onSelectionChange) {
                     barInnerProps.onClick = function (e) {
                         return _this.handleClick(e, event);
@@ -389,7 +372,7 @@ var BoxChart = (function (_super) {
                     };
                     barInnerProps.onMouseLeave = function () { return _this.handleHoverLeave(); };
                 }
-                bars.push(React.createElement("rect", __assign({}, barInnerProps)));
+                bars.push(React.createElement("rect", tslib_1.__assign({}, barInnerProps)));
                 ymax = ymax || "innerMax";
             }
             if (hasCenter) {
@@ -401,7 +384,7 @@ var BoxChart = (function (_super) {
                     width: innerWidth,
                     height: 1
                 };
-                var barCenterProps = __assign({ key: keyCenter }, boxCenter, { style: styles[level] });
+                var barCenterProps = tslib_1.__assign({ key: keyCenter }, boxCenter, { style: styles[level] });
                 if (_this.props.onSelectionChange) {
                     barCenterProps.onClick = function (e) {
                         return _this.handleClick(e, event);
@@ -413,7 +396,7 @@ var BoxChart = (function (_super) {
                     };
                     barCenterProps.onMouseLeave = function () { return _this.handleHoverLeave(); };
                 }
-                bars.push(React.createElement("rect", __assign({}, barCenterProps)));
+                bars.push(React.createElement("rect", tslib_1.__assign({}, barCenterProps)));
                 ymax = ymax || "center";
             }
             var isHighlighted = _this.props.highlighted && pondjs_1.Event.is(_this.props.highlighted, event);
@@ -433,7 +416,7 @@ var BoxChart = (function (_super) {
                     infoTimeFormat: _this.props.infoTimeFormat,
                     markerRadius: _this.props.infoMarkerRadius
                 };
-                eventMarker = React.createElement(EventMarker_1.EventMarker, __assign({}, eventMarkerProps));
+                eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
             }
         });
         return (React.createElement("g", null,

@@ -10,7 +10,7 @@
 
 import * as React from "react";
 
-import { CSSTransition } from "react-transition-group";
+import ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 import { format } from "d3-format";
 import { scaleLinear, scaleLog, scalePow, ScaleLinear } from "d3-scale";
 
@@ -137,7 +137,7 @@ export class Axis extends React.Component<AxisProps> {
     renderAxisTicks() {
         const p = this.props.position;
         let scale: ScaleLinear<number, number>;
-        switch (this.props.type) {
+        switch (this.props.type.toLowerCase()) {
             case "linear":
                 scale = scaleLinear()
                     .domain([this.props.min, this.props.max])
@@ -201,19 +201,20 @@ export class Axis extends React.Component<AxisProps> {
         return (
             <g>
                 {this.renderAxisLine()}
-                <CSSTransition
+                <ReactCSSTransitionGroup
                     component="g"
                     transitionName="ticks"
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={500}
                 >
                     {this.renderAxisTicks()}
-                </CSSTransition>
-                {this.renderAxisLabel()}
+                </ReactCSSTransitionGroup>
+                 {this.renderAxisLabel()} 
             </g>
         );
     }
     render() {
+        console.log("render is ", Tick);
         if (this.props.standalone) {
             return (
                 <svg height={this.props.height} width={this.props.width}>
