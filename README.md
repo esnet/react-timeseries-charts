@@ -129,6 +129,11 @@ In case you want to demonstrate an issue with the library via an example, you ca
 
 A simple BarChart example has been built here - [https://codesandbox.io/s/3j0540mo5](https://codesandbox.io/s/3j0540mo5)
 
+Supported Browsers
+-------
+
+The most recent release of Firefox or Chrome is recommended.
+
 License
 -------
 
