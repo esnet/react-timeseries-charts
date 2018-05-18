@@ -117,6 +117,7 @@ class currency extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={range}
+                                showGrid={true}
                                 paddingRight={100}
                                 maxTime={currencySeries.range().end()}
                                 minTime={currencySeries.range().begin()}

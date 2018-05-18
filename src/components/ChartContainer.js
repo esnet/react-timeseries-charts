@@ -24,6 +24,7 @@ import Charts from "./Charts";
 import EventHandler from "./EventHandler";
 import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
+import Label from "./Label";
 
 const defaultTimeAxisStyle = {
     label: {
@@ -118,8 +119,12 @@ export default class ChartContainer extends React.Component {
     //
 
     render() {
-        const { padding } = this.props;
+        const { padding = 0 } = this.props;
         const { paddingLeft = padding, paddingRight = padding } = this.props;
+        const { paddingTop = padding, paddingBottom = padding } = this.props;
+        const { titleHeight = 28 } = this.props;
+
+        console.log(paddingLeft, paddingRight);
 
         const chartRows = [];
         const leftAxisWidths = [];
@@ -230,8 +235,27 @@ export default class ChartContainer extends React.Component {
                   .domain(this.props.timeRange.toJSON())
                   .range([0, timeAxisWidth]));
 
+        const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
+
         let i = 0;
-        let yPosition = 0;
+        let yPosition = paddingTop;
+
+        // Chart title
+        const transform = `translate(${leftWidth + paddingLeft},${yPosition})`;
+        const title = (
+            <g transform={transform}>
+                <Label
+                    align="center"
+                    label={this.props.title}
+                    width={chartsWidth}
+                    height={titleHeight}
+                    style={{ fill: "none" }}
+                />
+            </g>
+        );
+
+        //yPosition += titleHeight;
+        let chartsHeight = 0;
         React.Children.forEach(this.props.children, child => {
             if (areComponentsEqual(child.type, ChartRow)) {
                 const chartRow = child;
@@ -250,6 +274,7 @@ export default class ChartContainer extends React.Component {
                     transition: this.props.transition,
                     enablePanZoom: this.props.enablePanZoom,
                     minDuration: this.props.minDuration,
+                    showGrid: this.props.showGrid,
                     timeFormat: this.props.format,
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
@@ -265,14 +290,13 @@ export default class ChartContainer extends React.Component {
                         </g>
                     );
 
-                    yPosition += parseInt(child.props.height, 10);
+                    const height = parseInt(child.props.height, 10);
+                    yPosition += height;
+                    chartsHeight += height;
                 }
             }
             i += 1;
         });
-
-        const chartsHeight = yPosition;
-        const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
         // Hover tracker line
         let tracker;
@@ -284,7 +308,7 @@ export default class ChartContainer extends React.Component {
                 <g
                     key="tracker-group"
                     style={{ pointerEvents: "none" }}
-                    transform={`translate(${leftWidth + paddingLeft},0)`}
+                    transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}
                 >
                     <TimeMarker
                         width={chartsWidth}
@@ -319,7 +343,11 @@ export default class ChartContainer extends React.Component {
         };
 
         const timeAxis = (
-            <g transform={`translate(${leftWidth + paddingLeft},${chartsHeight})`}>
+            <g
+                transform={`translate(${leftWidth + paddingLeft},${paddingTop +
+                    titleHeight +
+                    chartsHeight})`}
+            >
                 <line
                     x1={-leftWidth}
                     y1={0.5}
@@ -345,7 +373,7 @@ export default class ChartContainer extends React.Component {
         //
 
         const rows = (
-            <g transform={`translate(${leftWidth + paddingLeft},${0})`}>
+            <g transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}>
                 <EventHandler
                     key="event-handler"
                     width={chartsWidth}
@@ -372,17 +400,24 @@ export default class ChartContainer extends React.Component {
         //
 
         const svgWidth = this.props.width;
-        const svgHeight = yPosition + timeAxisHeight;
+        const svgHeight = chartsHeight + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
+
+        const svgStyle = merge(
+            true,
+            { display: "block" },
+            this.props.style ? this.props.style : {}
+        );
 
         return this.props.showGridPosition === "over" ? (
             <svg
                 width={svgWidth}
                 height={svgHeight}
-                style={{ display: "block" }}
+                style={svgStyle}
                 ref={c => {
                     this.svg = c;
                 }}
             >
+                {title}
                 {rows}
                 {tracker}
                 {timeAxis}
@@ -396,6 +431,7 @@ export default class ChartContainer extends React.Component {
                     this.svg = c;
                 }}
             >
+                {title}
                 {timeAxis}
                 {rows}
                 {tracker}

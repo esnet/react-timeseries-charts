@@ -38,7 +38,9 @@ const requests = [];
 const connections = [];
 
 _.each(ddosData, val => {
-    const timestamp = moment(new Date(`2015-04-03 ${val["time PST"]}`));
+    console.log(val["time PST"]);
+    const timestamp = moment(new Date(`2015-04-03T${val["time PST"]}`));
+    console.log(timestamp);
     const numConnection = val["connections"];
     const httpRequests = val["http requests"];
     requests.push([timestamp.toDate().getTime(), httpRequests]);
@@ -154,7 +156,7 @@ class ddos extends React.Component {
                         label="Connections"
                         transition={300}
                         style={connectionsAxisStyle}
-                        labelOffset={12}
+                        labelOffset={10}
                         min={0}
                         format=",.0f"
                         max={max}
