@@ -38,7 +38,7 @@ const requests = [];
 const connections = [];
 
 _.each(ddosData, val => {
-    const timestamp = moment(new Date(`2015-04-03 ${val["time PST"]}`));
+    const timestamp = moment(new Date(`2015-04-03T${val["time PST"]}`));
     const numConnection = val["connections"];
     const httpRequests = val["http requests"];
     requests.push([timestamp.toDate().getTime(), httpRequests]);
