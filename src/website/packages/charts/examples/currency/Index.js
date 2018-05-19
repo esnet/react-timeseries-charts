@@ -136,6 +136,17 @@ class currency extends React.Component {
                                         label="Price ($)"
                                         min={0.5}
                                         max={1.5}
+                                        style={{
+                                            ticks: {
+                                                stroke: "#AAA",
+                                                opacity: 0.3,
+                                                "stroke-dasharray": "4,2"
+                                                // Note: this isn't in camel case because this is
+                                                // passed into d3's style
+                                            }
+                                        }}
+                                        showGrid
+                                        hideAxisLine
                                         width="60"
                                         type="linear"
                                         format="$,.2f"

@@ -13,7 +13,6 @@
 import React from "react";
 import _ from "underscore";
 import moment from "moment";
-import merge from "merge";
 
 // Pond
 import { TimeSeries } from "pondjs";
@@ -99,7 +98,6 @@ class ddos extends React.Component {
         const active = this.state.active;
         active[key] = !active[key];
         this.setState({ active });
-        console.log("HandleActiveChanged", this.state.timerange.toString());
         this.handleRescale(this.state.timerange, active);
     };
 
@@ -147,9 +145,6 @@ class ddos extends React.Component {
             }
         };
 
-        const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
-        const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
-
         const darkAxis = {
             label: {
                 stroke: "none",
@@ -165,7 +160,7 @@ class ddos extends React.Component {
                 fontSize: 11,
                 font: '"Goudy Bookletter 1911", sans-serif"'
             },
-            tick: {
+            ticks: {
                 fill: "none",
                 stroke: "#AAA",
                 opacity: 0.2
