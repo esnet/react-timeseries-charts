@@ -242,7 +242,6 @@ export default class ChartRow extends React.Component {
                     width: colWidth,
                     height: innerHeight,
                     chartExtent: chartWidth,
-                    //showGrid: this.props.showGrid,
                     isInnerAxis: leftColumnIndex === 0,
                     align: "left",
                     scale: this.scaleMap[id].latestScale()
@@ -388,7 +387,13 @@ export default class ChartRow extends React.Component {
         const clipper = (
             <defs>
                 <clipPath id={this.state.clipId}>
-                    <rect x="0" y="0" width={chartWidth} height={innerHeight} />
+                    <rect
+                        x="0"
+                        y="0"
+                        style={{ strokeOpacity: 0.0 }}
+                        width={chartWidth}
+                        height={innerHeight}
+                    />
                 </clipPath>
             </defs>
         );

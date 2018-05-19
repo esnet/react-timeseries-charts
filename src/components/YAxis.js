@@ -16,9 +16,9 @@ import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
 import { range } from "d3-array";
 import { axisLeft, axisRight } from "d3-axis";
-import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
 import { select } from "d3-selection";
+import "d3-selection-multi";
 
 import { scaleAsString } from "../js/util";
 
@@ -26,18 +26,26 @@ const MARGIN = 0;
 
 const defaultStyle = {
     label: {
-        labelColor: "#8B7E7E", // Default label color
-        labelWeight: 100,
-        labelSize: 12,
-        labelFont: '"Goudy Bookletter 1911", sans-serif"'
+        stroke: "none",
+        fill: "#8B7E7E", // Default label color
+        fontWeight: 100,
+        fontSize: 12,
+        font: '"Goudy Bookletter 1911", sans-serif"'
     },
     values: {
-        valueColor: "#8B7E7E", // Default value color
-        valueWeight: 100,
-        valueSize: 11
+        stroke: "none",
+        fill: "#8B7E7E", // Default value color
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    tick: {
+        fill: "none",
+        stroke: "#EEE"
     },
     axis: {
-        axisColor: "#C0C0C0"
+        fill: "none",
+        stroke: "#C0C0C0"
     }
 };
 
@@ -97,7 +105,9 @@ export default class YAxis extends React.Component {
             this.props.align,
             this.props.scale,
             +this.props.width,
+            +this.props.chartExtent,
             this.props.absolute,
+            this.props.type,
             this.props.format
         );
     }
@@ -106,15 +116,19 @@ export default class YAxis extends React.Component {
         const scale = nextProps.scale;
         const align = nextProps.align;
         const width = nextProps.width;
+        const chartExtent = nextProps.chartExtent;
         const absolute = nextProps.absolute;
         const fmt = nextProps.format;
         const type = nextProps.type;
 
         if (
             scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-            this.props.type !== nextProps.type
+            this.props.align !== nextProps.align ||
+            this.props.width !== nextProps.align ||
+            this.props.type !== nextProps.type ||
+            this.props.chartExtent !== nextProps.chartExtent
         ) {
-            this.updateAxis(align, scale, width, absolute, type, fmt);
+            this.renderAxis(align, scale, width, chartExtent, absolute, type, fmt);
         }
     }
 
@@ -133,13 +147,10 @@ export default class YAxis extends React.Component {
         }
     }
 
-    updateAxis(align, scale, width, absolute, type, fmt) {
+    renderAxis(align, scale, width, chartExtent, absolute, type, fmt) {
         const yformat = this.yformat(fmt);
-        const axis = align === "left" ? axisLeft : axisRight;
 
-        //
-        // Make an axis generator
-        //
+        const axis = align === "left" ? axisLeft : axisRight;
 
         let axisGenerator;
         if (type === "linear" || type === "power") {
@@ -178,96 +189,9 @@ export default class YAxis extends React.Component {
                         .tickSizeOuter(0);
                 }
             }
-        } else if (type === "log") {
-            if (this.props.min === 0) {
-                throw Error("In a log scale, minimum value can't be 0");
-            }
-            axisGenerator = axis(scale)
-                .ticks(10, ".2s")
-                .tickSizeOuter(0);
-        }
-
-        //
-        // Style
-        //
-
-        const valueStyle = merge(
-            true,
-            defaultStyle.values,
-            this.props.style.values ? this.props.style.values : {}
-        );
-        const axisStyle = merge(
-            true,
-            defaultStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
-        );
-        const { axisColor } = axisStyle;
-        const { valueColor } = valueStyle;
-
-        select(ReactDOM.findDOMNode(this))
-            .select(".yaxis")
-            .transition()
-            .duration(this.props.transition)
-            .ease(easeSinOut)
-            .call(axisGenerator);
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("text")
-            .style("fill", valueColor)
-            .style("stroke", "none");
-
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
-            .select("g")
-            .selectAll(".tick")
-            .select("line")
-            .style("stroke", axisColor);
-    }
-
-    renderAxis(align, scale, width, absolute, fmt) {
-        const yformat = this.yformat(fmt);
-        let axisGenerator;
-        const axis = align === "left" ? axisLeft : axisRight;
-        if (this.props.type === "linear" || this.props.type === "power") {
-            if (this.props.tickCount > 0) {
-                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
-                axisGenerator = axis(scale)
-                    .tickValues(
-                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
-                    )
-                    .tickFormat(d => {
-                        if (absolute) {
-                            return yformat(Math.abs(d));
-                        }
-                        return yformat(d);
-                    })
-                    .tickSizeOuter(0);
-            } else {
-                if (this.props.height <= 200) {
-                    axisGenerator = axis(scale)
-                        .ticks(4)
-                        .tickFormat(d => {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        })
-                        .tickSizeOuter(0);
-                } else {
-                    axisGenerator = axis(scale)
-                        .tickFormat(d => {
-                            if (absolute) {
-                                return yformat(Math.abs(d));
-                            }
-                            return yformat(d);
-                        })
-                        .tickSizeOuter(0);
-                }
-            }
         } else if (this.props.type === "log") {
-            if (this.props.min === 0) {
-                throw Error("In a log scale, minimum value can't be 0");
+            if (this.props.min < 0 && this.props.max > 0) {
+                throw Error("Unable to render YAxis with scale that crosses 0");
             }
             axisGenerator = axis()
                 .scale(scale)
@@ -278,7 +202,8 @@ export default class YAxis extends React.Component {
         // Remove the old axis from under this DOM node
         select(ReactDOM.findDOMNode(this))
             .selectAll("*")
-            .remove(); // eslint-disable-line
+            .remove();
+
         // Add the new axis
         const x = align === "left" ? width - MARGIN : 0;
         const labelOffset =
@@ -303,52 +228,58 @@ export default class YAxis extends React.Component {
             defaultStyle.axis,
             this.props.style.axis ? this.props.style.axis : {}
         );
-        const { axisColor } = axisStyle;
-        const { valueColor, valueWeight, valueSize } = valueStyle;
-        const { labelColor, labelWeight, labelSize, labelFont } = labelStyle;
+        const tickStyle = merge(
+            true,
+            defaultStyle.tick,
+            this.props.style.tick ? this.props.style.tick : {}
+        );
 
-        this.axis = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        const tickSize = this.props.showGrid && this.props.isInnerAxis ? -chartExtent : 5;
+
+        this.axis = select(ReactDOM.findDOMNode(this))
             .append("g")
             .attr("transform", `translate(${x},0)`)
-            .style("stroke", "none")
             .attr("class", "yaxis")
-            .style("fill", valueColor)
-            .style("font-weight", valueWeight)
-            .style("font-size", valueSize)
-            .call(axisGenerator)
+            .styles(valueStyle)
+            .call(axisGenerator.tickSize(tickSize))
             .append("text")
             .text(this.props.label)
+            .styles(labelStyle)
             .attr("transform", "rotate(-90)")
             .attr("y", labelOffset)
             .attr("dy", ".71em")
-            .attr("text-anchor", "end")
-            .style("fill", labelColor)
-            .style("font-weight", labelWeight)
-            .style("font-size", labelSize)
-            .style("font-family", labelFont);
+            .attr("text-anchor", "end");
 
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("text")
-            .style("fill", valueColor)
-            .style("stroke", "none");
+            .styles(valueStyle);
 
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("line")
-            .style("stroke", axisColor);
+            .styles(tickStyle);
 
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        select(ReactDOM.findDOMNode(this))
             .select("g")
-            .select("path")
-            .style("fill", "none")
-            .style("stroke", axisColor);
+            .selectAll(".domain")
+            .remove();
+
+        if (!this.props.hideAxisLine) {
+            select(ReactDOM.findDOMNode(this))
+                .select("g")
+                .append("line")
+                .styles(axisStyle)
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", 0)
+                .attr("y2", this.props.height);
+        }
     }
 
     render() {
-        // eslint-disable-line
         return <g />;
     }
 }

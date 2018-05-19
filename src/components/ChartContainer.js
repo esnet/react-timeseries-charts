@@ -122,9 +122,11 @@ export default class ChartContainer extends React.Component {
         const { padding = 0 } = this.props;
         const { paddingLeft = padding, paddingRight = padding } = this.props;
         const { paddingTop = padding, paddingBottom = padding } = this.props;
-        const { titleHeight = 28 } = this.props;
 
-        console.log(paddingLeft, paddingRight);
+        let { titleHeight = 28 } = this.props;
+        if (_.isUndefined(this.props.title)) {
+            titleHeight = 0;
+        }
 
         const chartRows = [];
         const leftAxisWidths = [];
@@ -242,7 +244,7 @@ export default class ChartContainer extends React.Component {
 
         // Chart title
         const transform = `translate(${leftWidth + paddingLeft},${yPosition})`;
-        const title = (
+        const title = this.props.title ? (
             <g transform={transform}>
                 <Label
                     align="center"
@@ -252,6 +254,8 @@ export default class ChartContainer extends React.Component {
                     style={{ fill: "none" }}
                 />
             </g>
+        ) : (
+            <g />
         );
 
         //yPosition += titleHeight;

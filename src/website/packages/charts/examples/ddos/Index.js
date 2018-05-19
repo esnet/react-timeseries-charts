@@ -38,9 +38,7 @@ const requests = [];
 const connections = [];
 
 _.each(ddosData, val => {
-    console.log(val["time PST"]);
     const timestamp = moment(new Date(`2015-04-03T${val["time PST"]}`));
-    console.log(timestamp);
     const numConnection = val["connections"];
     const httpRequests = val["http requests"];
     requests.push([timestamp.toDate().getTime(), httpRequests]);
@@ -65,11 +63,12 @@ const requestsSeries = new TimeSeries({
 
 const style = styler([
     { key: "connections", color: "#2ca02c", width: 1 },
-    { key: "requests", color: "#9467bd", width: 2 }
+    { key: "requests", color: "#9467bd", width: 1 }
 ]);
 
 class ddos extends React.Component {
     state = {
+        max: 6000,
         active: {
             requests: true,
             connections: true
@@ -77,15 +76,38 @@ class ddos extends React.Component {
         timerange: requestsSeries.range()
     };
 
+    constructor(props) {
+        super(props);
+        this.handleRescale = _.debounce(this.rescale, 300);
+    }
+
+    rescale(timerange, active = this.state.active) {
+        let max = 100;
+        const maxRequests = requestsSeries.crop(this.state.timerange).max("requests");
+        if (maxRequests > max && active.requests) max = maxRequests;
+        const maxConnections = connectionsSeries.crop(this.state.timerange).max("connections");
+        if (maxConnections > max && active.connections) max = maxConnections;
+        this.setState({ max });
+    }
+
     handleTimeRangeChange = timerange => {
         this.setState({ timerange });
+        this.handleRescale(timerange);
+    };
+
+    handleActiveChange = key => {
+        const active = this.state.active;
+        active[key] = !active[key];
+        this.setState({ active });
+        console.log("HandleActiveChanged", this.state.timerange.toString());
+        this.handleRescale(this.state.timerange, active);
     };
 
     renderChart = () => {
         let charts = [];
-        let max = 100;
+        let max = 1000;
         if (this.state.active.requests) {
-            const maxRequests = requestsSeries.max("requests");
+            const maxRequests = requestsSeries.crop(this.state.timerange).max("requests");
             if (maxRequests > max) max = maxRequests;
             charts.push(
                 <LineChart
@@ -99,7 +121,7 @@ class ddos extends React.Component {
             );
         }
         if (this.state.active.connections) {
-            const maxConnections = connectionsSeries.max("connections");
+            const maxConnections = connectionsSeries.crop(this.state.timerange).max("connections");
             if (maxConnections > max) max = maxConnections;
             charts.push(
                 <LineChart
@@ -128,8 +150,46 @@ class ddos extends React.Component {
         const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
         const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
 
+        const darkAxis = {
+            label: {
+                stroke: "none",
+                fill: "#AAA", // Default label color
+                fontWeight: 200,
+                fontSize: 14,
+                font: '"Goudy Bookletter 1911", sans-serif"'
+            },
+            values: {
+                stroke: "none",
+                fill: "#888",
+                fontWeight: 100,
+                fontSize: 11,
+                font: '"Goudy Bookletter 1911", sans-serif"'
+            },
+            tick: {
+                fill: "none",
+                stroke: "#AAA",
+                opacity: 0.2
+            },
+            axis: {
+                fill: "none",
+                stroke: "#AAA",
+                opacity: 1
+            }
+        };
+
         return (
             <ChartContainer
+                title="DDoS attack - connections vs requests"
+                style={{
+                    background: "#201d1e",
+                    borderRadius: 8,
+                    borderStyle: "solid",
+                    borderWidth: 1,
+                    borderColor: "#232122"
+                }}
+                padding={20}
+                paddingTop={5}
+                paddingBottom={0}
                 enableDragZoom
                 onTimeRangeChanged={this.handleTimeRangeChange}
                 timeRange={this.state.timerange}
@@ -141,11 +201,13 @@ class ddos extends React.Component {
                     <YAxis
                         id="axis1"
                         label="Requests"
+                        showGrid
+                        hideAxisLine
                         transition={300}
-                        style={requestsAxisStyle}
+                        style={darkAxis}
                         labelOffset={-10}
                         min={0}
-                        max={max}
+                        max={this.state.max}
                         format=",.0f"
                         width="60"
                         type="linear"
@@ -154,24 +216,19 @@ class ddos extends React.Component {
                     <YAxis
                         id="axis2"
                         label="Connections"
+                        hideAxisLine
                         transition={300}
-                        style={connectionsAxisStyle}
-                        labelOffset={10}
+                        style={darkAxis}
+                        labelOffset={12}
                         min={0}
                         format=",.0f"
-                        max={max}
+                        max={this.state.max}
                         width="80"
                         type="linear"
                     />
                 </ChartRow>
             </ChartContainer>
         );
-    };
-
-    handleActiveChange = key => {
-        const active = this.state.active;
-        active[key] = !active[key];
-        this.setState({ active });
     };
 
     render() {
