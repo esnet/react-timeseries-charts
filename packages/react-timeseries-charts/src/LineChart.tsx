@@ -167,8 +167,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
 
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
-
-        const s = this.providedPathStyleMap(column).line;
+        const s = this.providedPathStyleMap(column);
         const d = defaultStyle.line;
 
         if (this.props.selection) {
@@ -182,7 +181,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         } else if (isHighlighted) {
             style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(true, d.normal, s.normal);
+            style = _.merge(true, d.normal, s ? s.normal : {});
         }
         style.pointerEvents = "none";
         return style;
@@ -227,8 +226,9 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         let count = 1;
         if (this.props.breakLine) {
             // Remove nulls and NaNs from the line by generating a break in the line
+            const eventList = this.props.series._collection.eventList();
             let currentPoints: PointData = null;
-            for (const d of this.props.series.collection().eventList()) {
+            eventList.forEach(function(d) {
                 const timestamp = new Date(
                     d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
                 );
@@ -244,7 +244,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
                     }
                     currentPoints = null;
                 }
-            }
+            });
             if (currentPoints && currentPoints.length > 1) {
                 pathLines.push(this.renderPath(currentPoints, column, count));
                 count += 1;

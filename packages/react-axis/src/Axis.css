@@ -1,0 +1,43 @@
+/**
+ *  Copyright (c) 2016, The Regents of the University of California,
+ *  through Lawrence Berkeley National Laboratory (subject to receipt
+ *  of any required approvals from the U.S. Dept. of Energy).
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
+
+/*
+ Defines the transitions for DOM elements (specifically Ticks)
+ entering and leaving the axis. This lets the transform smoothly
+ between states and fade in and out. It doesn't let the user
+ control these transitions however.
+
+ Another options might be this:
+ https://github.com/felipethome/react-inline-transition-group
+ */
+
+.ticks-enter {
+  opacity: 0.01;
+}
+
+.ticks-enter.ticks-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
+.ticks-leave {
+  opacity: 1;
+}
+
+.ticks-leave.ticks-leave-active {
+  opacity: 0.01;
+  transition: opacity 200ms ease-in;
+}
+
+.tick-grp {
+    -webkit-transition: -webkit-transform 2s;
+    transition: transform 100ms;
+}

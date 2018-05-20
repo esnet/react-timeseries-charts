@@ -226,8 +226,6 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
-        console.log("timerange ", this.props.timeRange);
-
         // TODO: We need a time scalar that is timezone aware
         // This might help: https://github.com/metocean/d3-chronological/blob/master/scale.js
 

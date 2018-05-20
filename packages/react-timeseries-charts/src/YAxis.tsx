@@ -23,8 +23,6 @@ export interface YAxisStyle {
     axis: React.CSSProperties;
 }
 
-console.log("axis is ", Axis);
-
 const defaultStyle: any = {
     labels: {
         labelColor: "#8B7E7E",
