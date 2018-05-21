@@ -25,9 +25,12 @@ export interface YAxisStyle {
 
 const defaultStyle: any = {
     labels: {
-        labelColor: "#8B7E7E",
-        labelWeight: 100,
-        labelSize: 11
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 12,
+        fontFamily: '"Goudy Bookletter 1911", sans-serif"',
+        stroke: "none",
+        pointerEvents: "none"
     },
     axis: {
         axisColor: "#C0C0C0"

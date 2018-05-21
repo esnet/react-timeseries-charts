@@ -23,6 +23,7 @@ export type TickProps = {
     height: number;
     smoothTransition?: boolean;
     extend?: number;
+    textStyle?: React.CSSProperties;
 };
 
 /**
@@ -40,7 +41,12 @@ export class Tick extends React.Component<TickProps> {
         tickSize: 15,
         tickExtend: 0,
         extend: 0,
-        smoothTransition: true
+        smoothTransition: true,
+        textStyle: {
+            fontSize: 11,
+            fill: "#b0b0b0",
+            pointerEvents: "none"
+        }
         //transitionTime: 200
     }
     /**
@@ -49,13 +55,7 @@ export class Tick extends React.Component<TickProps> {
      *     label
      */
     renderLabel(label: string, isTop: boolean, tickSize: number) {
-        const { labelAlign } = this.props;
-        const textStyle: React.CSSProperties = {
-            fontSize: 11,
-            textAnchor: "start",
-            fill: "#b0b0b0",
-            pointerEvents: "none"
-        };
+        const { labelAlign, textStyle } = this.props;
         const baseLine = isTop ? "baseline" : "hanging";
         if (labelAlign === "adjacent") {
             const x = 2;
@@ -134,12 +134,7 @@ export class Tick extends React.Component<TickProps> {
             x2: dir * size,
             y2: 0
         };
-        const textStyle: React.CSSProperties = {
-            fontSize: 11,
-            textAnchor: "start",
-            fill: "#b0b0b0",
-            pointerEvents: "none"
-        };
+        const { textStyle } = this.props;
         const style = { stroke: "#AAA", strokeWidth: 1 };
         const groupKey = `grp-${id}}`;
         const tickKey = `tick-${id}`;
@@ -173,7 +168,7 @@ export class Tick extends React.Component<TickProps> {
             size = 10,
             extend = 0,
             align = "top",
-            smoothTransition = false
+            smoothTransition = false,
         } = this.props;
         const shouldTransition = false;
         const transition = "transform 100ms";

@@ -65,7 +65,10 @@ export class Axis extends React.Component<AxisProps> {
         standalone: false,
         labelPosition: 50,
         labelStyle: {
-            fill: "grey",
+            fill: "#8B7E7E",
+            fontWeight: 100,
+            fontSize: 12,
+            fontFamily: '"Goudy Bookletter 1911", sans-serif"',
             stroke: "none",
             pointerEvents: "none"
         },
@@ -209,12 +212,11 @@ export class Axis extends React.Component<AxisProps> {
                 >
                     {this.renderAxisTicks()}
                 </ReactCSSTransitionGroup>
-                 {this.renderAxisLabel()} 
+                {this.renderAxisLabel()}
             </g>
         );
     }
     render() {
-        console.log("render is ", Tick);
         if (this.props.standalone) {
             return (
                 <svg height={this.props.height} width={this.props.width}>

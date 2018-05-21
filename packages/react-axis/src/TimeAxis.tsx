@@ -91,6 +91,7 @@ export type TimeAxisProps = {
     position?: "left" | "right" | "top" | "bottom";
     labelPosition?: number;
     labelStyle?: React.CSSProperties;
+    textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
 };
@@ -139,7 +140,12 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         standalone: false,
         labelPosition: 50,
         labelStyle: {
-            fill: "grey",
+            fill: "#FF0000",
+            stroke: "none",
+            pointerEvents: "none"
+        },
+        textStyle: {
+            fill: "#FF0000",
             stroke: "none",
             pointerEvents: "none"
         },
@@ -193,6 +199,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         );
     }
     renderAxisTicks() {
+        const { textStyle } = this.props;
         let formatter = this.props.format;
         let timezone = this.props.timezone;
         // A duration format is relative to UTC for the purposes
@@ -258,6 +265,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
                         width={this.props.width}
                         height={this.props.height}
                         smoothTransition={this.props.smoothTransition}
+                        textStyle={this.props.textStyle}
                     />
                 );
             }

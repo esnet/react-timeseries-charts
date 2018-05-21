@@ -30,8 +30,7 @@ import { TimeMarker } from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
     labels: {
-        labelColor: "#8B7E7E",
-        labelWeight: 100,
+        labelColor: "#FF0000",
         labelSize: 11
     },
     axis: {
@@ -307,6 +306,13 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
             pointerEvents: "none"
         };
 
+        const textStyle: React.CSSProperties = {
+            fill: this.props.timeAxisStyle.labels.labelColor,
+            fontSize: this.props.timeAxisStyle.labels.labelSize,
+            stroke: "none",
+            pointerEvents: "none"
+        };
+
         const gridHeight = this.props.showGrid ? chartsHeight : 0;
         const timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
 
@@ -322,6 +328,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                     margin={0}
                     height={50}
                     tickExtend={gridHeight}
+                    textStyle={textStyle}
                 />
             </g>
         );
