@@ -43,7 +43,12 @@ const style = {
 const baselineStyle = {
     line: {
         stroke: "steelblue",
-        strokeWidth: 1
+        strokeWidth: 1,
+        opacity: 0.4,
+        strokeDasharray: "none"
+    },
+    label: {
+        fill: "steelblue"
     }
 };
 
@@ -52,6 +57,21 @@ const baselineStyleLite = {
         stroke: "steelblue",
         strokeWidth: 1,
         opacity: 0.5
+    },
+    label: {
+        fill: "steelblue"
+    }
+};
+
+const baselineStyleExtraLite = {
+    line: {
+        stroke: "steelblue",
+        strokeWidth: 1,
+        opacity: 0.2,
+        strokeDasharray: "1,1"
+    },
+    label: {
+        fill: "steelblue"
     }
 };
 
@@ -72,7 +92,13 @@ class baselines extends React.Component {
     render() {
         return (
             <Resizable>
-                <ChartContainer timeRange={series.range()} format="%b '%y" timeAxisTickCount={5}>
+                <ChartContainer
+                    title="Euro price (USD)"
+                    titleStyle={{ fill: "#555", fontWeight: 500 }}
+                    timeRange={series.range()}
+                    format="%b '%y"
+                    timeAxisTickCount={5}
+                >
                     <ChartRow height="150">
                         <YAxis
                             id="price"
@@ -100,12 +126,12 @@ class baselines extends React.Component {
                             />
                             <Baseline
                                 axis="price"
-                                style={baselineStyleLite}
+                                style={baselineStyleExtraLite}
                                 value={series.avg() - series.stdev()}
                             />
                             <Baseline
                                 axis="price"
-                                style={baselineStyleLite}
+                                style={baselineStyleExtraLite}
                                 value={series.avg() + series.stdev()}
                             />
                             <Baseline

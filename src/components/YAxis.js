@@ -42,8 +42,7 @@ const defaultStyle = {
     },
     ticks: {
         fill: "none",
-        stroke: "#EEE",
-        "stroke-dasharray": "4,2"
+        stroke: "#C0C0C0"
     },
     axis: {
         fill: "none",

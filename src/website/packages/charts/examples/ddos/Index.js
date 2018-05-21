@@ -182,6 +182,11 @@ class ddos extends React.Component {
                     borderWidth: 1,
                     borderColor: "#232122"
                 }}
+                timeAxisStyle={darkAxis}
+                titleStyle={{
+                    color: "#EEE",
+                    fontWeight: 500
+                }}
                 padding={20}
                 paddingTop={5}
                 paddingBottom={0}
@@ -190,7 +195,6 @@ class ddos extends React.Component {
                 timeRange={this.state.timerange}
                 maxTime={requestsSeries.range().end()}
                 minTime={requestsSeries.range().begin()}
-                timeAxisStyle={axisStyle}
             >
                 <ChartRow height="300">
                     <YAxis

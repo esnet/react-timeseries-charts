@@ -172,7 +172,6 @@ class weather extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 utc={this.state.mode === "utc"}
-                                showGrid
                                 timeRange={tempSeries.timerange()}
                                 showGridPosition="under"
                                 trackerPosition={this.state.tracker}
@@ -191,18 +190,6 @@ class weather extends React.Component {
                                         type="linear"
                                         format=",.1f"
                                     />
-                                    <YAxis
-                                        id="temp"
-                                        label="Temperature (°F)"
-                                        labelOffset={5}
-                                        showGrid
-                                        style={style.axisStyle("temp")}
-                                        min={50}
-                                        max={70}
-                                        width="80"
-                                        type="linear"
-                                        format=",.1f"
-                                    />
                                     <Charts>
                                         <LineChart
                                             axis="temp"
@@ -217,6 +204,17 @@ class weather extends React.Component {
                                             style={style}
                                         />
                                     </Charts>
+                                    <YAxis
+                                        id="temp"
+                                        label="Temperature (°F)"
+                                        labelOffset={5}
+                                        style={style.axisStyle("temp")}
+                                        min={50}
+                                        max={70}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
                                 </ChartRow>
 
                                 <ChartRow height="150">
@@ -231,19 +229,6 @@ class weather extends React.Component {
                                         type="linear"
                                         format=",.1f"
                                     />
-                                    <YAxis
-                                        id="wind-gust"
-                                        label="Wind gust (mph)"
-                                        labelOffset={5}
-                                        showGrid
-                                        style={style.axisStyle("gust")}
-                                        min={0}
-                                        max={50}
-                                        width="80"
-                                        type="linear"
-                                        format=",.1f"
-                                    />
-
                                     <Charts>
                                         <LineChart
                                             axis="wind"
@@ -262,6 +247,17 @@ class weather extends React.Component {
                                             }}
                                         />
                                     </Charts>
+                                    <YAxis
+                                        id="wind-gust"
+                                        label="Wind gust (mph)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("gust")}
+                                        min={0}
+                                        max={50}
+                                        width="80"
+                                        type="linear"
+                                        format=",.1f"
+                                    />
                                 </ChartRow>
 
                                 <ChartRow height="150">
@@ -272,18 +268,6 @@ class weather extends React.Component {
                                         labelOffset={5}
                                         min={0}
                                         max={rainAccumSeries.max("rainAccum")}
-                                        width="80"
-                                        type="linear"
-                                        format=",.2f"
-                                    />
-                                    <YAxis
-                                        id="rain"
-                                        label="Precipitation (in)"
-                                        showGrid
-                                        labelOffset={5}
-                                        style={style.axisStyle("rain")}
-                                        min={0}
-                                        max={rainSeries.max("rain")}
                                         width="80"
                                         type="linear"
                                         format=",.2f"
@@ -304,6 +288,17 @@ class weather extends React.Component {
                                             style={style}
                                         />
                                     </Charts>
+                                    <YAxis
+                                        id="rain"
+                                        label="Precipitation (in)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("rain")}
+                                        min={0}
+                                        max={rainSeries.max("rain")}
+                                        width="80"
+                                        type="linear"
+                                        format=",.2f"
+                                    />
                                 </ChartRow>
                             </ChartContainer>
                         </Resizable>

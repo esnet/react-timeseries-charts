@@ -27,20 +27,18 @@ import TimeMarker from "./TimeMarker";
 import Label from "./Label";
 
 const defaultTimeAxisStyle = {
-    label: {
-        labelColor: "#8B7E7E", // Default label color
-        labelWeight: 100,
-        labelSize: 12
-    },
-    values: {
-        valueColor: "#8B7E7E",
-        valueWeight: 100,
-        valueSize: 11
-    },
     axis: {
-        axisColor: "#C0C0C0",
-        axisWidth: 1
+        fill: "none",
+        stroke: "#C0C0C0",
+        pointerEvents: "none"
     }
+};
+
+const defaultTitleStyle = {
+    fontWeight: 100,
+    fontSize: 14,
+    font: '"Goudy Bookletter 1911", sans-serif"',
+    fill: "#C0C0C0"
 };
 
 /**
@@ -244,14 +242,19 @@ export default class ChartContainer extends React.Component {
 
         // Chart title
         const transform = `translate(${leftWidth + paddingLeft},${yPosition})`;
+        const titleStyle = merge(
+            true,
+            defaultTitleStyle,
+            this.props.titleStyle ? this.props.titleStyle : {}
+        );
         const title = this.props.title ? (
             <g transform={transform}>
                 <Label
                     align="center"
                     label={this.props.title}
+                    style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
                     width={chartsWidth}
                     height={titleHeight}
-                    style={{ fill: "none" }}
                 />
             </g>
         ) : (
@@ -333,18 +336,11 @@ export default class ChartContainer extends React.Component {
         // TimeAxis
         //
 
-        const axisStyle = merge(
+        const timeAxisStyle = merge(
             true,
             defaultTimeAxisStyle.axis,
             this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
         );
-
-        const xStyle = {
-            stroke: axisStyle.axisColor,
-            strokeWidth: axisStyle.axisWidth,
-            fill: "none",
-            pointerEvents: "none"
-        };
 
         const timeAxis = (
             <g
@@ -357,7 +353,7 @@ export default class ChartContainer extends React.Component {
                     y1={0.5}
                     x2={chartsWidth + rightWidth}
                     y2={0.5}
-                    style={xStyle}
+                    style={timeAxisStyle}
                 />
                 <TimeAxis
                     scale={timeScale}
@@ -572,10 +568,21 @@ ChartContainer.propTypes = {
      *  };
      * ```
      */
-    timeAxisStyle: PropTypes.shape({
-        label: PropTypes.object, // eslint-disable-line
+    /**
+     * Object specifying the CSS by which the Time Axis can be styled. The object can contain:
+     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
+     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
+     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * respectively.
+     *
+     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray). "axis" is a
+     * regular React rendered SVG line, so it uses camel case.
+     */
+    style: PropTypes.shape({
+        axis: PropTypes.object,
         values: PropTypes.object,
-        axis: PropTypes.object
+        ticks: PropTypes.object
     }),
 
     /**
@@ -603,8 +610,8 @@ ChartContainer.propTypes = {
         PropTypes.string,
         PropTypes.arrayOf(
             PropTypes.shape({
-                label: PropTypes.string, // eslint-disable-line
-                value: PropTypes.string // eslint-disable-line
+                label: PropTypes.string,
+                value: PropTypes.string
             })
         )
     ]),
