@@ -20,10 +20,10 @@ The second level (i.e. for each column name), is the element itself. This depend
 
 The third level is the state that the element is in. This allows the visual appearance to change as the element is hovered over or selected. Our components support four different states that they can be in:
 
- * **normal** - the general appearance of the element
- * **selected** - the appearance of the element when selected, which is typically when you have clicked on the element
- * **highlighted** - the appearance of the element when highlighted, which is typically when the user has moused over the element
- * **muted** - if an element is selected, all other elements are muted
+* **normal** - the general appearance of the element
+* **selected** - the appearance of the element when selected, which is typically when you have clicked on the element
+* **highlighted** - the appearance of the element when highlighted, which is typically when the user has moused over the element
+* **muted** - if an element is selected, all other elements are muted
 
 Finally, the forth level is the actual style for that column, for that element, in that state. If it is a line then the CSS you provide will be that for a SVG <path> (`stroke`, `strokeWidth` (not stroke-width), etc.), while if it's an area it will be an SVG area (`fill`, etc.).
 
@@ -70,19 +70,18 @@ import { styler } from "react-timeseries-charts";
 Then in constructing an instance of the styler we build a mapping of our column name to those characteristics we just talked about.
 
 The current list of characteristics are:
- * `color` - the main color of the element, opacity will be applied by the styler
- * `selected` - the selection color. If not specified, `color` will be used
- * `width` - the width of line drawing
- * `dashed` - display line drawing as a dashed line or not
+
+* `color` - the main color of the element, opacity will be applied by the styler
+* `selected` - the selection color. If not specified, `color` will be used
+* `width` - the width of line drawing
+* `dashed` - display line drawing as a dashed line or not
 
 In this case we'll just map the column (`key`) to a `color` we want:
 
 ```js
-const trafficStyle = styler([
-    {key: "in", color: "orange"},
-    {key: "out", color: "blue"}
-]);
+const trafficStyle = styler([{ key: "in", color: "orange" }, { key: "out", color: "blue" }]);
 ```
+
 Now we can use the styler instance directly in our `AreaChart`:
 
 ```jsx
@@ -100,10 +99,7 @@ What's more, we can use the same style `trafficStyle` in the `Legend`:
 <Legend
     type="swatch"
     style={trafficStyle}
-    categories={[
-        {key: "in", label: "Into Site"},
-        {key: "out", label: "Out of site"}
-    ]}
+    categories={[{ key: "in", label: "Into Site" }, { key: "out", label: "Out of site" }]}
 />
 ```
 
@@ -148,25 +144,16 @@ Here's a trimmed down example of a scatter chart:
             stroke: "none",
             opacity: 1.0
         },
-        selected: {fill: "none", stroke: "#2db3d1", opacity: 1.0},
-        muted: {stroke: "none", opacity: 0.4, fill: column === "station1" ? "green" : "orange"
+        selected: { fill: "none", stroke: "#2db3d1", opacity: 1.0 },
+        muted: {
+            stroke: "none",
+            opacity: 0.4,
+            fill: column === "station1" ? "green" : "orange"
         }
     })}
     info={infoValues}
-    radius={(event, column) => column === "station1" ? 3 : 2}
+    radius={(event, column) => (column === "station1" ? 3 : 2)}
 />
 ```
 
 For the full version of this code, see the Wind scatter example.
-
-### 3.5 Other elements
-
-The last thing to cover in this guide is styling for elements that don't follow the above pattern. This might be because we've not expanded out the ability to do that yet, or it might be because the element doesn't have the same interactivity as the ones discussed previously.
-
-Also, some parts of the final chart render are just structural (such as axis tick marks) and are what makes this library what it is. Bottom line, it's not possible to change everything. At some point, you might want to just fire up d3 and go to town.
-
-For elements that have no interactivity, such as a Baseline or YAxis labels, see the API docs for an example what can be styled and how. There is limited styling for these two elements and it should be enough to get the job done.
-
-For things that can't be styled, please let us know your use case, or send us a PR.
-
-

@@ -12,7 +12,7 @@ function setOfCachedUrls(e) {
         });
 }
 var precacheConfig = [
-        ["/react-timeseries-charts/index.html", "d286fbd7cd3389589791088e5255240e"],
+        ["/react-timeseries-charts/index.html", "00472f546f4e6c9021dfb88a9835b24c"],
         [
             "/react-timeseries-charts/static/css/main.5b40b607.css",
             "c24998f8f3b29502d68af2f5aef08ce4"
@@ -26,8 +26,8 @@ var precacheConfig = [
             "906a806a6639cbe9f39b720ab5eb0707"
         ],
         [
-            "/react-timeseries-charts/static/media/3_styling.99c709f2.md",
-            "99c709f2b331df1c86d0c6a3792cabc3"
+            "/react-timeseries-charts/static/media/3_styling.22c4a365.md",
+            "22c4a365c604b4f2ca9f7cc767693ee2"
         ],
         [
             "/react-timeseries-charts/static/media/4_annotations.7e00e29b.md",
