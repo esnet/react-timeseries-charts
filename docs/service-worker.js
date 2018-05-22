@@ -12,7 +12,7 @@ function setOfCachedUrls(e) {
         });
 }
 var precacheConfig = [
-        ["/react-timeseries-charts/index.html", "4fef6b2a569dc4517c768ae6ec81646d"],
+        ["/react-timeseries-charts/index.html", "d286fbd7cd3389589791088e5255240e"],
         [
             "/react-timeseries-charts/static/css/main.5b40b607.css",
             "c24998f8f3b29502d68af2f5aef08ce4"
@@ -30,12 +30,12 @@ var precacheConfig = [
             "99c709f2b331df1c86d0c6a3792cabc3"
         ],
         [
-            "/react-timeseries-charts/static/media/4_annotations.15e6975b.md",
-            "15e6975ba0646f3b71915e5d4326e354"
+            "/react-timeseries-charts/static/media/4_annotations.7e00e29b.md",
+            "7e00e29b6594529546c573e6bbd09760"
         ],
         [
-            "/react-timeseries-charts/static/media/barchart_docs.387e58bc.md",
-            "387e58bc4edb949f3aca1aa1aaa89820"
+            "/react-timeseries-charts/static/media/barchart_docs.c7b1c427.md",
+            "c7b1c42755607c1edc87bbd8546df9a4"
         ],
         [
             "/react-timeseries-charts/static/media/baselines_docs.af746eac.md",
@@ -58,8 +58,8 @@ var precacheConfig = [
             "398a3ca9cf6d95aca9d0710be115c3f9"
         ],
         [
-            "/react-timeseries-charts/static/media/currency_docs.962b4314.md",
-            "962b4314dc335c4b530f3b26aa12eb00"
+            "/react-timeseries-charts/static/media/currency_docs.eacba985.md",
+            "eacba985ff11b30c9a1eb75023768966"
         ],
         [
             "/react-timeseries-charts/static/media/currency_thumbnail.b569b92b.png",
@@ -74,8 +74,8 @@ var precacheConfig = [
             "7e08437fae558d497f0d83e103e3f85e"
         ],
         [
-            "/react-timeseries-charts/static/media/ddos_docs.dc1459c0.md",
-            "dc1459c09a6310ce808e97ee3fe39ae0"
+            "/react-timeseries-charts/static/media/ddos_docs.ef0eb60c.md",
+            "ef0eb60cfe8b50c8461079079dcc256b"
         ],
         [
             "/react-timeseries-charts/static/media/ddos_thumbnail.7d2af225.png",
@@ -114,8 +114,8 @@ var precacheConfig = [
             "033c51eed22b0283906e65f3e28772cf"
         ],
         [
-            "/react-timeseries-charts/static/media/traffic_docs.46549d48.md",
-            "46549d48b0c1f34e76e8f4a018587c0a"
+            "/react-timeseries-charts/static/media/traffic_docs.eef1502a.md",
+            "eef1502a5349aee1dfc4297db68bcd4d"
         ],
         [
             "/react-timeseries-charts/static/media/traffic_thumbnail.3a9ee161.png",
