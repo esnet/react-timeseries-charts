@@ -14,7 +14,7 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import { TimeSeries, timeSeries } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Legend, Resizable, styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Legend, Resizable } from "react-timeseries-charts";
 
 import currency_docs from "./currency_docs.md";
 import currency_thumbnail from "./currency_thumbnail.png";

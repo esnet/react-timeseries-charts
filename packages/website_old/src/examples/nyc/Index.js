@@ -13,7 +13,7 @@
 import React from "react";
 import * as Immutable from "immutable";
 import { TimeSeries, TimeRange, IndexedEvent, Collection, timerange, index, Index, indexedEvent } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable, styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable } from "react-timeseries-charts";
 
 import nyc_docs from "./nyc_docs.md";
 import nyc_thumbnail from "./nyc_thumbnail.png";

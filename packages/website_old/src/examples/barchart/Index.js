@@ -12,14 +12,13 @@
 
 import React from "react";
 import { indexedSeries, TimeSeries, Index, window, duration, period, time } from "pondjs";
-import {
+import styler, {
     ChartContainer,
     ChartRow,
     Charts,
     YAxis,
     BarChart,
-    Resizable,
-    styler
+    Resizable
 } from "react-timeseries-charts";
 
 import barchart_docs from "./barchart_docs.md";

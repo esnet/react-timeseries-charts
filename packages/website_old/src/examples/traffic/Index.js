@@ -13,7 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import { TimeSeries, timeSeries } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable } from "react-timeseries-charts";
 
 import traffic_docs from "./traffic_docs.md";
 import traffic_thumbnail from "./traffic_thumbnail.png";

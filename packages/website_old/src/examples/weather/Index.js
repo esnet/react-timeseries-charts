@@ -14,7 +14,7 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { TimeSeries, timeSeries } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable, styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";

@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "cd packages/website && npm run start",
+        "start": "cd packages/website_old && npm run start",
         "build-website": "echo \"*** Building website\n\" && rm -rf docs && cd packages/website && npm run build",
         "prettier": "prettier --print-width 100 --tab-width 4 --write \"packages/pond/src/**/*.ts\""
     },
