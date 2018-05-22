@@ -117,16 +117,18 @@ export default class YAxis extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const scale = nextProps.scale;
-        const align = nextProps.align;
-        const width = nextProps.width;
-        const height = nextProps.height;
-        const chartExtent = nextProps.chartExtent;
-        const absolute = nextProps.absolute;
-        const fmt = nextProps.format;
-        const type = nextProps.type;
-        const showGrid = nextProps.showGrid;
-        const hideAxisLine = nextProps.hideAxisLine;
+        const {
+            scale,
+            align,
+            width,
+            height,
+            chartExtent,
+            absolute,
+            fmt,
+            type,
+            showGrid,
+            hideAxisLine
+        } = nextProps;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
             this.updateAxis(

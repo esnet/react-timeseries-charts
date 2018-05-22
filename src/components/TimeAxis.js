@@ -55,9 +55,14 @@ export default class TimeAxis extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { scale, utc, format } = nextProps;
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale) || this.props.utc !== utc) {
-            this.renderTimeAxis(scale, format);
+        const { scale, utc, format, showGrid, gridHeight } = nextProps;
+        if (
+            scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+            this.props.utc !== utc ||
+            this.props.showGrid !== showGrid ||
+            this.props.gridHeight !== gridHeight
+        ) {
+            this.renderTimeAxis(scale, format, showGrid, gridHeight);
         }
     }
 
@@ -83,10 +88,10 @@ export default class TimeAxis extends React.Component {
         };
     }
 
-    renderTimeAxis(scale, format) {
+    renderTimeAxis(scale, format, showGrid, gridHeight) {
         let axis;
 
-        const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
+        const tickSize = showGrid ? -gridHeight : 10;
         const utc = this.props.utc;
         const tickCount = this.props.tickCount;
         const style = this.mergeStyles(this.props.style);
