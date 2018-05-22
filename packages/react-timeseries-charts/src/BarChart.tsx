@@ -275,6 +275,8 @@ export class BarChart extends React.Component<BarChartProps> {
                 } else {
                     x = timeScale(begin) + spacing + offset;
                 }
+                console.log("yScale is ", yScale);
+                console.log("yScale(0) is ", yScale(0));
                 const yBase = yScale(0);
                 let yposPositive = yBase;
                 let yposNegative = yBase;

@@ -111,6 +111,8 @@ var BarChart = (function (_super) {
             else {
                 x = timeScale(begin) + spacing + offset;
             }
+            console.log("yScale is ", yScale);
+            console.log("yScale(0) is ", yScale(0));
             var yBase = yScale(0);
             var yposPositive = yBase;
             var yposNegative = yBase;
