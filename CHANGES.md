@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.15.0
+
+> May 22, 2018
+
+* Adds `YAxis` and `TimeAxis` styling of all elements. This is a breaking change, but now allows much more flexible styling. See the the DDoS example. In [#267](https://github.com/esnet/react-timeseries-charts/pull/267).
+* `YAxis` now supports horizontal grid lines. This only applies to axes which are adjacent to the chart (Fixes #244). In [#267](https://github.com/esnet/react-timeseries-charts/pull/267).
+* `TimeAxis` now supports angled labels [#229](https://github.com/esnet/react-timeseries-charts/pull/229)
+* You can now add a title to the chart by passing one into the `ChartContainer` (Fixes #9)
+* `AreaChart`s now have an option to break at data gaps (i.e. ignore `nulls` and `NaNs`) in [#247](https://github.com/esnet/react-timeseries-charts/pull/247)
+* `ChartContainer` now has a margin prop that will surround the chart with empty space. This is useful to avoid clipped `TimeAxis` labels [#229](https://github.com/esnet/react-timeseries-charts/pull/229)
+* Add drag to zoom feature by [@iabw](https://github.com/iabw) in [#252](https://github.com/esnet/react-timeseries-charts/pull/252)
+* Current `TimeAxis` scale function exposed as second argument to `onTrackerChanged()` by [@ethanroday](https://github.com/ethanroday) in [#238](https://github.com/esnet/react-timeseries-charts/pull/238)
+* Allow `YAxis` yscale by [@ethanroday](https://github.com/ethanroday) in [#251](https://github.com/esnet/react-timeseries-charts/pull/251)
+
+Bug fixes:
+
+* `TimeAxis` and `YAxis` now updates to additional prop changes (Fixes #259, Fixes #255 )
+* Ease required props on `TimeRangeMarker` (Fixes #263)
+* `ChartRow` is better protected against null children [#253](https://github.com/esnet/react-timeseries-charts/pull/253)
+* Fix issues with using webpack and hot loader in [#248](https://github.com/esnet/react-timeseries-charts/pull/248)
+
 ## v0.14.0
 
 > March 2, 2018
