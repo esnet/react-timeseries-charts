@@ -4,12 +4,14 @@ var tslib_1 = require("tslib");
 var React = require("react");
 var react_axis_1 = require("react-axis");
 var Charts_1 = require("./Charts");
-console.log("axis is ", react_axis_1.Axis);
 var defaultStyle = {
     labels: {
-        labelColor: "#8B7E7E",
-        labelWeight: 100,
-        labelSize: 11
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 12,
+        fontFamily: '"Goudy Bookletter 1911", sans-serif"',
+        stroke: "none",
+        pointerEvents: "none"
     },
     axis: {
         axisColor: "#C0C0C0"

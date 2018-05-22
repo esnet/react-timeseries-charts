@@ -25,13 +25,7 @@ var Tick = (function (_super) {
         return _super.call(this, props) || this;
     }
     Tick.prototype.renderLabel = function (label, isTop, tickSize) {
-        var labelAlign = this.props.labelAlign;
-        var textStyle = {
-            fontSize: 11,
-            textAnchor: "start",
-            fill: "#b0b0b0",
-            pointerEvents: "none"
-        };
+        var _a = this.props, labelAlign = _a.labelAlign, textStyle = _a.textStyle;
         var baseLine = isTop ? "baseline" : "hanging";
         if (labelAlign === "adjacent") {
             var x = 2;
@@ -70,12 +64,7 @@ var Tick = (function (_super) {
             x2: dir * size,
             y2: 0
         };
-        var textStyle = {
-            fontSize: 11,
-            textAnchor: "start",
-            fill: "#b0b0b0",
-            pointerEvents: "none"
-        };
+        var textStyle = this.props.textStyle;
         var style = { stroke: "#AAA", strokeWidth: 1 };
         var groupKey = "grp-" + id + "}";
         var tickKey = "tick-" + id;
@@ -107,7 +96,12 @@ var Tick = (function (_super) {
         tickSize: 15,
         tickExtend: 0,
         extend: 0,
-        smoothTransition: true
+        smoothTransition: true,
+        textStyle: {
+            fontSize: 11,
+            fill: "#b0b0b0",
+            pointerEvents: "none"
+        }
     };
     return Tick;
 }(React.Component));

@@ -83,7 +83,7 @@ var LineChart = (function (_super) {
         var style;
         var isHighlighted = this.props.highlight && column === this.props.highlight;
         var isSelected = this.props.selection && column === this.props.selection;
-        var s = this.providedPathStyleMap(column).line;
+        var s = this.providedPathStyleMap(column);
         var d = style_1.defaultLineChartChannelStyle.line;
         if (this.props.selection) {
             if (isSelected) {
@@ -100,7 +100,7 @@ var LineChart = (function (_super) {
             style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(true, d.normal, s.normal);
+            style = _.merge(true, d.normal, s ? s.normal : {});
         }
         style.pointerEvents = "none";
         return style;
@@ -131,34 +131,34 @@ var LineChart = (function (_super) {
         var pathLines = [];
         var count = 1;
         if (this.props.breakLine) {
-            var currentPoints = null;
-            for (var _i = 0, _a = this.props.series.collection().eventList(); _i < _a.length; _i++) {
-                var d = _a[_i];
+            var eventList = this.props.series._collection.eventList();
+            var currentPoints_1 = null;
+            eventList.forEach(function (d) {
                 var timestamp = new Date(d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2);
                 var value = d.get(column);
                 var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    if (!currentPoints)
-                        currentPoints = [];
-                    currentPoints.push({ x: timestamp, y: value });
+                    if (!currentPoints_1)
+                        currentPoints_1 = [];
+                    currentPoints_1.push({ x: timestamp, y: value });
                 }
-                else if (currentPoints) {
-                    if (currentPoints.length > 1) {
-                        pathLines.push(this.renderPath(currentPoints, column, count));
+                else if (currentPoints_1) {
+                    if (currentPoints_1.length > 1) {
+                        pathLines.push(this.renderPath(currentPoints_1, column, count));
                         count += 1;
                     }
-                    currentPoints = null;
+                    currentPoints_1 = null;
                 }
-            }
-            if (currentPoints && currentPoints.length > 1) {
-                pathLines.push(this.renderPath(currentPoints, column, count));
+            });
+            if (currentPoints_1 && currentPoints_1.length > 1) {
+                pathLines.push(this.renderPath(currentPoints_1, column, count));
                 count += 1;
             }
         }
         else {
             var cleanedPoints = [];
-            for (var _b = 0, _c = this.props.series.collection().eventList(); _b < _c.length; _b++) {
-                var d = _c[_b];
+            for (var _i = 0, _a = this.props.series.collection().eventList(); _i < _a.length; _i++) {
+                var d = _a[_i];
                 var timestamp = new Date(d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2);
                 var value = d.get(column);
                 var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);

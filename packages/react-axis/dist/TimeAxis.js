@@ -102,6 +102,7 @@ var TimeAxis = (function (_super) {
         return (React.createElement("line", { key: "axis", className: "axis", style: { stroke: "#AAA", strokeWidth: 2 }, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
     };
     TimeAxis.prototype.renderAxisTicks = function () {
+        var textStyle = this.props.textStyle;
         var formatter = this.props.format;
         var timezone = this.props.timezone;
         var formatAsDuration = this.props.format === "duration";
@@ -145,7 +146,7 @@ var TimeAxis = (function (_super) {
             var pos = scale(date);
             var _b = formatter(date), label = _b.label, size = _b.size, labelAlign = _b.labelAlign;
             if (+d >= start && +d < stop) {
-                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, extend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition }));
+                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, extend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition, textStyle: this.props.textStyle }));
             }
             d = d.add(num, type);
             i++;
@@ -185,7 +186,12 @@ var TimeAxis = (function (_super) {
         standalone: false,
         labelPosition: 50,
         labelStyle: {
-            fill: "grey",
+            fill: "#FF0000",
+            stroke: "none",
+            pointerEvents: "none"
+        },
+        textStyle: {
+            fill: "#FF0000",
             stroke: "none",
             pointerEvents: "none"
         },

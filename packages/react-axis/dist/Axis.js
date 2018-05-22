@@ -105,7 +105,6 @@ var Axis = (function (_super) {
             this.renderAxisLabel()));
     };
     Axis.prototype.render = function () {
-        console.log("render is ", Tick_1.Tick);
         if (this.props.standalone) {
             return (React.createElement("svg", { height: this.props.height, width: this.props.width }, this.renderAxis()));
         }
@@ -125,7 +124,10 @@ var Axis = (function (_super) {
         standalone: false,
         labelPosition: 50,
         labelStyle: {
-            fill: "grey",
+            fill: "#8B7E7E",
+            fontWeight: 100,
+            fontSize: 12,
+            fontFamily: '"Goudy Bookletter 1911", sans-serif"',
             stroke: "none",
             pointerEvents: "none"
         },

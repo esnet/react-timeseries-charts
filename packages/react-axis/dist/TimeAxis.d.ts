@@ -19,6 +19,7 @@ export declare type TimeAxisProps = {
     position?: "left" | "right" | "top" | "bottom";
     labelPosition?: number;
     labelStyle?: React.CSSProperties;
+    textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
 };
@@ -34,6 +35,11 @@ export declare class TimeAxis extends React.Component<TimeAxisProps> {
         standalone: boolean;
         labelPosition: number;
         labelStyle: {
+            fill: string;
+            stroke: string;
+            pointerEvents: string;
+        };
+        textStyle: {
             fill: string;
             stroke: string;
             pointerEvents: string;

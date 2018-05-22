@@ -13,8 +13,7 @@ var EventHandler_1 = require("./EventHandler");
 var TimeMarker_1 = require("./TimeMarker");
 var defaultTimeAxisStyle = {
     labels: {
-        labelColor: "#8B7E7E",
-        labelWeight: 100,
+        labelColor: "#FF0000",
         labelSize: 11
     },
     axis: {
@@ -111,7 +110,6 @@ var ChartContainer = (function (_super) {
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
-        console.log("timerange ", this.props.timeRange);
         var timeScale = this.props.timezone === "Etc/UTC"
             ? d3_scale_1.scaleUtc()
                 .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
@@ -156,11 +154,17 @@ var ChartContainer = (function (_super) {
             fill: "none",
             pointerEvents: "none"
         };
+        var textStyle = {
+            fill: this.props.timeAxisStyle.labels.labelColor,
+            fontSize: this.props.timeAxisStyle.labels.labelSize,
+            stroke: "none",
+            pointerEvents: "none"
+        };
         var gridHeight = this.props.showGrid ? chartsHeight : 0;
         var timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
         var timeAxis = (React.createElement("g", { transform: "translate(" + leftWidth + "," + chartsHeight + ")" },
             React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: this.props.width, y2: 0.5, style: xStyle }),
-            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight })));
+            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: textStyle })));
         var rows = (React.createElement("g", { transform: "translate(" + leftWidth + "," + 0 + ")" },
             React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: function () { return _this.handleMouseOut(); }, onMouseMove: function (d) { return _this.handleMouseMove(d); }, onMouseClick: function () { return _this.handleBackgroundClick(); }, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;

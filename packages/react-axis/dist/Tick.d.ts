@@ -13,6 +13,7 @@ export declare type TickProps = {
     height: number;
     smoothTransition?: boolean;
     extend?: number;
+    textStyle?: React.CSSProperties;
 };
 export declare class Tick extends React.Component<TickProps> {
     constructor(props: TickProps);
