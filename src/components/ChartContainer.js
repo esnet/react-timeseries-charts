@@ -24,22 +24,21 @@ import Charts from "./Charts";
 import EventHandler from "./EventHandler";
 import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
+import Label from "./Label";
 
 const defaultTimeAxisStyle = {
-    label: {
-        labelColor: "#8B7E7E", // Default label color
-        labelWeight: 100,
-        labelSize: 12
-    },
-    values: {
-        valueColor: "#8B7E7E",
-        valueWeight: 100,
-        valueSize: 11
-    },
     axis: {
-        axisColor: "#C0C0C0",
-        axisWidth: 1
+        fill: "none",
+        stroke: "#C0C0C0",
+        pointerEvents: "none"
     }
+};
+
+const defaultTitleStyle = {
+    fontWeight: 100,
+    fontSize: 14,
+    font: '"Goudy Bookletter 1911", sans-serif"',
+    fill: "#C0C0C0"
 };
 
 /**
@@ -118,8 +117,14 @@ export default class ChartContainer extends React.Component {
     //
 
     render() {
-        const { padding } = this.props;
+        const { padding = 0 } = this.props;
         const { paddingLeft = padding, paddingRight = padding } = this.props;
+        const { paddingTop = padding, paddingBottom = padding } = this.props;
+
+        let { titleHeight = 28 } = this.props;
+        if (_.isUndefined(this.props.title)) {
+            titleHeight = 0;
+        }
 
         const chartRows = [];
         const leftAxisWidths = [];
@@ -230,8 +235,34 @@ export default class ChartContainer extends React.Component {
                   .domain(this.props.timeRange.toJSON())
                   .range([0, timeAxisWidth]));
 
+        const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
+
         let i = 0;
-        let yPosition = 0;
+        let yPosition = paddingTop;
+
+        // Chart title
+        const transform = `translate(${leftWidth + paddingLeft},${yPosition})`;
+        const titleStyle = merge(
+            true,
+            defaultTitleStyle,
+            this.props.titleStyle ? this.props.titleStyle : {}
+        );
+        const title = this.props.title ? (
+            <g transform={transform}>
+                <Label
+                    align="center"
+                    label={this.props.title}
+                    style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
+                    width={chartsWidth}
+                    height={titleHeight}
+                />
+            </g>
+        ) : (
+            <g />
+        );
+
+        //yPosition += titleHeight;
+        let chartsHeight = 0;
         React.Children.forEach(this.props.children, child => {
             if (areComponentsEqual(child.type, ChartRow)) {
                 const chartRow = child;
@@ -250,6 +281,7 @@ export default class ChartContainer extends React.Component {
                     transition: this.props.transition,
                     enablePanZoom: this.props.enablePanZoom,
                     minDuration: this.props.minDuration,
+                    showGrid: this.props.showGrid,
                     timeFormat: this.props.format,
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
@@ -265,14 +297,13 @@ export default class ChartContainer extends React.Component {
                         </g>
                     );
 
-                    yPosition += parseInt(child.props.height, 10);
+                    const height = parseInt(child.props.height, 10);
+                    yPosition += height;
+                    chartsHeight += height;
                 }
             }
             i += 1;
         });
-
-        const chartsHeight = yPosition;
-        const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
         // Hover tracker line
         let tracker;
@@ -284,7 +315,7 @@ export default class ChartContainer extends React.Component {
                 <g
                     key="tracker-group"
                     style={{ pointerEvents: "none" }}
-                    transform={`translate(${leftWidth + paddingLeft},0)`}
+                    transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}
                 >
                     <TimeMarker
                         width={chartsWidth}
@@ -305,27 +336,24 @@ export default class ChartContainer extends React.Component {
         // TimeAxis
         //
 
-        const axisStyle = merge(
+        const timeAxisStyle = merge(
             true,
             defaultTimeAxisStyle.axis,
             this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
         );
 
-        const xStyle = {
-            stroke: axisStyle.axisColor,
-            strokeWidth: axisStyle.axisWidth,
-            fill: "none",
-            pointerEvents: "none"
-        };
-
         const timeAxis = (
-            <g transform={`translate(${leftWidth + paddingLeft},${chartsHeight})`}>
+            <g
+                transform={`translate(${leftWidth + paddingLeft},${paddingTop +
+                    titleHeight +
+                    chartsHeight})`}
+            >
                 <line
                     x1={-leftWidth}
                     y1={0.5}
                     x2={chartsWidth + rightWidth}
                     y2={0.5}
-                    style={xStyle}
+                    style={timeAxisStyle}
                 />
                 <TimeAxis
                     scale={timeScale}
@@ -345,7 +373,7 @@ export default class ChartContainer extends React.Component {
         //
 
         const rows = (
-            <g transform={`translate(${leftWidth + paddingLeft},${0})`}>
+            <g transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}>
                 <EventHandler
                     key="event-handler"
                     width={chartsWidth}
@@ -372,17 +400,24 @@ export default class ChartContainer extends React.Component {
         //
 
         const svgWidth = this.props.width;
-        const svgHeight = yPosition + timeAxisHeight;
+        const svgHeight = chartsHeight + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
+
+        const svgStyle = merge(
+            true,
+            { display: "block" },
+            this.props.style ? this.props.style : {}
+        );
 
         return this.props.showGridPosition === "over" ? (
             <svg
                 width={svgWidth}
                 height={svgHeight}
-                style={{ display: "block" }}
+                style={svgStyle}
                 ref={c => {
                     this.svg = c;
                 }}
             >
+                {title}
                 {rows}
                 {tracker}
                 {timeAxis}
@@ -396,6 +431,7 @@ export default class ChartContainer extends React.Component {
                     this.svg = c;
                 }}
             >
+                {title}
                 {timeAxis}
                 {rows}
                 {tracker}
@@ -532,10 +568,21 @@ ChartContainer.propTypes = {
      *  };
      * ```
      */
-    timeAxisStyle: PropTypes.shape({
-        label: PropTypes.object, // eslint-disable-line
+    /**
+     * Object specifying the CSS by which the Time Axis can be styled. The object can contain:
+     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
+     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
+     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * respectively.
+     *
+     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray). "axis" is a
+     * regular React rendered SVG line, so it uses camel case.
+     */
+    style: PropTypes.shape({
+        axis: PropTypes.object,
         values: PropTypes.object,
-        axis: PropTypes.object
+        ticks: PropTypes.object
     }),
 
     /**
@@ -563,8 +610,8 @@ ChartContainer.propTypes = {
         PropTypes.string,
         PropTypes.arrayOf(
             PropTypes.shape({
-                label: PropTypes.string, // eslint-disable-line
-                value: PropTypes.string // eslint-disable-line
+                label: PropTypes.string,
+                value: PropTypes.string
             })
         )
     ]),

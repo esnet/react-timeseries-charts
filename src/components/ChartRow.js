@@ -223,6 +223,7 @@ export default class ChartRow extends React.Component {
         // Space used by columns on left and right of charts
         const leftWidth = _.reduce(this.props.leftAxisWidths, (a, b) => a + b, 0);
         const rightWidth = _.reduce(this.props.rightAxisWidths, (a, b) => a + b, 0);
+        const chartWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
         posx = leftWidth;
         for (
@@ -241,6 +242,8 @@ export default class ChartRow extends React.Component {
                     props = {
                         width: colWidth,
                         height: innerHeight,
+                        chartExtent: chartWidth,
+                        isInnerAxis: leftColumnIndex === 0,
                         align: "left",
                         scale: this.scaleMap[id].latestScale()
                     };
@@ -257,7 +260,7 @@ export default class ChartRow extends React.Component {
             }
         }
 
-        posx = this.props.width - rightWidth;
+        posx = this.props.width - rightWidth - paddingRight;
         for (
             let rightColumnIndex = 0;
             rightColumnIndex < this.props.rightAxisWidths.length;
@@ -273,6 +276,9 @@ export default class ChartRow extends React.Component {
                     props = {
                         width: colWidth,
                         height: innerHeight,
+                        chartExtent: chartWidth,
+                        //showGrid: this.props.showGrid,
+                        isInnerAxis: rightColumnIndex === 0,
                         align: "right",
                         scale: this.scaleMap[id].latestScale()
                     };
@@ -298,7 +304,6 @@ export default class ChartRow extends React.Component {
         // current value is stored in the component state.
         //
 
-        const chartWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
         const chartTransform = `translate(${leftWidth + paddingLeft},0)`;
 
         let keyCount = 0;
@@ -386,7 +391,13 @@ export default class ChartRow extends React.Component {
         const clipper = (
             <defs>
                 <clipPath id={this.state.clipId}>
-                    <rect x="0" y="0" width={chartWidth} height={innerHeight} />
+                    <rect
+                        x="0"
+                        y="0"
+                        style={{ strokeOpacity: 0.0 }}
+                        width={chartWidth}
+                        height={innerHeight}
+                    />
                 </clipPath>
             </defs>
         );

@@ -53,7 +53,7 @@ const currencySeries = new TimeSeries({
 });
 
 const style = styler([
-    { key: "aud", color: "steelblue", width: 1, dashed: true },
+    { key: "aud", color: "steelblue", width: 2 },
     { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
@@ -117,6 +117,20 @@ class currency extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={range}
+                                timeAxisStyle={{
+                                    ticks: {
+                                        stroke: "#AAA",
+                                        opacity: 0.25,
+                                        "stroke-dasharray": "1,1"
+                                        // Note: this isn't in camel case because this is
+                                        // passed into d3's style
+                                    },
+                                    values: {
+                                        fill: "#AAA",
+                                        "font-size": 12
+                                    }
+                                }}
+                                showGrid={true}
                                 paddingRight={100}
                                 maxTime={currencySeries.range().end()}
                                 minTime={currencySeries.range().begin()}
@@ -135,6 +149,17 @@ class currency extends React.Component {
                                         label="Price ($)"
                                         min={0.5}
                                         max={1.5}
+                                        style={{
+                                            ticks: {
+                                                stroke: "#AAA",
+                                                opacity: 0.25,
+                                                "stroke-dasharray": "1,1"
+                                                // Note: this isn't in camel case because this is
+                                                // passed into d3's style
+                                            }
+                                        }}
+                                        showGrid
+                                        hideAxisLine
                                         width="60"
                                         type="linear"
                                         format="$,.2f"

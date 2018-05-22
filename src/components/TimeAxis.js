@@ -16,6 +16,7 @@ import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
 import { axisBottom } from "d3-axis";
 import { select } from "d3-selection";
+import "d3-selection-multi";
 import { timeDay, utcDay, timeMonth, utcMonth, timeYear, utcYear } from "d3-time";
 import { timeFormat } from "d3-time-format";
 
@@ -26,18 +27,20 @@ function scaleAsString(scale) {
 }
 
 const defaultStyle = {
-    label: {
-        labelColor: "#8B7E7E", // Default label color
-        labelWeight: 100,
-        labelSize: 12
-    },
     values: {
-        valueColor: "#8B7E7E", // Default label color
-        valueWeight: 100,
-        valueSize: 11
+        stroke: "none",
+        fill: "#8B7E7E", // Default value color
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
     },
     axis: {
-        axisColor: "#C0C0C0"
+        fill: "none",
+        stroke: "#C0C0C0"
     }
 };
 
@@ -52,9 +55,14 @@ export default class TimeAxis extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { scale, utc, format } = nextProps;
-        if (scaleAsString(this.props.scale) !== scaleAsString(scale) || this.props.utc !== utc) {
-            this.renderTimeAxis(scale, format);
+        const { scale, utc, format, showGrid, gridHeight } = nextProps;
+        if (
+            scaleAsString(this.props.scale) !== scaleAsString(scale) ||
+            this.props.utc !== utc ||
+            this.props.showGrid !== showGrid ||
+            this.props.gridHeight !== gridHeight
+        ) {
+            this.renderTimeAxis(scale, format, showGrid, gridHeight);
         }
     }
 
@@ -65,12 +73,29 @@ export default class TimeAxis extends React.Component {
         return false;
     }
 
-    renderTimeAxis(scale, format) {
+    mergeStyles(style) {
+        return {
+            valueStyle: merge(
+                true,
+                defaultStyle.values,
+                this.props.style.values ? this.props.style.values : {}
+            ),
+            tickStyle: merge(
+                true,
+                defaultStyle.ticks,
+                this.props.style.ticks ? this.props.style.ticks : {}
+            )
+        };
+    }
+
+    renderTimeAxis(scale, format, showGrid, gridHeight) {
         let axis;
 
-        const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
+        const tickSize = showGrid ? -gridHeight : 10;
         const utc = this.props.utc;
         const tickCount = this.props.tickCount;
+        const style = this.mergeStyles(this.props.style);
+        const { tickStyle, valueStyle } = style;
 
         if (tickCount > 0) {
             if (format === "day") {
@@ -141,27 +166,6 @@ export default class TimeAxis extends React.Component {
             }
         }
 
-        // Style
-
-        const labelStyle = merge(
-            true,
-            defaultStyle.label,
-            this.props.style.label ? this.props.style.label : {}
-        );
-        const valueStyle = merge(
-            true,
-            defaultStyle.values,
-            this.props.style.values ? this.props.style.values : {}
-        );
-        const axisStyle = merge(
-            true,
-            defaultStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
-        );
-        const { axisColor } = axisStyle;
-        const { valueColor, valueWeight, valueSize } = valueStyle;
-        const { labelColor, labelWeight, labelSize } = labelStyle;
-
         // Remove the old axis from under this DOM node
         select(ReactDOM.findDOMNode(this))
             .selectAll("*")
@@ -173,9 +177,7 @@ export default class TimeAxis extends React.Component {
             .append("g")
             .attr("class", "x axis")
             .style("stroke", "none")
-            .style("fill", valueColor)
-            .style("font-weight", valueWeight)
-            .style("font-size", valueSize)
+            .styles(valueStyle)
             .call(axis.tickSize(tickSize));
 
         if (this.props.angled) {
@@ -183,8 +185,7 @@ export default class TimeAxis extends React.Component {
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .style("fill", valueColor)
-                .style("stroke", "none")
+                .styles(valueStyle)
                 .style("text-anchor", "end")
                 .attr("dx", "-1.2em")
                 .attr("dy", "0em")
@@ -196,22 +197,21 @@ export default class TimeAxis extends React.Component {
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .style("fill", valueColor)
-                .style("stroke", "none");
+                .styles(valueStyle);
         }
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
             .select("line")
-            .style("stroke", axisColor);
+            .styles(tickStyle);
+
         select(ReactDOM.findDOMNode(this))
             .select("g")
             .select("path")
-            .remove(); // eslint-disable-line
+            .remove();
     }
 
     render() {
-        // eslint-disable-line
         return <g />;
     }
 }

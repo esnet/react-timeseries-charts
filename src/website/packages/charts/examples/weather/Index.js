@@ -173,7 +173,6 @@ class weather extends React.Component {
                             <ChartContainer
                                 utc={this.state.mode === "utc"}
                                 timeRange={tempSeries.timerange()}
-                                showGrid={true}
                                 showGridPosition="under"
                                 trackerPosition={this.state.tracker}
                                 trackerTimeFormat="%X"
@@ -181,12 +180,12 @@ class weather extends React.Component {
                             >
                                 <ChartRow height="150">
                                     <YAxis
-                                        id="temp"
-                                        label="Temperature (°F)"
-                                        labelOffset={-5}
-                                        style={style.axisStyle("temp")}
-                                        min={50}
-                                        max={70}
+                                        id="pressure"
+                                        label="Pressure (in)"
+                                        labelOffset={5}
+                                        style={style.axisStyle("pressure")}
+                                        min={29.5}
+                                        max={30.0}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
@@ -206,12 +205,12 @@ class weather extends React.Component {
                                         />
                                     </Charts>
                                     <YAxis
-                                        id="pressure"
-                                        label="Pressure (in)"
+                                        id="temp"
+                                        label="Temperature (°F)"
                                         labelOffset={5}
-                                        style={style.axisStyle("pressure")}
-                                        min={29.5}
-                                        max={30.0}
+                                        style={style.axisStyle("temp")}
+                                        min={50}
+                                        max={70}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
@@ -220,17 +219,16 @@ class weather extends React.Component {
 
                                 <ChartRow height="150">
                                     <YAxis
-                                        id="wind-gust"
-                                        label="Wind gust (mph)"
-                                        labelOffset={-5}
-                                        style={style.axisStyle("gust")}
+                                        id="wind"
+                                        label="Wind (mph)"
+                                        labelOffset={5}
+                                        style={{ labelColor: scheme.wind }}
                                         min={0}
                                         max={50}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
                                     />
-
                                     <Charts>
                                         <LineChart
                                             axis="wind"
@@ -249,12 +247,11 @@ class weather extends React.Component {
                                             }}
                                         />
                                     </Charts>
-
                                     <YAxis
-                                        id="wind"
-                                        label="Wind (mph)"
-                                        labelOffset={5}
-                                        style={{ labelColor: scheme.wind }}
+                                        id="wind-gust"
+                                        label="Wind gust (mph)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("gust")}
                                         min={0}
                                         max={50}
                                         width="80"
@@ -268,7 +265,7 @@ class weather extends React.Component {
                                         id="total-rain"
                                         label="Total Precipitation (in)"
                                         style={style.axisStyle("rainAccum")}
-                                        labelOffset={-5}
+                                        labelOffset={5}
                                         min={0}
                                         max={rainAccumSeries.max("rainAccum")}
                                         width="80"
@@ -294,7 +291,7 @@ class weather extends React.Component {
                                     <YAxis
                                         id="rain"
                                         label="Precipitation (in)"
-                                        labelOffset={5}
+                                        labelOffset={-5}
                                         style={style.axisStyle("rain")}
                                         min={0}
                                         max={rainSeries.max("rain")}

@@ -10,6 +10,38 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import merge from "merge";
+
+const defaultBoxStyle = {
+    fill: "#FEFEFE",
+    stroke: "#DDD",
+    opacity: 0.8
+};
+
+const defaultTextStyle = {
+    fontSize: 11,
+    textAnchor: "left",
+    fill: "#b0b0b0",
+    pointerEvents: "none"
+};
+
+const defaultTextStyleCentered = {
+    fontSize: 11,
+    textAnchor: "middle",
+    fill: "#bdbdbd",
+    pointerEvents: "none"
+};
+
+function mergeStyles(style, isCentered) {
+    return {
+        boxStyle: merge(true, defaultBoxStyle, style.box ? style.box : {}),
+        labelStyle: merge(
+            true,
+            isCentered ? defaultTextStyleCentered : defaultTextStyle,
+            style.label ? style.label : {}
+        )
+    };
+}
 
 /**
  * Renders a simple label surrounded by a box within in svg
@@ -21,30 +53,17 @@ import PropTypes from "prop-types";
  */
 
 const Label = ({ label, style, align, width, height }) => {
-    const textStyle = {
-        fontSize: 11,
-        textAnchor: "left",
-        fill: "#b0b0b0",
-        pointerEvents: "none"
-    };
+    const { boxStyle, labelStyle } = mergeStyles(style, align === "center");
 
-    const textStyleCentered = {
-        fontSize: 11,
-        textAnchor: "middle",
-        fill: "#bdbdbd",
-        pointerEvents: "none"
-    };
-
-    const tstyle = align === "center" ? textStyleCentered : textStyle;
     const posx = align === "center" ? parseInt(width / 2, 10) : 10;
 
     const text = (
-        <text x={posx} y={5} dy="1.2em" style={tstyle}>
+        <text x={posx} y={5} dy="1.2em" style={labelStyle}>
             {label}
         </text>
     );
 
-    const box = <rect x={0} y={0} style={style} width={width} height={height} />;
+    const box = <rect x={0} y={0} style={boxStyle} width={width} height={height} />;
 
     return (
         <g>
@@ -58,8 +77,7 @@ Label.defaultProps = {
     align: "center",
     width: 100,
     height: 100,
-    pointerEvents: "none",
-    style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
+    pointerEvents: "none"
 };
 
 Label.propTypes = {

@@ -300,7 +300,7 @@ export class Styler {
         const c = color || colorLookup[i % colorLookup.length];
         return {
             label: {
-                labelColor: c
+                fill: c
             }
         };
     }
