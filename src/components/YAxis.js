@@ -210,7 +210,6 @@ export default class YAxis extends React.Component {
 
     postSelect(style, hideAxisLine, height) {
         const { valueStyle, tickStyle, axisStyle } = style;
-
         select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
