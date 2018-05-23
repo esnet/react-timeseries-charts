@@ -13,6 +13,7 @@ var BarChart = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     BarChart.prototype.handleHover = function (e, event, column) {
+        console.log("event column ", event, column);
         var bar = { event: event, column: column };
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(bar);
@@ -77,6 +78,7 @@ var BarChart = (function (_super) {
     };
     BarChart.prototype.renderBars = function () {
         var _this = this;
+        console.log("renderBars this.props ", this.props);
         var spacing = +this.props.spacing;
         var offset = +this.props.offset;
         var series = this.props.series;
@@ -142,7 +144,9 @@ var BarChart = (function (_super) {
                             infoTimeFormat: _this.props.infoTimeFormat,
                             markerRadius: _this.props.markerRadius,
                             offsetX: offset,
-                            offsetY: yBase - (positiveBar ? yposPositive : yposNegative)
+                            offsetY: yBase - (positiveBar ? yposPositive : yposNegative),
+                            timeScale: _this.props.timeScale,
+                            yScale: _this.props.yScale
                         };
                         eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
                     }

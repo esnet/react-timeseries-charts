@@ -170,6 +170,7 @@ export class BarChart extends React.Component<BarChartProps> {
     };
 
     handleHover(e: React.MouseEvent<SVGRectElement>, event: Event<Key>, column: string) {
+        console.log("event column ", event, column);
         const bar = { event, column };
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(bar);
@@ -241,6 +242,7 @@ export class BarChart extends React.Component<BarChartProps> {
     }
 
     renderBars() {
+        console.log("renderBars this.props ", this.props);
         const spacing = +this.props.spacing;
         const offset = +this.props.offset;
         const series = this.props.series;
@@ -313,7 +315,9 @@ export class BarChart extends React.Component<BarChartProps> {
                                 infoTimeFormat: this.props.infoTimeFormat,
                                 markerRadius: this.props.markerRadius,
                                 offsetX: offset,
-                                offsetY: yBase - (positiveBar ? yposPositive : yposNegative)
+                                offsetY: yBase - (positiveBar ? yposPositive : yposNegative),
+                                timeScale: this.props.timeScale,
+                                yScale: this.props.yScale
                             };
                             eventMarker = <EventMarker {...eventMarkerProps} />;
                         }

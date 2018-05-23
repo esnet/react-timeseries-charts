@@ -51,6 +51,9 @@ export type AxisProps = {
  *
  * You can also control the number of ticks with `tickCount` (for linear scales)
  * and the size of the ticks with `tickSize`.
+ * 
+ * According to d3, the specified tick count is only a hint. The scale may return 
+ * more or fewer values depending on the domain.
  */
 export class Axis extends React.Component<AxisProps> {
     static defaultProps: Partial<AxisProps> = {

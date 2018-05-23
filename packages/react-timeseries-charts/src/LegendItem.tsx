@@ -99,7 +99,8 @@ export class LegendItem extends React.Component<LegendItemProps> {
     render() {
         const { symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
         let symbol;
-        switch (this.props.type) {
+        console.log("this.props.type is ", this.props.type);
+        switch (this.props.type.toUpperCase()) {
             case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
                 break;

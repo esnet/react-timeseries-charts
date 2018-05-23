@@ -140,7 +140,9 @@ var ScatterChart = (function (_super) {
                         infoWidth: _this.props.infoWidth,
                         infoHeight: _this.props.infoWidth,
                         infoTimeFormat: _this.props.infoTimeFormat,
-                        markerRadius: 0
+                        markerRadius: 0,
+                        timeScale: _this.props.timeScale,
+                        yScale: _this.props.yScale
                     };
                     eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
                 }

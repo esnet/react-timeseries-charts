@@ -254,7 +254,9 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                         infoWidth: this.props.infoWidth,
                         infoHeight: this.props.infoWidth,
                         infoTimeFormat: this.props.infoTimeFormat,
-                        markerRadius: 0
+                        markerRadius: 0,
+                        timeScale: this.props.timeScale,
+                        yScale: this.props.yScale
                     };
                     eventMarker = <EventMarker {...eventMarkerProps} />;
                 }

@@ -211,6 +211,7 @@ const volume = React.createClass({
         let infoValues = [];
         let infoNetValues = [];
         if (highlight) {
+            console.log("here ", highlight.event, highlight.event.get(highlight.column));
             const trafficText = `${formatter(highlight.event.get(highlight.column))}`;
             infoValues = [{ label: "Traffic", value: trafficText }];
             infoNetValues = [{ label: "Traffic " + highlight.column, value: trafficText }];
@@ -260,7 +261,7 @@ const volume = React.createClass({
                                             series={octoberTrafficSeries}
                                             info={infoValues}
                                             infoTimeFormat={index =>
-                                                moment(index.begin()).format("Do MMM 'YY")}
+                                                moment(index).format("Do MMM 'YY")}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
