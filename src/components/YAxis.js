@@ -210,11 +210,6 @@ export default class YAxis extends React.Component {
 
     postSelect(style, hideAxisLine, height) {
         const { valueStyle, tickStyle, axisStyle } = style;
-        const x = align === "left" ? width - MARGIN : 0;
-
-        select(ReactDOM.findDOMNode(this))
-            .select("g")
-            .attr("transform", `translate(${x},0)`);
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
