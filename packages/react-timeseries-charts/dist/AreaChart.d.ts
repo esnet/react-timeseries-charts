@@ -22,7 +22,7 @@ export declare type AreaChartProps = ChartProps & {
     onSelectionChange?: (column: string) => any;
 };
 export declare class AreaChart extends React.Component<AreaChartProps> {
-    defaultProps: Partial<AreaChartProps>;
+    static defaultProps: Partial<AreaChartProps>;
     shouldComponentUpdate(nextProps: AreaChartProps): boolean;
     handleHover(e: React.MouseEvent<SVGPathElement>, column: string): void;
     handleHoverLeave(): void;

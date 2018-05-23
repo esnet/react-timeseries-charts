@@ -235,7 +235,7 @@ export class BarChart extends React.Component<BarChartProps> {
         } else if (isHighlighted) {
             style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(d.normal, s.normal ? s.normal : {});
+            style = _.merge(d.normal, s ? s.normal : {});
         }
         return style;
     }
@@ -275,8 +275,6 @@ export class BarChart extends React.Component<BarChartProps> {
                 } else {
                     x = timeScale(begin) + spacing + offset;
                 }
-                console.log("yScale is ", yScale);
-                console.log("yScale(0) is ", yScale(0));
                 const yBase = yScale(0);
                 let yposPositive = yBase;
                 let yposNegative = yBase;

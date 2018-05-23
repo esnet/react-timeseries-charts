@@ -19,16 +19,7 @@ var StyleType;
 var AreaChart = (function (_super) {
     tslib_1.__extends(AreaChart, _super);
     function AreaChart() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.defaultProps = {
-            interpolation: types_1.CurveInterpolation.curveLinear,
-            columns: {
-                up: [],
-                down: []
-            },
-            stack: true
-        };
-        return _this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AreaChart.prototype.shouldComponentUpdate = function (nextProps) {
         var newSeries = nextProps.series;
@@ -178,6 +169,14 @@ var AreaChart = (function (_super) {
     };
     AreaChart.prototype.render = function () {
         return React.createElement("g", null, this.renderAreas());
+    };
+    AreaChart.defaultProps = {
+        interpolation: types_1.CurveInterpolation.curveLinear,
+        columns: {
+            up: [],
+            down: []
+        },
+        stack: true
     };
     return AreaChart;
 }(React.Component));

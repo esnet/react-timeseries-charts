@@ -14,8 +14,10 @@ import React from "react";
 import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
-import { TimeSeries, timeSeries } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
+import { timeSeries } from "pondjs";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, Styler } from "react-timeseries-charts";
+
+import 'react-select/dist/react-select.css';
 
 import continents_docs from "./continents_docs.md";
 import continents_thumbnail from "./continents_thumbnail.png";
@@ -87,6 +89,7 @@ const continents = React.createClass({
         const style = styler(columnNames, this.state.scheme);
         const legendCategories = columnNames.map(d => ({ key: d, label: d }));
 
+        console.log("legendCategories style ", legendCategories, style);
         return (
             <div>
                 <div className="row">

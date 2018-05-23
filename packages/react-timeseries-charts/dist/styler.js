@@ -7,6 +7,7 @@ var Styler = (function () {
     function Styler(columns, scheme) {
         if (scheme === void 0) { scheme = "Paired"; }
         var _this = this;
+        console.log("this is ", this, columns, scheme);
         this.columnStyles = {};
         if (_.isArray(columns)) {
             columns.forEach(function (column) {
@@ -40,7 +41,7 @@ var Styler = (function () {
         var _a = this.columnStyles[columnName], color = _a.color, _b = _a.width, width = _b === void 0 ? 1 : _b, _c = _a.dashed, dashed = _c === void 0 ? false : _c;
         var c = color || colorLookup[i % colorLookup.length];
         var styleSymbol = {};
-        if (type === LegendItem_1.LegendItemType.Swatch || type === LegendItem_1.LegendItemType.Dot) {
+        if (type.toUpperCase() === LegendItem_1.LegendItemType.Swatch || type === LegendItem_1.LegendItemType.Dot) {
             styleSymbol = {
                 fill: c,
                 opacity: 0.9,
@@ -48,7 +49,7 @@ var Styler = (function () {
                 cursor: "pointer"
             };
         }
-        else if (type === LegendItem_1.LegendItemType.Line) {
+        else if (type.toUpperCase() === LegendItem_1.LegendItemType.Line) {
             styleSymbol = {
                 opacity: 0.9,
                 stroke: c,

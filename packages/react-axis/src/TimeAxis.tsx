@@ -140,12 +140,12 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         standalone: false,
         labelPosition: 50,
         labelStyle: {
-            fill: "#FF0000",
+            fill: "grey",
             stroke: "none",
             pointerEvents: "none"
         },
         textStyle: {
-            fill: "#FF0000",
+            fill: "grey",
             stroke: "none",
             pointerEvents: "none"
         },

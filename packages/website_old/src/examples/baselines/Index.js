@@ -11,7 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import { timeSeries, TimeSeries } from "pondjs";
+import { timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Resizable } from "react-timeseries-charts";
 
 import baselines_docs from "./baselines_docs.md";
@@ -48,19 +48,23 @@ const baselineStyleLite = {
     }
 };
 
-const baselines = React.createClass({
-    getInitialState() {
-        return {
+class baselines extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             tracker: null,
             timerange: series.range()
         };
-    },
+    }
+
     handleTrackerChanged(tracker) {
         this.setState({ tracker });
-    },
+    }
+
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
-    },
+    }
+
     render() {
         return (
             <Resizable>
@@ -113,7 +117,7 @@ const baselines = React.createClass({
             </Resizable>
         );
     }
-});
+};
 
 // Export example
 export default { baselines, baselines_docs, baselines_thumbnail };

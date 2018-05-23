@@ -11,7 +11,7 @@
 /* eslint max-len:0 */
 
 import React from "react";
-import { indexedSeries, TimeSeries, Index, window, duration, period, time } from "pondjs";
+import { indexedSeries, window, duration, time } from "pondjs";
 import styler, {
     ChartContainer,
     ChartRow,
@@ -65,8 +65,7 @@ const series = indexedSeries({
     ])
 });
 
-const barchart = React.createClass({
-    displayName: "BarChartExample",
+class barchart extends React.Component {
     render() {
         const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
 
@@ -93,13 +92,13 @@ const barchart = React.createClass({
                                         type="linear"
                                     />
                                     <Charts>
-                                        <BarChart
+                                         <BarChart
                                             axis="rain"
                                             style={style}
                                             spacing={1}
                                             columns={["precip"]}
                                             series={series}
-                                        />
+                                        /> 
                                     </Charts>
                                 </ChartRow>
                             </ChartContainer>
@@ -109,7 +108,7 @@ const barchart = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { barchart, barchart_docs, barchart_thumbnail };

@@ -51,6 +51,7 @@ export type ChartProps = {
     timeScale?: ScaleTime<number, number>;
     yScale?: ScalerFunction;
     timeFormat?: string;
+    transition?: number;
 };
 
 //

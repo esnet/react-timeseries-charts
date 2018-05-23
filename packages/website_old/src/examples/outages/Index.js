@@ -12,7 +12,7 @@
 
 import React from "react/";
 import * as Immutable from "immutable";
-import { TimeSeries, TimeRangeEvent, TimeRange, timerange, timeRangeEvent } from "pondjs";
+import { TimeSeries, timerange, timeRangeEvent } from "pondjs";
 import { ChartContainer, ChartRow, Charts, EventChart, Resizable } from "react-timeseries-charts";
 
 import outages_docs from "./outages_docs.md";
@@ -99,19 +99,25 @@ function outageEventStyleFunc(event, state) {
     }
 }
 
-const outages = React.createClass({
-    getInitialState() {
-        return {
+class outages extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             tracker: null,
             timerange: series.timerange()
         };
-    },
+        this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+    }
+
     handleTrackerChanged(tracker) {
         this.setState({ tracker });
-    },
+    }
+
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
-    },
+    }
+
     render() {
         return (
             <div>
@@ -140,7 +146,7 @@ const outages = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { outages, outages_docs, outages_thumbnail };

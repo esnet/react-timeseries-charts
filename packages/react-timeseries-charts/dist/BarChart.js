@@ -71,7 +71,7 @@ var BarChart = (function (_super) {
             style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(d.normal, s.normal ? s.normal : {});
+            style = _.merge(d.normal, s ? s.normal : {});
         }
         return style;
     };
@@ -111,8 +111,6 @@ var BarChart = (function (_super) {
             else {
                 x = timeScale(begin) + spacing + offset;
             }
-            console.log("yScale is ", yScale);
-            console.log("yScale(0) is ", yScale(0));
             var yBase = yScale(0);
             var yposPositive = yBase;
             var yposNegative = yBase;

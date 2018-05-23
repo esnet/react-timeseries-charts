@@ -30,7 +30,7 @@ import { TimeMarker } from "./TimeMarker";
 
 const defaultTimeAxisStyle = {
     labels: {
-        labelColor: "#FF0000",
+        labelColor: "#8B7E7E",
         labelSize: 11
     },
     axis: {

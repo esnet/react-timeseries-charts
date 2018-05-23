@@ -128,6 +128,7 @@ var LineChart = (function (_super) {
         return _.map(this.props.columns, function (column) { return _this.renderLine(column); });
     };
     LineChart.prototype.renderLine = function (column) {
+        var _this = this;
         var pathLines = [];
         var count = 1;
         if (this.props.breakLine) {
@@ -144,7 +145,7 @@ var LineChart = (function (_super) {
                 }
                 else if (currentPoints_1) {
                     if (currentPoints_1.length > 1) {
-                        pathLines.push(this.renderPath(currentPoints_1, column, count));
+                        pathLines.push(_this.renderPath(currentPoints_1, column, count));
                         count += 1;
                     }
                     currentPoints_1 = null;
@@ -156,17 +157,17 @@ var LineChart = (function (_super) {
             }
         }
         else {
-            var cleanedPoints = [];
-            for (var _i = 0, _a = this.props.series.collection().eventList(); _i < _a.length; _i++) {
-                var d = _a[_i];
+            var cleanedPoints_1 = [];
+            var eventList = this.props.series._collection.eventList();
+            eventList.forEach(function (d) {
                 var timestamp = new Date(d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2);
                 var value = d.get(column);
                 var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
                 if (!badPoint) {
-                    cleanedPoints.push({ x: timestamp, y: value });
+                    cleanedPoints_1.push({ x: timestamp, y: value });
                 }
-            }
-            pathLines.push(this.renderPath(cleanedPoints, column, count));
+            });
+            pathLines.push(this.renderPath(cleanedPoints_1, column, count));
             count += 1;
         }
         return React.createElement("g", { key: column }, pathLines);

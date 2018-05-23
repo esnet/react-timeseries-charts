@@ -99,7 +99,7 @@ export type AreaChartProps = ChartProps & {
  * rather than hard coding the width as in the above example.
  */
 export class AreaChart extends React.Component<AreaChartProps> {
-    defaultProps: Partial<AreaChartProps> = {
+    static defaultProps: Partial<AreaChartProps> = {
         interpolation: CurveInterpolation.curveLinear,
         columns: {
             up: [],

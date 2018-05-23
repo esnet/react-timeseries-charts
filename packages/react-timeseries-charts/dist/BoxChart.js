@@ -92,6 +92,7 @@ var BoxChart = (function (_super) {
             }
             else {
                 var input = props.series;
+                console.log("input, props.column ", input, props.column);
                 _this.series = getSeries(input, props.column);
             }
         }

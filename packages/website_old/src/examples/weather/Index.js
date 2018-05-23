@@ -13,7 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import Moment from "moment";
-import { TimeSeries, timeSeries } from "pondjs";
+import { timeSeries } from "pondjs";
 import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data

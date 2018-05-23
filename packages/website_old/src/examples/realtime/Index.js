@@ -17,14 +17,12 @@ import {
     TimeRange,
     timeEvent,
     Trigger,
-    period,
     stream,
     percentile,
     duration,
-    window,
-    TimeEvent
+    window
 } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend, styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend } from "react-timeseries-charts";
 
 import realtime_docs from "./realtime_docs.md";
 import realtime_thumbnail from "./realtime_thumbnail.png";

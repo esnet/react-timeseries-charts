@@ -228,7 +228,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
             // Remove nulls and NaNs from the line by generating a break in the line
             const eventList = this.props.series._collection.eventList();
             let currentPoints: PointData = null;
-            eventList.forEach(function(d) {
+            eventList.forEach(d => {
                 const timestamp = new Date(
                     d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
                 );
@@ -252,7 +252,8 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         } else {
             // Ignore nulls and NaNs in the line
             const cleanedPoints = [];
-            for (const d of this.props.series.collection().eventList()) {
+            const eventList = this.props.series._collection.eventList();
+            eventList.forEach(d => {
                 const timestamp = new Date(
                     d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
                 );
@@ -261,7 +262,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
                 if (!badPoint) {
                     cleanedPoints.push({ x: timestamp, y: value });
                 }
-            }
+            });
             pathLines.push(this.renderPath(cleanedPoints, column, count));
             count += 1;
         }

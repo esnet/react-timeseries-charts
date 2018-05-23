@@ -188,6 +188,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
 
     renderMarker(event: Event<Key>, column: string, info: string | LabelValueList) {
         let t;
+        console.log(event, column, info, this.props, event.keyType());
         if (event.keyType() === "time") {
             t = event.timestamp();
         } else {

@@ -47,7 +47,7 @@ function createScale(
     if (_.isUndefined(min) || _.isUndefined(max)) {
         return null;
     }
-    switch (type) {
+    switch (type.toUpperCase()) {
         case ScaleType.Linear:
             return scaleLinear()
                 .domain([min, max])
@@ -146,7 +146,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
             clipId,
             clipPathURL
         };
-        this.scaleInterpolatorMap = {};
+        // this.scaleInterpolatorMap = {};
     }
 
     componentWillMount() {
@@ -231,6 +231,8 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         this.setState({ yAxisScalerMap: scalerMap });
     }
     render() {
+        // const { paddingLeft, paddingRight } = this.props;
+
         const axes = []; // Contains all the yAxis elements used in the render
         const chartList: JSX.Element[] = []; // Contains all the Chart elements used in the render
 
@@ -304,7 +306,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         ) {
             const colWidth = this.props.leftAxisWidths[leftColumnIndex];
             posx -= colWidth;
-            if (leftColumnIndex < leftAxisList.length) {
+            if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
                 transform = `translate(${posx},0)`;
                 // Additional props for left aligned axes
@@ -330,7 +332,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
             rightColumnIndex += 1
         ) {
             const colWidth = this.props.rightAxisWidths[rightColumnIndex];
-            if (rightColumnIndex < rightAxisList.length) {
+            if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
                 transform = `translate(${posx},0)`;
                 // Additional props for right aligned axes
@@ -367,6 +369,12 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                     if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {
                         scale = this.state.yAxisScalerMap[chart.props.axis];
                     }
+
+                    let ytransition = null;
+                    if (_.has(this.scaleInterpolatorMap, chart.props.axis)) {
+                        ytransition = this.scaleInterpolatorMap[chart.props.axis];
+                    }
+
                     const chartProps: Partial<ChartProps> = {
                         key: k,
                         width: chartWidth,
@@ -374,9 +382,15 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                         timeScale: this.props.timeScale,
                         timeFormat: this.props.timeFormat
                     };
+
                     if (scale) {
                         chartProps.yScale = scale;
                     }
+
+                    if (ytransition) {
+                        chartProps.transition = ytransition;
+                    }
+
                     chartList.push(React.cloneElement(chart, chartProps));
                     k += 1;
                 });

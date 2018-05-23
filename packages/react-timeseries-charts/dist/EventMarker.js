@@ -82,6 +82,7 @@ var EventMarker = (function (_super) {
     };
     EventMarker.prototype.renderMarker = function (event, column, info) {
         var t;
+        console.log(event, column, info, this.props, event.keyType());
         if (event.keyType() === "time") {
             t = event.timestamp();
         }

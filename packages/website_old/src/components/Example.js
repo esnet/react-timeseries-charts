@@ -11,8 +11,6 @@
 import React, {Component} from "react";
 import Markdown from "react-markdown";
 
-import Highlighter from "./highlighter";
-
 import Examples from "../examples/examples.js";
 import Meta from "../examples/examples.json";
 
@@ -77,14 +75,6 @@ export default class extends Component {
     }
 
     render() {
-        const tagStyle = {
-            background: "#EEE",
-            padding: 5,
-            borderRadius: 2,
-            margin: 2,
-            fontSize: "smaller"
-        };
-
         const exampleName = this.props.match.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];

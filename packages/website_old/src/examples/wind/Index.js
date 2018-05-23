@@ -14,7 +14,7 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { format } from "d3-format";
-import { TimeSeries, timeSeries } from "pondjs";
+import { timeSeries } from "pondjs";
 import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data
@@ -53,25 +53,31 @@ const series = timeSeries({
 // Render scatter chart
 //
 
-const wind = React.createClass({
-    getInitialState() {
-        return {
+class wind extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             hover: null,
             highlight: null,
             selection: null,
             timerange: series.range()
         };
-    },
+        // this.handleMouseNear = this.handleMouseNear.bind(this);
+        // this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    }
+
     handleSelectionChanged(point) {
         this.setState({
             selection: point
         });
-    },
+    }
+
     handleMouseNear(point) {
         this.setState({
             highlight: point
         });
-    },
+    }
+
     render() {
         const highlight = this.state.highlight;
         const formatter = format(".2f");
@@ -186,7 +192,7 @@ const wind = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { wind, wind_docs, wind_thumbnail };

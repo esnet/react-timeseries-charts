@@ -138,7 +138,8 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         let point;
         let minDistance = Infinity;
         for (const column of this.props.columns) {
-            for (const event of this.props.series.collection().eventList()) {
+            const eventList = this.props.series.collection().eventList();
+            eventList.forEach(event => {
                 const t = event.timestamp();
                 const value = event.get(column);
                 const px = this.props.timeScale(t);
@@ -148,8 +149,9 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                     point = { event, column };
                     minDistance = distance;
                 }
-            }
+            });
         }
+        console.log("point is ", point);
         if (this.props.onMouseNear) {
             this.props.onMouseNear(point);
         }
@@ -196,14 +198,14 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
             if (isSelected) {
                 style = _.merge(d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(d.highlighted, s ? s.highlighted : {});
             } else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge(d.muted, s ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge(d.highlighted, s ? s.highlighted : {});
         } else {
-            style = _.merge(d.normal, s.normal ? s.normal : {});
+            style = _.merge(d.normal, s ? s.normal : {});
         }
         return style;
     }
@@ -218,7 +220,8 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         const pointerEvents = this.props.onSelectionChange ? "auto" : "none";
         this.props.columns.forEach(column => {
             let key = 1;
-            for (const event of series.collection().eventList()) {
+            const eventList = series.collection().eventList();
+            eventList.forEach(event => {
                 const t = new Date(
                     event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
                 );
@@ -269,7 +272,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                 );
                 points.push(point);
                 key += 1;
-            }
+            });
         });
         return (
             <g>

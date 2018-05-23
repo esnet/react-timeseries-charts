@@ -13,7 +13,7 @@ var EventHandler_1 = require("./EventHandler");
 var TimeMarker_1 = require("./TimeMarker");
 var defaultTimeAxisStyle = {
     labels: {
-        labelColor: "#FF0000",
+        labelColor: "#8B7E7E",
         labelSize: 11
     },
     axis: {

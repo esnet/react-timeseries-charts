@@ -15,19 +15,16 @@ import { Link } from "react-router-dom";
 import _ from "underscore";
 import Flexbox from "flexbox-react";
 
-import Markdown from "react-markdown";
 import Prism from "prismjs";
-import Highlighter from "./highlighter";
 import APIDoc from "./APIDoc";
 
 import Meta from "../examples/examples.json";
 import Examples from "../examples/examples.js";
 import docsFile from "../api/docs.json";
 
-import { codeRenderer, codeBlockRenderer } from "../renderers";
-import { codeStyle, headingStyle, textStyle, groupStyle } from "../styles";
+import { headingStyle } from "../styles";
 
-const Example = React.createClass({
+class Example extends React.Component {
     render() {
         const style = {
             display: "inline-block",
@@ -55,9 +52,9 @@ const Example = React.createClass({
             </Flexbox>
         );
     }
-});
+};
 
-const TaggedExamples = React.createClass({
+class TaggedExamples extends React.Component {
     render() {
         const exampleList = [];
         _.forEach(Meta, (value, key) => {
@@ -83,7 +80,7 @@ const TaggedExamples = React.createClass({
             return <div />;
         }
     }
-});
+};
 
 export default class extends Component {
     componentDidMount() {

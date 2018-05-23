@@ -12,7 +12,7 @@
 
 import React from "react";
 import * as Immutable from "immutable";
-import { TimeSeries, TimeRange, IndexedEvent, Collection, timerange, index, Index, indexedEvent } from "pondjs";
+import { TimeSeries, Collection, timerange, index, indexedEvent, indexedSeries, SortedCollection } from "pondjs";
 import styler, { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable } from "react-timeseries-charts";
 
 import nyc_docs from "./nyc_docs.md";
@@ -29,31 +29,31 @@ const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 
 
 const name = "KNYC";
 const w = Immutable.List(weather);
-const events = Immutable.List(
-    w.map(item => {
-        const {
-            date,
-            actual_min_temp,
-            actual_max_temp,
-            record_min_temp,
-            record_max_temp
-        } = item;
-        return indexedEvent(
-            index(date),
-            Immutable.Map({
-                temp: [
-                    +record_min_temp, //eslint-disable-line
-                    +actual_min_temp, //eslint-disable-line
-                    +actual_max_temp, //eslint-disable-line
-                    +record_max_temp //eslint-disable-line
-                ]
-            })
-        );
-    })
-);
+const events = w.map(item => {
+    const {
+        date,
+        actual_min_temp,
+        actual_max_temp,
+        record_min_temp,
+        record_max_temp
+    } = item;
+    return indexedEvent(
+        index(date),
+        Immutable.Map({
+            temp: [
+                +record_min_temp, //eslint-disable-line
+                +actual_min_temp, //eslint-disable-line
+                +actual_max_temp, //eslint-disable-line
+                +record_max_temp //eslint-disable-line
+            ]
+        })
+    );
+});
 
-const collection = new Collection(events);
-const series = new TimeSeries({ name, collection });
+const c = new Collection(events);
+const series = new TimeSeries({ name, collection: c });
+
+console.log("series is ", series);
 
 //
 // Styles

@@ -13,7 +13,7 @@
 import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
-import { TimeSeries, timeSeries } from "pondjs";
+import { timeSeries } from "pondjs";
 import styler, { ChartContainer, ChartRow, Charts, YAxis, LineChart, Baseline, Legend, Resizable } from "react-timeseries-charts";
 
 import currency_docs from "./currency_docs.md";
@@ -39,24 +39,32 @@ const currencySeries = timeSeries({
     points: buildPoints()
 });
 
+console.log("currencySeries is ", currencySeries);
+
 const style = styler([
     { key: "aud", color: "steelblue", width: 1, dashed: true },
     { key: "euro", color: "#F68B24", width: 2 }
 ]);
 
-const currency = React.createClass({
-    getInitialState() {
-        return {
+class currency extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             tracker: null,
             timerange: currencySeries.range()
         };
-    },
+        this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+    }
+
     handleTrackerChanged(tracker) {
         this.setState({ tracker });
-    },
+    }
+
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
-    },
+    }
+
     render() {
         const f = format("$,.2f");
         const df = timeFormat("%b %d %Y %X");
@@ -152,7 +160,7 @@ const currency = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { currency, currency_docs, currency_thumbnail };

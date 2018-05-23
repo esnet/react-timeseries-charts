@@ -15,7 +15,7 @@ function createScale(yaxis, type, min, max, y0, y1) {
     if (_.isUndefined(min) || _.isUndefined(max)) {
         return null;
     }
-    switch (type) {
+    switch (type.toUpperCase()) {
         case Charts_1.ScaleType.Linear:
             return d3_scale_1.scaleLinear()
                 .domain([min, max])
@@ -45,7 +45,6 @@ var ChartRow = (function (_super) {
             clipId: clipId,
             clipPathURL: clipPathURL
         };
-        _this.scaleInterpolatorMap = {};
         return _this;
     }
     ChartRow.prototype.componentWillMount = function () {
@@ -141,7 +140,7 @@ var ChartRow = (function (_super) {
         for (var leftColumnIndex = 0; leftColumnIndex < this.props.leftAxisWidths.length; leftColumnIndex += 1) {
             var colWidth = this.props.leftAxisWidths[leftColumnIndex];
             posx -= colWidth;
-            if (leftColumnIndex < leftAxisList.length) {
+            if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
                 transform = "translate(" + posx + ",0)";
                 props = {
@@ -157,7 +156,7 @@ var ChartRow = (function (_super) {
         posx = this.props.width - rightWidth;
         for (var rightColumnIndex = 0; rightColumnIndex < this.props.rightAxisWidths.length; rightColumnIndex += 1) {
             var colWidth = this.props.rightAxisWidths[rightColumnIndex];
-            if (rightColumnIndex < rightAxisList.length) {
+            if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
                 transform = "translate(" + posx + ",0)";
                 props = {
@@ -182,6 +181,10 @@ var ChartRow = (function (_super) {
                     if (_.has(_this.state.yAxisScalerMap, chart.props.axis)) {
                         scale = _this.state.yAxisScalerMap[chart.props.axis];
                     }
+                    var ytransition = null;
+                    if (_.has(_this.scaleInterpolatorMap, chart.props.axis)) {
+                        ytransition = _this.scaleInterpolatorMap[chart.props.axis];
+                    }
                     var chartProps = {
                         key: k,
                         width: chartWidth,
@@ -191,6 +194,9 @@ var ChartRow = (function (_super) {
                     };
                     if (scale) {
                         chartProps.yScale = scale;
+                    }
+                    if (ytransition) {
+                        chartProps.transition = ytransition;
                     }
                     chartList.push(React.cloneElement(chart, chartProps));
                     k += 1;

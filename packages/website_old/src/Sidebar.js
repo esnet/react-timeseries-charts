@@ -9,9 +9,8 @@
  */
 
 import React, { Component } from "react";
-import _ from "lodash";
-import { NavLink, Link } from "react-router-dom";
-import {sidebarStyle, sidebarItemStyle, sidebarTitleStyle, activeStyle} from "./styles";
+import { Link } from "react-router-dom";
+import { sidebarStyle, sidebarItemStyle, sidebarTitleStyle } from "./styles";
 
 export default class extends Component {
     render() {
