@@ -26,7 +26,7 @@ The LineChart itself is rendered like this:
 
     <ChartContainer
         timeRange={this.state.timerange}
-        trackerPosition={this.state.tracker}
+        trackerTime={this.state.tracker}
         onTrackerChanged={this.handleTrackerChanged}
         onBackgroundClick={() => this.setState({selection: null})}
         enablePanZoom={true}

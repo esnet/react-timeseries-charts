@@ -113,7 +113,7 @@ class currency extends React.Component {
                                 timeRange={range}
                                 maxTime={currencySeries.range().end()}
                                 minTime={currencySeries.range().begin()}
-                                trackerPosition={this.state.tracker}
+                                trackerTime={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 enablePanZoom={true}

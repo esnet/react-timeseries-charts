@@ -97,7 +97,7 @@ class traffic extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={this.state.timerange}
-                                trackerPosition={this.state.tracker}
+                                trackerTime={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 enablePanZoom={true}
                                 maxTime={trafficSeries.range().end()}

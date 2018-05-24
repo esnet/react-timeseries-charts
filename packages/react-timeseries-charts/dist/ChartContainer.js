@@ -144,7 +144,9 @@ var ChartContainer = (function (_super) {
         var chartsHeight = yPosition;
         var chartsWidth = this.props.width - leftWidth - rightWidth;
         var tracker;
+        console.log("this.props.trackerTime ", this.props.trackerTime);
         if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
+            console.log("here inside ", this.props);
             tracker = (React.createElement("g", { key: "tracker-group", style: { pointerEvents: "none" }, transform: "translate(" + leftWidth + ",0)" },
                 React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
         }

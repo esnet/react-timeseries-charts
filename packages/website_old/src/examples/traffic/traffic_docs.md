@@ -76,7 +76,7 @@ const traffic = React.createClass({
 
                             <ChartContainer
                                 timeRange={this.state.timerange}
-                                trackerPosition={this.state.tracker}
+                                trackerTime={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 enablePanZoom={true}
                                 maxTime={trafficSeries.range().end()}

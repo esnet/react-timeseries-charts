@@ -9,12 +9,12 @@ This section describes how you can use different types of annotations to communi
 
 The charts themselves provide a annotation mechanism in the form of their built-in tracker. A tracker, at its simplest, is a vertical line marking the hovered over time. You can specify this time as a prop on the `ChartContainer`. We use this mechanism a lot, because we tend to use the hovered position to drive display of information elsewhere on the page.
 
-To use the tracker, specify the `trackerPosition` prop in the `ChartContainer`. This prop should be a regular Javascript Date. In the example below we are keeping this time in the component state as `this.state.tracker`.
+To use the tracker, specify the `trackerTime` prop in the `ChartContainer`. This prop should be a regular Javascript Date. In the example below we are keeping this time in the component state as `this.state.tracker`.
 
 ```jsx
 <ChartContainer
     timeRange={this.state.timerange}
-    trackerPosition={this.state.tracker}
+    trackerTime={this.state.tracker}
     onTrackerChanged={this.handleTrackerChanged} >
     <ChartRow height="150">
         <Charts>
@@ -41,7 +41,7 @@ The tracker can also show a value list or label, along with the time, as an over
 
 ```jsx
 <ChartContainer
-    trackerPosition={this.state.tracker}
+    trackerTime={this.state.tracker}
     onTrackerChanged={this.handleTrackerChanged}
     ...
 >

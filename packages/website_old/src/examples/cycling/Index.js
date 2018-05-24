@@ -182,7 +182,7 @@ const cycling = React.createClass({
             <ChartContainer
                 timeRange={this.state.timerange}
                 format="relative"
-                trackerPosition={this.state.tracker}
+                trackerTime={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
                 maxTime={pace.range().end()}
@@ -296,7 +296,7 @@ const cycling = React.createClass({
             <ChartContainer
                 timeRange={this.state.timerange}
                 format="relative"
-                trackerPosition={this.state.tracker}
+                trackerTime={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 enablePanZoom
                 maxTime={pace.range().end()}
@@ -419,7 +419,7 @@ const cycling = React.createClass({
             <ChartContainer
                 timeRange={this.state.timerange}
                 format="relative"
-                trackerPosition={this.state.tracker}
+                trackerTime={this.state.tracker}
                 onTrackerChanged={this.handleTrackerChanged}
                 trackerShowTime
                 enablePanZoom
@@ -483,7 +483,7 @@ const cycling = React.createClass({
             <ChartContainer
                 timeRange={altitude.range()}
                 format="relative"
-                trackerPosition={this.state.tracker}
+                trackerTime={this.state.tracker}
             >
                 <ChartRow height="100" debug={false}>
                     <Brush

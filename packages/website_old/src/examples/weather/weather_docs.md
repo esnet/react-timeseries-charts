@@ -5,7 +5,7 @@ This example uses three rows to create stacked chart:
         timeRange={tempSeries.timerange()}
         showGrid={true}
         showGridPosition="over"
-        trackerPosition={this.state.tracker}
+        trackerTime={this.state.tracker}
         trackerTimeFormat="%X"
         onTrackerChanged={(tracker) => this.setState({tracker})} >
         <ChartRow height="150" >

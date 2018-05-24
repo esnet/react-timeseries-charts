@@ -162,7 +162,7 @@ const weather = React.createClass({
                                 timeRange={tempSeries.timerange()}
                                 showGrid={true}
                                 showGridPosition="under"
-                                trackerPosition={this.state.tracker}
+                                trackerTime={this.state.tracker}
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
                             >
