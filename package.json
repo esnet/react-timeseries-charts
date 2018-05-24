@@ -1,8 +1,13 @@
 {
     "name": "react-timeseries-charts",
-    "version": "0.15.0",
+    "version": "0.15.1",
     "description": "Declarative timeseries charts",
-    "keywords": ["d3", "charts", "react", "timeseries"],
+    "keywords": [
+        "d3",
+        "charts",
+        "react",
+        "timeseries"
+    ],
     "homepage": "http://software.es.net/react-timeseries-charts",
     "main": "lib/entry",
     "author": "ESnet Tools Team <tools@es.net>",
@@ -11,22 +16,25 @@
         "url": "https://github.com/esnet/react-timeseries-charts/issues"
     },
     "scripts": {
-        "docs":
-            "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/packages/charts/api/docs.json --pretty",
+        "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/packages/charts/api/docs.json --pretty",
         "lint": "eslint src/components/*.js",
         "test": "npm run lint",
-        "build":
-            "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
+        "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
         "start-website": "react-scripts start",
-        "build-website":
-            "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs",
+        "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs",
         "precommit": "lint-staged",
         "prettier": "prettier --print-width 100 --tab-width 4 --write \"./src/**/*.js\""
     },
     "lint-staged": {
-        "*.js": ["prettier --print-width 100 --tab-width 4 --write", "git add"]
+        "*.js": [
+            "prettier --print-width 100 --tab-width 4 --write",
+            "git add"
+        ]
     },
-    "pre-commit": ["lint", "build"],
+    "pre-commit": [
+        "lint",
+        "build"
+    ],
     "license": "BSD-3-Clause-LBNL",
     "dependencies": {
         "array.prototype.fill": "^1.0.1",
