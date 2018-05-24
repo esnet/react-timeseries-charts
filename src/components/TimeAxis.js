@@ -51,7 +51,8 @@ const defaultStyle = {
  */
 export default class TimeAxis extends React.Component {
     componentDidMount() {
-        this.renderTimeAxis(this.props.scale, this.props.format);
+        const { scale, format, showGrid, gridHeight } = this.props;
+        this.renderTimeAxis(scale, format, showGrid, gridHeight);
     }
 
     componentWillReceiveProps(nextProps) {
