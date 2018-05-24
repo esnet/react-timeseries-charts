@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var _ = require("lodash");
+var colorbrewer = require("colorbrewer");
 var LegendItem_1 = require("./LegendItem");
 var Styler = (function () {
     function Styler(columns, scheme) {
@@ -25,12 +26,21 @@ var Styler = (function () {
             var cc = _.isString(c) ? c : c.key;
             return cc;
         });
+        if (scheme && !_.has(colorbrewer, scheme)) {
+            throw new Error("Unknown scheme '" + scheme + "' supplied to Style constructor");
+        }
+        this.colorScheme = scheme;
     }
     Styler.prototype.numColumns = function () {
         return this.columnNames.length;
     };
     Styler.prototype.colorLookup = function (columnCount) {
-        return [];
+        var colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
+        var minSchemeSize = Number(_.min(colorSchemeKeys));
+        var maxSchemeSize = Number(_.max(colorSchemeKeys));
+        var colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
+        colorLookupSize = _.max([colorLookupSize, minSchemeSize]);
+        return this.colorScheme ? colorbrewer[this.colorScheme][colorLookupSize] : [];
     };
     Styler.prototype.legendStyle = function (column, type) {
         var numColumns = this.numColumns();
@@ -40,7 +50,7 @@ var Styler = (function () {
         var _a = this.columnStyles[columnName], color = _a.color, _b = _a.width, width = _b === void 0 ? 1 : _b, _c = _a.dashed, dashed = _c === void 0 ? false : _c;
         var c = color || colorLookup[i % colorLookup.length];
         var styleSymbol = {};
-        if (type.toUpperCase() === LegendItem_1.LegendItemType.Swatch || type === LegendItem_1.LegendItemType.Dot) {
+        if (type.toUpperCase() === LegendItem_1.LegendItemType.Swatch || type.toUpperCase() === LegendItem_1.LegendItemType.Dot) {
             styleSymbol = {
                 fill: c,
                 opacity: 0.9,

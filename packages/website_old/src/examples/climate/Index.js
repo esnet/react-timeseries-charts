@@ -51,15 +51,17 @@ const style = styler([
     { key: "five_year", color: "black", width: 2 }
 ]);
 
-const climate = React.createClass({
-    getInitialState() {
-        return {
+class climate extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             tracker: null,
             trackerValue: "-- °C",
             trackerEvent: null,
             markerMode: "flag"
         };
-    },
+    }
+
     handleTrackerChanged(t) {
         if (t) {
             const e = temperatureSeries.atTime(t);
@@ -72,7 +74,7 @@ const climate = React.createClass({
         } else {
             this.setState({ tracker: null, trackerValue: null, trackerEvent: null });
         }
-    },
+    }
 
     renderMarker() {
         if (!this.state.tracker) {
@@ -107,7 +109,7 @@ const climate = React.createClass({
                 />
             );
         }
-    },
+    }
 
     renderChart() {
         const min = -0.5;
@@ -175,7 +177,8 @@ const climate = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     render() {
         const linkStyle = {
             fontWeight: 600,
@@ -217,7 +220,7 @@ const climate = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { climate, climate_docs, climate_thumbnail };

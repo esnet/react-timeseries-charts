@@ -15,7 +15,7 @@ import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
 import { timeSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, Styler } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable } from "react-timeseries-charts";
 
 import 'react-select/dist/react-select.css';
 
@@ -68,17 +68,20 @@ const styler = styler(columnNames.map((c, i) => ({
 // Build area chart style
 //
 
-const continents = React.createClass({
-    getInitialState() {
-        return {
+class continents extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             highlight: null,
             selection: null,
             scheme: "Paired"
         };
-    },
+    }
+
     handleSchemeChange({ value }) {
         this.setState({ scheme: value });
-    },
+    }
+
     render() {
         const cols = { up: columnNames, down: [] };
         const min = 0;
@@ -89,7 +92,6 @@ const continents = React.createClass({
         const style = styler(columnNames, this.state.scheme);
         const legendCategories = columnNames.map(d => ({ key: d, label: d }));
 
-        console.log("style is ", style);
         return (
             <div>
                 <div className="row">
@@ -146,7 +148,7 @@ const continents = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { continents, continents_docs, continents_thumbnail };

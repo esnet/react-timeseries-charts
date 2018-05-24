@@ -55,7 +55,7 @@ class realtime extends React.Component {
 
         this.stream = stream();
 
-        const p90 = this.stream
+        this.stream
             .groupByWindow({
                 window: window(duration("5m")),
                 trigger: Trigger.onDiscardedWindow
@@ -69,7 +69,7 @@ class realtime extends React.Component {
                 this.setState({ percentile90Out: events });
             });
 
-        const p50 = this.stream
+        this.stream
             .groupByWindow({
                 window: window(duration("5m")),
                 trigger: Trigger.onDiscardedWindow

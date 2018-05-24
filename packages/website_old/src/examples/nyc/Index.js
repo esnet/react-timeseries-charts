@@ -12,7 +12,7 @@
 
 import React from "react";
 import * as Immutable from "immutable";
-import { TimeSeries, Collection, timerange, index, indexedEvent, indexedSeries, SortedCollection } from "pondjs";
+import { TimeSeries, Collection, timerange, index, indexedEvent } from "pondjs";
 import styler, { ChartContainer, ChartRow, Charts, YAxis, BoxChart, Resizable } from "react-timeseries-charts";
 
 import nyc_docs from "./nyc_docs.md";
@@ -57,17 +57,19 @@ const series = new TimeSeries({ name, collection: c });
 // Styles
 //
 
-const nyc = React.createClass({
-    //eslint-disable-line
-    getInitialState() {
-        return {
+class nyc extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             timerange: timerange(1425168000000, 1433116800000),
             selection: null
         };
-    },
+    }
+
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
-    },
+    }
+
     infoValues() {
         if (this.state.highlight) {
             return [
@@ -90,7 +92,8 @@ const nyc = React.createClass({
             ];
         }
         return null;
-    },
+    }
+
     render() {
         return (
             <div>
@@ -137,7 +140,7 @@ const nyc = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { nyc, nyc_docs, nyc_thumbnail };

@@ -10,6 +10,7 @@
 
 import * as _ from "lodash";
 import * as chroma from "chroma-js";
+import * as colorbrewer from "colorbrewer";
 
 import {
     AreaChartStyle,
@@ -105,10 +106,10 @@ export class Styler {
             return cc;
         });
 
-        //if (scheme && !_.has(colorbrewer, scheme)) {
-        //    throw new Error(`Unknown scheme '${scheme}' supplied to Style constructor`);
-        //}
-        //this.colorScheme = scheme;
+        if (scheme && !_.has(colorbrewer, scheme)) {
+           throw new Error(`Unknown scheme '${scheme}' supplied to Style constructor`);
+        }
+        this.colorScheme = scheme;
     }
 
     numColumns() {
@@ -123,15 +124,12 @@ export class Styler {
      * just the smallest scheme will be returned.
      */
     colorLookup(columnCount: number): string[] {
-        return [];
-        /*
-        const scale = chroma.scale(this.colorScheme);
-        const minSchemeSize = _.min(colorSchemeKeys);
-        const maxSchemeSize = _.max(colorSchemeKeys);
+        const colorSchemeKeys = _.keys(colorbrewer[this.colorScheme]);
+        const minSchemeSize = Number(_.min(colorSchemeKeys));
+        const maxSchemeSize = Number(_.max(colorSchemeKeys));
         let colorLookupSize = columnCount > maxSchemeSize ? maxSchemeSize : columnCount;
         colorLookupSize = _.max([colorLookupSize, minSchemeSize]);
         return this.colorScheme ? colorbrewer[this.colorScheme][colorLookupSize] : [];
-        */
     }
 
     /**
@@ -146,7 +144,7 @@ export class Styler {
         const c = color || colorLookup[i % colorLookup.length];
 
         let styleSymbol: React.CSSProperties = {};
-        if (type.toUpperCase() === LegendItemType.Swatch || type === LegendItemType.Dot) {
+        if (type.toUpperCase() === LegendItemType.Swatch || type.toUpperCase() === LegendItemType.Dot) {
             styleSymbol = {
                 fill: c,
                 opacity: 0.9,

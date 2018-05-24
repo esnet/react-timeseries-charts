@@ -119,6 +119,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
         const style = nextProps.style;
         const highlight = nextProps.highlight;
         const selection = nextProps.selection;
+
         const widthChanged = this.props.width !== width;
         const timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
         const yAxisScaleChanged = this.props.yScale !== yScale;
@@ -127,6 +128,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
         const styleChanged = JSON.stringify(this.props.style) !== JSON.stringify(style);
         const highlightChanged = this.props.highlight !== highlight;
         const selectionChanged = this.props.selection !== selection;
+        
         let seriesChanged = false;
         if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
@@ -185,8 +187,8 @@ export class AreaChart extends React.Component<AreaChartProps> {
      */
     style(column: string, type: StyleType) {
         let style;
-        const styleMap = this.providedAreaStyleMap(column);
         
+        const styleMap = this.providedAreaStyleMap(column);
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
 

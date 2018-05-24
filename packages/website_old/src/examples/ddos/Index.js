@@ -55,15 +55,17 @@ const style = styler([
     { key: "requests", color: "#9467bd", width: 2 }
 ]);
 
-const ddos = React.createClass({
-    getInitialState() {
-        return {
+class ddos extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             active: {
                 requests: true,
                 connections: true
             }
         };
-    },
+    }
+
     renderChart() {
         let charts = [];
         let max = 100;
@@ -144,12 +146,14 @@ const ddos = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     handleActiveChange(key) {
         const active = this.state.active;
         active[key] = !active[key];
         this.setState({ active });
-    },
+    }
+
     render() {
         const legend = [
             {
@@ -189,7 +193,7 @@ const ddos = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { ddos, ddos_docs, ddos_thumbnail };

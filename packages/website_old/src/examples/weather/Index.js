@@ -124,13 +124,15 @@ const linkStyleActive = {
 // Render weather charts
 //
 
-const weather = React.createClass({
-    getInitialState() {
-        return {
+class weather extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             tracker: null,
             mode: "local"
         };
-    },
+    }
+
     render() {
         return (
             <div>
@@ -300,7 +302,7 @@ const weather = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { weather, weather_docs, weather_thumbnail };

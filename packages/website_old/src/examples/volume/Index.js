@@ -129,17 +129,19 @@ _.each(monthlyJSON, router => {
     }
 });
 
-const volume = React.createClass({
-    displayName: "VolumeExample",
-    getInitialState() {
-        return {
+class volume extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             timerange: octoberTrafficSeries.range(),
             selection: null
         };
-    },
+    }
+
     handleTimeRangeChange(timerange) {
         this.setState({ timerange });
-    },
+    }
+
     render() {
         /*
         
@@ -455,7 +457,7 @@ const volume = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { volume, volume_docs, volume_thumbnail };

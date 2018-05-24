@@ -117,20 +117,23 @@ const speedSummaryValues = [
     { label: "Avg", value: speedFormat(speed.avg("speed")) }
 ];
 
-const cycling = React.createClass({
-    getInitialState() {
+class cycling extends React.Component {
+    constructor(props) {
+        super(props);
         const initialRange = timerange(75 * 60 * 1000, 125 * 60 * 1000);
-        return {
+        this.state = {
             mode: "channels",
             rollup: window(duration("1m")),
             tracker: null,
             timerange: initialRange,
             brushrange: initialRange
         };
-    },
+    }
+
     handleTrackerChanged(t) {
         this.setState({ tracker: t });
-    },
+    }
+
     // Handles when the brush changes the timerange
     handleTimeRangeChange(timerange) {
         if (timerange) {
@@ -138,10 +141,12 @@ const cycling = React.createClass({
         } else {
             this.setState({ timerange: altitude.range(), brushrange: null });
         }
-    },
+    }
+
     handleChartResize(width) {
         this.state({ width });
-    },
+    }
+
     renderChart() {
         if (this.state.mode === "multiaxis") {
             return this.renderMultiAxisChart();
@@ -152,7 +157,8 @@ const cycling = React.createClass({
         }
 
         return <div>No chart</div>;
-    },
+    }
+
     renderChannelsChart() {
         const tr = this.state.timerange;
         const speedCropped = speed.crop(tr);
@@ -266,7 +272,8 @@ const cycling = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     renderBoxChart() {
         const tr = this.state.timerange;
         const speedCropped = speed.crop(tr);
@@ -380,7 +387,8 @@ const cycling = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     renderMultiAxisChart() {
         const tr = this.state.timerange;
         const speedBegin = speed.bisect(tr.begin());
@@ -477,7 +485,8 @@ const cycling = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     renderBrush() {
         return (
             <ChartContainer
@@ -511,7 +520,8 @@ const cycling = React.createClass({
                 </ChartRow>
             </ChartContainer>
         );
-    },
+    }
+
     renderMode() {
         const linkStyle = {
             fontWeight: 600,
@@ -549,7 +559,8 @@ const cycling = React.createClass({
                 <hr />
             </div>
         );
-    },
+    }
+
     renderModeOptions() {
         const linkStyle = {
             fontWeight: 600,
@@ -594,7 +605,8 @@ const cycling = React.createClass({
             );
         }
         return <div />;
-    },
+    }
+
     render() {
         const chartStyle = {
             borderStyle: "solid",
@@ -650,7 +662,7 @@ const cycling = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { cycling, cycling_docs, cycling_thumbnail };
