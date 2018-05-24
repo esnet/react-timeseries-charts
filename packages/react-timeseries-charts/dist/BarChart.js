@@ -30,7 +30,7 @@ var BarChart = (function (_super) {
         }
         e.stopPropagation();
     };
-    BarChart.prototype.providedColumnStyle = function (column) {
+    BarChart.prototype.providedBarStyleMap = function (column) {
         var style = style_1.defaultBarChartChannelStyle;
         if (this.props.style) {
             if (this.props.style instanceof styler_1.Styler) {
@@ -47,7 +47,7 @@ var BarChart = (function (_super) {
     };
     BarChart.prototype.style = function (element, column, event) {
         var style;
-        var styleMap = this.providedColumnStyle(column);
+        var styleMap = this.providedBarStyleMap(column);
         var d = style_1.defaultBarChartChannelStyle.bar;
         var s = styleMap[element] ? styleMap[element] : styleMap;
         var isHighlighted = this.props.highlighted &&
@@ -58,20 +58,20 @@ var BarChart = (function (_super) {
             pondjs_1.Event.is(this.props.selected.event, event);
         if (this.props.selected) {
             if (isSelected) {
-                style = _.merge({}, d.selected, s.selected ? s.selected : {});
+                style = _.merge(true, d.selected, s.selected ? s.selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
             }
             else {
-                style = _.merge({}, d.muted, s.muted ? s.muted : {});
+                style = _.merge(true, d.muted, s.muted ? s.muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge({}, d.normal, s.normal ? s.normal : {});
+            style = _.merge(true, d.normal, s.normal ? s.normal : {});
         }
         return style;
     };
@@ -79,10 +79,11 @@ var BarChart = (function (_super) {
         var _this = this;
         var spacing = +this.props.spacing;
         var offset = +this.props.offset;
+        var minBarHeight = this.props.minBarHeight;
         var series = this.props.series;
         var timeScale = this.props.timeScale;
         var yScale = this.props.yScale;
-        var columns = this.props.columns;
+        var columns = this.props.columns || ["value"];
         var bars = [];
         var eventMarker;
         series
@@ -122,7 +123,7 @@ var BarChart = (function (_super) {
                     var style = _this.style("bar", column, event);
                     var height = yScale(0) - yScale(value);
                     var positiveBar = height >= 0;
-                    height = Math.max(Math.abs(height), 1);
+                    height = Math.max(Math.abs(height), minBarHeight);
                     var y = positiveBar ? yposPositive - height : yposNegative;
                     var isHighlighted = _this.props.highlighted &&
                         column === _this.props.highlighted.column &&
@@ -185,9 +186,11 @@ var BarChart = (function (_super) {
         return React.createElement("g", null, this.renderBars());
     };
     BarChart.defaultProps = {
+        visible: true,
         columns: ["value"],
         spacing: 1.0,
         offset: 0,
+        minBarHeight: 1,
         markerRadius: 2,
         infoWidth: 90,
         infoHeight: 30

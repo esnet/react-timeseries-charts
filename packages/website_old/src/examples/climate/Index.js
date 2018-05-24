@@ -60,6 +60,7 @@ class climate extends React.Component {
             trackerEvent: null,
             markerMode: "flag"
         };
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
     }
 
     handleTrackerChanged(t) {

@@ -168,7 +168,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
         }
     }
 
-    providedAreaStyleMap(column: string) {
+    providedAreaStyleMap(column: string): AreaChartChannelStyle {
         let style: AreaChartChannelStyle = defaultStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {

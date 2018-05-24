@@ -17,7 +17,11 @@ export declare type BarChartProps = ChartProps & {
     infoHeight?: number;
     infoTimeFormat?: string | ((...args: any[]) => any);
     markerRadius?: number;
+    markerStyle?: EventMarkerStyle;
+    stemStyle?: EventMarkerStyle;
     size?: number;
+    visible?: boolean;
+    minBarHeight?: number;
     selected?: {
         event?: any;
         column?: string;
@@ -34,7 +38,7 @@ export declare class BarChart extends React.Component<BarChartProps> {
     handleHover(e: React.MouseEvent<SVGRectElement>, event: Event<Key>, column: string): void;
     handleHoverLeave(): void;
     handleClick(e: React.MouseEvent<SVGRectElement>, event: Event<Key>, column: string): void;
-    providedColumnStyle(column: string): BarChartChannelStyle;
+    providedBarStyleMap(column: string): BarChartChannelStyle;
     style(element: string, column: string, event: Event<Key>): any;
     renderBars(): JSX.Element;
     render(): JSX.Element;
