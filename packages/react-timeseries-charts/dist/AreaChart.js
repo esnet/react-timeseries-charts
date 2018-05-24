@@ -4,13 +4,13 @@ var tslib_1 = require("tslib");
 require("array.prototype.fill");
 var _ = require("lodash");
 var React = require("react");
-var d3_shape_1 = require("d3-shape");
-var pondjs_1 = require("pondjs");
-var style_1 = require("./style");
-var types_1 = require("./types");
-var util_1 = require("./util");
-var styler_1 = require("./styler");
 var curve_1 = require("./curve");
+var styler_1 = require("./styler");
+var d3_shape_1 = require("d3-shape");
+var util_1 = require("./util");
+var pondjs_1 = require("pondjs");
+var types_1 = require("./types");
+var style_1 = require("./style");
 var StyleType;
 (function (StyleType) {
     StyleType["Line"] = "line";
@@ -83,7 +83,7 @@ var AreaChart = (function (_super) {
                 style = this.props.style[column];
             }
             else if (_.isFunction(this.props.style)) {
-                style = this.props.style[column];
+                style = this.props.style(column);
             }
         }
         return style;
@@ -101,20 +101,20 @@ var AreaChart = (function (_super) {
         }
         if (this.props.selection) {
             if (isSelected) {
-                style = _.merge({}, style_1.defaultAreaChartStyle[type].selected, styleMap[type].selected ? styleMap[type].selected : {});
+                style = _.merge(true, style_1.defaultAreaChartStyle[type].selected, styleMap[type].selected ? styleMap[type].selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge({}, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
+                style = _.merge(true, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
             }
             else {
-                style = _.merge({}, style_1.defaultAreaChartStyle[type].muted, styleMap[type].muted ? styleMap[type].muted : {});
+                style = _.merge(true, style_1.defaultAreaChartStyle[type].muted, styleMap[type].muted ? styleMap[type].muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge({}, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
+            style = _.merge(true, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
         }
         else {
-            style = _.merge({}, style_1.defaultAreaChartStyle[type].normal, styleMap[type].normal ? styleMap[type].normal : {});
+            style = _.merge(true, style_1.defaultAreaChartStyle[type].normal, styleMap[type].normal ? styleMap[type].normal : {});
         }
         return style;
     };
@@ -124,40 +124,110 @@ var AreaChart = (function (_super) {
     AreaChart.prototype.areaStyle = function (column) {
         return this.style(column, StyleType.Area);
     };
+    AreaChart.prototype.renderArea = function (data, column, key) {
+        var _this = this;
+        var style = this.areaStyle(column);
+        var pathStyle = this.pathStyle(column);
+        var areaGenerator = d3_shape_1.area()
+            .curve(curve_1.default[this.props.interpolation])
+            .x(function (d) { return d.x0; })
+            .y0(function (d) { return d.y0; })
+            .y1(function (d) { return d.y1; });
+        var areaPath = areaGenerator(data);
+        var lineGenerator = d3_shape_1.line()
+            .curve(curve_1.default[this.props.interpolation])
+            .x(function (d) { return d.x0; })
+            .y(function (d) { return d.y1; });
+        var outlinePath = lineGenerator(data);
+        return (React.createElement("g", { key: "area-" + key },
+            React.createElement("path", { d: areaPath, style: style }),
+            React.createElement("path", { d: areaPath, style: style, onClick: function (e) { return _this.handleClick(e, column); }, onMouseLeave: function () { return _this.handleHoverLeave(); }, onMouseMove: function (e) { return _this.handleHover(e, column); } }),
+            React.createElement("path", { d: outlinePath, style: pathStyle, onClick: function (e) { return _this.handleClick(e, column); }, onMouseLeave: function () { return _this.handleHoverLeave(); }, onMouseMove: function (e) { return _this.handleHover(e, column); } })));
+    };
     AreaChart.prototype.renderPaths = function (columnList, direction) {
         var _this = this;
         var dir = direction === "up" ? 1 : -1;
         var size = this.props.series.size();
         var offsets = new Array(size).fill(0);
+        var len = columnList.length;
         return columnList.map(function (column, i) {
-            var style = _this.areaStyle(column);
-            var pathStyle = _this.pathStyle(column);
-            var data = [];
-            for (var j = 0; j < _this.props.series.size(); j += 1) {
-                var seriesPoint = _this.props.series.at(j);
-                data.push({
-                    x0: _this.props.timeScale(seriesPoint.timestamp()),
-                    y0: _this.props.yScale(offsets[j]),
-                    y1: _this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
-                });
-                if (_this.props.stack) {
-                    offsets[j] += dir * seriesPoint.get(column);
+            var pathAreas = [];
+            var count = 1;
+            if (_this.props.breakArea) {
+                var currentPoints = null;
+                for (var j = 0; j < _this.props.series.size(); j += 1) {
+                    var seriesPoint = _this.props.series.at(j);
+                    var value = seriesPoint.get(column);
+                    var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                    if (len > 1) {
+                        if (!currentPoints)
+                            currentPoints = [];
+                        if (!badPoint) {
+                            currentPoints.push({
+                                x0: _this.props.timeScale(seriesPoint.timestamp()),
+                                y0: _this.props.yScale(offsets[j]),
+                                y1: _this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                        }
+                        else {
+                            currentPoints.push({
+                                x0: _this.props.timeScale(seriesPoint.timestamp()),
+                                y0: _this.props.yScale(offsets[j]),
+                                y1: _this.props.yScale(offsets[j])
+                            });
+                        }
+                        if (_this.props.stack) {
+                            offsets[j] += dir * seriesPoint.get(column);
+                        }
+                    }
+                    else {
+                        if (!badPoint) {
+                            if (!currentPoints)
+                                currentPoints = [];
+                            currentPoints.push({
+                                x0: _this.props.timeScale(seriesPoint.timestamp()),
+                                y0: _this.props.yScale(offsets[j]),
+                                y1: _this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            });
+                            if (_this.props.stack) {
+                                offsets[j] += dir * seriesPoint.get(column);
+                            }
+                        }
+                        else if (currentPoints) {
+                            if (currentPoints.length > 1) {
+                                pathAreas.push(_this.renderArea(currentPoints, column, count));
+                                count += 1;
+                            }
+                            currentPoints = null;
+                        }
+                    }
+                }
+                if (currentPoints && currentPoints.length > 1) {
+                    pathAreas.push(_this.renderArea(currentPoints, column, count));
+                    count += 1;
                 }
             }
-            var areaGenerator = d3_shape_1.area()
-                .curve(curve_1.default[_this.props.interpolation])
-                .x(function (d) { return d.x0; })
-                .y0(function (d) { return d.y0; })
-                .y1(function (d) { return d.y1; });
-            var areaPath = areaGenerator(data);
-            var lineGenerator = d3_shape_1.line()
-                .curve(curve_1.default[_this.props.interpolation])
-                .x(function (d) { return d.x0; })
-                .y(function (d) { return d.y1; });
-            var outlinePath = lineGenerator(data);
-            return (React.createElement("g", { key: "area-" + i },
-                React.createElement("path", { d: areaPath, style: style, onClick: function (e) { return _this.handleClick(e, column); }, onMouseLeave: function () { return _this.handleHoverLeave(); }, onMouseMove: function (e) { return _this.handleHover(e, column); } }),
-                React.createElement("path", { d: outlinePath, style: pathStyle, onClick: function (e) { return _this.handleClick(e, column); }, onMouseLeave: function () { return _this.handleHoverLeave(); }, onMouseMove: function (e) { return _this.handleHover(e, column); } })));
+            else {
+                var cleanedPoints = [];
+                for (var j = 0; j < _this.props.series.size(); j += 1) {
+                    var seriesPoint = _this.props.series.at(j);
+                    var value = seriesPoint.get(column);
+                    var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                    if (!badPoint) {
+                        cleanedPoints.push({
+                            x0: _this.props.timeScale(seriesPoint.timestamp()),
+                            y0: _this.props.yScale(offsets[j]),
+                            y1: _this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                        });
+                        if (_this.props.stack) {
+                            offsets[j] += dir * seriesPoint.get(column);
+                        }
+                    }
+                }
+                pathAreas.push(_this.renderArea(cleanedPoints, column, count));
+                count += 1;
+            }
+            return React.createElement("g", { key: column }, pathAreas);
         });
     };
     AreaChart.prototype.renderAreas = function () {
@@ -171,12 +241,14 @@ var AreaChart = (function (_super) {
         return React.createElement("g", null, this.renderAreas());
     };
     AreaChart.defaultProps = {
-        interpolation: types_1.CurveInterpolation.curveLinear,
+        breakArea: true,
         columns: {
-            up: [],
+            up: ["value"],
             down: []
         },
-        stack: true
+        interpolation: types_1.CurveInterpolation.curveLinear,
+        stack: true,
+        visible: true
     };
     return AreaChart;
 }(React.Component));

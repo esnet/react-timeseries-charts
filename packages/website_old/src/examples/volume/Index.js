@@ -136,6 +136,7 @@ class volume extends React.Component {
             timerange: octoberTrafficSeries.range(),
             selection: null
         };
+        this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this);
     }
 
     handleTimeRangeChange(timerange) {
