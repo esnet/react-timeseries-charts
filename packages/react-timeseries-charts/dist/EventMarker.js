@@ -44,7 +44,6 @@ var EventTimeRange = function (_a) {
 };
 var EventIndex = function (_a) {
     var index = _a.index, _b = _a.format, format = _b === void 0 ? "%m/%d/%y %X" : _b;
-    console.log("index format is ", index, format);
     var textStyle = {
         fontSize: 11,
         textAnchor: "start",
@@ -70,7 +69,6 @@ var EventMarker = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     EventMarker.prototype.renderTime = function (event) {
-        console.log("renderTime ", event.keyType(), this.props.infoTimeFormat);
         if (event.keyType() === "time") {
             return React.createElement(EventTime, { time: event.timestamp(), format: this.props.infoTimeFormat });
         }
@@ -192,7 +190,6 @@ var EventMarker = (function (_super) {
     };
     EventMarker.prototype.render = function () {
         var _a = this.props, event = _a.event, column = _a.column, info = _a.info;
-        console.log("eventMarker this.props ", this.props);
         if (!event) {
             return React.createElement("g", null);
         }

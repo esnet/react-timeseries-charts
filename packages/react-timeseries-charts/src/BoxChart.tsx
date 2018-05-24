@@ -324,7 +324,6 @@ export class BoxChart extends React.Component<BoxChartProps> {
                 this.series = getAggregatedSeries(input, props.column, props.aggregation);
             } else {
                 const input = props.series as TimeSeries<Index>;
-                console.log("input, props.column ", input, props.column);
                 this.series = getSeries(input, props.column);
             }
         }

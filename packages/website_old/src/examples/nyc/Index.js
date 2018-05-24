@@ -53,8 +53,6 @@ const events = w.map(item => {
 const c = new Collection(events);
 const series = new TimeSeries({ name, collection: c });
 
-console.log("series is ", series);
-
 //
 // Styles
 //

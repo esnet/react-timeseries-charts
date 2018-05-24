@@ -186,7 +186,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
     style(column: string, type: StyleType) {
         let style;
         const styleMap = this.providedAreaStyleMap(column);
-
+        
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
 
@@ -206,27 +206,32 @@ export class AreaChart extends React.Component<AreaChartProps> {
         if (this.props.selection) {
             if (isSelected) {
                 style = _.merge(
+                    {},
                     defaultStyle[type].selected,
                     styleMap[type].selected ? styleMap[type].selected : {}
                 );
             } else if (isHighlighted) {
                 style = _.merge(
+                    {},
                     defaultStyle[type].highlighted,
                     styleMap[type].highlighted ? styleMap[type].highlighted : {}
                 );
             } else {
                 style = _.merge(
+                    {},
                     defaultStyle[type].muted,
                     styleMap[type].muted ? styleMap[type].muted : {}
                 );
             }
         } else if (isHighlighted) {
             style = _.merge(
+                {},
                 defaultStyle[type].highlighted,
                 styleMap[type].highlighted ? styleMap[type].highlighted : {}
             );
         } else {
             style = _.merge(
+                {},
                 defaultStyle[type].normal,
                 styleMap[type].normal ? styleMap[type].normal : {}
             );

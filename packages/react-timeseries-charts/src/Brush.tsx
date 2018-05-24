@@ -234,7 +234,6 @@ export class Brush extends React.Component<BrushProps, BrushState> {
 
     renderBrush() {
         const { timeRange, timeScale, height, style } = this.props;
-        console.log("render brush props ", this.props);
         console.log(this.viewport().disjoint(timeRange));
         if (!timeRange) {
             return <g />;

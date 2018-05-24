@@ -101,20 +101,20 @@ var AreaChart = (function (_super) {
         }
         if (this.props.selection) {
             if (isSelected) {
-                style = _.merge(style_1.defaultAreaChartStyle[type].selected, styleMap[type].selected ? styleMap[type].selected : {});
+                style = _.merge({}, style_1.defaultAreaChartStyle[type].selected, styleMap[type].selected ? styleMap[type].selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge(style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
+                style = _.merge({}, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
             }
             else {
-                style = _.merge(style_1.defaultAreaChartStyle[type].muted, styleMap[type].muted ? styleMap[type].muted : {});
+                style = _.merge({}, style_1.defaultAreaChartStyle[type].muted, styleMap[type].muted ? styleMap[type].muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge(style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
+            style = _.merge({}, style_1.defaultAreaChartStyle[type].highlighted, styleMap[type].highlighted ? styleMap[type].highlighted : {});
         }
         else {
-            style = _.merge(style_1.defaultAreaChartStyle[type].normal, styleMap[type].normal ? styleMap[type].normal : {});
+            style = _.merge({}, style_1.defaultAreaChartStyle[type].normal, styleMap[type].normal ? styleMap[type].normal : {});
         }
         return style;
     };

@@ -162,13 +162,14 @@ export class LineChart extends React.Component<LineChartProps, {}> {
     /**
      * Returns the style used for drawing the path
      */
-    pathStyle(column: string) {
+    pathStyle(element: string, column: string) {
         let style;
 
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
-        const s = this.providedPathStyleMap(column);
+        const styleMap = this.providedPathStyleMap(column);
         const d = defaultStyle.line;
+        const s = styleMap[element] ? styleMap[element] : styleMap;
 
         if (this.props.selection) {
             if (isSelected) {
@@ -205,7 +206,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
 
         return (
             <g key={key}>
-                <path d={path} style={this.pathStyle(column)} />
+                <path d={path} style={this.pathStyle("line", column)} />
                 <path
                     d={path}
                     style={hitStyle}

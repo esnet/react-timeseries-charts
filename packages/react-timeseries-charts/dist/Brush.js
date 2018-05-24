@@ -169,7 +169,6 @@ var Brush = (function (_super) {
     Brush.prototype.renderBrush = function () {
         var _this = this;
         var _a = this.props, timeRange = _a.timeRange, timeScale = _a.timeScale, height = _a.height, style = _a.style;
-        console.log("render brush props ", this.props);
         console.log(this.viewport().disjoint(timeRange));
         if (!timeRange) {
             return React.createElement("g", null);

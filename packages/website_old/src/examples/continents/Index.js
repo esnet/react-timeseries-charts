@@ -89,7 +89,7 @@ const continents = React.createClass({
         const style = styler(columnNames, this.state.scheme);
         const legendCategories = columnNames.map(d => ({ key: d, label: d }));
 
-        console.log("legendCategories style ", legendCategories, style);
+        console.log("style is ", style);
         return (
             <div>
                 <div className="row">

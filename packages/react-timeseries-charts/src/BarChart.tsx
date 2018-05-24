@@ -170,7 +170,6 @@ export class BarChart extends React.Component<BarChartProps> {
     };
 
     handleHover(e: React.MouseEvent<SVGRectElement>, event: Event<Key>, column: string) {
-        console.log("event column ", event, column);
         const bar = { event, column };
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(bar);
@@ -192,14 +191,14 @@ export class BarChart extends React.Component<BarChartProps> {
     }
 
     providedColumnStyle(column: string): BarChartChannelStyle {
-        let style: BarChartChannelStyle;
+        let style: BarChartChannelStyle = defaultStyle;
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style[column];
             } else if (_.isFunction(this.props.style)) {
                 style = this.props.style(column);
-            } else if (_.isObject(this.props.style)) {
-                style = this.props.style ? this.props.style[column] : defaultStyle;
             }
         }
         return style;
@@ -213,7 +212,7 @@ export class BarChart extends React.Component<BarChartProps> {
 
         const styleMap = this.providedColumnStyle(column);
         const d = defaultStyle.bar;
-        const s = styleMap[element];
+        const s = styleMap[element] ? styleMap[element] : styleMap;
 
         // State
         const isHighlighted =
@@ -227,22 +226,21 @@ export class BarChart extends React.Component<BarChartProps> {
 
         if (this.props.selected) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge({}, d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge({}, d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(d.normal, s ? s.normal : {});
+            style = _.merge({}, d.normal, s.normal ? s.normal : {});
         }
         return style;
     }
 
     renderBars() {
-        console.log("renderBars this.props ", this.props);
         const spacing = +this.props.spacing;
         const offset = +this.props.offset;
         const series = this.props.series;

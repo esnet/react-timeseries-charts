@@ -79,12 +79,13 @@ var LineChart = (function (_super) {
             }
         }
     };
-    LineChart.prototype.pathStyle = function (column) {
+    LineChart.prototype.pathStyle = function (element, column) {
         var style;
         var isHighlighted = this.props.highlight && column === this.props.highlight;
         var isSelected = this.props.selection && column === this.props.selection;
-        var s = this.providedPathStyleMap(column);
+        var styleMap = this.providedPathStyleMap(column);
         var d = style_1.defaultLineChartChannelStyle.line;
+        var s = styleMap[element] ? styleMap[element] : styleMap;
         if (this.props.selection) {
             if (isSelected) {
                 style = _.merge(d.selected, s.selected ? s.selected : {});
@@ -120,7 +121,7 @@ var LineChart = (function (_super) {
             .curve(curve_1.default[this.props.interpolation])
             .y(function (d) { return _this.props.yScale(d.y); })(data);
         return (React.createElement("g", { key: key },
-            React.createElement("path", { d: path, style: this.pathStyle(column) }),
+            React.createElement("path", { d: path, style: this.pathStyle("line", column) }),
             React.createElement("path", { d: path, style: hitStyle, onClick: function (e) { return _this.handleClick(e, column); }, onMouseLeave: function () { return _this.handleHoverLeave(); }, onMouseMove: function (e) { return _this.handleHover(e, column); } })));
     };
     LineChart.prototype.renderLines = function () {

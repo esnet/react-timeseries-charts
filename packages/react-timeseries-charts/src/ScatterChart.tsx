@@ -151,7 +151,6 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                 }
             });
         }
-        console.log("point is ", point);
         if (this.props.onMouseNear) {
             this.props.onMouseNear(point);
         }
@@ -182,7 +181,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         let style;
         const styleMap = this.providedStyleMap(column, event);
 
-        const s = styleMap.point;
+        const s = styleMap["point"] ? styleMap["point"] : styleMap;
         const d = defaultStyle.point;
 
         const isHighlighted =
@@ -198,14 +197,14 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
             if (isSelected) {
                 style = _.merge(d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = _.merge(d.highlighted, s ? s.highlighted : {});
+                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = _.merge(d.muted, s ? s.muted : {});
+                style = _.merge(d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = _.merge(d.highlighted, s ? s.highlighted : {});
+            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(d.normal, s ? s.normal : {});
+            style = _.merge(d.normal, s.normal ? s.normal : {});
         }
         return style;
     }

@@ -105,7 +105,7 @@ class wind extends React.Component {
         ];
 
         const perEventStyle = (column, event) => {
-            const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
+            const color = heat[Math.floor((1 - event.get("station1") / 10) * 9)];
             return {
                 normal: {
                     fill: color,

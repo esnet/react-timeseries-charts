@@ -7,7 +7,6 @@ var Styler = (function () {
     function Styler(columns, scheme) {
         if (scheme === void 0) { scheme = "Paired"; }
         var _this = this;
-        console.log("this is ", this, columns, scheme);
         this.columnStyles = {};
         if (_.isArray(columns)) {
             columns.forEach(function (column) {

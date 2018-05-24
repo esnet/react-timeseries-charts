@@ -39,8 +39,6 @@ const currencySeries = timeSeries({
     points: buildPoints()
 });
 
-console.log("currencySeries is ", currencySeries);
-
 const style = styler([
     { key: "aud", color: "steelblue", width: 1, dashed: true },
     { key: "euro", color: "#F68B24", width: 2 }

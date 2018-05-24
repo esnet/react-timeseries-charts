@@ -28,8 +28,10 @@ const series = timeSeries({
 
 const style = {
     value: {
-        stroke: "#a02c2c",
-        opacity: 0.2
+        normal: {
+            stroke: "steelblue",
+            opacity: 1
+        }
     }
 };
 

@@ -88,7 +88,6 @@ const EventTimeRange: React.SFC<EventTimeRangeProps> = ({ timerange, format = "%
  * Helper component to render a `index`'s begin time in the `format` provided
  */
 const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" }) => {
-    console.log("index format is ", index, format);
     const textStyle: React.CSSProperties = {
         fontSize: 11,
         textAnchor: "start",
@@ -170,7 +169,6 @@ export class EventMarker extends React.Component<EventMarkerProps> {
     };
 
     renderTime(event: Event<Key>) {
-        console.log("renderTime ", event.keyType(), this.props.infoTimeFormat);
         if (event.keyType() === "time") {
             return <EventTime time={event.timestamp()} format={this.props.infoTimeFormat} />;
         } else if (event.keyType() === "index") {
@@ -379,7 +377,6 @@ export class EventMarker extends React.Component<EventMarkerProps> {
     }
     render() {
         const { event, column, info } = this.props;
-        console.log("eventMarker this.props ", this.props);
         if (!event) {
             return <g />;
         }

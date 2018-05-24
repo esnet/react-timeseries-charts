@@ -28,7 +28,7 @@ export declare class LineChart extends React.Component<LineChartProps, {}> {
     handleHoverLeave(): void;
     handleClick(e: React.MouseEvent<SVGPathElement>, column: string): void;
     providedPathStyleMap(column: string): LineChartChannelStyle;
-    pathStyle(column: string): any;
+    pathStyle(element: string, column: string): any;
     renderPath(data: PointData, column: string, key: number): JSX.Element;
     renderLines(): JSX.Element[];
     renderLine(column: string): JSX.Element;

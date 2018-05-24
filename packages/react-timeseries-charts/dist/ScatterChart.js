@@ -52,7 +52,6 @@ var ScatterChart = (function (_super) {
             var column = _b[_i];
             _loop_1(column);
         }
-        console.log("point is ", point);
         if (this.props.onMouseNear) {
             this.props.onMouseNear(point);
         }
@@ -79,7 +78,7 @@ var ScatterChart = (function (_super) {
     ScatterChart.prototype.style = function (column, event) {
         var style;
         var styleMap = this.providedStyleMap(column, event);
-        var s = styleMap.point;
+        var s = styleMap["point"] ? styleMap["point"] : styleMap;
         var d = style_1.defaultScatterChartChannelStyle.point;
         var isHighlighted = this.props.highlight &&
             column === this.props.highlight.column &&
@@ -92,17 +91,17 @@ var ScatterChart = (function (_super) {
                 style = _.merge(d.selected, s.selected ? s.selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge(d.highlighted, s ? s.highlighted : {});
+                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
             }
             else {
-                style = _.merge(d.muted, s ? s.muted : {});
+                style = _.merge(d.muted, s.muted ? s.muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge(d.highlighted, s ? s.highlighted : {});
+            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(d.normal, s ? s.normal : {});
+            style = _.merge(d.normal, s.normal ? s.normal : {});
         }
         return style;
     };

@@ -87,7 +87,6 @@ export class Styler {
      *
      */
     constructor(columns: Column[], scheme = "Paired") {
-        console.log("this is ", this, columns, scheme);
         this.columnStyles = {};
         if (_.isArray(columns)) {
             columns.forEach(column => {
@@ -147,7 +146,6 @@ export class Styler {
         const c = color || colorLookup[i % colorLookup.length];
 
         let styleSymbol: React.CSSProperties = {};
-        // console.log("type is ", type);
         if (type.toUpperCase() === LegendItemType.Swatch || type === LegendItemType.Dot) {
             styleSymbol = {
                 fill: c,

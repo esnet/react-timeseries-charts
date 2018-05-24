@@ -13,7 +13,6 @@ var BarChart = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     BarChart.prototype.handleHover = function (e, event, column) {
-        console.log("event column ", event, column);
         var bar = { event: event, column: column };
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(bar);
@@ -32,16 +31,16 @@ var BarChart = (function (_super) {
         e.stopPropagation();
     };
     BarChart.prototype.providedColumnStyle = function (column) {
-        var style;
+        var style = style_1.defaultBarChartChannelStyle;
         if (this.props.style) {
             if (this.props.style instanceof styler_1.Styler) {
                 style = this.props.style.barChartStyle()[column];
             }
+            else if (_.isObject(this.props.style)) {
+                style = this.props.style[column];
+            }
             else if (_.isFunction(this.props.style)) {
                 style = this.props.style(column);
-            }
-            else if (_.isObject(this.props.style)) {
-                style = this.props.style ? this.props.style[column] : style_1.defaultBarChartChannelStyle;
             }
         }
         return style;
@@ -50,7 +49,7 @@ var BarChart = (function (_super) {
         var style;
         var styleMap = this.providedColumnStyle(column);
         var d = style_1.defaultBarChartChannelStyle.bar;
-        var s = styleMap[element];
+        var s = styleMap[element] ? styleMap[element] : styleMap;
         var isHighlighted = this.props.highlighted &&
             column === this.props.highlighted.column &&
             pondjs_1.Event.is(this.props.highlighted.event, event);
@@ -59,26 +58,25 @@ var BarChart = (function (_super) {
             pondjs_1.Event.is(this.props.selected.event, event);
         if (this.props.selected) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge({}, d.selected, s.selected ? s.selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
             }
             else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge({}, d.muted, s.muted ? s.muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge({}, d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(d.normal, s ? s.normal : {});
+            style = _.merge({}, d.normal, s.normal ? s.normal : {});
         }
         return style;
     };
     BarChart.prototype.renderBars = function () {
         var _this = this;
-        console.log("renderBars this.props ", this.props);
         var spacing = +this.props.spacing;
         var offset = +this.props.offset;
         var series = this.props.series;

@@ -27,7 +27,6 @@ export default class extends Component {
     componentDidMount() {
         window.scrollTo(0, 0);
         Prism.highlightAll();
-        console.log("this.props is ", this.props);
         const guideName = this.props.match.params.doc || "intro";
         console.log(guideName);
         const markdownFile = Guides[guideName];

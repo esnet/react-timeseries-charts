@@ -32,20 +32,22 @@ const minute = 60 * sec;
 const hours = 60 * minute;
 const rate = 80;
 
-const realtime = React.createClass({
-    displayName: "AggregatorDemo",
-    getInitialState() {
-        return {
+class realtime extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             time: new Date(2015, 0, 1),
             events: new Ring(200),
             percentile50Out: new Ring(100),
             percentile90Out: new Ring(100)
         };
-    },
+    }
+
     getNewEvent(t) {
         const base = Math.sin(t.getTime() / 10000000) * 350 + 500;
         return timeEvent(time(t), Immutable.Map({ value: parseInt(base + Math.random() * 1000, 10)}));
-    },
+    }
+
     componentDidMount() {
         //
         // Setup our aggregation pipelines
@@ -101,10 +103,12 @@ const realtime = React.createClass({
             },
             rate
         );
-    },
+    }
+
     componentWillUnmount() {
         clearInterval(this.interval);
-    },
+    }
+
     render() {
         const latestTime = `${this.state.time}`;
 
@@ -118,10 +122,7 @@ const realtime = React.createClass({
 
         const scatterStyle = {
             value: {
-                normal: {
-                    fill: "steelblue",
-                    opacity: 0.5
-                }
+                normal: { fill: "steelblue", opacity: 0.5 }
             }
         };
 
@@ -236,7 +237,7 @@ const realtime = React.createClass({
             </div>
         );
     }
-});
+};
 
 // Export example
 export default { realtime, realtime_docs, realtime_thumbnail };
