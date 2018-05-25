@@ -326,13 +326,13 @@ export const baselineDefaultStyle = {
     label: {
         fill: "#8B7E7E",
         fontSize: 11,
-        pointerEvents: "none"
+        pointerEvents: "none" as "none"
     },
     line: {
         stroke: "#626262",
         strokeWidth: 1,
         strokeDasharray: "5,3",
-        pointerEvents: "none"
+        pointerEvents: "none" as "none"
     }
 };
 

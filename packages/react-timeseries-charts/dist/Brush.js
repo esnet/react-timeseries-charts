@@ -9,15 +9,15 @@ var Brush = (function (_super) {
     tslib_1.__extends(Brush, _super);
     function Brush(props) {
         var _this = _super.call(this, props) || this;
+        _this.state = {
+            isBrushing: false
+        };
         _this.handleBrushMouseDown = _this.handleBrushMouseDown.bind(_this);
         _this.handleOverlayMouseDown = _this.handleOverlayMouseDown.bind(_this);
         _this.handleHandleMouseDown = _this.handleHandleMouseDown.bind(_this);
         _this.handleMouseUp = _this.handleMouseUp.bind(_this);
         _this.handleClick = _this.handleClick.bind(_this);
         _this.handleMouseMove = _this.handleMouseMove.bind(_this);
-        _this.state = {
-            isBrushing: false
-        };
         return _this;
     }
     Brush.prototype.viewport = function () {
@@ -32,6 +32,7 @@ var Brush = (function (_super) {
         var xy0 = [Math.round(x), Math.round(y)];
         var begin = +this.props.timeRange.begin();
         var end = +this.props.timeRange.end();
+        document.addEventListener("mouseup", this.handleMouseUp);
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "brush",
@@ -45,6 +46,7 @@ var Brush = (function (_super) {
         var offset = util_1.getElementOffset(this.overlay);
         var x = e.pageX - offset.left;
         var t = this.props.timeScale.invert(x).getTime();
+        document.addEventListener("mouseup", this.handleMouseUp);
         this.setState({
             isBrushing: true,
             brushingInitializationSite: "overlay",
@@ -164,12 +166,10 @@ var Brush = (function (_super) {
         };
         return (React.createElement("rect", { ref: function (c) {
                 _this.overlay = c;
-            }, x: 0, y: 0, width: width, height: height, style: overlayStyle, onMouseDown: function (e) { return _this.handleOverlayMouseDown(e); }, onMouseUp: function (e) { return _this.handleMouseUp(e); }, onClick: this.handleClick }));
+            }, x: 0, y: 0, width: width, height: height, style: overlayStyle, onMouseDown: this.handleOverlayMouseDown, onMouseUp: this.handleMouseUp, onClick: this.handleClick }));
     };
     Brush.prototype.renderBrush = function () {
-        var _this = this;
         var _a = this.props, timeRange = _a.timeRange, timeScale = _a.timeScale, height = _a.height, style = _a.style;
-        console.log(this.viewport().disjoint(timeRange));
         if (!timeRange) {
             return React.createElement("g", null);
         }
@@ -204,7 +204,7 @@ var Brush = (function (_super) {
                 width = 1;
             }
             var bounds = { x: x, y: y, width: width, height: height };
-            return (React.createElement("rect", tslib_1.__assign({}, bounds, { style: brushStyle, pointerEvents: "all", onMouseDown: function (e) { return _this.handleBrushMouseDown(e); }, onMouseUp: function (e) { return _this.handleMouseUp(e); } })));
+            return (React.createElement("rect", tslib_1.__assign({}, bounds, { style: brushStyle, pointerEvents: "all", onMouseDown: this.handleBrushMouseDown, onMouseUp: this.handleMouseUp })));
         }
         return React.createElement("g", null);
     };

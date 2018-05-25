@@ -103,13 +103,13 @@ export declare const baselineDefaultStyle: {
     label: {
         fill: string;
         fontSize: number;
-        pointerEvents: string;
+        pointerEvents: "none";
     };
     line: {
         stroke: string;
         strokeWidth: number;
         strokeDasharray: string;
-        pointerEvents: string;
+        pointerEvents: "none";
     };
 };
 export declare type InfoBoxStyle = {
