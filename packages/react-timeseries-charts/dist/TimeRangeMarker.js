@@ -39,6 +39,7 @@ var TimeRangeMarker = (function (_super) {
         return React.createElement("g", null, this.renderBand());
     };
     TimeRangeMarker.defaultProps = {
+        visible: true,
         style: { fill: "rgba(70, 130, 180, 0.25);" }
     };
     return TimeRangeMarker;

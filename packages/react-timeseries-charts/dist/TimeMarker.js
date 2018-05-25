@@ -6,7 +6,7 @@ var moment = require("moment");
 var React = require("react");
 var d3_time_format_1 = require("d3-time-format");
 require("moment-duration-format");
-var info_1 = require("./info");
+var Info_1 = require("./Info");
 var style_1 = require("./style");
 var TimeMarker = (function (_super) {
     tslib_1.__extends(TimeMarker, _super);
@@ -15,7 +15,7 @@ var TimeMarker = (function (_super) {
     }
     TimeMarker.prototype.renderLine = function (posx) {
         var style = this.props.style;
-        return React.createElement("line", { style: style.line, x1: posx, y1: 0, x2: posx, y2: this.props.height });
+        return (React.createElement("line", { style: style.line, x1: posx, y1: 0, x2: posx, y2: this.props.height }));
     };
     TimeMarker.prototype.renderTimeMarker = function (d) {
         var style = this.props.style;
@@ -59,9 +59,7 @@ var TimeMarker = (function (_super) {
             height: this.props.infoHeight
         };
         if (info) {
-            if (info) {
-                infoBox = React.createElement(info_1.InfoBox, tslib_1.__assign({}, infoBoxProps, { info: info }));
-            }
+            infoBox = React.createElement(Info_1.InfoBox, tslib_1.__assign({}, infoBoxProps, { info: info }));
             if (posx + 10 + infoWidth < this.props.width - 50) {
                 return (React.createElement("g", { transform: "translate(" + (posx + 10) + "," + 5 + ")" },
                     showTime ? this.renderTimeMarker(time) : null,
@@ -83,6 +81,7 @@ var TimeMarker = (function (_super) {
         return null;
     };
     TimeMarker.defaultProps = {
+        visible: true,
         showInfoBox: true,
         showLine: true,
         showTime: true,

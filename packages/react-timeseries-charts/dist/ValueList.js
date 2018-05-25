@@ -11,6 +11,9 @@ var ValueList = (function (_super) {
     ValueList.prototype.render = function () {
         var _this = this;
         var _a = this.props, align = _a.align, style = _a.style, width = _a.width, height = _a.height;
+        if (!this.props.values.length) {
+            return React.createElement("g", null);
+        }
         var textStyle = tslib_1.__assign({}, style.text, { textAnchor: "start", pointerEvents: "none" });
         var textStyleCentered = tslib_1.__assign({}, style.text, { textAnchor: "middle", pointerEvents: "none" });
         var values = this.props.values.map(function (item, i) {

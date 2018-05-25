@@ -26,6 +26,12 @@ export type ValueListProps = {
  * value pairs within that box, `align`ed to the left or center within
  * the box. The `style` prop is a CSS properties object that will be
  * applied to the box.
+ *
+ *      +----------------+
+ *      | Max 100 Gbps   |
+ *      | Avg 26 Gbps    |
+ *      +----------------+
+ *
  */
 export class ValueList extends React.Component<ValueListProps> {
     static defaultProps: Partial<ValueListProps> = {
@@ -37,6 +43,11 @@ export class ValueList extends React.Component<ValueListProps> {
 
     render() {
         const { align, style, width, height } = this.props;
+
+        if (!this.props.values.length) {
+            return <g />;
+        }
+
         const textStyle: React.CSSProperties = {
             ...style.text,
             textAnchor: "start",
@@ -47,6 +58,7 @@ export class ValueList extends React.Component<ValueListProps> {
             textAnchor: "middle",
             pointerEvents: "none"
         };
+
         const values = this.props.values.map((item, i) => {
             if (align === "left") {
                 return (
@@ -58,6 +70,7 @@ export class ValueList extends React.Component<ValueListProps> {
                     </g>
                 );
             }
+
             const posx = Math.round(this.props.width / 2);
             return (
                 <g key={i}>
@@ -68,6 +81,7 @@ export class ValueList extends React.Component<ValueListProps> {
                 </g>
             );
         });
+        
         const box = <rect style={style.box} x={0} y={0} width={width} height={height} />;
         return (
             <g>

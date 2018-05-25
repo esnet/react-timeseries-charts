@@ -128,6 +128,9 @@ class cycling extends React.Component {
             timerange: initialRange,
             brushrange: initialRange
         };
+        this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+        this.handleChartResize = this.handleChartResize.bind(this);
     }
 
     handleTrackerChanged(t) {

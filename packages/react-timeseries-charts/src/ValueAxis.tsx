@@ -15,9 +15,28 @@ export type ValueAxisProps = {
     detail?: string;
     width?: number;
     height?: number;
+    visible?: boolean;
 };
 
+/**
+ * Renders a 'axis' that display a label for a current tracker value:
+ * ```
+ *      ----+----------------+
+ *          |     56.2G      |
+ *          |      bps       |
+ *          |                |
+ *      ----+----------------+
+ * ```
+ * This would be used when you have many rows of data and the user is required
+ * to interact with the data to see actual values. You would use this at the
+ * end of the row and supply it with the current value. See the cycling example
+ * for how that would all work.
+ */
 export class ValueAxis extends React.Component<ValueAxisProps> {
+    static defaultProps: Partial<ValueAxisProps> = {
+        visible: true
+    };
+
     render() {
         const { width, height, value, detail } = this.props;
         const labelStyle: React.CSSProperties = {

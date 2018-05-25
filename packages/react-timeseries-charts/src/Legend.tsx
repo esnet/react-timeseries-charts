@@ -39,6 +39,7 @@ export type LegendProps = {
     symbolHeight?: number;
     highlight?: string;
     selection?: string;
+    stack?: boolean;
     onSelectionChange?: (...args: any[]) => any;
     onHighlightChange?: (...args: any[]) => any;
 };
@@ -147,8 +148,28 @@ export class Legend extends React.Component<LegendProps> {
         type: LegendItemType.Swatch,
         align: "left",
         symbolWidth: 16,
-        symbolHeight: 16
+        symbolHeight: 16,
+        stack: false
     };
+
+    // handleClick(e, key) {
+    //     e.stopPropagation();
+    //     if (this.props.onSelectionChange) {
+    //         this.props.onSelectionChange(key);
+    //     }
+    // }
+
+    // handleHover(e, key) {
+    //     if (this.props.onHighlightChange) {
+    //         this.props.onHighlightChange(key);
+    //     }
+    // }
+
+    // handleHoverLeave() {
+    //     if (this.props.onHighlightChange) {
+    //         this.props.onHighlightChange(null);
+    //     }
+    // }
 
     /**
      * For each category item we get the users style preference. This
@@ -186,6 +207,7 @@ export class Legend extends React.Component<LegendProps> {
         const isHighlighted = this.props.highlight && category.key === this.props.highlight;
         const isSelected = this.props.selection && category.key === this.props.selection;
         const isDisabled = category.disabled;
+
         let mode: StyleMode = "normal";
         if (this.props.selection) {
             if (isSelected) {
@@ -207,6 +229,7 @@ export class Legend extends React.Component<LegendProps> {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category) as string;
         return _.merge(
+            true,
             defaultStyle[styleMode],
             styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {}
         );
@@ -216,6 +239,7 @@ export class Legend extends React.Component<LegendProps> {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
         return _.merge(
+            true,
             defaultStyle[styleMode],
             styleMap.label[styleMode] ? styleMap.label[styleMode] : {}
         );
@@ -225,6 +249,7 @@ export class Legend extends React.Component<LegendProps> {
         const styleMap = this.providedStyle(category, this.props.type);
         const styleMode = this.styleMode(category);
         return _.merge(
+            true,
             defaultStyle[styleMode],
             styleMap.value[styleMode] ? styleMap.value[styleMode] : {}
         );
@@ -258,6 +283,18 @@ export class Legend extends React.Component<LegendProps> {
 
         const align = this.props.align === "left" ? "flex-start" : "flex-end";
 
-        return <Flexbox justifyContent={align}>{items}</Flexbox>;
+        if (this.props.stack) {
+            return (
+                <Flexbox justifyContent={align} flexDirection={"column"} marginBottom={"20px"}>
+                    {items}
+                </Flexbox>
+            );
+        } else {
+            return (
+                <Flexbox justifyContent={align} flexWrap={"wrap"} marginBottom={"20px"}>
+                    {items}
+                </Flexbox>
+            );
+        }
     }
 }

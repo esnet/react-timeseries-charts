@@ -74,16 +74,16 @@ var EventChart = (function (_super) {
             var width = endPos - beginPos - 2 * _this.props.spacing;
             width = width < 0 ? 0 : width;
             var height = _this.props.size;
-            var text = null;
             var textStyle = {
                 fontSize: 11,
                 fontWeight: 100,
                 pointerEvents: "none",
                 fill: "#444"
             };
+            var text = null;
             if (isHover) {
                 text = (React.createElement("g", null,
-                    React.createElement("rect", { className: "eventchart-marker", x: x, y: y, width: hoverMarkerWidth, height: height + 4, style: _.merge(barNormalStyle, { pointerEvents: "none" }) }),
+                    React.createElement("rect", { className: "eventchart-marker", x: x, y: y, width: hoverMarkerWidth, height: height + 4, style: _.merge(true, barNormalStyle, { pointerEvents: "none" }) }),
                     React.createElement("text", { style: textStyle, x: 8 + textOffsetX, y: 15 + textOffsetY }, label)));
             }
             var marker = (React.createElement("g", { transform: transform, key: i },
@@ -95,6 +95,7 @@ var EventChart = (function (_super) {
         return React.createElement("g", null, eventMarkers);
     };
     EventChart.defaultProps = {
+        visible: true,
         size: 30,
         spacing: 0,
         textOffsetX: 0,

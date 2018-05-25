@@ -40,16 +40,19 @@ export class LegendItem extends React.Component<LegendItemProps> {
             this.props.onSelectionChange(key);
         }
     }
+
     handleHover(e: React.MouseEvent<HTMLDivElement>, key: string) {
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(key);
         }
     }
+
     handleHoverLeave() {
         if (this.props.onHighlightChange) {
             this.props.onHighlightChange(null);
         }
     }
+
     renderLine(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
@@ -66,6 +69,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
             </svg>
         );
     }
+
     renderSwatch(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
@@ -82,10 +86,17 @@ export class LegendItem extends React.Component<LegendItemProps> {
             </svg>
         );
     }
+
     renderDot(style: ElementStyle) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
+                {/* <circle
+                    style={style as React.CSSProperties}
+                    cx={Math.round(symbolWidth / 2)}
+                    cy={Math.round(symbolHeight / 2)}
+                    r={Math.round(symbolWidth) * 0.75}
+                /> */}
                 <ellipse
                     style={style as React.CSSProperties}
                     cx={Math.round(symbolWidth / 2) + 2}
@@ -96,10 +107,12 @@ export class LegendItem extends React.Component<LegendItemProps> {
             </svg>
         );
     }
+
     render() {
-        const { symbolStyle, labelStyle, valueStyle, itemKey } = this.props;
+        const { symbolStyle, labelStyle, valueStyle, itemKey, type } = this.props;
+        
         let symbol;
-        switch (this.props.type.toUpperCase()) {
+        switch (type.toUpperCase()) {
             case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
                 break;
@@ -111,8 +124,10 @@ export class LegendItem extends React.Component<LegendItemProps> {
                 break;
             default:
         }
+
         // TODO: We shouldn't be adding interactions to a element like this.
         //       The alternative it to put it on a <a> or something?
+        
         return (
             <Flexbox flexDirection="column" key={itemKey}>
                 <div

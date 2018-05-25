@@ -14,8 +14,6 @@ import { format } from "d3-format";
 import { ValueList } from "./ValueList";
 import { InfoBoxStyle } from "./style";
 
-// import "@types/d3-format";
-
 export type LabelAxisProps = {
     label: string;
     hideScale?: boolean;
@@ -41,6 +39,12 @@ export type LabelAxisProps = {
  *      | Avg 26 Gbps    | 0   |
  *      +----------------+-----+------- ...
  * ```
+ * 
+ * This can be used for data channel style displays where the user will see many
+ * rows of data stacked on top of each other and will need to interact with the
+ * data to see actual values. You can combine this with the `ValueAxis` to help
+ * do that. See the Cycling example for exactly how to arrange that.
+ * 
  */
 export class LabelAxis extends React.Component<LabelAxisProps> {
     static defaultProps: Partial<LabelAxisProps> = {
@@ -53,11 +57,13 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
     renderAxis() {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
+
         const style: React.CSSProperties = {
             fontSize: 11,
             textAnchor: "start",
             fill: "#bdbdbd"
         };
+
         if (this.props.hideScale) {
             return <g />;
         }
@@ -65,6 +71,7 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
         const fmt = this.props.format;
         const maxStr = format(fmt)(this.props.max);
         const minStr = format(fmt)(this.props.min);
+
         return (
             <g>
                 <text x={valXPos} y={0} dy="1.2em" style={style}>
@@ -83,8 +90,10 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
             textAnchor: "middle",
             fill: "#838383"
         };
+
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
+        
         let valueList = null;
         let labelYPos;
         if (this.props.values) {

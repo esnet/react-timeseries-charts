@@ -91,4 +91,4 @@ var InfoBox = (function (_super) {
     return InfoBox;
 }(React.Component));
 exports.InfoBox = InfoBox;
-//# sourceMappingURL=info.js.map
+//# sourceMappingURL=Info.js.map

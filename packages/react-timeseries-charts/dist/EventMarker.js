@@ -5,7 +5,7 @@ var _ = require("lodash");
 var React = require("react");
 var pondjs_1 = require("pondjs");
 var d3_time_format_1 = require("d3-time-format");
-var info_1 = require("./info");
+var Info_1 = require("./Info");
 var style_1 = require("./style");
 var textStyle = {
     fontSize: 11,
@@ -82,7 +82,6 @@ var EventMarker = (function (_super) {
     };
     EventMarker.prototype.renderMarker = function (event, column, info) {
         var t;
-        console.log(event, column, info);
         if (event.keyType() === "time") {
             t = event.timestamp();
         }
@@ -118,7 +117,7 @@ var EventMarker = (function (_super) {
         var transform;
         var label;
         if (info) {
-            infoBox = React.createElement(info_1.InfoBox, tslib_1.__assign({}, infoBoxProps, { info: info }));
+            infoBox = React.createElement(Info_1.InfoBox, tslib_1.__assign({}, infoBoxProps, { info: info }));
         }
         if (this.props.type === "point") {
             var dx = 0;
@@ -147,7 +146,7 @@ var EventMarker = (function (_super) {
                 case "top":
                     dy = -5;
                     textDefaultStyle.textAnchor = "middle";
-                    textDefaultStyle.alignmentBaseline = "bottom";
+                    textDefaultStyle.alignmentBaseline = "hanging";
                     break;
                 case "bottom":
                     dy = 5;
@@ -156,7 +155,7 @@ var EventMarker = (function (_super) {
                     break;
                 default:
             }
-            var tstyle = _.merge(textDefaultStyle, this.props.style.text);
+            var tstyle = _.merge(true, textDefaultStyle, this.props.style.text);
             dot = (React.createElement("circle", { cx: posx, cy: posy, r: this.props.markerRadius, pointerEvents: "none", style: this.props.style.marker }));
             label = (React.createElement("text", { x: posx, y: posy, dx: dx, dy: dy, style: tstyle }, this.props.markerLabel));
             return (React.createElement("g", null,

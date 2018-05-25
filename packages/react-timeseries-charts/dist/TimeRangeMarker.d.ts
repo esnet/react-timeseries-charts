@@ -5,9 +5,7 @@ import { ChartProps } from "./Charts";
 export declare type TimeRangeMarkerProps = ChartProps & {
     timerange: TimeRange;
     style?: React.CSSProperties;
-    timeScale: (...args: any[]) => any;
-    width: number;
-    height: number;
+    visible?: boolean;
 };
 export declare class TimeRangeMarker extends React.Component<TimeRangeMarkerProps> {
     static defaultProps: Partial<TimeRangeMarkerProps>;

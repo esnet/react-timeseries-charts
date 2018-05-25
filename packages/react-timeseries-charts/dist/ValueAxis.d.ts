@@ -5,7 +5,9 @@ export declare type ValueAxisProps = {
     detail?: string;
     width?: number;
     height?: number;
+    visible?: boolean;
 };
 export declare class ValueAxis extends React.Component<ValueAxisProps> {
+    static defaultProps: Partial<ValueAxisProps>;
     render(): JSX.Element;
 }

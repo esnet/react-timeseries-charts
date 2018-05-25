@@ -74,7 +74,8 @@
         "lodash.isobject": "^3.0.2",
         "merge": "^1.2.0",
         "moment": "^2.18.1",
-        "moment-duration-format": "^2.2.1"
+        "moment-duration-format": "^2.2.1",
+        "react-hot-loader": "^4.2.0"
     },
     "devDependencies": {
         "@types/colorbrewer": "^1.0.29",

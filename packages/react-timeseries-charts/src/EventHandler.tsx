@@ -17,7 +17,9 @@ import { timerange, TimeRange } from "pondjs";
 import { getElementOffset } from "./util";
 
 export type EventHandlerProps = {
+    children?: any;
     enablePanZoom?: boolean;
+    enableDragZoom?: boolean;
     scale: ScaleTime<number, number>;
     width: number;
     height: number;
@@ -25,16 +27,19 @@ export type EventHandlerProps = {
     minTime?: Date;
     maxTime?: Date;
     onZoom?: (timerange: TimeRange) => any;
-    onMouseMove?: (d: Date) => any;
+    onMouseMove?: (x: number, y: number) => any;
     onMouseOut?: () => any;
     onMouseClick?: () => any;
 };
 
 export type EventHandlerState = {
+    isDragging: boolean;
     isPanning: boolean;
     initialPanBegin: any;
     initialPanEnd: any;
     initialPanPosition: number[];
+    initialDragZoom: any;
+    currentDragZoom: any;
 };
 
 /**
@@ -47,7 +52,8 @@ export type EventHandlerState = {
  */
 export class EventHandler extends React.Component<EventHandlerProps, EventHandlerState> {
     static defaultProps: Partial<EventHandlerProps> = {
-        enablePanZoom: false
+        enablePanZoom: false,
+        enableDragZoom: false
     };
 
     eventRect: SVGRectElement;
@@ -55,10 +61,13 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
     constructor(props: EventHandlerProps) {
         super(props);
         this.state = {
+            isDragging: false,
             isPanning: false,
             initialPanBegin: null,
             initialPanEnd: null,
-            initialPanPosition: null
+            initialPanPosition: null,
+            initialDragZoom: null,
+            currentDragZoom: null
         };
         this.handleScrollWheel = this.handleScrollWheel.bind(this);
         this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -66,6 +75,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
     }
+
     // get the event mouse position relative to the event rect
     getOffsetMousePosition(e: React.MouseEvent<SVGGElement>) {
         const offset = getElementOffset(this.eventRect);
@@ -79,10 +89,12 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
     //
 
     handleScrollWheel(e: React.WheelEvent<SVGGElement>) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
+
         e.preventDefault();
+
         const SCALE_FACTOR = 0.001;
         let scale = 1 + e.deltaY * SCALE_FACTOR;
         if (scale > 3) {
@@ -91,6 +103,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         if (scale < 0.1) {
             scale = 0.1;
         }
+
         const xy = this.getOffsetMousePosition(e);
 
         const d = this.props.scale.range()[0];
@@ -99,11 +112,15 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         const end: number = this.props.scale.domain()[1].getTime();
         const center: number = this.props.scale.invert(xy[0]).getTime();
 
+        // let beginScaled = center - parseInt((center - begin) * scale, 10);
+        // let endScaled = center + parseInt((end - center) * scale, 10);
+
         let beginScaled = center - Math.round((center - +begin) * scale);
         let endScaled = center + Math.round((end - +center) * scale);
 
         // Duration constraint
         let duration = (end - begin) * scale;
+
         if (this.props.minDuration) {
             const minDuration = Math.round(this.props.minDuration);
             if (duration < this.props.minDuration) {
@@ -111,75 +128,137 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
                 endScaled = center + (end - center) / (end - begin) * minDuration;
             }
         }
+
         if (this.props.minTime && this.props.maxTime) {
             const maxDuration = this.props.maxTime.getTime() - this.props.minTime.getTime();
             if (duration > maxDuration) {
                 duration = maxDuration;
             }
         }
+
         // Range constraint
         if (this.props.minTime && beginScaled < this.props.minTime.getTime()) {
             beginScaled = this.props.minTime.getTime();
             endScaled = beginScaled + duration;
         }
+
         if (this.props.maxTime && endScaled > this.props.maxTime.getTime()) {
             endScaled = this.props.maxTime.getTime();
             beginScaled = endScaled - duration;
         }
+
         const newBegin = new Date(beginScaled);
         const newEnd = new Date(endScaled);
+
         const newTimeRange = timerange(newBegin, newEnd);
+
         if (this.props.onZoom) {
             this.props.onZoom(newTimeRange);
         }
     }
 
     handleMouseDown(e: React.MouseEvent<SVGGElement>) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
+
         e.preventDefault();
-        const x = e.pageX;
-        const y = e.pageY;
-        const xy0 = [Math.round(x), Math.round(y)];
-        const begin = this.props.scale.domain()[0].getTime();
-        const end = this.props.scale.domain()[1].getTime();
-        document.addEventListener("mouseover", this.handleMouseMove as any);
-        document.addEventListener("mouseup", this.handleMouseUp as any);
-        this.setState({
-            isPanning: true,
-            initialPanBegin: begin,
-            initialPanEnd: end,
-            initialPanPosition: xy0
-        });
+
+        document.addEventListener("mouseover", this.handleMouseMove as any); // XXX
+        document.addEventListener("mouseup", this.handleMouseUp as any); // XXX
+
+        if (this.props.enableDragZoom) {
+            const offsetxy = this.getOffsetMousePosition(e);
+            this.setState({
+                isDragging: true,
+                initialDragZoom: offsetxy[0],
+                currentDragZoom: offsetxy[0]
+            });
+        }
+
+        if (this.props.enablePanZoom) {
+            const x = e.pageX;
+            const y = e.pageY;
+            const xy0 = [Math.round(x), Math.round(y)];
+
+            const begin = this.props.scale.domain()[0].getTime();
+            const end = this.props.scale.domain()[1].getTime();
+
+            this.setState({
+                isPanning: true,
+                initialPanBegin: begin,
+                initialPanEnd: end,
+                initialPanPosition: xy0
+            });
+        }
+
         return false;
     }
 
     handleMouseUp(e: React.MouseEvent<SVGGElement>) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.onMouseClick && !this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
+
         e.stopPropagation();
+        
         document.removeEventListener("mouseover", this.handleMouseMove as any); //XXX
         document.removeEventListener("mouseup", this.handleMouseUp as any); //XXX
+        
+        const offsetxy = this.getOffsetMousePosition(e);
         const x = e.pageX;
-        if (
-            this.props.onMouseClick &&
-            this.state.initialPanPosition &&
-            Math.abs(x - this.state.initialPanPosition[0]) < 2
-        ) {
+        const isPanning =
+            this.state.initialPanPosition && Math.abs(x - this.state.initialPanPosition[0]) > 2;
+        const isDragging =
+            this.state.initialDragZoom && Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
+
+        if (this.props.onMouseClick && !isPanning && !isDragging) {
             this.props.onMouseClick();
         }
-        this.setState({
-            isPanning: false,
-            initialPanBegin: null,
-            initialPanEnd: null,
-            initialPanPosition: null
-        });
+
+        if (this.props.enableDragZoom) {
+            if (isDragging) {
+                const start = this.props.scale.invert(this.state.initialDragZoom).getTime();
+                const end = this.props.scale.invert(this.state.currentDragZoom).getTime();
+
+                let newBegin = Math.round(start);
+                let newEnd = Math.round(end);
+
+                if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
+                    newBegin = this.props.minTime.getTime();
+                }
+
+                if (this.props.maxTime && newEnd > this.props.maxTime.getTime()) {
+                    newEnd = this.props.maxTime.getTime();
+                }
+
+                const newTimeRange = timerange([newBegin, newEnd].sort());
+                if (this.props.onZoom) {
+                    this.props.onZoom(newTimeRange);
+                }
+            }
+
+            this.setState({
+                isDragging: false,
+                initialDragZoom: null,
+                initialPanEnd: null,
+                currentDragZoom: null
+            });
+        }
+
+        if (this.props.enablePanZoom) {
+            this.setState({
+                isPanning: false,
+                initialPanBegin: null,
+                initialPanEnd: null,
+                initialPanPosition: null
+            });
+        }
     }
 
     handleMouseOut(e: React.MouseEvent<SVGGElement>) {
         e.preventDefault();
+
         if (this.props.onMouseOut) {
             this.props.onMouseOut();
         }
@@ -190,32 +269,45 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
         const x = e.pageX;
         const y = e.pageY;
         const xy = [Math.round(x), Math.round(y)];
+        const offsetxy = this.getOffsetMousePosition(e);
+        if (this.state.isDragging) {
+            this.setState({
+                currentDragZoom: offsetxy[0]
+            });
+        }
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
             const timeOffset =
                 this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
+
             let newBegin = Math.round(this.state.initialPanBegin - timeOffset);
             let newEnd = Math.round(this.state.initialPanEnd - timeOffset);
             const duration = Math.round(this.state.initialPanEnd - this.state.initialPanBegin);
+
             if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
                 newBegin = this.props.minTime.getTime();
                 newEnd = newBegin + duration;
             }
+
             if (this.props.maxTime && newEnd > this.props.maxTime.getTime()) {
                 newEnd = this.props.maxTime.getTime();
                 newBegin = newEnd - duration;
             }
-            const newTimeRange = new TimeRange(newBegin, newEnd);
+
+            const newTimeRange = timerange(newBegin, newEnd);
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
         } else if (this.props.onMouseMove) {
-            const trackerPosition = this.getOffsetMousePosition(e)[0];
-            const time: Date = this.props.scale.invert(trackerPosition);
+            const mousePosition = this.getOffsetMousePosition(e)[0];
             if (this.props.onMouseMove) {
-                this.props.onMouseMove(time);
+                this.props.onMouseMove(mousePosition[0], mousePosition[1]);
             }
+            // const time: Date = this.props.scale.invert(trackerPosition);
+            // if (this.props.onMouseMove) {
+            //     this.props.onMouseMove(time);
+            // }
         }
     }
 
@@ -225,6 +317,13 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
 
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
+        const handlers = {
+            onWheel: this.handleScrollWheel,
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
+            onMouseOut: this.handleMouseOut,
+            onMouseUp: this.handleMouseUp
+        };
         return (
             <g
                 pointerEvents="all"
@@ -239,13 +338,22 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
                     ref={c => {
                         this.eventRect = c;
                     }}
-                    style={{ opacity: 0.0, cursor }}
+                    style={{ fill: "#000", opacity: 0.0, cursor }}
                     x={0}
                     y={0}
                     width={this.props.width}
                     height={this.props.height}
                 />
                 {this.props.children}
+                {this.state.isDragging && (
+                    <rect
+                        style={{ opacity: 0.3, fill: "grey" }}
+                        x={Math.min(this.state.currentDragZoom, this.state.initialDragZoom)}
+                        y={0}
+                        width={Math.abs(this.state.currentDragZoom - this.state.initialDragZoom)}
+                        height={this.props.height}
+                    />
+                )}
             </g>
         );
     }

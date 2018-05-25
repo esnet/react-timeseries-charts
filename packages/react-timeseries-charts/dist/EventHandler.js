@@ -9,10 +9,13 @@ var EventHandler = (function (_super) {
     function EventHandler(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
+            isDragging: false,
             isPanning: false,
             initialPanBegin: null,
             initialPanEnd: null,
-            initialPanPosition: null
+            initialPanPosition: null,
+            initialDragZoom: null,
+            currentDragZoom: null
         };
         _this.handleScrollWheel = _this.handleScrollWheel.bind(_this);
         _this.handleMouseDown = _this.handleMouseDown.bind(_this);
@@ -28,7 +31,7 @@ var EventHandler = (function (_super) {
         return [Math.round(x), Math.round(y)];
     };
     EventHandler.prototype.handleScrollWheel = function (e) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
         e.preventDefault();
@@ -77,44 +80,81 @@ var EventHandler = (function (_super) {
         }
     };
     EventHandler.prototype.handleMouseDown = function (e) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
         e.preventDefault();
-        var x = e.pageX;
-        var y = e.pageY;
-        var xy0 = [Math.round(x), Math.round(y)];
-        var begin = this.props.scale.domain()[0].getTime();
-        var end = this.props.scale.domain()[1].getTime();
         document.addEventListener("mouseover", this.handleMouseMove);
         document.addEventListener("mouseup", this.handleMouseUp);
-        this.setState({
-            isPanning: true,
-            initialPanBegin: begin,
-            initialPanEnd: end,
-            initialPanPosition: xy0
-        });
+        if (this.props.enableDragZoom) {
+            var offsetxy = this.getOffsetMousePosition(e);
+            this.setState({
+                isDragging: true,
+                initialDragZoom: offsetxy[0],
+                currentDragZoom: offsetxy[0]
+            });
+        }
+        if (this.props.enablePanZoom) {
+            var x = e.pageX;
+            var y = e.pageY;
+            var xy0 = [Math.round(x), Math.round(y)];
+            var begin = this.props.scale.domain()[0].getTime();
+            var end = this.props.scale.domain()[1].getTime();
+            this.setState({
+                isPanning: true,
+                initialPanBegin: begin,
+                initialPanEnd: end,
+                initialPanPosition: xy0
+            });
+        }
         return false;
     };
     EventHandler.prototype.handleMouseUp = function (e) {
-        if (!this.props.enablePanZoom) {
+        if (!this.props.onMouseClick && !this.props.enablePanZoom && !this.props.enableDragZoom) {
             return;
         }
         e.stopPropagation();
         document.removeEventListener("mouseover", this.handleMouseMove);
         document.removeEventListener("mouseup", this.handleMouseUp);
+        var offsetxy = this.getOffsetMousePosition(e);
         var x = e.pageX;
-        if (this.props.onMouseClick &&
-            this.state.initialPanPosition &&
-            Math.abs(x - this.state.initialPanPosition[0]) < 2) {
+        var isPanning = this.state.initialPanPosition && Math.abs(x - this.state.initialPanPosition[0]) > 2;
+        var isDragging = this.state.initialDragZoom && Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
+        if (this.props.onMouseClick && !isPanning && !isDragging) {
             this.props.onMouseClick();
         }
-        this.setState({
-            isPanning: false,
-            initialPanBegin: null,
-            initialPanEnd: null,
-            initialPanPosition: null
-        });
+        if (this.props.enableDragZoom) {
+            if (isDragging) {
+                var start = this.props.scale.invert(this.state.initialDragZoom).getTime();
+                var end = this.props.scale.invert(this.state.currentDragZoom).getTime();
+                var newBegin = Math.round(start);
+                var newEnd = Math.round(end);
+                if (this.props.minTime && newBegin < this.props.minTime.getTime()) {
+                    newBegin = this.props.minTime.getTime();
+                }
+                if (this.props.maxTime && newEnd > this.props.maxTime.getTime()) {
+                    newEnd = this.props.maxTime.getTime();
+                }
+                var newTimeRange = pondjs_1.timerange([newBegin, newEnd].sort());
+                if (this.props.onZoom) {
+                    this.props.onZoom(newTimeRange);
+                }
+            }
+            this.setState({
+                isDragging: false,
+                initialDragZoom: null,
+                initialPanEnd: null,
+                currentDragZoom: null
+            });
+        }
+        if (this.props.enablePanZoom) {
+            this.setState({
+                isPanning: false,
+                initialPanBegin: null,
+                initialPanEnd: null,
+                initialPanPosition: null
+            });
+        }
     };
     EventHandler.prototype.handleMouseOut = function (e) {
         e.preventDefault();
@@ -127,6 +167,12 @@ var EventHandler = (function (_super) {
         var x = e.pageX;
         var y = e.pageY;
         var xy = [Math.round(x), Math.round(y)];
+        var offsetxy = this.getOffsetMousePosition(e);
+        if (this.state.isDragging) {
+            this.setState({
+                currentDragZoom: offsetxy[0]
+            });
+        }
         if (this.state.isPanning) {
             var xy0 = this.state.initialPanPosition;
             var timeOffset = this.props.scale.invert(xy[0]).getTime() -
@@ -142,30 +188,38 @@ var EventHandler = (function (_super) {
                 newEnd = this.props.maxTime.getTime();
                 newBegin = newEnd - duration;
             }
-            var newTimeRange = new pondjs_1.TimeRange(newBegin, newEnd);
+            var newTimeRange = pondjs_1.timerange(newBegin, newEnd);
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }
         }
         else if (this.props.onMouseMove) {
-            var trackerPosition = this.getOffsetMousePosition(e)[0];
-            var time = this.props.scale.invert(trackerPosition);
+            var mousePosition = this.getOffsetMousePosition(e)[0];
             if (this.props.onMouseMove) {
-                this.props.onMouseMove(time);
+                this.props.onMouseMove(mousePosition[0], mousePosition[1]);
             }
         }
     };
     EventHandler.prototype.render = function () {
         var _this = this;
         var cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
+        var handlers = {
+            onWheel: this.handleScrollWheel,
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
+            onMouseOut: this.handleMouseOut,
+            onMouseUp: this.handleMouseUp
+        };
         return (React.createElement("g", { pointerEvents: "all", onWheel: function (e) { return _this.handleScrollWheel(e); }, onMouseDown: function (e) { return _this.handleMouseDown(e); }, onMouseUp: function (e) { return _this.handleMouseUp(e); }, onMouseMove: function (e) { return _this.handleMouseMove(e); }, onMouseOut: function (e) { return _this.handleMouseOut(e); } },
             React.createElement("rect", { key: "handler-hit-rect", ref: function (c) {
                     _this.eventRect = c;
-                }, style: { opacity: 0.0, cursor: cursor }, x: 0, y: 0, width: this.props.width, height: this.props.height }),
-            this.props.children));
+                }, style: { fill: "#000", opacity: 0.0, cursor: cursor }, x: 0, y: 0, width: this.props.width, height: this.props.height }),
+            this.props.children,
+            this.state.isDragging && (React.createElement("rect", { style: { opacity: 0.3, fill: "grey" }, x: Math.min(this.state.currentDragZoom, this.state.initialDragZoom), y: 0, width: Math.abs(this.state.currentDragZoom - this.state.initialDragZoom), height: this.props.height }))));
     };
     EventHandler.defaultProps = {
-        enablePanZoom: false
+        enablePanZoom: false,
+        enableDragZoom: false
     };
     return EventHandler;
 }(React.Component));

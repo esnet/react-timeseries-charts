@@ -47,9 +47,9 @@ var LegendItem = (function (_super) {
     };
     LegendItem.prototype.render = function () {
         var _this = this;
-        var _a = this.props, symbolStyle = _a.symbolStyle, labelStyle = _a.labelStyle, valueStyle = _a.valueStyle, itemKey = _a.itemKey;
+        var _a = this.props, symbolStyle = _a.symbolStyle, labelStyle = _a.labelStyle, valueStyle = _a.valueStyle, itemKey = _a.itemKey, type = _a.type;
         var symbol;
-        switch (this.props.type.toUpperCase()) {
+        switch (type.toUpperCase()) {
             case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
                 break;

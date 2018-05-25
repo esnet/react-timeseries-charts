@@ -15,7 +15,7 @@ import { index, Event, Index, TimeRange, Time, Key } from "pondjs";
 import { timeFormat } from "d3-time-format";
 
 import { ChartProps } from "./Charts";
-import { InfoBox, InfoBoxProps } from "./info";
+import { InfoBox, InfoBoxProps } from "./Info";
 import { EventMarkerStyle, defaultEventMarkerStyle as defaultStyle } from "./style";
 import { LabelValueList } from "./types";
 
@@ -188,7 +188,6 @@ export class EventMarker extends React.Component<EventMarkerProps> {
 
     renderMarker(event: Event<Key>, column: string, info: string | LabelValueList) {
         let t;
-        console.log(event, column, info);
         if (event.keyType() === "time") {
             t = event.timestamp();
         } else {
@@ -196,6 +195,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
             );
         }
+
         let value;
         if (this.props.yValueFunc) {
             value = this.props.yValueFunc(event, column);
@@ -224,6 +224,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
 
         const w = this.props.infoWidth;
         const lineBottom = posy - 10;
+
         let verticalStem;
         let horizontalStem;
         let dot;
@@ -235,11 +236,15 @@ export class EventMarker extends React.Component<EventMarkerProps> {
             infoBox = <InfoBox {...infoBoxProps} info={info} />;
         }
 
+        //
+        // Marker on right of event
+        //
+
         if (this.props.type === "point") {
             let dx = 0;
             let dy = 0;
 
-            let textDefaultStyle: any = {
+            let textDefaultStyle: React.CSSProperties = {
                 fontSize: 11,
                 pointerEvents: "none",
                 paintOrder: "stroke",
@@ -264,7 +269,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 case "top":
                     dy = -5;
                     textDefaultStyle.textAnchor = "middle";
-                    textDefaultStyle.alignmentBaseline = "bottom";
+                    textDefaultStyle.alignmentBaseline = "hanging";
                     break;
                 case "bottom":
                     dy = 5;
@@ -274,7 +279,8 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 default:
             }
 
-            const tstyle = _.merge(textDefaultStyle, this.props.style.text);
+            // const tstyle = _.merge(true, textDefaultStyle, this.props.markerLabelStyle);
+            const tstyle = _.merge(true, textDefaultStyle, this.props.style.text);
 
             dot = (
                 <circle
@@ -290,6 +296,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                     {this.props.markerLabel}
                 </text>
             );
+
             return (
                 <g>
                     {dot}

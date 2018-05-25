@@ -1,11 +1,12 @@
 /// <reference types="react" />
 import * as React from "react";
+import { TimeSeries, Key } from "pondjs";
 import { Styler } from "./styler";
 import { ChartProps } from "./Charts";
 import { CurveInterpolation } from "./types";
 import { LineChartChannelStyle, LineChartStyle } from "./style";
 export declare type LineChartProps = ChartProps & {
-    series: any;
+    series: TimeSeries<Key>;
     axis: string;
     columns?: string[];
     style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
@@ -15,6 +16,7 @@ export declare type LineChartProps = ChartProps & {
     onSelectionChange?: (...args: any[]) => any;
     highlight?: string;
     onHighlightChange?: (...args: any[]) => any;
+    visible?: boolean;
 };
 export declare type Point = {
     x: Date;

@@ -23,6 +23,7 @@ export type EventChartProps = ChartProps & {
     hoverMarkerWidth?: number;
     textOffsetX?: number;
     textOffsetY?: number;
+    visible?: boolean;
     style?: EventChartStyle;
     onSelectionChange?: (e: Event<Key>) => any;
     onMouseOver?: (e: Event<Key>) => any;
@@ -44,6 +45,7 @@ export type EventChartState = {
  */
 export class EventChart extends React.Component<EventChartProps, EventChartState> {
     static defaultProps = {
+        visible: true,
         size: 30,
         spacing: 0,
         textOffsetX: 0,
@@ -106,6 +108,7 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                 const end = event.end();
                 const beginPos = scale(begin) >= 0 ? scale(begin) : 0;
                 const endPos = scale(end) <= this.props.width ? scale(end) : this.props.width;
+
                 const transform = `translate(${beginPos},0)`;
                 const isHover = this.state.hover ? Event.is(event, this.state.hover) : false;
 
@@ -138,8 +141,6 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                 width = width < 0 ? 0 : width;
                 const height = this.props.size;
 
-                let text = null;
-
                 const textStyle: React.CSSProperties = {
                     fontSize: 11,
                     fontWeight: 100,
@@ -147,6 +148,7 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                     fill: "#444"
                 };
 
+                let text = null;
                 if (isHover) {
                     text = (
                         <g>
@@ -156,14 +158,19 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                                 y={y}
                                 width={hoverMarkerWidth}
                                 height={height + 4}
-                                style={_.merge(barNormalStyle, { pointerEvents: "none" } as React.CSSProperties)}
+                                style={_.merge(true, barNormalStyle, { pointerEvents: "none" } as React.CSSProperties)}
                             />
-                            <text style={textStyle} x={8 + textOffsetX} y={15 + textOffsetY}>
+                            <text 
+                                style={textStyle} 
+                                x={8 + textOffsetX} 
+                                y={15 + textOffsetY}
+                            >
                                 {label}
                             </text>
                         </g>
                     );
                 }
+
                 const marker = (
                     <g transform={transform} key={i}>
                         <rect

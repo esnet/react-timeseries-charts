@@ -14,6 +14,7 @@ tslib_1.__exportStar(require("./EventMarker"), exports);
 tslib_1.__exportStar(require("./LabelAxis"), exports);
 tslib_1.__exportStar(require("./Legend"), exports);
 tslib_1.__exportStar(require("./LineChart"), exports);
+tslib_1.__exportStar(require("./MultiBrush"), exports);
 tslib_1.__exportStar(require("./Resizable"), exports);
 tslib_1.__exportStar(require("./ScatterChart"), exports);
 tslib_1.__exportStar(require("./TimeMarker"), exports);

@@ -16,6 +16,7 @@ export declare type TimeMarkerProps = ChartProps & {
     showInfoBox?: boolean;
     showLine?: boolean;
     showTime?: boolean;
+    visible?: boolean;
 };
 export declare class TimeMarker extends React.Component<TimeMarkerProps> {
     static defaultProps: Partial<TimeMarkerProps>;

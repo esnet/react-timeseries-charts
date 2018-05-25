@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import * as React from "react";
 import { ScaleTime } from "d3-scale";
+import { TimeRange } from "pondjs";
 import ScaleInterpolator, { ScalerFunction } from "./interpolators";
 import { LabelValueList } from "./types";
 export declare type ChartRowProps = {
@@ -18,6 +19,16 @@ export declare type ChartRowProps = {
     leftAxisWidths?: number[];
     rightAxisWidths?: number[];
     transition: number;
+    visible?: boolean;
+    enablePanZoom?: boolean;
+    paddingLeft?: number;
+    paddingRight?: number;
+    minTime?: Date;
+    maxTime?: Date;
+    minDuration?: number;
+    showGrid?: boolean;
+    onTimeRangeChanged: (timeRange: TimeRange) => any;
+    onTrackerChanged: (t: Date) => any;
 };
 export declare type ChartRowState = {
     yAxisScalerMap?: {
@@ -38,6 +49,8 @@ export declare class ChartRow extends React.Component<ChartRowProps, ChartRowSta
         [key: string]: ScaleInterpolator;
     };
     constructor(props: ChartRowProps);
+    isChildYAxis: (child: React.ReactElement<any>) => boolean;
+    updateScales(props: ChartRowProps): void;
     componentWillMount(): void;
     componentWillReceiveProps(nextProps: ChartRowProps): void;
     render(): JSX.Element;

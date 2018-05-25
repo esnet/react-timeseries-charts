@@ -34,8 +34,10 @@ var ScatterChart = (function (_super) {
         var point;
         var minDistance = Infinity;
         var _loop_1 = function (column) {
-            var eventList = this_1.props.series.collection().eventList();
-            eventList.forEach(function (event) {
+            this_1.props.series
+                .collection()
+                .eventList()
+                .forEach(function (event) {
                 var t = event.timestamp();
                 var value = event.get(column);
                 var px = _this.props.timeScale(t);
@@ -78,7 +80,7 @@ var ScatterChart = (function (_super) {
     ScatterChart.prototype.style = function (column, event) {
         var style;
         var styleMap = this.providedStyleMap(column, event);
-        var s = styleMap["point"] ? styleMap["point"] : styleMap;
+        var s = styleMap.point ? styleMap.point : styleMap;
         var d = style_1.defaultScatterChartChannelStyle.point;
         var isHighlighted = this.props.highlight &&
             column === this.props.highlight.column &&
@@ -88,20 +90,20 @@ var ScatterChart = (function (_super) {
             pondjs_1.Event.is(this.props.selected.event, event);
         if (this.props.selected) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge(true, d.selected, s.selected ? s.selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
             }
             else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge(true, d.muted, s.muted ? s.muted : {});
             }
         }
         else if (isHighlighted) {
-            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(d.normal, s.normal ? s.normal : {});
+            style = _.merge(true, d.normal, s.normal ? s.normal : {});
         }
         return style;
     };
@@ -113,41 +115,46 @@ var ScatterChart = (function (_super) {
         var pointerEvents = this.props.onSelectionChange ? "auto" : "none";
         this.props.columns.forEach(function (column) {
             var key = 1;
-            var eventList = series.collection().eventList();
-            eventList.forEach(function (event) {
+            series
+                .collection()
+                .eventList()
+                .forEach(function (event) {
                 var t = new Date(event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2);
                 var value = event.get(column);
+                var badPoint = _.isNull(value) || _.isNaN(value);
                 var style = _this.style(column, event);
-                var x = timeScale(t);
-                var y = yScale(value);
-                var radius = _.isFunction(_this.props.radius)
-                    ? _this.props.radius(event, column)
-                    : +_this.props.radius;
-                var isHighlighted = _this.props.highlight &&
-                    pondjs_1.Event.is(_this.props.highlight.event, event) &&
-                    column === _this.props.highlight.column;
-                if (isHighlighted && _this.props.info) {
-                    var eventMarkerProps = {
-                        key: "marker",
-                        event: event,
-                        column: column,
-                        type: "point",
-                        info: _this.props.info,
-                        style: _this.props.infoStyle,
-                        width: _this.props.width,
-                        height: _this.props.height,
-                        infoWidth: _this.props.infoWidth,
-                        infoHeight: _this.props.infoWidth,
-                        infoTimeFormat: _this.props.infoTimeFormat,
-                        markerRadius: 0,
-                        timeScale: _this.props.timeScale,
-                        yScale: _this.props.yScale
-                    };
-                    eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
+                if (!badPoint) {
+                    var x = timeScale(t);
+                    var y = yScale(value);
+                    var radius = _.isFunction(_this.props.radius)
+                        ? _this.props.radius(event, column)
+                        : +_this.props.radius;
+                    var isHighlighted = _this.props.highlight &&
+                        pondjs_1.Event.is(_this.props.highlight.event, event) &&
+                        column === _this.props.highlight.column;
+                    if (isHighlighted && _this.props.info) {
+                        var eventMarkerProps = {
+                            key: "marker",
+                            event: event,
+                            column: column,
+                            type: "point",
+                            info: _this.props.info,
+                            style: _this.props.infoStyle,
+                            width: _this.props.width,
+                            height: _this.props.height,
+                            infoWidth: _this.props.infoWidth,
+                            infoHeight: _this.props.infoWidth,
+                            infoTimeFormat: _this.props.infoTimeFormat,
+                            markerRadius: 0,
+                            timeScale: _this.props.timeScale,
+                            yScale: _this.props.yScale
+                        };
+                        eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
+                    }
+                    var point = (React.createElement("circle", { key: column + "-" + key, cx: x, cy: y, r: radius, style: style, pointerEvents: pointerEvents, onMouseMove: function (e) { return _this.handleHover(e); }, onClick: function (e) { return _this.handleClick(e, event, column); } }));
+                    points.push(point);
+                    key += 1;
                 }
-                var point = (React.createElement("circle", { key: column + "-" + key, cx: x, cy: y, r: radius, style: style, pointerEvents: pointerEvents, onMouseMove: function (e) { return _this.handleHover(e); }, onClick: function (e) { return _this.handleClick(e, event, column); } }));
-                points.push(point);
-                key += 1;
             });
         });
         return (React.createElement("g", null,
@@ -167,7 +174,8 @@ var ScatterChart = (function (_super) {
         radius: 2.0,
         infoStyle: style_1.defaultEventMarkerStyle,
         infoWidth: 90,
-        infoHeight: 30
+        infoHeight: 30,
+        visible: true
     };
     return ScatterChart;
 }(React.Component));

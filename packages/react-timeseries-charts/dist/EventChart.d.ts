@@ -11,6 +11,7 @@ export declare type EventChartProps = ChartProps & {
     hoverMarkerWidth?: number;
     textOffsetX?: number;
     textOffsetY?: number;
+    visible?: boolean;
     style?: EventChartStyle;
     onSelectionChange?: (e: Event<Key>) => any;
     onMouseOver?: (e: Event<Key>) => any;
@@ -21,6 +22,7 @@ export declare type EventChartState = {
 };
 export declare class EventChart extends React.Component<EventChartProps, EventChartState> {
     static defaultProps: {
+        visible: boolean;
         size: number;
         spacing: number;
         textOffsetX: number;

@@ -16,7 +16,7 @@ import "moment-duration-format";
 
 import { ChartProps } from "./Charts";
 
-import { InfoBox, InfoBoxProps } from "./info";
+import { InfoBox, InfoBoxProps } from "./Info";
 import { TimeMarkerStyle, defaultTimeMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 
@@ -79,6 +79,11 @@ export type TimeMarkerProps = ChartProps & {
      * just don't like it.
      */
     showTime?: boolean;
+
+    /**
+     * Show or hide this chart
+     */
+    visible?: boolean;
 };
 
 /**
@@ -87,6 +92,7 @@ export type TimeMarkerProps = ChartProps & {
  */
 export class TimeMarker extends React.Component<TimeMarkerProps> {
     static defaultProps: Partial<TimeMarkerProps> = {
+        visible: true,
         showInfoBox: true,
         showLine: true,
         showTime: true,
@@ -97,7 +103,15 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
 
     renderLine(posx: number) {
         const { style } = this.props;
-        return <line style={style.line} x1={posx} y1={0} x2={posx} y2={this.props.height} />;
+        return (
+            <line 
+                style={style.line} 
+                x1={posx} 
+                y1={0} 
+                x2={posx} 
+                y2={this.props.height} 
+            />
+        );
     }
 
     renderTimeMarker(d: Date) {
@@ -145,9 +159,8 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
         };
 
         if (info) {
-            if (info) {
-                infoBox = <InfoBox {...infoBoxProps} info={info} />;
-            }
+            infoBox = <InfoBox {...infoBoxProps} info={info} />;
+
             if (posx + 10 + infoWidth < this.props.width - 50) {
                 return (
                     <g transform={`translate(${posx + 10},${5})`}>

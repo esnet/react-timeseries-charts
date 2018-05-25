@@ -24,6 +24,9 @@ var ValueAxis = (function (_super) {
             React.createElement("text", { key: "value", x: Math.round(width / 2), y: height / 2, style: labelStyle }, value),
             React.createElement("text", { key: "detail", x: Math.round(width / 2), y: height / 2, dy: "1.2em", style: detailStyle }, detail)));
     };
+    ValueAxis.defaultProps = {
+        visible: true
+    };
     return ValueAxis;
 }(React.Component));
 exports.ValueAxis = ValueAxis;

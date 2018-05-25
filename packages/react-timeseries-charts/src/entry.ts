@@ -22,6 +22,7 @@ export * from "./EventMarker";
 export * from "./LabelAxis";
 export * from "./Legend";
 export * from "./LineChart";
+export * from "./MultiBrush";
 export * from "./Resizable";
 export * from "./ScatterChart";
 export * from "./TimeMarker";

@@ -10,7 +10,7 @@
 import * as _ from "lodash";
 import { line } from "d3-shape";
 import * as React from "react";
-import { TimeSeries } from "pondjs";
+import { TimeSeries, Key } from "pondjs";
 
 import { Styler } from "./styler";
 import { scaleAsString } from "./util";
@@ -23,10 +23,8 @@ import {
     defaultLineChartChannelStyle as defaultStyle
 } from "./style";
 
-// import "@types/d3-shape";
-
 export type LineChartProps = ChartProps & {
-    series: any;
+    series: TimeSeries<Key>;
     axis: string;
     columns?: string[];
     style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
@@ -36,6 +34,7 @@ export type LineChartProps = ChartProps & {
     onSelectionChange?: (...args: any[]) => any;
     highlight?: string;
     onHighlightChange?: (...args: any[]) => any;
+    visible?: boolean;
 };
 
 /**
@@ -81,7 +80,8 @@ export class LineChart extends React.Component<LineChartProps, {}> {
     static defaultProps: Partial<LineChartProps> = {
         columns: ["value"],
         interpolation: CurveInterpolation.curveLinear,
-        breakLine: true
+        breakLine: true,
+        visible: true
     };
 
     shouldComponentUpdate(nextProps: LineChartProps) {
@@ -103,12 +103,19 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         const highlightChanged = this.props.highlight !== highlight;
         const selectionChanged = this.props.selection !== selection;
         const columnsChanged = this.props.columns !== columns;
+
         let seriesChanged = false;
-        if (oldSeries.length !== newSeries.length) {
+        if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
+
+        // if (oldSeries.length !== newSeries.length) {
+        //     seriesChanged = true;
+        // } else {
+        //     seriesChanged = !TimeSeries.is(oldSeries, newSeries);
+        // }
 
         return (
             widthChanged ||
@@ -173,17 +180,18 @@ export class LineChart extends React.Component<LineChartProps, {}> {
 
         if (this.props.selection) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge(true, d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge(true, d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
             style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(true, d.normal, s ? s.normal : {});
+            style = _.merge(true, d.normal, s.normal ? s.normal : {});
         }
+
         style.pointerEvents = "none";
         return style;
     }
@@ -200,8 +208,8 @@ export class LineChart extends React.Component<LineChartProps, {}> {
 
         // D3 generates each path
         const path = line<LineData>()
-            .x(d => this.props.timeScale(d.x))
             .curve(curves[this.props.interpolation])
+            .x(d => this.props.timeScale(d.x))
             .y(d => this.props.yScale(d.y))(data);
 
         return (
@@ -227,9 +235,11 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         let count = 1;
         if (this.props.breakLine) {
             // Remove nulls and NaNs from the line by generating a break in the line
-            const eventList = this.props.series._collection.eventList();
             let currentPoints: PointData = null;
-            eventList.forEach(d => {
+            this.props.series
+                .collection()
+                .eventList()
+                .forEach(d => {
                 const timestamp = new Date(
                     d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
                 );
@@ -253,17 +263,19 @@ export class LineChart extends React.Component<LineChartProps, {}> {
         } else {
             // Ignore nulls and NaNs in the line
             const cleanedPoints = [];
-            const eventList = this.props.series._collection.eventList();
-            eventList.forEach(d => {
-                const timestamp = new Date(
-                    d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
-                );
-                const value = d.get(column);
-                const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
-                if (!badPoint) {
-                    cleanedPoints.push({ x: timestamp, y: value });
-                }
-            });
+            this.props.series
+                .collection()
+                .eventList()
+                .forEach(d => {
+                    const timestamp = new Date(
+                        d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2
+                    );
+                    const value = d.get(column);
+                    const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                    if (!badPoint) {
+                        cleanedPoints.push({ x: timestamp, y: value });
+                    }
+                });
             pathLines.push(this.renderPath(cleanedPoints, column, count));
             count += 1;
         }

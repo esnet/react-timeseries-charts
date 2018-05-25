@@ -33,7 +33,7 @@ var LineChart = (function (_super) {
         var selectionChanged = this.props.selection !== selection;
         var columnsChanged = this.props.columns !== columns;
         var seriesChanged = false;
-        if (oldSeries.length !== newSeries.length) {
+        if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         }
         else {
@@ -88,20 +88,20 @@ var LineChart = (function (_super) {
         var s = styleMap[element] ? styleMap[element] : styleMap;
         if (this.props.selection) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge(true, d.selected, s.selected ? s.selected : {});
             }
             else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
             }
             else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge(true, d.muted, s.muted ? s.muted : {});
             }
         }
         else if (isHighlighted) {
             style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         }
         else {
-            style = _.merge(true, d.normal, s ? s.normal : {});
+            style = _.merge(true, d.normal, s.normal ? s.normal : {});
         }
         style.pointerEvents = "none";
         return style;
@@ -117,8 +117,8 @@ var LineChart = (function (_super) {
             pointerEvents: "stroke"
         };
         var path = d3_shape_1.line()
-            .x(function (d) { return _this.props.timeScale(d.x); })
             .curve(curve_1.default[this.props.interpolation])
+            .x(function (d) { return _this.props.timeScale(d.x); })
             .y(function (d) { return _this.props.yScale(d.y); })(data);
         return (React.createElement("g", { key: key },
             React.createElement("path", { d: path, style: this.pathStyle("line", column) }),
@@ -133,9 +133,11 @@ var LineChart = (function (_super) {
         var pathLines = [];
         var count = 1;
         if (this.props.breakLine) {
-            var eventList = this.props.series._collection.eventList();
             var currentPoints_1 = null;
-            eventList.forEach(function (d) {
+            this.props.series
+                .collection()
+                .eventList()
+                .forEach(function (d) {
                 var timestamp = new Date(d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2);
                 var value = d.get(column);
                 var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
@@ -159,8 +161,10 @@ var LineChart = (function (_super) {
         }
         else {
             var cleanedPoints_1 = [];
-            var eventList = this.props.series._collection.eventList();
-            eventList.forEach(function (d) {
+            this.props.series
+                .collection()
+                .eventList()
+                .forEach(function (d) {
                 var timestamp = new Date(d.begin().getTime() + (d.end().getTime() - d.begin().getTime()) / 2);
                 var value = d.get(column);
                 var badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
@@ -179,7 +183,8 @@ var LineChart = (function (_super) {
     LineChart.defaultProps = {
         columns: ["value"],
         interpolation: types_1.CurveInterpolation.curveLinear,
-        breakLine: true
+        breakLine: true,
+        visible: true
     };
     return LineChart;
 }(React.Component));

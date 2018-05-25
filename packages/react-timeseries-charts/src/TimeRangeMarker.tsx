@@ -15,9 +15,7 @@ import { ChartProps } from "./Charts";
 export type TimeRangeMarkerProps = ChartProps & {
     timerange: TimeRange;
     style?: React.CSSProperties;
-    timeScale: (...args: any[]) => any;
-    width: number;
-    height: number;
+    visible?: boolean;
 };
 
 /**
@@ -32,22 +30,26 @@ export type TimeRangeMarkerProps = ChartProps & {
  */
 export class TimeRangeMarker extends React.Component<TimeRangeMarkerProps> {
     static defaultProps: Partial<TimeRangeMarkerProps> = {
+        visible: true,
         style: { fill: "rgba(70, 130, 180, 0.25);" }
     };
 
     renderBand() {
         const timerange = this.props.timerange;
         const timeScale = this.props.timeScale;
+        
         // Viewport bounds
         const viewBeginTime = timeScale.invert(0);
         const viewEndTime = timeScale.invert(this.props.width);
         const viewport = new TimeRange(viewBeginTime, viewEndTime);
+        
         let bandStyle;
         if (this.props.style) {
             bandStyle = this.props.style;
         } else {
             bandStyle = { fill: "steelblue" };
         }
+
         if (!viewport.disjoint(timerange)) {
             const range = timerange.intersection(viewport) as TimeRange;
             const begin = range.begin();

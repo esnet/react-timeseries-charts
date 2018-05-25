@@ -54,17 +54,17 @@ var Legend = (function (_super) {
     Legend.prototype.symbolStyle = function (category) {
         var styleMap = this.providedStyle(category, this.props.type);
         var styleMode = this.styleMode(category);
-        return _.merge(style_1.defaultLegendCategoryStyle[styleMode], styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {});
+        return _.merge(true, style_1.defaultLegendCategoryStyle[styleMode], styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {});
     };
     Legend.prototype.labelStyle = function (category) {
         var styleMap = this.providedStyle(category, this.props.type);
         var styleMode = this.styleMode(category);
-        return _.merge(style_1.defaultLegendCategoryStyle[styleMode], styleMap.label[styleMode] ? styleMap.label[styleMode] : {});
+        return _.merge(true, style_1.defaultLegendCategoryStyle[styleMode], styleMap.label[styleMode] ? styleMap.label[styleMode] : {});
     };
     Legend.prototype.valueStyle = function (category) {
         var styleMap = this.providedStyle(category, this.props.type);
         var styleMode = this.styleMode(category);
-        return _.merge(style_1.defaultLegendCategoryStyle[styleMode], styleMap.value[styleMode] ? styleMap.value[styleMode] : {});
+        return _.merge(true, style_1.defaultLegendCategoryStyle[styleMode], styleMap.value[styleMode] ? styleMap.value[styleMode] : {});
     };
     Legend.prototype.render = function () {
         var _this = this;
@@ -77,14 +77,20 @@ var Legend = (function (_super) {
             return (React.createElement(LegendItem_1.LegendItem, { key: key, type: type, itemKey: key, label: label, value: value, symbolWidth: symbolWidth, symbolHeight: symbolHeight, symbolStyle: symbolStyle, labelStyle: labelStyle, valueStyle: valueStyle, onSelectionChange: _this.props.onSelectionChange, onHighlightChange: _this.props.onHighlightChange }));
         });
         var align = this.props.align === "left" ? "flex-start" : "flex-end";
-        return React.createElement(flexbox_react_1.default, { justifyContent: align }, items);
+        if (this.props.stack) {
+            return (React.createElement(flexbox_react_1.default, { justifyContent: align, flexDirection: "column", marginBottom: "20px" }, items));
+        }
+        else {
+            return (React.createElement(flexbox_react_1.default, { justifyContent: align, flexWrap: "wrap", marginBottom: "20px" }, items));
+        }
     };
     Legend.defaultProps = {
         style: {},
         type: LegendItem_1.LegendItemType.Swatch,
         align: "left",
         symbolWidth: 16,
-        symbolHeight: 16
+        symbolHeight: 16,
+        stack: false
     };
     return Legend;
 }(React.Component));

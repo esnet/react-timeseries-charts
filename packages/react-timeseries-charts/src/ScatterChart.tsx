@@ -33,10 +33,10 @@ export type EventColumnPair = {
 };
 
 export type ScatterChartProps = ChartProps & {
-    series: any;
+    series: TimeSeries<Key>;
     columns?: string[];
     axis: string;
-    radius?: number | ((...args: any[]) => any) | any;
+    radius?: number | ((...args: any[]) => any) | any | Styler;
     style?:
         | ScatterChartStyle
         | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle)
@@ -45,6 +45,7 @@ export type ScatterChartProps = ChartProps & {
     infoStyle?: EventMarkerStyle;
     infoWidth?: number;
     infoHeight?: number;
+    visible?: boolean;
     infoTimeFormat?: ((date: Date) => string) | string;
     selected?: EventColumnPair;
     onSelectionChange?: (...args: any[]) => any;
@@ -102,7 +103,8 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         radius: 2.0,
         infoStyle: defaultEventMarkerStyle,
         infoWidth: 90,
-        infoHeight: 30
+        infoHeight: 30,
+        visible: true
     };
 
     // Stored reference to event rect
@@ -135,31 +137,39 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
 
     handleHover(e: React.MouseEvent<SVGElement>) {
         const [x, y] = this.getOffsetMousePosition(e);
+
         let point;
         let minDistance = Infinity;
         for (const column of this.props.columns) {
-            const eventList = this.props.series.collection().eventList();
-            eventList.forEach(event => {
-                const t = event.timestamp();
-                const value = event.get(column);
-                const px = this.props.timeScale(t);
-                const py = this.props.yScale(value);
-                const distance = Math.sqrt((px - x) * (px - x) + (py - y) * (py - y));
-                if (distance < minDistance) {
-                    point = { event, column };
-                    minDistance = distance;
-                }
-            });
+            this.props.series
+                .collection()
+                .eventList()
+                .forEach(event => {
+                    const t = event.timestamp();
+                    const value = event.get(column);
+                    const px = this.props.timeScale(t);
+                    const py = this.props.yScale(value);
+                    const distance = Math.sqrt((px - x) * (px - x) + (py - y) * (py - y));
+                    if (distance < minDistance) {
+                        point = { event, column };
+                        minDistance = distance;
+                    }
+                });
         }
         if (this.props.onMouseNear) {
             this.props.onMouseNear(point);
         }
     }
+
     handleHoverLeave() {
         if (this.props.onMouseNear) {
             this.props.onMouseNear(null);
         }
     }
+
+    //
+    // Internal methods
+    //
 
     providedStyleMap(column: string, event: Event<Key>): ScatterChartChannelStyle {
         let style = {};
@@ -181,13 +191,14 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         let style;
         const styleMap = this.providedStyleMap(column, event);
 
-        const s = styleMap["point"] ? styleMap["point"] : styleMap;
+        const s = styleMap.point ? styleMap.point : styleMap;
         const d = defaultStyle.point;
 
         const isHighlighted =
             this.props.highlight &&
             column === this.props.highlight.column &&
             Event.is(this.props.highlight.event, event);
+
         const isSelected =
             this.props.selected &&
             column === this.props.selected.column &&
@@ -195,19 +206,21 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
 
         if (this.props.selected) {
             if (isSelected) {
-                style = _.merge(d.selected, s.selected ? s.selected : {});
+                style = _.merge(true, d.selected, s.selected ? s.selected : {});
             } else if (isHighlighted) {
-                style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+                style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
             } else {
-                style = _.merge(d.muted, s.muted ? s.muted : {});
+                style = _.merge(true, d.muted, s.muted ? s.muted : {});
             }
         } else if (isHighlighted) {
-            style = _.merge(d.highlighted, s.highlighted ? s.highlighted : {});
+            style = _.merge(true, d.highlighted, s.highlighted ? s.highlighted : {});
         } else {
-            style = _.merge(d.normal, s.normal ? s.normal : {});
+            style = _.merge(true, d.normal, s.normal ? s.normal : {});
         }
+
         return style;
     }
+
     //
     // Render
     //
@@ -215,65 +228,76 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
         const { series, timeScale, yScale } = this.props;
         const points: JSX.Element[] = [];
         let eventMarker;
+
         // if selectionChange is enabled, pointerEvents should be enabled as well
         const pointerEvents = this.props.onSelectionChange ? "auto" : "none";
         this.props.columns.forEach(column => {
             let key = 1;
-            const eventList = series.collection().eventList();
-            eventList.forEach(event => {
-                const t = new Date(
-                    event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
-                );
-                const value = event.get(column);
-                const style = this.style(column, event);
-                const x = timeScale(t);
-                const y = yScale(value);
-                const radius = _.isFunction(this.props.radius)
-                    ? this.props.radius(event, column)
-                    : +this.props.radius;
-                const isHighlighted =
-                    this.props.highlight &&
-                    Event.is(this.props.highlight.event, event) &&
-                    column === this.props.highlight.column;
-                // Hover info. Note that we just pass all of our props down
-                // into the EventMarker here, but the interesting ones are:
-                // * the info values themselves
-                // * the infoStyle
-                // * infoWidth and infoHeight
-                if (isHighlighted && this.props.info) {
-                    const eventMarkerProps: EventMarkerProps = {
-                        key: `marker`,
-                        event,
-                        column,
-                        type: "point",
-                        info: this.props.info,
-                        style: this.props.infoStyle,
-                        width: this.props.width,
-                        height: this.props.height,
-                        infoWidth: this.props.infoWidth,
-                        infoHeight: this.props.infoWidth,
-                        infoTimeFormat: this.props.infoTimeFormat,
-                        markerRadius: 0,
-                        timeScale: this.props.timeScale,
-                        yScale: this.props.yScale
-                    };
-                    eventMarker = <EventMarker {...eventMarkerProps} />;
-                }
-                const point = (
-                    <circle
-                        key={`${column}-${key}`}
-                        cx={x}
-                        cy={y}
-                        r={radius}
-                        style={style}
-                        pointerEvents={pointerEvents}
-                        onMouseMove={e => this.handleHover(e)}
-                        onClick={e => this.handleClick(e, event, column)}
-                    />
-                );
-                points.push(point);
-                key += 1;
-            });
+            series
+                .collection()
+                .eventList()
+                .forEach(event => {
+                    const t = new Date(
+                        event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
+                    );
+                    const value = event.get(column);
+                    const badPoint = _.isNull(value) || _.isNaN(value);
+                    const style = this.style(column, event);
+
+                    if (!badPoint) {
+                        const x = timeScale(t);
+                        const y = yScale(value);
+                        const radius = _.isFunction(this.props.radius)
+                            ? this.props.radius(event, column)
+                            : +this.props.radius;
+
+                        const isHighlighted =
+                            this.props.highlight &&
+                            Event.is(this.props.highlight.event, event) &&
+                            column === this.props.highlight.column;
+
+                        // Hover info. Note that we just pass all of our props down
+                        // into the EventMarker here, but the interesting ones are:
+                        // * the info values themselves
+                        // * the infoStyle
+                        // * infoWidth and infoHeight
+                        if (isHighlighted && this.props.info) {
+                            const eventMarkerProps: EventMarkerProps = {
+                                key: `marker`,
+                                event,
+                                column,
+                                type: "point",
+                                info: this.props.info,
+                                style: this.props.infoStyle,
+                                width: this.props.width,
+                                height: this.props.height,
+                                infoWidth: this.props.infoWidth,
+                                infoHeight: this.props.infoWidth,
+                                infoTimeFormat: this.props.infoTimeFormat,
+                                // marker: "circle",
+                                markerRadius: 0,
+                                timeScale: this.props.timeScale,
+                                yScale: this.props.yScale
+                            };
+                            eventMarker = <EventMarker {...eventMarkerProps} />;
+                        }
+
+                        const point = (
+                            <circle
+                                key={`${column}-${key}`}
+                                cx={x}
+                                cy={y}
+                                r={radius}
+                                style={style}
+                                pointerEvents={pointerEvents}
+                                onMouseMove={e => this.handleHover(e)}
+                                onClick={e => this.handleClick(e, event, column)}
+                            />
+                        );
+                        points.push(point);
+                        key += 1;
+                    }
+                });
         });
         return (
             <g>
@@ -282,6 +306,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
             </g>
         );
     }
+
     render() {
         return (
             <g>
