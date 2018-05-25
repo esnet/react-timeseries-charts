@@ -6,6 +6,8 @@ export declare type BaselineProps = ChartProps & {
     axis: string;
     style?: BaselineStyle;
     value?: number;
+    visible?: boolean;
+    vposition?: "above" | "below" | "auto";
     label?: string;
     position?: "left" | "right";
 };

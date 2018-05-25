@@ -18,6 +18,8 @@ export type BaselineProps = ChartProps & {
     axis: string;
     style?: BaselineStyle;
     value?: number;
+    visible?: boolean;
+    vposition?: "above" | "below" | "auto";
     label?: string;
     position?: "left" | "right";
 };
@@ -50,30 +52,39 @@ export type BaselineProps = ChartProps & {
  */
 export class Baseline extends React.Component<BaselineProps> {
     static defaultProps: Partial<BaselineProps> = {
+        visible: true,
         value: 0,
         label: "",
         position: "left",
-        style: defaultStyle as any
+        vposition: "auto",
+        style: defaultStyle
     };
 
     render() {
-        if (!this.props.yScale || _.isUndefined(this.props.value)) {
+        const { vposition, yScale, value, position, style, width } = this.props;
+        
+        if (!yScale || _.isUndefined(value)) {
             return null;
         }
-        const y = this.props.yScale(this.props.value);
+        const y = yScale(value);
         const transform = `translate(0 ${y})`;
         let textAnchor;
         let textPositionX;
         const pts = [];
-        const textPositionY = -3;
-        if (this.props.position === "left") {
+
+        const labelBelow = (vposition === "auto" && y < 15) || vposition === "below";
+        const textPositionY = labelBelow ? 2 : -2;
+        const alignmentBaseline = labelBelow ? "hanging" : "auto";
+
+        if (position === "left") {
             textAnchor = "start";
             textPositionX = 5;
         }
-        if (this.props.position === "right") {
+        if (position === "right") {
             textAnchor = "end";
-            textPositionX = this.props.width - 5;
+            textPositionX = width - 5;
         }
+
         pts.push("0 0");
         pts.push(`${this.props.width} 0`);
         const points = pts.join(" ");
@@ -82,14 +93,19 @@ export class Baseline extends React.Component<BaselineProps> {
         // Style
         //
 
+        const baseLabelStyle = { ...defaultStyle.label, alignmentBaseline };
+
         const labelStyle = _.merge(
-            defaultStyle.label,
-            this.props.style.label ? this.props.style.label : {}
+            true,
+            baseLabelStyle,
+            style.label ? style.label : {}
         );
         const lineStyle = _.merge(
+            true,
             defaultStyle.line,
-            this.props.style.line ? this.props.style.line : {}
+            style.line ? style.line : {}
         );
+        
         return (
             <g className="baseline" transform={transform}>
                 <polyline points={points} style={lineStyle} />
