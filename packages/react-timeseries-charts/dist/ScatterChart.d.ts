@@ -2,9 +2,9 @@
 import * as React from "react";
 import { TimeSeries, Event, Key } from "pondjs";
 import { ChartProps } from "./Charts";
-import { LabelValueList } from "./types";
 import { Styler } from "./styler";
 import { ScatterChartStyle, ScatterChartChannelStyle, EventMarkerStyle } from "./style";
+import { LabelValueList } from "./types";
 export declare type EventColumnPair = {
     event?: Event<Key>;
     column?: string;
@@ -35,7 +35,7 @@ export declare class ScatterChart extends React.Component<ScatterChartProps> {
     handleHover(e: React.MouseEvent<SVGElement>): void;
     handleHoverLeave(): void;
     providedStyleMap(column: string, event: Event<Key>): ScatterChartChannelStyle;
-    style(column: string, event: Event<Key>): any;
+    style(column: string, event: Event<Key>): React.CSSProperties;
     renderScatter(): JSX.Element;
     render(): JSX.Element;
 }

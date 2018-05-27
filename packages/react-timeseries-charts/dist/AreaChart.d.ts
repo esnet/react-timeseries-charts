@@ -1,10 +1,11 @@
 /// <reference types="react" />
 import "array.prototype.fill";
 import * as React from "react";
-import { ChartProps } from "./Charts";
 import { TimeSeries, Key } from "pondjs";
-import { CurveInterpolation, AreaChartColumns } from "./types";
+import { ChartProps } from "./Charts";
+import { Styler } from "./styler";
 import { AreaChartStyle, AreaChartChannelStyle } from "./style";
+import { CurveInterpolation, AreaChartColumns } from "./types";
 export declare type AreaData = {
     x0: number;
     y0: number;
@@ -23,7 +24,7 @@ export declare type AreaChartProps = ChartProps & {
     selection?: string;
     series: TimeSeries<Key>;
     stack?: boolean;
-    style: AreaChartStyle;
+    style: AreaChartStyle | ((column: string) => AreaChartChannelStyle) | Styler;
     visible?: boolean;
     onHighlightChange?: (column: string) => any;
     onSelectionChange?: (column: string) => any;
@@ -35,9 +36,9 @@ export declare class AreaChart extends React.Component<AreaChartProps> {
     handleHoverLeave(): void;
     handleClick(e: React.MouseEvent<SVGPathElement>, column: string): void;
     providedAreaStyleMap(column: string): AreaChartChannelStyle;
-    style(column: string, type: StyleType): any;
-    pathStyle(column: string): any;
-    areaStyle(column: string): any;
+    style(column: string, type: StyleType): React.CSSProperties;
+    pathStyle(column: string): React.CSSProperties;
+    areaStyle(column: string): React.CSSProperties;
     renderArea(data: AreaData[], column: string, key: number): JSX.Element;
     renderPaths(columnList: string[], direction: string): JSX.Element[];
     renderAreas(): JSX.Element;

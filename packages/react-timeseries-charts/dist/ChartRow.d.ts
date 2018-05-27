@@ -10,25 +10,25 @@ export declare type ChartRowProps = {
     height?: number;
     timeScale?: ScaleTime<number, number>;
     trackerTime?: Date;
-    trackerTimeFormat?: string;
-    timeFormat?: string;
+    trackerTimeFormat?: string | ((d: Date) => string);
+    timeFormat?: string | ((d: Date) => string);
     trackerShowTime?: boolean;
     trackerInfoWidth?: number;
     trackerInfoHeight?: number;
     trackerInfoValues?: LabelValueList | string;
     leftAxisWidths?: number[];
     rightAxisWidths?: number[];
+    paddingLeft?: number;
+    paddingRight?: number;
     transition: number;
     visible?: boolean;
     enablePanZoom?: boolean;
-    paddingLeft?: number;
-    paddingRight?: number;
     minTime?: Date;
     maxTime?: Date;
     minDuration?: number;
     showGrid?: boolean;
     onTimeRangeChanged: (timeRange: TimeRange) => any;
-    onTrackerChanged: (t: Date) => any;
+    onTrackerChanged: (time: Date, number: (t: any) => number) => any;
 };
 export declare type ChartRowState = {
     yAxisScalerMap?: {

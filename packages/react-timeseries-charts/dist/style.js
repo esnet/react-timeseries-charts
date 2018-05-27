@@ -74,7 +74,7 @@ exports.defaultScatterChartChannelStyle = {
         muted: { fill: "steelblue", opacity: 0.4 }
     }
 };
-exports.baselineDefaultStyle = {
+exports.defaultBaselineStyle = {
     label: {
         fill: "#8B7E7E",
         fontSize: 11,

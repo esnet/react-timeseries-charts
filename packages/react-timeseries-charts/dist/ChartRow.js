@@ -7,11 +7,11 @@ var d3_ease_1 = require("d3-ease");
 var d3_scale_1 = require("d3-scale");
 var react_hot_loader_1 = require("react-hot-loader");
 var Brush_1 = require("./Brush");
-var MultiBrush_1 = require("./MultiBrush");
 var Charts_1 = require("./Charts");
+var interpolators_1 = require("./interpolators");
+var MultiBrush_1 = require("./MultiBrush");
 var TimeMarker_1 = require("./TimeMarker");
 var YAxis_1 = require("./YAxis");
-var interpolators_1 = require("./interpolators");
 var AXIS_MARGIN = 5;
 function createScale(yaxis, type, min, max, y0, y1) {
     if (_.isUndefined(min) || _.isUndefined(max)) {

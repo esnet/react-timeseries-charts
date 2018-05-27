@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import * as chroma from "chroma-js";
 import * as colorbrewer from "colorbrewer";
 
+import { LegendItemType } from "./LegendItem";
 import {
     AreaChartStyle,
     BarChartStyle,
@@ -21,7 +22,6 @@ import {
     BoxChartStyle,
     LineChartStyle
 } from "./style";
-import { LegendItemType } from "./LegendItem";
 
 export type KeyedStyle = {
     key: string;
@@ -163,13 +163,13 @@ export class Styler {
             }
         }
 
-        const labelStyle = {
+        const labelStyle: React.CSSProperties = {
             fontSize: "normal",
             color: "#333",
             paddingRight: 10,
             cursor: "pointer"
         };
-        const valueStyle = {
+        const valueStyle: React.CSSProperties = {
             fontSize: "smaller",
             color: "#999",
             cursor: "pointer"

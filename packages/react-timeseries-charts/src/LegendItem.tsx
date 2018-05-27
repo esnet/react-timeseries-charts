@@ -20,14 +20,13 @@ export enum LegendItemType {
     Dot = "DOT"
 }
 
-// CHECK - LegendProps & ?
-export type LegendItemProps = LegendProps & {
+export type LegendItemProps = {
     itemKey: string;
-    // type: LegendItemType;
+    type: LegendItemType;
     label: string;
     value: string;
-    // symbolWidth: number;
-    // symbolHeight: number;
+    symbolWidth: number;
+    symbolHeight: number;
     symbolStyle: ElementStyle;
     labelStyle: ElementStyle;
     valueStyle: ElementStyle;
@@ -93,12 +92,6 @@ export class LegendItem extends React.Component<LegendItemProps> {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
-                {/* <circle
-                    style={style as React.CSSProperties}
-                    cx={Math.round(symbolWidth / 2)}
-                    cy={Math.round(symbolHeight / 2)}
-                    r={Math.round(symbolWidth) * 0.75}
-                /> */}
                 <ellipse
                     style={style as React.CSSProperties}
                     cx={Math.round(symbolWidth / 2) + 2}
@@ -113,7 +106,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
     render() {
         const { symbolStyle, labelStyle, valueStyle, itemKey, type } = this.props;
         
-        let symbol;
+        let symbol: JSX.Element;
         switch (type.toUpperCase()) {
             case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
@@ -127,6 +120,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
             default:
         }
 
+        // CHECK
         // TODO: We shouldn't be adding interactions to a element like this.
         //       The alternative it to put it on a <a> or something?
         

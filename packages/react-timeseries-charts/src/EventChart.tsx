@@ -160,7 +160,7 @@ export class EventChart extends React.Component<EventChartProps, EventChartState
                 const transform = `translate(${beginPos},0)`;
                 const isHover = this.state.hover ? Event.is(event, this.state.hover) : false;
 
-                let state;
+                let state: string;
                 if (isHover) {
                     state = "hover";
                 } else {

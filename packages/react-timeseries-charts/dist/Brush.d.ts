@@ -3,7 +3,7 @@ import * as React from "react";
 import { TimeRange } from "pondjs";
 import { ChartProps } from "./Charts";
 export declare type BrushProps = ChartProps & {
-    style?: object;
+    style?: React.CSSProperties;
     timeRange?: TimeRange;
     handleSize?: number;
     allowSelectionClear?: boolean;

@@ -20,7 +20,7 @@ import { areComponentsEqual } from "react-hot-loader";
 
 import { Brush } from "./Brush";
 import { ChartRow, ChartRowProps } from "./ChartRow";
-import { Charts, ChartsProps } from "./Charts";
+import { Charts, ChartProps, ChartsProps } from "./Charts";
 import { EventHandler } from "./EventHandler";
 import { MultiBrush } from "./MultiBrush";
 import { LabelValueList } from "./types";
@@ -30,6 +30,7 @@ import { Label } from "./Info";
 import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
 import { ScalerFunction } from "./interpolators";
 
+// CHECK - fix this
 const defaultTimeAxisStyle = {
     axis: {
         fill: "none",
@@ -58,12 +59,10 @@ export enum ShowGridPosition {
     Under = "UNDER"
 }
 
-export type ChartContainerProps = {
+export type ChartContainerProps = ChartProps & {
     /**
      * Children of the ChartContainer should be ChartRows.
      */
-
-    // CHECK - PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
     children: any;
 
     /**
@@ -72,7 +71,9 @@ export type ChartContainerProps = {
      */
     timeRange: TimeRange;
 
-    // CHECK - add description
+    /**
+     * Should the time axis use a UTC scale or local
+     */
     timezone?: string;
 
     /**
@@ -133,9 +134,7 @@ export type ChartContainerProps = {
      *     });
      * ```
      */
-
-    // CHECK - add function
-    timeFormat?: string;
+    timeFormat?: string | ((d: Date) => string);
     
     /**
      * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
@@ -155,8 +154,6 @@ export type ChartContainerProps = {
     /**
      * Angle the time axis labels
      */
-
-    // CHECK - implement this in React-axis
     timeAxisAngledLabels?: boolean;
 
     /**
@@ -181,12 +178,17 @@ export type ChartContainerProps = {
      */
     transition?: number;
 
-    // CHECK - add description. Also, can this be grouped?
+    /**
+     * Padding to add
+     */
     padding?: number;
     paddingLeft?: number;
     paddingRight?: number;
     paddingTop?: number;
     paddingBottom?: number;
+    timeAxisHeight?: number;
+    leftWidth?: number;
+    rightWidth?: number;
 
     /**
      * Show grid lines for each time marker
@@ -262,39 +264,24 @@ export type ChartContainerProps = {
      * Called when the user clicks the background plane of the chart. This is
      * useful when deselecting elements.
      */
-
-    // CHECK - change required?
     onBackgroundClick?: () => any;
+    
+    onMouseMove?: (x: number, y: number) => any;
 
     /**
-     * Called when the size of the chart changes
+     * Specify the title of the chart
      */
-
-    // CHECK - function doesn't work and change required?
-    onChartResize?: () => any;
-    
-    // CHECK - add description
-    onMouseMove?: (x: number, y: number) => any;
-    
-    // CHECK - add description
-    timeScale?: ScaleTime<number, number>;
-
-    // CHECK - add description
-    yScale?: ScalerFunction;
-    
-    // CHECK - add description
-    titleHeight?: number;
-    
-    // CHECK - add description
     title?: string;
-    
-    // CHECK - add description
-    timeAxisHeight?: number;
 
-    // CHECK - add description
-    titleStyle?: any;
+    /**
+     * Define the height of the title label
+     */
+    titleHeight?: number;
 
-    // CHECK - add prop timeAxisTickCount
+    /**
+     * Define the styling of the chart's title
+     */
+    titleStyle?: React.CSSProperties;
 };
 
 /**
@@ -517,14 +504,14 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         // TODO: We need a time scalar that is timezone aware
         // This might help: https://github.com/metocean/d3-chronological/blob/master/scale.js
 
-        this.timeScale =
+        const timeScale = (this.timeScale =
             this.props.timezone === "Etc/UTC"
                 ? scaleUtc()
                       .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
                       .range([0, timeAxisWidth])
                 : scaleTime()
                       .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
-                      .range([0, timeAxisWidth]);
+                      .range([0, timeAxisWidth]));
         
         const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
@@ -560,7 +547,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                 const firstRow = i === 0;
                 const isVisible = child.props.visible;
                 const props: ChartRowProps = {
-                    timeScale: this.timeScale,
+                    timeScale,
                     paddingLeft,
                     paddingRight,
                     leftAxisWidths,
@@ -612,7 +599,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                         height={chartsHeight}
                         showInfoBox={false}
                         time={this.props.trackerTime}
-                        timeScale={this.timeScale}
+                        timeScale={timeScale}
                         timeFormat={this.props.timeFormat}
                         info={this.props.trackerInfo}
                         infoWidth={this.props.trackerInfoWidth}
@@ -692,7 +679,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                     key="event-handler"
                     width={chartsWidth}
                     height={chartsHeight + timeAxisHeight}
-                    scale={this.timeScale}
+                    scale={timeScale}
                     enablePanZoom={this.props.enablePanZoom}
                     enableDragZoom={this.props.enableDragZoom}
                     minDuration={this.props.minDuration}

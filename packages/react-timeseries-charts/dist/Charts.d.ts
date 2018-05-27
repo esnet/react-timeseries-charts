@@ -23,7 +23,7 @@ export declare type ChartProps = {
     height?: number;
     timeScale?: ScaleTime<number, number>;
     yScale?: ScalerFunction;
-    timeFormat?: string;
+    timeFormat?: string | ((...args: any[]) => any);
     transition?: number;
 };
 export declare type ChartsProps = {

@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var _ = require("lodash");
-var d3_shape_1 = require("d3-shape");
 var React = require("react");
+var d3_shape_1 = require("d3-shape");
 var pondjs_1 = require("pondjs");
-var styler_1 = require("./styler");
-var util_1 = require("./util");
 var curve_1 = require("./curve");
-var types_1 = require("./types");
+var styler_1 = require("./styler");
 var style_1 = require("./style");
+var types_1 = require("./types");
+var util_1 = require("./util");
 var LineChart = (function (_super) {
     tslib_1.__extends(LineChart, _super);
     function LineChart() {

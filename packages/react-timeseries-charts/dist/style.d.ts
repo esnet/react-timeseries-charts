@@ -15,31 +15,7 @@ export declare type LineChartChannelStyle = {
 export declare type LineChartStyle = {
     [channel: string]: LineChartChannelStyle;
 };
-export declare const defaultLineChartChannelStyle: {
-    line: {
-        normal: {
-            stroke: string;
-            fill: string;
-            strokeWidth: number;
-        };
-        highlighted: {
-            stroke: string;
-            fill: string;
-            strokeWidth: number;
-        };
-        selected: {
-            stroke: string;
-            fill: string;
-            strokeWidth: number;
-        };
-        muted: {
-            stroke: string;
-            fill: string;
-            opacity: number;
-            strokeWidth: number;
-        };
-    };
-};
+export declare const defaultLineChartChannelStyle: LineChartChannelStyle;
 export declare type AreaChartChannelStyle = {
     line: ElementStyle;
     area: ElementStyle;
@@ -74,44 +50,13 @@ export declare type ScatterChartChannelStyle = {
 export declare type ScatterChartStyle = {
     [channel: string]: ScatterChartChannelStyle;
 };
-export declare const defaultScatterChartChannelStyle: {
-    point: {
-        normal: {
-            fill: string;
-            opacity: number;
-        };
-        highlighted: {
-            fill: string;
-            opacity: number;
-        };
-        selected: {
-            fill: string;
-            opacity: number;
-        };
-        muted: {
-            fill: string;
-            opacity: number;
-        };
-    };
-};
+export declare const defaultScatterChartChannelStyle: ScatterChartChannelStyle;
 export declare type EventChartStyle = (event: Event<Key>, mode: string) => React.CSSProperties;
 export declare type BaselineStyle = {
     label: React.CSSProperties;
     line: React.CSSProperties;
 };
-export declare const baselineDefaultStyle: {
-    label: {
-        fill: string;
-        fontSize: number;
-        pointerEvents: "none";
-    };
-    line: {
-        stroke: string;
-        strokeWidth: number;
-        strokeDasharray: string;
-        pointerEvents: "none";
-    };
-};
+export declare const defaultBaselineStyle: BaselineStyle;
 export declare type InfoBoxStyle = {
     text: React.CSSProperties;
     box: React.CSSProperties;

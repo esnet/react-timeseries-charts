@@ -15,9 +15,6 @@ import { TimeSeries, Event, Key } from "pondjs";
 
 import { EventMarker, EventMarkerProps } from "./EventMarker";
 import { ChartProps } from "./Charts";
-
-import { getElementOffset } from "./util";
-import { LabelValueList } from "./types";
 import { Styler } from "./styler";
 import {
     ScatterChartStyle,
@@ -26,6 +23,9 @@ import {
     EventMarkerStyle,
     defaultEventMarkerStyle
 } from "./style";
+
+import { LabelValueList } from "./types";
+import { getElementOffset } from "./util";
 
 export type EventColumnPair = {
     event?: Event<Key>;
@@ -103,10 +103,7 @@ export type ScatterChartProps = ChartProps & {
      * 4 states (normal, highlighted, selected and muted) and the corresponding
      * CSS properties.
      */
-    style?:
-        | ScatterChartStyle
-        | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle)
-        | Styler;
+    style?: ScatterChartStyle | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle) | Styler;
 
     /**
      * The values to show in the info box. This is an array of
@@ -136,6 +133,17 @@ export type ScatterChartProps = ChartProps & {
      * Show or hide this chart
      */
     visible?: boolean;
+    
+    /**
+     * Alter the format of the timestamp shown on the info box.
+     * This may be either a function or a string. If you provide a function
+     * that will be passed an Index and should return a string. For example:
+     * ```
+     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * ```
+     * Alternatively you can pass in a d3 format string. That will be applied
+     * to the begin time of the Index range.
+     */
     infoTimeFormat?: ((date: Date) => string) | string;
 
     /**
@@ -252,7 +260,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
     handleHover(e: React.MouseEvent<SVGElement>) {
         const [x, y] = this.getOffsetMousePosition(e);
 
-        let point;
+        let point: EventColumnPair;
         let minDistance = Infinity;
         for (const column of this.props.columns) {
             this.props.series
@@ -302,7 +310,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
      * Returns the style used for drawing the path
      */
     style(column: string, event: Event<Key>) {
-        let style;
+        let style: React.CSSProperties;
         const styleMap = this.providedStyleMap(column, event);
 
         const s = styleMap.point ? styleMap.point : styleMap;

@@ -74,7 +74,7 @@ var EventHandler = (function (_super) {
         }
         var newBegin = new Date(beginScaled);
         var newEnd = new Date(endScaled);
-        var newTimeRange = pondjs_1.timerange(newBegin, newEnd);
+        var newTimeRange = new pondjs_1.TimeRange(newBegin, newEnd);
         if (this.props.onZoom) {
             this.props.onZoom(newTimeRange);
         }
@@ -135,7 +135,7 @@ var EventHandler = (function (_super) {
                 if (this.props.maxTime && newEnd > this.props.maxTime.getTime()) {
                     newEnd = this.props.maxTime.getTime();
                 }
-                var newTimeRange = pondjs_1.timerange([newBegin, newEnd].sort());
+                var newTimeRange = new pondjs_1.TimeRange([newBegin, newEnd].sort());
                 if (this.props.onZoom) {
                     this.props.onZoom(newTimeRange);
                 }
@@ -188,7 +188,7 @@ var EventHandler = (function (_super) {
                 newEnd = this.props.maxTime.getTime();
                 newBegin = newEnd - duration;
             }
-            var newTimeRange = pondjs_1.timerange(newBegin, newEnd);
+            var newTimeRange = new pondjs_1.TimeRange(newBegin, newEnd);
             if (this.props.onZoom) {
                 this.props.onZoom(newTimeRange);
             }

@@ -222,11 +222,11 @@ export type LevelStyle = {
 export type BoxChartChannelStyle = LevelStyle[];
 export type BoxChartStyle = { [channel: string]: BoxChartChannelStyle };
 
-const defaultBoxFillStyle = {
+const defaultBoxFillStyle: React.CSSProperties = {
     fill: primaryColor,
     stroke: "none"
 };
-const defaultMutedBoxFillStyle = {
+const defaultMutedBoxFillStyle: React.CSSProperties = {
     fill: mutedColor,
     stroke: "none"
 };

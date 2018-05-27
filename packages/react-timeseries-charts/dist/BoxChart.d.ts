@@ -1,11 +1,11 @@
 /// <reference types="react" />
 import * as React from "react";
 import { Event, Index, Time, TimeSeries, Window } from "pondjs";
+import { ReducerFunction } from "pondjs/lib/types";
 import { ChartProps } from "./Charts";
 import { LabelValueList } from "./types";
 import { Styler } from "./styler";
 import { BoxChartStyle, BoxChartChannelStyle as ChannelStyle, LevelStyle, EventMarkerStyle } from "./style";
-import { ReducerFunction } from "pondjs/lib/types";
 export declare type AggregationSpec = {
     size: Window;
     reducers: {
@@ -38,6 +38,7 @@ export declare type BoxChartProps = ChartProps & {
     outerSize?: number;
     selected?: Event<Index>;
     highlighted?: Event<Index>;
+    visible: boolean;
     onSelectionChange?: (e: Event<Index>) => any;
     onHighlightChange?: (e: Event<Index>) => any;
 };
@@ -65,7 +66,7 @@ export declare class BoxChart extends React.Component<BoxChartProps> {
         infoHeight: number;
     };
     series: TimeSeries<Index>;
-    providedStyle: any;
+    providedStyle: LevelStyle[];
     selectedStyle: any;
     highlightedStyle: any;
     mutedStyle: any;

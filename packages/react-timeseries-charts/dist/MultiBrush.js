@@ -23,14 +23,14 @@ var MultiBrush = (function (_super) {
         var _a = this.props, width = _a.width, timeScale = _a.timeScale;
         var viewBeginTime = timeScale.invert(0);
         var viewEndTime = timeScale.invert(width);
-        return pondjs_1.timerange(viewBeginTime, viewEndTime);
+        return new pondjs_1.TimeRange(viewBeginTime, viewEndTime);
     };
-    MultiBrush.prototype.handleBrushMouseDown = function (e, brush_idx) {
+    MultiBrush.prototype.handleBrushMouseDown = function (e, brushIndex) {
         e.preventDefault();
         var x = e.pageX, y = e.pageY;
         var xy0 = [Math.round(x), Math.round(y)];
-        var begin = +this.props.timeRanges[brush_idx].begin();
-        var end = +this.props.timeRanges[brush_idx].end();
+        var begin = +this.props.timeRanges[brushIndex].begin();
+        var end = +this.props.timeRanges[brushIndex].end();
         document.addEventListener("mouseup", this.handleMouseUp);
         this.setState({
             isBrushing: true,
@@ -38,7 +38,7 @@ var MultiBrush = (function (_super) {
             initialBrushBeginTime: begin,
             initialBrushEndTime: end,
             initialBrushXYPosition: xy0,
-            brushIndex: brush_idx
+            brushIndex: brushIndex
         });
     };
     MultiBrush.prototype.handleOverlayMouseDown = function (e) {
@@ -94,7 +94,7 @@ var MultiBrush = (function (_super) {
         e.preventDefault();
         document.removeEventListener("mouseover", this.handleMouseMove);
         document.removeEventListener("mouseup", this.handleMouseUp);
-        var brushing_is = this.state.brushIndex;
+        var brushingIs = this.state.brushIndex;
         this.setState({
             isBrushing: false,
             brushingInitializationSite: null,
@@ -104,7 +104,7 @@ var MultiBrush = (function (_super) {
             brushIndex: null
         }, function () {
             if (_this.props.onUserMouseUp) {
-                _this.props.onUserMouseUp(brushing_is);
+                _this.props.onUserMouseUp(brushingIs);
             }
         });
     };
@@ -124,12 +124,12 @@ var MultiBrush = (function (_super) {
                 var xx = e.pageX - offset.left;
                 var t = this.props.timeScale.invert(xx).getTime();
                 if (t < tb) {
-                    newBegin = t < viewport.begin().getTime() ? viewport.begin() : t;
-                    newEnd = tb > viewport.end().getTime() ? viewport.end() : tb;
+                    newBegin = t < viewport.begin().getTime() ? +viewport.begin() : t;
+                    newEnd = tb > viewport.end().getTime() ? +viewport.end() : tb;
                 }
                 else {
-                    newBegin = tb < viewport.begin().getTime() ? viewport.begin() : tb;
-                    newEnd = t > viewport.end().getTime() ? viewport.end() : t;
+                    newBegin = tb < viewport.begin().getTime() ? +viewport.begin() : tb;
+                    newEnd = t > viewport.end().getTime() ? +viewport.end() : t;
                 }
             }
             else {
@@ -138,10 +138,10 @@ var MultiBrush = (function (_super) {
                     this.props.timeScale.invert(xy[0]).getTime();
                 var startOffsetConstraint = timeOffset;
                 var endOffsetConstrain = timeOffset;
-                if (tb - timeOffset < viewport.begin()) {
+                if (tb - timeOffset < +viewport.begin()) {
                     startOffsetConstraint = tb - viewport.begin().getTime();
                 }
-                if (te - timeOffset > viewport.end()) {
+                if (te - timeOffset > +viewport.end()) {
                     endOffsetConstrain = te - viewport.end().getTime();
                 }
                 newBegin =
@@ -154,8 +154,9 @@ var MultiBrush = (function (_super) {
                         this.state.brushingInitializationSite === "handle-right"
                         ? Math.round(te - endOffsetConstrain)
                         : te;
-                if (newBegin > newEnd)
+                if (newBegin > newEnd) {
                     _a = [newEnd, newBegin], newBegin = _a[0], newEnd = _a[1];
+                }
             }
             if (this.props.onTimeRangeChanged) {
                 this.props.onTimeRangeChanged(new pondjs_1.TimeRange(newBegin, newEnd), this.state.brushIndex);
@@ -186,9 +187,9 @@ var MultiBrush = (function (_super) {
         };
         return (React.createElement("rect", { ref: function (c) {
                 _this.overlay = c;
-            }, x: 0, y: 0, width: width, height: height, style: overlayStyle, onClick: this.handleMouseClick, onMouseDown: this.handleOverlayMouseDown, onMouseUp: this.handleMouseUp }));
+            }, x: 0, y: 0, width: width, height: height, style: overlayStyle, onClick: function (e) { return _this.handleMouseClick; }, onMouseDown: this.handleOverlayMouseDown, onMouseUp: this.handleMouseUp }));
     };
-    MultiBrush.prototype.renderBrush = function (timeRange, idx) {
+    MultiBrush.prototype.renderBrush = function (timeRange, index) {
         var _this = this;
         var _a = this.props, timeScale = _a.timeScale, height = _a.height;
         if (!timeRange) {
@@ -214,7 +215,7 @@ var MultiBrush = (function (_super) {
             shapeRendering: "crispEdges",
             cursor: cursor
         };
-        var userStyle = this.props.style ? this.props.style(idx) : {};
+        var userStyle = this.props.style ? this.props.style(index) : {};
         var brushStyle = _.merge(true, brushDefaultStyle, userStyle);
         if (!this.viewport().disjoint(timeRange)) {
             var range = timeRange.intersection(this.viewport());
@@ -227,11 +228,11 @@ var MultiBrush = (function (_super) {
                 width = 1;
             }
             var bounds = { x: x, y: y, width: width, height: height };
-            return (React.createElement("rect", tslib_1.__assign({}, bounds, { key: idx + "-" + brushStyle, style: brushStyle, pointerEvents: "all", onClick: function (e) { return _this.handleMouseClick(e, idx); }, onMouseDown: function (e) { return _this.handleBrushMouseDown(e, idx); }, onMouseUp: this.handleMouseUp })));
+            return (React.createElement("rect", tslib_1.__assign({}, bounds, { key: index + "-" + brushStyle, style: brushStyle, pointerEvents: "all", onClick: function (e) { return _this.handleMouseClick(e, index); }, onMouseDown: function (e) { return _this.handleBrushMouseDown(e, index); }, onMouseUp: this.handleMouseUp })));
         }
         return React.createElement("g", null);
     };
-    MultiBrush.prototype.renderHandles = function (timeRange, idx) {
+    MultiBrush.prototype.renderHandles = function (timeRange, index) {
         var _this = this;
         var _a = this.props, timeScale = _a.timeScale, height = _a.height;
         if (!timeRange) {
@@ -244,8 +245,9 @@ var MultiBrush = (function (_super) {
         };
         if (!this.viewport().disjoint(timeRange)) {
             var range = timeRange.intersection(this.viewport());
-            var _b = range.toJSON(), begin = _b[0], end = _b[1];
-            var _c = [timeScale(begin), 0], x = _c[0], y = _c[1];
+            var begin = range.begin().getTime();
+            var end = range.end().getTime();
+            var _b = [timeScale(begin), 0], x = _b[0], y = _b[1];
             var endPos = timeScale(end);
             var width = endPos - x;
             if (width < 1) {
@@ -260,8 +262,8 @@ var MultiBrush = (function (_super) {
                 height: height
             };
             return (React.createElement("g", null,
-                React.createElement("rect", tslib_1.__assign({}, leftHandleBounds, { style: handleStyle, pointerEvents: "all", onMouseDown: function (e) { return _this.handleHandleMouseDown(e, "left", idx); }, onMouseUp: this.handleMouseUp })),
-                React.createElement("rect", tslib_1.__assign({}, rightHandleBounds, { style: handleStyle, pointerEvents: "all", onMouseDown: function (e) { return _this.handleHandleMouseDown(e, "right", idx); }, onMouseUp: this.handleMouseUp }))));
+                React.createElement("rect", tslib_1.__assign({}, leftHandleBounds, { style: handleStyle, pointerEvents: "all", onMouseDown: function (e) { return _this.handleHandleMouseDown(e, "left", index); }, onMouseUp: this.handleMouseUp })),
+                React.createElement("rect", tslib_1.__assign({}, rightHandleBounds, { style: handleStyle, pointerEvents: "all", onMouseDown: function (e) { return _this.handleHandleMouseDown(e, "right", index); }, onMouseUp: this.handleMouseUp }))));
         }
         return React.createElement("g", null);
     };
@@ -269,10 +271,10 @@ var MultiBrush = (function (_super) {
         var _this = this;
         return (React.createElement("g", { onMouseMove: this.handleMouseMove },
             this.renderOverlay(),
-            (this.props.timeRanges || []).map(function (timeRange, idx) {
-                return (React.createElement("g", { key: "multibrush_" + idx },
-                    _this.renderBrush(timeRange, idx),
-                    _this.renderHandles(timeRange, idx)));
+            (this.props.timeRanges || []).map(function (timeRange, index) {
+                return (React.createElement("g", { key: "multibrush_" + index },
+                    _this.renderBrush(timeRange, index),
+                    _this.renderHandles(timeRange, index)));
             })));
     };
     MultiBrush.defaultProps = {

@@ -132,7 +132,7 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
         const rectWidth = this.props.width - valueWidth;
         
         let valueList = null;
-        let labelYPos;
+        let labelYPos: number;
         if (this.props.values) {
             labelYPos = Math.max(Math.round(this.props.height / 4), 10);
             const style: InfoBoxStyle = {
@@ -160,7 +160,6 @@ export class LabelAxis extends React.Component<LabelAxisProps> {
                     {this.props.label}
                 </text>
                 <g transform={`translate(0,${labelYPos + 2})`}>{valueList}</g>
-
                 {this.renderAxis()}
             </g>
         );

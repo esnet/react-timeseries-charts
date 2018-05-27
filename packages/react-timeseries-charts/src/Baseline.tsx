@@ -12,7 +12,10 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { ChartProps } from "./Charts";
-import { BaselineStyle, defaultBaselineStyle as defaultStyle } from "./style";
+import { 
+    BaselineStyle, 
+    defaultBaselineStyle as defaultStyle 
+} from "./style";
 
 export type BaselineProps = ChartProps & {
     /**
@@ -100,9 +103,10 @@ export class Baseline extends React.Component<BaselineProps> {
         }
         const y = yScale(value);
         const transform = `translate(0 ${y})`;
-        let textAnchor;
-        let textPositionX;
-        const pts = [];
+        
+        let textAnchor: string;
+        let textPositionX: number;
+        const pts: string[] = [];
 
         const labelBelow = (vposition === "auto" && y < 15) || vposition === "below";
         const textPositionY = labelBelow ? 2 : -2;

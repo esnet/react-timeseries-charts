@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var _ = require("lodash");
 var React = require("react");
-var pondjs_1 = require("pondjs");
 var d3_time_format_1 = require("d3-time-format");
+var pondjs_1 = require("pondjs");
 var Info_1 = require("./Info");
 var style_1 = require("./style");
 var textStyle = {

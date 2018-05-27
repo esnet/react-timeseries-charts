@@ -26,6 +26,7 @@ import {
     window,
     Window
 } from "pondjs";
+import { ReducerFunction } from "pondjs/lib/types";
 
 import { ChartProps } from "./Charts";
 import { EventMarker, EventMarkerProps } from "./EventMarker";
@@ -40,9 +41,6 @@ import {
     defaultBoxChartStyle as defaultStyle,
     EventMarkerStyle
 } from "./style";
-
-import { ReducerFunction } from "pondjs/lib/types";
-import { CSSProperties } from "react";
 
 /**
  * A structure the user can pass into this Chart to automatically build the
@@ -240,7 +238,6 @@ export type BoxChartProps = ChartProps & {
      * objects, with each object specifying the label and value
      * to be shown in the info box.
      */
-
     info?: LabelValueList | string;
 
     /**
@@ -248,7 +245,16 @@ export type BoxChartProps = ChartProps & {
      */
     infoStyle?: EventMarkerStyle;
 
-    // CHECK
+    /**
+     * Alter the format of the timestamp shown on the info box.
+     * This may be either a function or a string. If you provide a function
+     * that will be passed an Index and should return a string. For example:
+     * ```
+     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * ```
+     * Alternatively you can pass in a d3 format string. That will be applied
+     * to the begin time of the Index range.
+     */
     infoTimeFormat?: ((date: Date) => string) | string;
 
     /**
@@ -261,7 +267,9 @@ export type BoxChartProps = ChartProps & {
      */
     infoHeight?: number;
 
-    // CHECK
+    /**
+     * The radius of the dot at the end of the marker
+     */
     infoMarkerRadius?: number;
 
     /**
@@ -424,7 +432,9 @@ export class BoxChart extends React.Component<BoxChartProps> {
     series: TimeSeries<Index>;
 
     // Cached styles
-    providedStyle: any;
+    providedStyle: LevelStyle[];
+
+    // CHECK - fix any
     selectedStyle: any;
     highlightedStyle: any;
     mutedStyle: any;
@@ -466,7 +476,6 @@ export class BoxChart extends React.Component<BoxChartProps> {
 
     shouldComponentUpdate(nextProps: BoxChartProps): boolean {
         const newSeries = nextProps.series;
-        const oldSeries = this.props.series;
         const width = nextProps.width;
         const timeScale = nextProps.timeScale;
         const yScale = nextProps.yScale;
@@ -475,6 +484,8 @@ export class BoxChart extends React.Component<BoxChartProps> {
         const aggregation = nextProps.aggregation;
         const highlighted = nextProps.highlighted;
         const selected = nextProps.selected;
+
+        const oldSeries = this.props.series;
         const widthChanged = this.props.width !== width;
         const timeScaleChanged = scaleAsString(this.props.timeScale) !== scaleAsString(timeScale);
         const yAxisScaleChanged = this.props.yScale !== yScale;
@@ -482,6 +493,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
         const styleChanged = JSON.stringify(this.props.style) !== JSON.stringify(style);
         const highlightedChanged = this.props.highlighted !== highlighted;
         const selectedChanged = this.props.selected !== selected;
+
         let aggregationChanged = false;
         if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
             aggregationChanged = true;
@@ -627,10 +639,23 @@ export class BoxChart extends React.Component<BoxChartProps> {
                 style = this.mutedStyle[level];
             }
         } else if (isHighlighted) {
-            style = _.merge(
-                defaultStyle[level].highlighted,
-                this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {}
-            );
+            if (!this.highlightedStyle || !this.highlightedStyle[level]) {
+                if (!this.highlightedStyle) {
+                    this.highlightedStyle = [];
+                }
+                this.highlightedStyle[level] = _.merge(
+                    defaultStyle[level].highlighted,
+                    this.providedStyle[level].highlighted
+                        ? this.providedStyle[level].highlighted
+                        : {}
+                );
+            }
+            style = this.highlightedStyle[level];
+            // CHECK - is the above method correct?
+            // style = _.merge(
+            //     defaultStyle[level].highlighted,
+            //     this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {}
+            // );
         } else {
             if (!this.normalStyle) {
                 this.normalStyle = [];
@@ -687,7 +712,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
                 xOuter = c - outerSize / 2;
             }
 
-            const styles = [];
+            const styles: LevelStyle[] = [];
             styles[0] = this.style(column, event, 0);
             styles[1] = this.style(column, event, 1);
             styles[2] = this.style(column, event, 2);

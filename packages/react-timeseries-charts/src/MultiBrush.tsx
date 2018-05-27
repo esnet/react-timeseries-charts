@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { TimeRange, timerange } from "pondjs";
-import { ChartProps } from "./Charts";
 
+import { ChartProps } from "./Charts";
 import { getElementOffset } from "./util";
 
 export type MultiBrushProps = ChartProps & {
@@ -34,7 +34,10 @@ export type MultiBrushProps = ChartProps & {
      * provide. It will be called with the index of the TimeRange, corresponding
      * to those in the `timeRanges` prop.
      */
-    style?: any
+
+    // CHECK?
+    // style?: React.CSSProperties | ((index: number) => any);
+    style?: any;
 
     /**
      * The size of the invisible side handles. Defaults to 6 pixels.
@@ -103,20 +106,20 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         const { width, timeScale } = this.props;
         const viewBeginTime = timeScale.invert(0);
         const viewEndTime = timeScale.invert(width);
-        return timerange(viewBeginTime, viewEndTime);
+        return new TimeRange(viewBeginTime, viewEndTime);
     }
 
     //
     // Event handlers
     //
 
-    handleBrushMouseDown(e: React.MouseEvent<SVGRectElement>, brush_idx: number) {
+    handleBrushMouseDown(e: React.MouseEvent<SVGRectElement>, brushIndex: number) {
         e.preventDefault();
 
         const { pageX: x, pageY: y } = e;
         const xy0 = [Math.round(x), Math.round(y)];
-        const begin = +this.props.timeRanges[brush_idx].begin();
-        const end = +this.props.timeRanges[brush_idx].end();
+        const begin = +this.props.timeRanges[brushIndex].begin();
+        const end = +this.props.timeRanges[brushIndex].end();
 
         document.addEventListener("mouseup", this.handleMouseUp as any);
 
@@ -126,7 +129,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
             initialBrushBeginTime: begin,
             initialBrushEndTime: end,
             initialBrushXYPosition: xy0,
-            brushIndex: brush_idx
+            brushIndex: brushIndex
         });
     }
 
@@ -195,7 +198,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         document.removeEventListener("mouseover", this.handleMouseMove as any);
         document.removeEventListener("mouseup", this.handleMouseUp as any);
 
-        const brushing_is = this.state.brushIndex;
+        const brushingIs = this.state.brushIndex;
         this.setState(
             {
                 isBrushing: false,
@@ -207,7 +210,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
             },
             () => {
                 if (this.props.onUserMouseUp) {
-                    this.props.onUserMouseUp(brushing_is);
+                    this.props.onUserMouseUp(brushingIs);
                 }
             }
         );
@@ -222,8 +225,8 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         const viewport = this.viewport();
 
         if (this.state.isBrushing) {
-            let newBegin;
-            let newEnd;
+            let newBegin: number;
+            let newEnd: number;
 
             const tb = this.state.initialBrushBeginTime;
             const te = this.state.initialBrushEndTime;
@@ -233,11 +236,11 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                 const xx = e.pageX - offset.left;
                 const t = this.props.timeScale.invert(xx).getTime();
                 if (t < tb) {
-                    newBegin = t < viewport.begin().getTime() ? viewport.begin() : t;
-                    newEnd = tb > viewport.end().getTime() ? viewport.end() : tb;
+                    newBegin = t < viewport.begin().getTime() ? +viewport.begin() : t;
+                    newEnd = tb > viewport.end().getTime() ? +viewport.end() : tb;
                 } else {
-                    newBegin = tb < viewport.begin().getTime() ? viewport.begin() : tb;
-                    newEnd = t > viewport.end().getTime() ? viewport.end() : t;
+                    newBegin = tb < viewport.begin().getTime() ? +viewport.begin() : tb;
+                    newEnd = t > viewport.end().getTime() ? +viewport.end() : t;
                 }
             } else {
                 const xy0 = this.state.initialBrushXYPosition;
@@ -248,10 +251,10 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                 // Constrain
                 let startOffsetConstraint = timeOffset;
                 let endOffsetConstrain = timeOffset;
-                if (tb - timeOffset < viewport.begin()) {
+                if (tb - timeOffset < +viewport.begin()) {
                     startOffsetConstraint = tb - viewport.begin().getTime();
                 }
-                if (te - timeOffset > viewport.end()) {
+                if (te - timeOffset > +viewport.end()) {
                     endOffsetConstrain = te - viewport.end().getTime();
                 }
 
@@ -267,7 +270,9 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                         : te;
 
                 // Swap if needed
-                if (newBegin > newEnd) [newBegin, newEnd] = [newEnd, newBegin];
+                if (newBegin > newEnd) {
+                    [newBegin, newEnd] = [newEnd, newBegin];
+                }
             }
 
             if (this.props.onTimeRangeChanged) {
@@ -300,7 +305,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                     this.props.allowFreeDrawing || this.hasNullBrush() ? "crosshair" : "default";
         }
 
-        const overlayStyle = {
+        const overlayStyle: React.CSSProperties = {
             fill: "white",
             opacity: 0,
             cursor
@@ -315,21 +320,21 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                 width={width}
                 height={height}
                 style={overlayStyle}
-                onClick={this.handleMouseClick as any}
+                onClick={e => this.handleMouseClick}
                 onMouseDown={this.handleOverlayMouseDown}
                 onMouseUp={this.handleMouseUp}
             />
         );
     }
 
-    renderBrush(timeRange, idx) {
+    renderBrush(timeRange: TimeRange, index: number) {
         const { timeScale, height } = this.props;
 
         if (!timeRange) {
             return <g />;
         }
 
-        let cursor;
+        let cursor: string;
         switch (this.state.brushingInitializationSite) {
             case "handle-right":
             case "handle-left":
@@ -344,18 +349,18 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         }
 
         // Style of the brush area
-        const brushDefaultStyle = {
+        const brushDefaultStyle: React.CSSProperties = {
             fill: "#777",
             fillOpacity: 0.3,
             stroke: "#fff",
             shapeRendering: "crispEdges",
             cursor
         };
-        const userStyle = this.props.style ? this.props.style(idx) : {};
+        const userStyle = this.props.style ? this.props.style(index) : {};
         const brushStyle = _.merge(true, brushDefaultStyle, userStyle);
 
         if (!this.viewport().disjoint(timeRange)) {
-            const range = timeRange.intersection(this.viewport());
+            const range = timeRange.intersection(this.viewport()) as TimeRange;
             const begin = range.begin();
             const end = range.end();
             const [x, y] = [timeScale(begin), 0];
@@ -370,11 +375,11 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
             return (
                 <rect
                     {...bounds}
-                    key={`${idx}-${brushStyle}`}
+                    key={`${index}-${brushStyle}`}
                     style={brushStyle}
                     pointerEvents="all"
-                    onClick={e => this.handleMouseClick(e, idx)}
-                    onMouseDown={e => this.handleBrushMouseDown(e, idx)}
+                    onClick={e => this.handleMouseClick(e, index)}
+                    onMouseDown={e => this.handleBrushMouseDown(e, index)}
                     onMouseUp={this.handleMouseUp}
                 />
             );
@@ -382,7 +387,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         return <g />;
     }
 
-    renderHandles(timeRange, idx) {
+    renderHandles(timeRange: TimeRange, index: number) {
         const { timeScale, height } = this.props;
 
         if (!timeRange) {
@@ -390,15 +395,16 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         }
 
         // Style of the handles
-        const handleStyle = {
+        const handleStyle: React.CSSProperties = {
             fill: "white",
             opacity: 0,
             cursor: "ew-resize"
         };
 
         if (!this.viewport().disjoint(timeRange)) {
-            const range = timeRange.intersection(this.viewport());
-            const [begin, end] = range.toJSON();
+            const range = timeRange.intersection(this.viewport()) as TimeRange;
+            const begin = range.begin().getTime();
+            const end = range.end().getTime();
             const [x, y] = [timeScale(begin), 0];
             const endPos = timeScale(end);
 
@@ -423,14 +429,14 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
                         {...leftHandleBounds}
                         style={handleStyle}
                         pointerEvents="all"
-                        onMouseDown={e => this.handleHandleMouseDown(e, "left", idx)}
+                        onMouseDown={e => this.handleHandleMouseDown(e, "left", index)}
                         onMouseUp={this.handleMouseUp}
                     />
                     <rect
                         {...rightHandleBounds}
                         style={handleStyle}
                         pointerEvents="all"
-                        onMouseDown={e => this.handleHandleMouseDown(e, "right", idx)}
+                        onMouseDown={e => this.handleHandleMouseDown(e, "right", index)}
                         onMouseUp={this.handleMouseUp}
                     />
                 </g>
@@ -443,11 +449,11 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
         return (
             <g onMouseMove={this.handleMouseMove}>
                 {this.renderOverlay()}
-                {(this.props.timeRanges || []).map((timeRange, idx) => {
+                {(this.props.timeRanges || []).map((timeRange, index) => {
                     return (
-                        <g key={`multibrush_${idx}`}>
-                            {this.renderBrush(timeRange, idx)}
-                            {this.renderHandles(timeRange, idx)}
+                        <g key={`multibrush_${index}`}>
+                            {this.renderBrush(timeRange, index)}
+                            {this.renderHandles(timeRange, index)}
                         </g>
                     );
                 })}

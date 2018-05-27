@@ -11,7 +11,6 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { easeSinOut } from "d3-ease";
-import { ReactElement, ReactNode } from "react";
 import {
     scaleLinear,
     scaleLog,
@@ -24,15 +23,12 @@ import { TimeRange } from "pondjs";
 import { areComponentsEqual } from "react-hot-loader";
 
 import { Brush } from "./Brush";
-import { MultiBrush } from "./MultiBrush";
 import { Charts, ChartsProps, ChartProps, AxisProps, ScaleType, Scale } from "./Charts";
-import { TimeMarker, TimeMarkerProps } from "./TimeMarker";
-import { YAxis, YAxisProps } from "./YAxis";
 import ScaleInterpolator, { ScalerFunction } from "./interpolators";
-
-// import "@types/d3-scale";
-
+import { MultiBrush } from "./MultiBrush";
+import { TimeMarker, TimeMarkerProps } from "./TimeMarker";
 import { LabelValueList } from "./types";
+import { YAxis, YAxisProps } from "./YAxis";
 
 const AXIS_MARGIN = 5;
 
@@ -71,13 +67,12 @@ function createScale(
     }
 }
 
-// CHECK - can we write it as ChartRowProps = ChartContainerProps & { }
 export type ChartRowProps = {
-    // CHECK - add description and change type
-    // PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
     children?: any;
 
-    // CHECK - add description
+    /**
+     * The width of the row.
+     */
     width?: number;
 
     /**
@@ -85,17 +80,25 @@ export type ChartRowProps = {
      */
     height?: number;
 
-    // CHECK - add description
+    /**
+     * The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale?: ScaleTime<number, number>;
 
-    // CHECK - add description
+    /**
+     * A Javascript Date object to position the marker
+     */
     trackerTime?: Date;
 
-    // CHECK - add description
-    trackerTimeFormat?: string;
+    /**
+     * The format to display the time of the marker in
+     */
+    trackerTimeFormat?: string | ((d: Date) => string);
 
-    // CHECK - add description
-    timeFormat?: string;
+    /**
+     * The format to display the time of the marker in
+     */
+    timeFormat?: string | ((d: Date) => string);
 
     /**
      * Should the time be shown on top of the tracker info box
@@ -120,13 +123,14 @@ export type ChartRowProps = {
      */
     trackerInfoValues?: LabelValueList | string;
 
-    // CHECK - add description
     leftAxisWidths?: number[];
-
-    // CHECK - add description
     rightAxisWidths?: number[];
+    paddingLeft?: number;
+    paddingRight?: number;
 
-    // CHECK - add description
+    /**
+     * Time in milliseconds to transition from one Y-scale to the next
+     */
     transition: number;
 
     /**
@@ -134,32 +138,54 @@ export type ChartRowProps = {
      */
     visible?: boolean;
 
-    // CHECK - add description
+    /**
+     * Boolean to turn on interactive pan and zoom behavior for the chart.
+     */
     enablePanZoom?: boolean;
 
-    // CHECK - add description
-    paddingLeft?: number;
-
-    // CHECK - add description
-    paddingRight?: number;
-
-    // CHECK - add description
+    /**
+     * Constrain the timerange to not move back in time further than this Date.
+     */
     minTime?: Date;
 
-    // CHECK - add description
+    /**
+     * Constrain the timerange to not move forward in time than this Date. A
+     * common example is setting this to the current time or the end time
+     * of a fixed set of data.
+     */
     maxTime?: Date;
 
-    // CHECK - add description
+    /**
+     * If this is set the timerange of the chart cannot be zoomed in further
+     * than this duration, in milliseconds. This might be determined by the
+     * resolution of your data.
+     */
     minDuration?: number;
 
-    // CHECK - add description
+    /**
+     * Show grid lines for each time marker
+     */
     showGrid?: boolean;
 
-    // CHECK - add description
+    /**
+     * This will be called if the user pans and/or zooms the chart. The callback
+     * will be called with the new TimeRange. This can be fed into the timeRange
+     * prop as well as used elsewhere on the greater page.
+     * 
+     */
     onTimeRangeChanged: (timeRange: TimeRange) => any;
 
-    // CHECK - add description
-    onTrackerChanged: (t: Date) => any;
+    /**
+     * Will be called when the user hovers over a chart. The callback will
+     * be called with the timestamp (a Date object) of the position hovered
+     * over as well as the current time axis' time scale. The timestamp may
+     * be used as the trackerPosition (see above), or to provide information
+     * about the time hovered over within the greater page. The time scale
+     * may be used to translate the timestamp into an x coordinate, which
+     * can then be used to position arbitrary components in sync with the
+     * current tracker position.
+     */
+    onTrackerChanged: (time: Date, number: (t: any) => number) => any;
 };
 
 /**
@@ -228,7 +254,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         };
     }
 
-    isChildYAxis = (child: ReactElement<any>) =>
+    isChildYAxis = (child: React.ReactElement<any>) =>
         areComponentsEqual(child.type as React.ComponentType<any>, YAxis) ||
         (_.has(child.props, "min") && _.has(child.props, "max"));
 
@@ -236,7 +262,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         const innerHeight = +props.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
-        React.Children.forEach(props.children, (child: ReactElement<any>) => {
+        React.Children.forEach(props.children, (child: React.ReactElement<any>) => {
             if (child === null) return;
             if (this.isChildYAxis(child)) {
                 const { 
@@ -323,7 +349,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         const leftAxisList: string[] = []; // Ordered list of left axes ids
         const rightAxisList: string[] = []; // Ordered list of right axes ids
         let alignLeft = true;
-        React.Children.forEach(this.props.children, (child: ReactElement<any>) => {
+        React.Children.forEach(this.props.children, (child: React.ReactElement<any>) => {
             if (child === null) return;
             if (areComponentsEqual(child.type as React.ComponentType<any>, Charts)) {
                 alignLeft = false;
@@ -356,8 +382,8 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         // Push each axis onto the axes, transforming each into its
         // column location
         //
-        let transform;
-        let id;
+        let transform: string;
+        let id: string;
         let props;
         let axis;
         let posx = 0;
@@ -445,11 +471,11 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         const chartTransform = `translate(${leftWidth + paddingLeft},0)`;
 
         let k = 0;
-        React.Children.forEach(this.props.children, (child: ReactElement<ChartsProps>) => {
+        React.Children.forEach(this.props.children, (child: React.ReactElement<ChartsProps>) => {
             if (child === null) return;
             if (areComponentsEqual(child.type as React.ComponentType<any>, Charts)) {
                 const charts = child;
-                React.Children.forEach(charts.props.children, (chart: ReactElement<any>) => {
+                React.Children.forEach(charts.props.children, (chart: React.ReactElement<any>) => {
                     let scale = null;
                     if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {
                         scale = this.state.yAxisScalerMap[chart.props.axis];
@@ -491,7 +517,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
         const brushList: React.ReactElement<any>[] = [];
         const multiBrushList: React.ReactElement<any>[] = [];
         k = 0;
-        React.Children.forEach(this.props.children, (child: ReactElement<any>) => {
+        React.Children.forEach(this.props.children, (child: React.ReactElement<any>) => {
             if (child === null) return;
             if (
                 areComponentsEqual(child.type as React.ComponentType<any>, Brush) ||
@@ -568,7 +594,6 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                 showTime: this.props.trackerShowTime,
                 time: this.props.trackerTime,
                 timeScale: this.props.timeScale,
-                // height: this.props.height,
                 width: chartWidth
             };
             if (this.props.trackerInfoValues) {

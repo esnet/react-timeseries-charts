@@ -28,7 +28,7 @@ export type ValueAxisProps = {
     width?: number;
 
     /**
-     * [Internal] The height of the axis
+     * The height of the axis
      */
     height?: number;
 

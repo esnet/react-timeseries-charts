@@ -22,7 +22,7 @@ export type BrushProps = ChartProps & {
      * The brush is rendered as an SVG rect. You can specify the style
      * of this rect using this prop.
      */
-    style?: object;
+    style?: React.CSSProperties;
 
     /**
      * The timerange for the brush. Typically you would maintain this
@@ -40,6 +40,9 @@ export type BrushProps = ChartProps & {
      */
     handleSize?: number;
 
+    /**
+     * Handles clearing the TimeRange
+     */
     allowSelectionClear?: boolean;
 
     /**
@@ -246,7 +249,7 @@ export class Brush extends React.Component<BrushProps, BrushState> {
     renderOverlay() {
         const { width, height } = this.props;
         
-        let cursor;
+        let cursor: string;
         switch (this.state.brushingInitializationSite) {
             case "handle-right":
             case "handle-left":
@@ -259,7 +262,7 @@ export class Brush extends React.Component<BrushProps, BrushState> {
                 cursor = "crosshair";
         }
 
-        const overlayStyle = {
+        const overlayStyle: React.CSSProperties = {
             fill: "white",
             opacity: 0,
             cursor
@@ -288,7 +291,7 @@ export class Brush extends React.Component<BrushProps, BrushState> {
             return <g />;
         }
 
-        let cursor;
+        let cursor: string;
         switch (this.state.brushingInitializationSite) {
             case "handle-right":
             case "handle-left":
@@ -302,7 +305,7 @@ export class Brush extends React.Component<BrushProps, BrushState> {
         }
         
         // Style of the brush area
-        const brushDefaultStyle = {
+        const brushDefaultStyle: React.CSSProperties = {
             fill: "#777",
             fillOpacity: 0.3,
             stroke: "#fff",
@@ -345,7 +348,7 @@ export class Brush extends React.Component<BrushProps, BrushState> {
         }
 
         // Style of the handles
-        const handleStyle = {
+        const handleStyle: React.CSSProperties = {
             fill: "white",
             opacity: 0,
             cursor: "ew-resize"

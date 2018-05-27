@@ -5,9 +5,9 @@ var _ = require("lodash");
 var React = require("react");
 var pondjs_1 = require("pondjs");
 var EventMarker_1 = require("./EventMarker");
-var util_1 = require("./util");
 var styler_1 = require("./styler");
 var style_1 = require("./style");
+var util_1 = require("./util");
 var ScatterChart = (function (_super) {
     tslib_1.__extends(ScatterChart, _super);
     function ScatterChart(props) {

@@ -23,8 +23,8 @@ export declare class MultiBrush extends React.Component<MultiBrushProps, MultiBr
     static defaultProps: Partial<MultiBrushProps>;
     overlay: SVGRectElement;
     constructor(props: any);
-    viewport(): any;
-    handleBrushMouseDown(e: React.MouseEvent<SVGRectElement>, brush_idx: number): void;
+    viewport(): TimeRange;
+    handleBrushMouseDown(e: React.MouseEvent<SVGRectElement>, brushIndex: number): void;
     handleOverlayMouseDown(e: React.MouseEvent<SVGRectElement>): void;
     hasNullBrush(): boolean;
     handleMouseClick(e: React.MouseEvent<SVGRectElement>, brushIndex: number): void;
@@ -32,7 +32,7 @@ export declare class MultiBrush extends React.Component<MultiBrushProps, MultiBr
     handleMouseUp(e: React.MouseEvent<SVGRectElement>): void;
     handleMouseMove(e: React.MouseEvent<SVGRectElement>): void;
     renderOverlay(): JSX.Element;
-    renderBrush(timeRange: any, idx: any): JSX.Element;
-    renderHandles(timeRange: any, idx: any): JSX.Element;
+    renderBrush(timeRange: TimeRange, index: number): JSX.Element;
+    renderHandles(timeRange: TimeRange, index: number): JSX.Element;
     render(): JSX.Element;
 }

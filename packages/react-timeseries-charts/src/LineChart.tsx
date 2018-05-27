@@ -8,20 +8,24 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import * as _ from "lodash";
-import { line } from "d3-shape";
 import * as React from "react";
+import { line } from "d3-shape";
+
 import { TimeSeries, Key } from "pondjs";
 
-import { Styler } from "./styler";
-import { scaleAsString } from "./util";
 import { ChartProps } from "./Charts";
 import curves from "./curve";
-import { CurveInterpolation, LineData } from "./types";
+import { Styler } from "./styler";
+
 import {
     LineChartChannelStyle,
     LineChartStyle,
+    ElementStyle,
     defaultLineChartChannelStyle as defaultStyle
 } from "./style";
+
+import { CurveInterpolation, LineData } from "./types";
+import { scaleAsString } from "./util";
 
 export type LineChartProps = ChartProps & {
     /**
@@ -197,12 +201,6 @@ export class LineChart extends React.Component<LineChartProps, {}> {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
 
-        // if (oldSeries.length !== newSeries.length) {
-        //     seriesChanged = true;
-        // } else {
-        //     seriesChanged = !TimeSeries.is(oldSeries, newSeries);
-        // }
-
         return (
             widthChanged ||
             seriesChanged ||
@@ -256,7 +254,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
      * Returns the style used for drawing the path
      */
     pathStyle(element: string, column: string) {
-        let style;
+        let style: React.CSSProperties;
 
         const isHighlighted = this.props.highlight && column === this.props.highlight;
         const isSelected = this.props.selection && column === this.props.selection;
@@ -348,7 +346,7 @@ export class LineChart extends React.Component<LineChartProps, {}> {
             }
         } else {
             // Ignore nulls and NaNs in the line
-            const cleanedPoints = [];
+            const cleanedPoints: PointData = [];
             this.props.series
                 .collection()
                 .eventList()

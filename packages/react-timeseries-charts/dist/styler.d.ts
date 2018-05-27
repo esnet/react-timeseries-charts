@@ -1,5 +1,5 @@
-import { AreaChartStyle, BarChartStyle, CategoryStyle, ScatterChartStyle, BoxChartStyle, LineChartStyle } from "./style";
 import { LegendItemType } from "./LegendItem";
+import { AreaChartStyle, BarChartStyle, CategoryStyle, ScatterChartStyle, BoxChartStyle, LineChartStyle } from "./style";
 export declare type KeyedStyle = {
     key: string;
 };

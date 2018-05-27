@@ -33,9 +33,9 @@ var Baseline = (function (_super) {
         pts.push("0 0");
         pts.push(this.props.width + " 0");
         var points = pts.join(" ");
-        var baseLabelStyle = tslib_1.__assign({}, style_1.baselineDefaultStyle.label, { alignmentBaseline: alignmentBaseline });
+        var baseLabelStyle = tslib_1.__assign({}, style_1.defaultBaselineStyle.label, { alignmentBaseline: alignmentBaseline });
         var labelStyle = _.merge(true, baseLabelStyle, style.label ? style.label : {});
-        var lineStyle = _.merge(true, style_1.baselineDefaultStyle.line, style.line ? style.line : {});
+        var lineStyle = _.merge(true, style_1.defaultBaselineStyle.line, style.line ? style.line : {});
         return (React.createElement("g", { className: "baseline", transform: transform },
             React.createElement("polyline", { points: points, style: lineStyle }),
             React.createElement("text", { style: labelStyle, x: textPositionX, y: textPositionY, textAnchor: textAnchor }, this.props.label)));
@@ -46,7 +46,7 @@ var Baseline = (function (_super) {
         label: "",
         position: "left",
         vposition: "auto",
-        style: style_1.baselineDefaultStyle
+        style: style_1.defaultBaselineStyle
     };
     return Baseline;
 }(React.Component));

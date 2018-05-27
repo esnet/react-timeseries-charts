@@ -150,14 +150,14 @@ var ChartContainer = (function (_super) {
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
-        this.timeScale =
+        var timeScale = (this.timeScale =
             this.props.timezone === "Etc/UTC"
                 ? d3_scale_1.scaleUtc()
                     .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
                     .range([0, timeAxisWidth])
                 : d3_scale_1.scaleTime()
                     .domain([this.props.timeRange.begin(), this.props.timeRange.end()])
-                    .range([0, timeAxisWidth]);
+                    .range([0, timeAxisWidth]));
         var chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
         var i = 0;
         var yPosition = 0;
@@ -173,7 +173,7 @@ var ChartContainer = (function (_super) {
                 var firstRow = i === 0;
                 var isVisible = child.props.visible;
                 var props = {
-                    timeScale: _this.timeScale,
+                    timeScale: timeScale,
                     paddingLeft: paddingLeft,
                     paddingRight: paddingRight,
                     leftAxisWidths: leftAxisWidths,
@@ -205,7 +205,7 @@ var ChartContainer = (function (_super) {
         var tracker;
         if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
             tracker = (React.createElement("g", { key: "tracker-group", style: { pointerEvents: "none" }, transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
-                React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: this.timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
+                React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
         }
         var timeAxisStyle = _.merge(true, defaultTimeAxisStyle.axis, this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {});
         var xStyle = {
@@ -218,9 +218,9 @@ var ChartContainer = (function (_super) {
         var timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
         var timeAxis = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight + chartsHeight) + ")" },
             React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: chartsWidth + rightWidth, y2: 0.5, style: xStyle }),
-            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: xStyle })));
+            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: xStyle, format: this.props.timeFormat })));
         var rows = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
-            React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: this.timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
+            React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;
         var svgHeight = yPosition + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
         var svgStyle = _.merge(true, { display: "block" }, this.props.timeAxisStyle ? this.props.timeAxisStyle : {});

@@ -15,12 +15,12 @@ import { timeFormat } from "d3-time-format";
 import "moment-duration-format";
 
 import { ChartProps } from "./Charts";
-
 import { InfoBox, InfoBoxProps } from "./Info";
-import { TimeMarkerStyle, defaultTimeMarkerStyle } from "./style";
+import { 
+    TimeMarkerStyle, 
+    defaultTimeMarkerStyle 
+} from "./style";
 import { LabelValueList } from "./types";
-
-// import "@types/moment-duration-format";
 
 export type StringPair = [string, string];
 
@@ -117,6 +117,7 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
     renderTimeMarker(d: Date) {
         const { style } = this.props;
         let dateStr = `${d}`;
+
         if (this.props.timeFormat === "day") {
             const formatter = timeFormat("%d");
             dateStr = formatter(d);
@@ -127,7 +128,8 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
             const formatter = timeFormat("%Y");
             dateStr = formatter(d);
         } else if (this.props.timeFormat === "relative") {
-            dateStr = moment.duration(+d).format(); //TODO
+            // CHECK ?
+            dateStr = moment.duration(+d).format();
         } else if (_.isString(this.props.timeFormat)) {
             const formatter = timeFormat(this.props.timeFormat);
             dateStr = formatter(d);

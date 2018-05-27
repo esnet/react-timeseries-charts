@@ -14,7 +14,7 @@ export function scaleAsString(scale: ScaleTime<number, number>) {
     return `${scale.domain()}-${scale.range()}`;
 }
 
-// http://stackoverflow.com/a/28857255
+// Logic - http://stackoverflow.com/a/28857255
 export function getElementOffset(element: SVGRectElement) {
     const de = document.documentElement;
     const box = element.getBoundingClientRect();

@@ -122,8 +122,6 @@ export type BarChartProps = ChartProps & {
      * Alternatively you can pass in a d3 format string. That will be applied
      * to the begin time of the Index range.
      */
-    
-    // CHECK - Any?
     infoTimeFormat?: string | ((...args: any[]) => any);
 
     /**
@@ -136,6 +134,9 @@ export type BarChartProps = ChartProps & {
      */
     markerStyle?: EventMarkerStyle;
 
+    /**
+     * The style of the infoBox connecting lines
+     */
     stemStyle?: EventMarkerStyle;
 
     /**
@@ -170,8 +171,6 @@ export type BarChartProps = ChartProps & {
      * A callback that will be called when the selection changes. It will be called
      * with an object containing the event and column.
      */
-
-    // CHECK - any?
     onSelectionChange?: (...args: any[]) => any;
 
     /**
@@ -188,8 +187,6 @@ export type BarChartProps = ChartProps & {
      * A callback that will be called when the hovered over bar changes.
      * It will be called with an object containing the event and column.
      */
-
-    // CHECK - any?
     onHighlightChange?: (...args: any[]) => any;
 };
 
@@ -353,7 +350,7 @@ export class BarChart extends React.Component<BarChartProps> {
      * Returns the style used for drawing the path
      */
     style(element: string, column: string, event: Event<Key>) {
-        let style;
+        let style: React.CSSProperties;
 
         const styleMap = this.providedBarStyleMap(column);
         const d = defaultStyle.bar;
@@ -423,7 +420,7 @@ export class BarChart extends React.Component<BarChartProps> {
                 const beginPos = timeScale(begin) + spacing;
                 const endPos = timeScale(end) - spacing;
                 
-                let width;
+                let width: number;
                 if (this.props.size) {
                     width = this.props.size;
                 } else {
@@ -434,13 +431,14 @@ export class BarChart extends React.Component<BarChartProps> {
                     width = 1;
                 }
 
-                let x;
+                let x: number;
                 if (this.props.size) {
                     const center = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
                     x = center - this.props.size / 2 + offset;
                 } else {
                     x = timeScale(begin) + spacing + offset;
                 }
+
                 const yBase = yScale(0);
                 let yposPositive = yBase;
                 let yposNegative = yBase;
@@ -495,9 +493,11 @@ export class BarChart extends React.Component<BarChartProps> {
                             width,
                             height
                         };
+
                         if (this.props.onSelectionChange) {
                             barProps.onClick = e => this.handleClick(e, event, column);
                         }
+                        
                         if (this.props.onHighlightChange) {
                             barProps.onMouseMove = e => this.handleHover(e, event, column);
                             barProps.onMouseLeave = () => this.handleHoverLeave();

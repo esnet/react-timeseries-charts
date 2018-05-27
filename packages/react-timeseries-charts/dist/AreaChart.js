@@ -5,12 +5,12 @@ require("array.prototype.fill");
 var _ = require("lodash");
 var React = require("react");
 var curve_1 = require("./curve");
-var styler_1 = require("./styler");
 var d3_shape_1 = require("d3-shape");
-var util_1 = require("./util");
 var pondjs_1 = require("pondjs");
-var types_1 = require("./types");
+var styler_1 = require("./styler");
 var style_1 = require("./style");
+var types_1 = require("./types");
+var util_1 = require("./util");
 var StyleType;
 (function (StyleType) {
     StyleType["Line"] = "line";

@@ -12,7 +12,10 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { LabelValueList } from "./types";
-import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
+import { 
+    InfoBoxStyle, 
+    defaultInfoBoxStyle as defaultStyle 
+} from "./style";
 
 export type BoxProps = {
     /**
@@ -42,9 +45,6 @@ export type InfoBoxProps = BoxProps & {
 };
 
 export type LabelProps = BoxProps & {
-    /**
-     * The label to render
-     */
     label: string;
 };
 

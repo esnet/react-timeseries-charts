@@ -11,15 +11,16 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-import { index, Event, Index, TimeRange, Time, Key } from "pondjs";
 import { timeFormat } from "d3-time-format";
+import { Event, Index, TimeRange, Time, Key, index } from "pondjs";
 
 import { ChartProps } from "./Charts";
 import { InfoBox, InfoBoxProps } from "./Info";
-import { EventMarkerStyle, defaultEventMarkerStyle as defaultStyle } from "./style";
+import { 
+    EventMarkerStyle, 
+    defaultEventMarkerStyle as defaultStyle 
+} from "./style";
 import { LabelValueList } from "./types";
-
-// import "@types/d3-time-format";
 
 const textStyle: React.CSSProperties = {
     fontSize: 11,
@@ -47,7 +48,7 @@ type EventIndexProps = {
  * Helper component to render a `time` in the `format` provided
  */
 const EventTime: React.SFC<EventTimeProps> = ({ time, format = "%m/%d/%y %X" }) => {
-    let text;
+    let text: string;
     if (_.isFunction(format)) {
         text = format(time);
     } else {
@@ -67,8 +68,10 @@ const EventTime: React.SFC<EventTimeProps> = ({ time, format = "%m/%d/%y %X" }) 
 const EventTimeRange: React.SFC<EventTimeRangeProps> = ({ timerange, format = "%m/%d/%y %X" }) => {
     const d1 = timerange.begin();
     const d2 = timerange.end();
-    let beginText;
-    let endText;
+    
+    let beginText: string;
+    let endText: string;
+    
     if (_.isFunction(format)) {
         beginText = format(d1);
         endText = format(d2);
@@ -94,7 +97,8 @@ const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" 
         fill: "#bdbdbd",
         pointerEvents: "none"
     };
-    let text;
+
+    let text: string;
     if (_.isFunction(format)) {
         text = format(index.begin());
     } else if (_.isString(format)) {
@@ -121,6 +125,9 @@ export type EventMarkerProps = ChartProps & {
      */
     column?: string;
 
+    /**
+     * What should be the type of marker
+     */
     type?: "point" | "flag";
 
     /**
@@ -159,6 +166,9 @@ export type EventMarkerProps = ChartProps & {
      */
     infoTimeFormat?: ((date: Date) => string) | string;
 
+    /**
+     * Label to display
+     */
     markerLabel?: string;
 
     /**
@@ -248,7 +258,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
     }
 
     renderMarker(event: Event<Key>, column: string, info: string | LabelValueList) {
-        let t;
+        let t: Date;
         if (event.keyType() === "time") {
             t = event.timestamp();
         } else {

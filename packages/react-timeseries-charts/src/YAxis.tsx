@@ -8,13 +8,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+// CHECK
+// Fix YAxis and React Axis styling to include style as label, axis, values, ticks
 import * as React from "react";
 
 import { format } from "d3-format";
 import { Axis } from "react-axis";
 
-import { scaleAsString } from "./util";
 import { AxisProps, ScaleType } from "./Charts";
+import { scaleAsString } from "./util";
 
 type CSSProperties = { [key: string]: any };
 
@@ -22,6 +24,31 @@ export interface YAxisStyle {
     labels: React.CSSProperties;
     axis: React.CSSProperties;
 }
+
+// const defaultStyle: YAxisStyle = {
+//     label: {
+//         stroke: "none",
+//         fill: "#8B7E7E", // Default label color
+//         fontWeight: 100,
+//         fontSize: 12,
+//         font: '"Goudy Bookletter 1911", sans-serif"'
+//     },
+//     values: {
+//         stroke: "none",
+//         fill: "#8B7E7E", // Default value color
+//         fontWeight: 100,
+//         fontSize: 11,
+//         font: '"Goudy Bookletter 1911", sans-serif"'
+//     },
+//     ticks: {
+//         fill: "none",
+//         stroke: "#C0C0C0"
+//     },
+//     axis: {
+//         fill: "none",
+//         stroke: "#C0C0C0"
+//     }
+// };
 
 const defaultStyle: any = {
     labels: {

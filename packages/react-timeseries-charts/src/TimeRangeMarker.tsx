@@ -56,7 +56,7 @@ export class TimeRangeMarker extends React.Component<TimeRangeMarkerProps> {
         const viewEndTime = timeScale.invert(this.props.width);
         const viewport = new TimeRange(viewBeginTime, viewEndTime);
         
-        let bandStyle;
+        let bandStyle: React.CSSProperties;
         if (this.props.style) {
             bandStyle = this.props.style;
         } else {

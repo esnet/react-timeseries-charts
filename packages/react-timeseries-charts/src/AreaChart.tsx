@@ -12,15 +12,20 @@ import "array.prototype.fill";
 
 import * as _ from "lodash";
 import * as React from "react";
-
 import curves from "./curve";
-import { Styler } from "./styler";
 import { area, line } from "d3-shape";
-import { ChartProps } from "./Charts";
-import { scaleAsString } from "./util";
+
 import { TimeSeries, Time, Key } from "pondjs";
+
+import { ChartProps } from "./Charts";
+import { Styler } from "./styler";
+import { 
+    AreaChartStyle, 
+    AreaChartChannelStyle, 
+    defaultAreaChartStyle as defaultStyle 
+} from "./style";
 import { CurveInterpolation, AreaChartColumns } from "./types";
-import { AreaChartStyle, AreaChartChannelStyle, defaultAreaChartStyle as defaultStyle } from "./style";
+import { scaleAsString } from "./util";
 
 export type AreaData = {
     x0: number;
@@ -283,7 +288,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
      * Returns the style used for drawing the path
      */
     style(column: string, type: StyleType) {
-        let style;
+        let style: React.CSSProperties;
         
         const styleMap = this.providedAreaStyleMap(column);
         const isHighlighted = this.props.highlight && column === this.props.highlight;
@@ -366,6 +371,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
             .curve(curves[this.props.interpolation])
             .x(d => d.x0)
             .y(d => d.y1);
+
         const outlinePath = lineGenerator(data);
 
         return (

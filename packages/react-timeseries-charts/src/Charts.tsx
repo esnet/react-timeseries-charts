@@ -13,8 +13,6 @@ import * as React from "react";
 import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
 import { ScalerFunction } from "./interpolators";
 
-// import "@types/d3-scale";
-
 //
 // Axis types
 //
@@ -45,7 +43,6 @@ export type AxisProps = {
 //
 
 export type ChartProps = {
-    // CHECK - add description
     key?: string | number;
 
     /**
@@ -68,10 +65,7 @@ export type ChartProps = {
      */
     yScale?: ScalerFunction;
 
-    // CHECK - add description
-    timeFormat?: string;
-
-    // CHECK - add description
+    timeFormat?: string | ((...args: any[]) => any);
     transition?: number;
 };
 

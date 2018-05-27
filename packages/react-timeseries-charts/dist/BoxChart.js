@@ -114,7 +114,6 @@ var BoxChart = (function (_super) {
     };
     BoxChart.prototype.shouldComponentUpdate = function (nextProps) {
         var newSeries = nextProps.series;
-        var oldSeries = this.props.series;
         var width = nextProps.width;
         var timeScale = nextProps.timeScale;
         var yScale = nextProps.yScale;
@@ -123,6 +122,7 @@ var BoxChart = (function (_super) {
         var aggregation = nextProps.aggregation;
         var highlighted = nextProps.highlighted;
         var selected = nextProps.selected;
+        var oldSeries = this.props.series;
         var widthChanged = this.props.width !== width;
         var timeScaleChanged = util_1.scaleAsString(this.props.timeScale) !== util_1.scaleAsString(timeScale);
         var yAxisScaleChanged = this.props.yScale !== yScale;
@@ -243,7 +243,15 @@ var BoxChart = (function (_super) {
             }
         }
         else if (isHighlighted) {
-            style = _.merge(style_1.defaultBoxChartStyle[level].highlighted, this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {});
+            if (!this.highlightedStyle || !this.highlightedStyle[level]) {
+                if (!this.highlightedStyle) {
+                    this.highlightedStyle = [];
+                }
+                this.highlightedStyle[level] = _.merge(style_1.defaultBoxChartStyle[level].highlighted, this.providedStyle[level].highlighted
+                    ? this.providedStyle[level].highlighted
+                    : {});
+            }
+            style = this.highlightedStyle[level];
         }
         else {
             if (!this.normalStyle) {

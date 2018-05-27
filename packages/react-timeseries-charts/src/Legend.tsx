@@ -42,6 +42,62 @@ export type LegendProps = {
      */
     align?: "left" | "right";
 
+    /**
+     * There are three methods of styling a legend:
+     *  - using a Styler object
+     *  - using an object containing inline styles
+     *  - using a function which returns an inline style
+     *
+     * A Styler object can be supplied directly to the `style` prop
+     * of the legend. This is the simplest approach, since you can
+     * usually just use the same Styler as you use for your chart.
+     *
+     * Supplying an object to the `style` prop gives you more control
+     * than the Styler, since you can provide the actual CSS properties
+     * for each element of the legend. The format for the object is:
+     *
+     * ```
+     * {
+     *     columnName1: {
+     *       symbol: {
+     *         normal: {...styleSymbol},
+     *         highlighted: {...styleSymbol},
+     *         selected: {...styleSymbol},
+     *         muted: {...styleSymbol}
+     *       },
+     *       label: {
+     *         normal: {...labelStyle},
+     *         highlighted: {...labelStyle},
+     *         selected: {...labelStyle},
+     *         muted: {...labelStyle}
+     *       },
+     *       value: {
+     *         normal: {...valueStyle},
+     *         highlighted: {...valueStyle},
+     *         selected: {...valueStyle},
+     *         muted: {...valueStyle}
+     *       }
+     *     },
+     *     columnName2 : {
+     *         ...
+     *     },
+     *     ...
+     *  }
+     *
+     *  - symbolStyle is the CSS properties for the symbol, which
+     * is either a swatch, dot or line. For a line, you'd want to
+     * provide the SVG <line> properties, for a swatch you'd provide
+     * the SVG <rect> properties and for a dot the <ellipse> properties.
+     *  - labelStyle is the main label for the legend item. It is a
+     *  SVG <text> element, so you can control the font properties.
+     *  - valueStyle is the optional value. As with the labelStyle you
+     *  this is an SVG <text> element.
+     *
+     * Finally, you can provide a function to the `style` prop. This
+     * is similar to providing an object, except your function will
+     * be called with the columnName and you should return the map
+     * containing symbol, label and value styles.     
+     */
     style?: LegendStyle | ((column: string) => CategoryStyle) | Styler;
 
     /**
@@ -209,25 +265,6 @@ export class Legend extends React.Component<LegendProps> {
         symbolHeight: 16,
         stack: false
     };
-
-    // handleClick(e, key) {
-    //     e.stopPropagation();
-    //     if (this.props.onSelectionChange) {
-    //         this.props.onSelectionChange(key);
-    //     }
-    // }
-
-    // handleHover(e, key) {
-    //     if (this.props.onHighlightChange) {
-    //         this.props.onHighlightChange(key);
-    //     }
-    // }
-
-    // handleHoverLeave() {
-    //     if (this.props.onHighlightChange) {
-    //         this.props.onHighlightChange(null);
-    //     }
-    // }
 
     /**
      * For each category item we get the users style preference. This

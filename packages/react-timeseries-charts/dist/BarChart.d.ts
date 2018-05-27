@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import * as React from "react";
-import { TimeSeries, Event, Key } from "pondjs";
+import { TimeSeries, Event, Key, Index } from "pondjs";
 import { ChartProps } from "./Charts";
 import { Styler } from "./styler";
 import { BarChartStyle, BarChartChannelStyle, EventMarkerStyle } from "./style";
@@ -23,7 +23,7 @@ export declare type BarChartProps = ChartProps & {
     visible?: boolean;
     minBarHeight?: number;
     selected?: {
-        event?: any;
+        event?: Event<Index>;
         column?: string;
     };
     onSelectionChange?: (...args: any[]) => any;
@@ -39,7 +39,7 @@ export declare class BarChart extends React.Component<BarChartProps> {
     handleHoverLeave(): void;
     handleClick(e: React.MouseEvent<SVGRectElement>, event: Event<Key>, column: string): void;
     providedBarStyleMap(column: string): BarChartChannelStyle;
-    style(element: string, column: string, event: Event<Key>): any;
+    style(element: string, column: string, event: Event<Key>): React.CSSProperties;
     renderBars(): JSX.Element;
     render(): JSX.Element;
 }

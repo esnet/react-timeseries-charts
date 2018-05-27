@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import * as React from "react";
 import { TimeRange } from "pondjs";
+import { ChartProps } from "./Charts";
 import { LabelValueList } from "./types";
 import { ScaleTime } from "d3-scale";
-import { ScalerFunction } from "./interpolators";
 export declare type StyleTargets = {
     labels: any;
     axis: any;
@@ -16,14 +16,14 @@ export declare enum ShowGridPosition {
     Over = "OVER",
     Under = "UNDER",
 }
-export declare type ChartContainerProps = {
+export declare type ChartContainerProps = ChartProps & {
     children: any;
     timeRange: TimeRange;
     timezone?: string;
     width?: number;
     minTime?: Date;
     maxTime?: Date;
-    timeFormat?: string;
+    timeFormat?: string | ((d: Date) => string);
     timeAxisStyle?: any;
     timeAxisAngledLabels?: boolean;
     enablePanZoom?: boolean;
@@ -35,6 +35,9 @@ export declare type ChartContainerProps = {
     paddingRight?: number;
     paddingTop?: number;
     paddingBottom?: number;
+    timeAxisHeight?: number;
+    leftWidth?: number;
+    rightWidth?: number;
     showGrid?: boolean;
     showGridPosition?: ShowGridPosition;
     trackerTime?: Date;
@@ -44,14 +47,10 @@ export declare type ChartContainerProps = {
     onTrackerChanged?: (time: Date, number: (t: any) => number) => any;
     onTimeRangeChanged?: (timerange: TimeRange) => any;
     onBackgroundClick?: () => any;
-    onChartResize?: () => any;
     onMouseMove?: (x: number, y: number) => any;
-    timeScale?: ScaleTime<number, number>;
-    yScale?: ScalerFunction;
-    titleHeight?: number;
     title?: string;
-    timeAxisHeight?: number;
-    titleStyle?: any;
+    titleHeight?: number;
+    titleStyle?: React.CSSProperties;
 };
 export declare class ChartContainer extends React.Component<ChartContainerProps> {
     static defaultProps: Partial<ChartContainerProps>;
