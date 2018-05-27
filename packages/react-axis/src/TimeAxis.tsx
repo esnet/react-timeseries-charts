@@ -94,6 +94,7 @@ export type TimeAxisProps = {
     textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
+    angled?: boolean;
 };
 
 /**
@@ -150,7 +151,8 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             pointerEvents: "none"
         },
         absolute: false,
-        smoothTransition: false
+        smoothTransition: false,
+        angled: false
     }
     renderAxisLabel() {
         const { width, height, position, labelPosition, labelStyle } = this.props;
@@ -266,6 +268,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
                         height={this.props.height}
                         smoothTransition={this.props.smoothTransition}
                         textStyle={this.props.textStyle}
+                        angled={this.props.angled}
                     />
                 );
             }

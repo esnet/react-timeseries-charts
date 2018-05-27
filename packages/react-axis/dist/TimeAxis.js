@@ -146,7 +146,7 @@ var TimeAxis = (function (_super) {
             var pos = scale(date);
             var _b = formatter(date), label = _b.label, size = _b.size, labelAlign = _b.labelAlign;
             if (+d >= start && +d < stop) {
-                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, extend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition, textStyle: this.props.textStyle }));
+                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, extend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition, textStyle: this.props.textStyle, angled: this.props.angled }));
             }
             d = d.add(num, type);
             i++;
@@ -196,7 +196,8 @@ var TimeAxis = (function (_super) {
             pointerEvents: "none"
         },
         absolute: false,
-        smoothTransition: false
+        smoothTransition: false,
+        angled: false
     };
     return TimeAxis;
 }(React.Component));

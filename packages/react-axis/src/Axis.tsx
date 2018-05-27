@@ -36,6 +36,7 @@ export type AxisProps = {
     labelPosition: number;
     labelStyle: React.CSSProperties;
     absolute: boolean;
+    angled?: boolean;
 };
 
 /**
@@ -75,7 +76,8 @@ export class Axis extends React.Component<AxisProps> {
             stroke: "none",
             pointerEvents: "none"
         },
-        absolute: false
+        absolute: false,
+        angled: false
     };
     constructor(props: AxisProps) {
         super(props);
@@ -199,6 +201,7 @@ export class Axis extends React.Component<AxisProps> {
                     extend={this.props.tickExtend}
                     width={this.props.width}
                     height={this.props.height}
+                    angled={this.props.angled}
                 />
             );
         });

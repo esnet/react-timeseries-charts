@@ -20,6 +20,7 @@ export declare type AxisProps = {
     labelPosition: number;
     labelStyle: React.CSSProperties;
     absolute: boolean;
+    angled?: boolean;
 };
 export declare class Axis extends React.Component<AxisProps> {
     static defaultProps: Partial<AxisProps>;

@@ -22,6 +22,7 @@ export declare type TimeAxisProps = {
     textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
+    angled?: boolean;
 };
 export declare class TimeAxis extends React.Component<TimeAxisProps> {
     static defaultProps: {
@@ -46,6 +47,7 @@ export declare class TimeAxis extends React.Component<TimeAxisProps> {
         };
         absolute: boolean;
         smoothTransition: boolean;
+        angled: boolean;
     };
     renderAxisLabel(): JSX.Element;
     renderAxisLine(): JSX.Element;

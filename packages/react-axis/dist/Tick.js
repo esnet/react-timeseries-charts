@@ -25,17 +25,20 @@ var Tick = (function (_super) {
         return _super.call(this, props) || this;
     }
     Tick.prototype.renderLabel = function (label, isTop, tickSize) {
-        var _a = this.props, labelAlign = _a.labelAlign, textStyle = _a.textStyle;
+        var _a = this.props, labelAlign = _a.labelAlign, textStyle = _a.textStyle, angled = _a.angled;
         var baseLine = isTop ? "baseline" : "hanging";
+        var rotate = angled ? "rotate(-65)" : "rotate(0)";
+        var dx = angled ? "-1.2em" : "0em";
+        var dy = "0em";
         if (labelAlign === "adjacent") {
             var x = 2;
             var y = isTop ? -6 : 6;
-            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "start", x: x, y: y, alignmentBaseline: baseLine }, label));
+            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "start", transform: rotate, x: x, y: y, dx: dx, dy: dy, alignmentBaseline: baseLine }, label));
         }
         else if (labelAlign === "center") {
             var x = 0;
             var y = isTop ? -tickSize - 3 : tickSize + 3;
-            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "middle", x: x, y: y, alignmentBaseline: baseLine }, label));
+            return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: "middle", x: x, y: y, dx: dx, dy: dy, alignmentBaseline: baseLine }, label));
         }
     };
     Tick.prototype.renderVerticalTick = function (id, label, labelPosition, size, extend, isTop) {
@@ -68,12 +71,15 @@ var Tick = (function (_super) {
         var style = { stroke: "#AAA", strokeWidth: 1 };
         var groupKey = "grp-" + id + "}";
         var tickKey = "tick-" + id;
+        var rotate = this.props.angled ? "rotate(-65)" : "rotate(0)";
+        var dx = this.props.angled ? "-1.2em" : "0em";
+        var dy = "0em";
         var tickTransitionStyle = {
             transition: "transform 100ms"
         };
         return (React.createElement("g", { style: tickTransitionStyle, key: groupKey },
             React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: style }, line)),
-            React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, textAnchor: isLeft ? "end" : "begin", alignmentBaseline: "middle", x: isLeft ? -size - 3 : size + 3, y: 0 }, label)));
+            React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, transform: rotate, textAnchor: isLeft ? "end" : "begin", alignmentBaseline: "middle", x: isLeft ? -size - 3 : size + 3, y: 0, dx: dx, dy: dy }, label)));
     };
     Tick.prototype.render = function () {
         var _a = this.props, id = _a.id, label = _a.label, width = _a.width, height = _a.height, position = _a.position, _b = _a.size, size = _b === void 0 ? 10 : _b, _c = _a.extend, extend = _c === void 0 ? 0 : _c, _d = _a.align, align = _d === void 0 ? "top" : _d, _e = _a.smoothTransition, smoothTransition = _e === void 0 ? false : _e;
@@ -101,7 +107,8 @@ var Tick = (function (_super) {
             fontSize: 11,
             fill: "#b0b0b0",
             pointerEvents: "none"
-        }
+        },
+        angled: false
     };
     return Tick;
 }(React.Component));

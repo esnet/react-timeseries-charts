@@ -24,6 +24,7 @@ export type TickProps = {
     smoothTransition?: boolean;
     extend?: number;
     textStyle?: React.CSSProperties;
+    angled?: boolean;
 };
 
 /**
@@ -46,7 +47,8 @@ export class Tick extends React.Component<TickProps> {
             fontSize: 11,
             fill: "#b0b0b0",
             pointerEvents: "none"
-        }
+        },
+        angled: false
         //transitionTime: 200
     }
     /**
@@ -55,8 +57,12 @@ export class Tick extends React.Component<TickProps> {
      *     label
      */
     renderLabel(label: string, isTop: boolean, tickSize: number) {
-        const { labelAlign, textStyle } = this.props;
+        const { labelAlign, textStyle, angled } = this.props;
         const baseLine = isTop ? "baseline" : "hanging";
+        const rotate = angled ? `rotate(-65)` : `rotate(0)`;
+        const dx = angled ? "-1.2em" : "0em";
+        const dy = "0em";
+
         if (labelAlign === "adjacent") {
             const x = 2;
             const y = isTop ? -6 : 6;
@@ -66,8 +72,11 @@ export class Tick extends React.Component<TickProps> {
                     className="tick-label"
                     style={textStyle}
                     textAnchor="start"
+                    transform={rotate}
                     x={x}
                     y={y}
+                    dx={dx}
+                    dy={dy}
                     alignmentBaseline={baseLine}
                 >
                     {label}
@@ -84,6 +93,8 @@ export class Tick extends React.Component<TickProps> {
                     textAnchor="middle"
                     x={x}
                     y={y}
+                    dx={dx}
+                    dy={dy}
                     alignmentBaseline={baseLine}
                 >
                     {label}
@@ -138,6 +149,9 @@ export class Tick extends React.Component<TickProps> {
         const style = { stroke: "#AAA", strokeWidth: 1 };
         const groupKey = `grp-${id}}`;
         const tickKey = `tick-${id}`;
+        const rotate = this.props.angled ? `rotate(-65)` : `rotate(0)`;
+        const dx = this.props.angled ? "-1.2em" : "0em";
+        const dy = "0em";
         const tickTransitionStyle = {
             transition: "transform 100ms"
         };
@@ -148,10 +162,13 @@ export class Tick extends React.Component<TickProps> {
                     key={`label-${label}`}
                     className="tick-label"
                     style={textStyle}
+                    transform={rotate}
                     textAnchor={isLeft ? "end" : "begin"}
                     alignmentBaseline="middle"
                     x={isLeft ? -size - 3 : size + 3}
                     y={0}
+                    dx={dx}
+                    dy={dy}
                 >
                     {label}
                 </text>
