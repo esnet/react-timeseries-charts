@@ -71,30 +71,94 @@ function createScale(
     }
 }
 
+// CHECK - can we write it as ChartRowProps = ChartContainerProps & { }
 export type ChartRowProps = {
+    // CHECK - add description and change type
+    // PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
     children?: any;
+
+    // CHECK - add description
     width?: number;
+
+    /**
+     * The height of the row.
+     */
     height?: number;
+
+    // CHECK - add description
     timeScale?: ScaleTime<number, number>;
+
+    // CHECK - add description
     trackerTime?: Date;
+
+    // CHECK - add description
     trackerTimeFormat?: string;
+
+    // CHECK - add description
     timeFormat?: string;
+
+    /**
+     * Should the time be shown on top of the tracker info box
+     */
     trackerShowTime?: boolean;
+
+    /**
+     * The width of the tracker info box
+     */
     trackerInfoWidth?: number;
+
+    /**
+     * The height of the tracker info box
+     */
     trackerInfoHeight?: number;
+
+    /**
+     * Info box value or values to place next to the tracker line
+     * This is either an array of objects, with each object
+     * specifying the label (a string) and value (also a string)
+     * to be shown in the info box, or a simple string label.
+     */
     trackerInfoValues?: LabelValueList | string;
+
+    // CHECK - add description
     leftAxisWidths?: number[];
+
+    // CHECK - add description
     rightAxisWidths?: number[];
+
+    // CHECK - add description
     transition: number;
+
+    /**
+     * Show or hide this row
+     */
     visible?: boolean;
+
+    // CHECK - add description
     enablePanZoom?: boolean;
+
+    // CHECK - add description
     paddingLeft?: number;
+
+    // CHECK - add description
     paddingRight?: number;
+
+    // CHECK - add description
     minTime?: Date;
+
+    // CHECK - add description
     maxTime?: Date;
+
+    // CHECK - add description
     minDuration?: number;
+
+    // CHECK - add description
     showGrid?: boolean;
+
+    // CHECK - add description
     onTimeRangeChanged: (timeRange: TimeRange) => any;
+
+    // CHECK - add description
     onTrackerChanged: (t: Date) => any;
 };
 

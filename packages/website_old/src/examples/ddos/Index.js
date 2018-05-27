@@ -64,6 +64,13 @@ class ddos extends React.Component {
                 connections: true
             }
         };
+        this.handleActiveChange = this.handleActiveChange.bind(this);
+    }
+
+    handleActiveChange(key) {
+        const active = this.state.active;
+        active[key] = !active[key];
+        this.setState({ active });
     }
 
     renderChart() {
@@ -146,12 +153,6 @@ class ddos extends React.Component {
                 </ChartRow>
             </ChartContainer>
         );
-    }
-
-    handleActiveChange(key) {
-        const active = this.state.active;
-        active[key] = !active[key];
-        this.setState({ active });
     }
 
     render() {

@@ -15,17 +15,54 @@ import { ValueList } from "./ValueList";
 import { InfoBoxStyle } from "./style";
 
 export type LabelAxisProps = {
+    /**
+     * The label to show as the axis.
+     */
     label: string;
+
+    /**
+     * Show or hide the max/min values that appear alongside the label
+     */
     hideScale?: boolean;
+
+    /**
+     * Supply a list of label value pairs to render within the LabelAxis.
+     * This expects an array of objects. Each object is of the form:
+     *     {label: "Speed", value: "26.2 mph"}.
+     */
     values: {
         label?: string;
         value?: number | string;
     }[];
+
+    /**
+     * Width to provide the values
+     */
     valWidth?: number;
+
+    /**
+     * Max value of the axis scale
+     */
     max: number;
+
+    /**
+     * Min value of the axis scale
+     */
     min: number;
+
+    /**
+     * If values are numbers, use this format string
+     */
     format?: string;
+
+    /**
+     * The width of the axis
+     */
     width?: number;
+
+    /**
+     * The height of the axis
+     */
     height?: number;
 };
 

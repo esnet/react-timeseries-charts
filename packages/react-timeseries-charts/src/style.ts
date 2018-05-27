@@ -89,7 +89,7 @@ export type LineChartChannelStyle = {
  */
 export type LineChartStyle = { [channel: string]: LineChartChannelStyle };
 
-export const defaultLineChartChannelStyle = {
+export const defaultLineChartChannelStyle: LineChartChannelStyle = {
     line: {
         normal: { stroke: "steelblue", fill: "none", strokeWidth: 1 },
         highlighted: { stroke: "#5a98cb", fill: "none", strokeWidth: 1 },
@@ -298,7 +298,7 @@ export type ScatterChartChannelStyle = {
  */
 export type ScatterChartStyle = { [channel: string]: ScatterChartChannelStyle };
 
-export const defaultScatterChartChannelStyle = {
+export const defaultScatterChartChannelStyle: ScatterChartChannelStyle = {
     point: {
         normal: { fill: "steelblue", opacity: 0.8 },
         highlighted: { fill: "steelblue", opacity: 1.0 },
@@ -322,7 +322,7 @@ export type BaselineStyle = {
     line: React.CSSProperties;
 };
 
-export const baselineDefaultStyle = {
+export const defaultBaselineStyle: BaselineStyle = {
     label: {
         fill: "#8B7E7E",
         fontSize: 11,

@@ -76,6 +76,7 @@ class continents extends React.Component {
             selection: null,
             scheme: "Paired"
         };
+        this.handleSchemeChange = this.handleSchemeChange.bind(this);
     }
 
     handleSchemeChange({ value }) {

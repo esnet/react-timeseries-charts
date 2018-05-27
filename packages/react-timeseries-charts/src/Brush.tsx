@@ -18,10 +18,38 @@ import { ChartProps } from "./Charts";
 import { getElementOffset } from "./util";
 
 export type BrushProps = ChartProps & {
+    /**
+     * The brush is rendered as an SVG rect. You can specify the style
+     * of this rect using this prop.
+     */
     style?: object;
+
+    /**
+     * The timerange for the brush. Typically you would maintain this
+     * as state on the surrounding page, since it would likely control
+     * another page element, such as the range of the main chart. See
+     * also `onTimeRangeChanged()` for receiving notification of the
+     * brush range being changed by the user.
+     *
+     * Takes a Pond TimeRange object.
+     */
     timeRange?: TimeRange;
+
+    /**
+     * The size of the invisible side handles. Defaults to 6 pixels.
+     */
     handleSize?: number;
+
     allowSelectionClear?: boolean;
+
+    /**
+     * A callback which will be called if the brush range is changed by
+     * the user. It is called with a Pond TimeRange object. Note that if
+     * `allowSelectionClear` is set to true, then this can also be called
+     * when the user performs a simple click outside the brush area. In
+     * this case it will be called with null as the TimeRange. You can
+     * use this to reset the selection, perhaps to some initial range.
+     */
     onTimeRangeChanged?: (d?: TimeRange) => any;
 };
 

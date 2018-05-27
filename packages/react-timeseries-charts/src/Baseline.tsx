@@ -12,15 +12,47 @@ import * as _ from "lodash";
 import * as React from "react";
 
 import { ChartProps } from "./Charts";
-import { BaselineStyle, baselineDefaultStyle as defaultStyle } from "./style";
+import { BaselineStyle, defaultBaselineStyle as defaultStyle } from "./style";
 
 export type BaselineProps = ChartProps & {
+    /**
+     * Reference to the axis which provides the vertical scale for drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
     axis: string;
+
+    /**
+     * An object describing the style of the baseline of the form
+     * { label, line }. "label" and "line" are both objects containing
+     * the inline CSS for that part of the baseline.
+     */
     style?: BaselineStyle;
+
+    /**
+     * The y-value to display the line at.
+     */
     value?: number;
+    
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
+
+    /**
+     * Whether to display the label above or below the line. The default is "auto",
+     * which will show it above the line unless the position is near to the top
+     * of the chart.
+     */
     vposition?: "above" | "below" | "auto";
+
+    /**
+     * The label to display with the axis.
+     */
     label?: string;
+
+    /**
+     * Whether to display the label on the "left" or "right".
+     */
     position?: "left" | "right";
 };
 

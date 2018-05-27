@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import Flexbox from "flexbox-react";
 import { ElementStyle } from "./style";
+import { LegendProps } from "./Legend";
 
 export enum LegendItemType {
     Swatch = "SWATCH",
@@ -19,13 +20,14 @@ export enum LegendItemType {
     Dot = "DOT"
 }
 
-export type LegendItemProps = {
+// CHECK - LegendProps & ?
+export type LegendItemProps = LegendProps & {
     itemKey: string;
-    type: LegendItemType;
+    // type: LegendItemType;
     label: string;
     value: string;
-    symbolWidth: number;
-    symbolHeight: number;
+    // symbolWidth: number;
+    // symbolHeight: number;
     symbolStyle: ElementStyle;
     labelStyle: ElementStyle;
     valueStyle: ElementStyle;

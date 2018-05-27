@@ -59,41 +59,242 @@ export enum ShowGridPosition {
 }
 
 export type ChartContainerProps = {
+    /**
+     * Children of the ChartContainer should be ChartRows.
+     */
+
+    // CHECK - PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
     children: any;
+
+    /**
+     * A [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange) representing the
+     * begin and end time of the chart.
+     */
     timeRange: TimeRange;
+
+    // CHECK - add description
     timezone?: string;
+
+    /**
+     * The width of the chart. This library also includes a <Resizable> component
+     * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
+     * inject a width prop into the ChartContainer so that it will fit the
+     * surrounding element. This is very handy when you need the chart to resize
+     * based on a responsive layout.
+     */
     width?: number;
+    
+    /**
+     * Constrain the timerange to not move back in time further than this Date.
+     */
     minTime?: Date;
+
+    /**
+     * Constrain the timerange to not move forward in time than this Date. A
+     * common example is setting this to the current time or the end time
+     * of a fixed set of data.
+     */
     maxTime?: Date;
-    timeFormat?: string; // TODO - add function
-    timeAxisStyle?: any; // TODO
+
+    /**
+     * The format for the tick labels.
+     *
+     * The default it to compute this automatically. You can also specify this
+     * as a string or function.
+     *
+     * Six special options exist, specified as a string: setting format to:
+     *  * "second",
+     *  * "hour"
+     *  * "day"
+     *  * "month"
+     *  * "year"
+     *
+     * will show only ticks on those, and every one of those intervals.
+     *
+     * For example maybe you are showing a bar chart for October 2014 then setting
+     * the format to "day" will insure that a label is placed for each and every day,
+     * all 31 of them. Be careful though, it's easy to add too many labels this way.
+     *
+     * The last string option is:
+     *  * "duration".
+     *
+     * This interprets the time as a duration. This is good for data that is
+     * specified relative to its start time, rather than as an actual date/time.
+     *
+     * Finally, format can also be a function. The function will be passed the date
+     * it is rendering. It expects the return result to be a an object describing
+     * the resulting tick. For example:
+     *
+     * ```js
+     *     format = (d) => ({
+     *         label: moment(d).format(h:mm a),
+     *         size: 15,
+     *         labelAlign: "adjacent"
+     *     });
+     * ```
+     */
+
+    // CHECK - add function
+    timeFormat?: string;
+    
+    /**
+     * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
+     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
+     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
+     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * respectively.
+     *
+     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
+     * regular React rendered SVG line, so it uses camel case.
+     */
+
+    // CHECK - todo
+    timeAxisStyle?: any;
+    
+    /**
+     * Angle the time axis labels
+     */
+
+    // CHECK - implement this in React-axis
     timeAxisAngledLabels?: boolean;
+
+    /**
+     * Boolean to turn on interactive pan and zoom behavior for the chart.
+     */
     enablePanZoom?: boolean;
+
+    /**
+     * Boolean to turn on interactive drag to zoom behavior for the chart.
+     */
     enableDragZoom?: boolean;
+
+    /**
+     * If this is set the timerange of the chart cannot be zoomed in further
+     * than this duration, in milliseconds. This might be determined by the
+     * resolution of your data.
+     */
     minDuration?: number;
+
+    /**
+     * Time in milliseconds to transition from one Y-scale to the next
+     */
     transition?: number;
+
+    // CHECK - add description. Also, can this be grouped?
     padding?: number;
     paddingLeft?: number;
     paddingRight?: number;
     paddingTop?: number;
     paddingBottom?: number;
+
+    /**
+     * Show grid lines for each time marker
+     */
     showGrid?: boolean;
+
+    /**
+     * Defines whether grid is overlayed ("over"( or underlayed ("under")
+     * with respect to the charts
+     */
     showGridPosition?: ShowGridPosition;
+
+    /**
+     * A Date specifying the position of the tracker line on the chart. It is
+     * common to take this from the onTrackerChanged callback so that the tracker
+     * followers the user's cursor, but it could be modified to snap to a point or
+     * to the nearest minute, for example.
+     */
     trackerTime?: Date;
+
+    /**
+     * Info box value or values to place next to the tracker line.
+     * This is either an array of objects, with each object
+     * specifying the label and value to be shown in the info box,
+     * or a simple string label.
+     */
     trackerInfo?: LabelValueList | string;
+
+    /**
+     * The width of the tracker info box
+     */
     trackerInfoWidth?: number;
+
+    /**
+     * The height of the tracker info box
+     */
     trackerInfoHeight?: number;
+
+    /**
+     * Will be called when the user hovers over a chart. The callback will
+     * be called with the timestamp (a Date object) of the position hovered
+     * over as well as the current time axis' time scale. The timestamp may
+     * be used as the trackerPosition (see above), or to provide information
+     * about the time hovered over within the greater page. The time scale
+     * may be used to translate the timestamp into an x coordinate, which
+     * can then be used to position arbitrary components in sync with the
+     * current tracker position.
+     * Commonly we might do something like this:
+     * ```
+     *   <ChartContainer
+     *     onTrackerChanged={(tracker) => this.setState({tracker})}
+     *     trackerPosition={this.state.tracker}
+     *     ... />
+     * ```
+     */
     onTrackerChanged?: (time: Date, number: (t: any) => number) => any;
+
+    /**
+     * This will be called if the user pans and/or zooms the chart. The callback
+     * will be called with the new TimeRange. This can be fed into the timeRange
+     * prop as well as used elsewhere on the greater page. Typical use might look
+     * like this:
+     * ```
+     *   <ChartContainer
+     *     onTimeRangeChanged={(timerange) => this.setState({timerange})}
+     *     timeRange={this.state.timerange}
+     *     ... />
+     * ```
+     */
     onTimeRangeChanged?: (timerange: TimeRange) => any;
+
+    /**
+     * Called when the user clicks the background plane of the chart. This is
+     * useful when deselecting elements.
+     */
+
+    // CHECK - change required?
     onBackgroundClick?: () => any;
+
+    /**
+     * Called when the size of the chart changes
+     */
+
+    // CHECK - function doesn't work and change required?
     onChartResize?: () => any;
+    
+    // CHECK - add description
     onMouseMove?: (x: number, y: number) => any;
+    
+    // CHECK - add description
     timeScale?: ScaleTime<number, number>;
+
+    // CHECK - add description
     yScale?: ScalerFunction;
+    
+    // CHECK - add description
     titleHeight?: number;
+    
+    // CHECK - add description
     title?: string;
+    
+    // CHECK - add description
     timeAxisHeight?: number;
+
+    // CHECK - add description
     titleStyle?: any;
+
+    // CHECK - add prop timeAxisTickCount
 };
 
 /**
@@ -477,6 +678,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                     height={50}
                     tickExtend={gridHeight}
                     textStyle={xStyle}
+                    format={this.props.timeFormat}
                 />
             </g>
         );

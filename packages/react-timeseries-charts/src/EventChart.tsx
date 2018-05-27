@@ -16,17 +16,65 @@ import { ChartProps } from "./Charts";
 import { EventChartStyle } from "./style";
 
 export type EventChartProps = ChartProps & {
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     */
     series: TimeSeries<Key>;
+
+    /**
+     * Set hover label text
+     * When label is function callback it will be called with current event.
+     */
     label?: string | ((...args: any[]) => any);
+    
+    /**
+     * The height in pixels for the event bar
+     */
     size?: number;
+
+    /**
+     * The distance in pixels to inset the event bar from its actual timerange
+     */
     spacing?: number;
+
+    /**
+     * Marker width on hover
+     */
     hoverMarkerWidth?: number;
+
+    /**
+     * Hover text offset position X
+     */
     textOffsetX?: number;
+
+    /**
+     * Hover text offset position Y
+     */
     textOffsetY?: number;
+
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
+
+    /**
+     * A function that should return the style of the event box
+     */
     style?: EventChartStyle;
+
+    /**
+     * Event selection on click. Will be called with selected event.
+     */
     onSelectionChange?: (e: Event<Key>) => any;
+    
+    /**
+     * Mouse over event callback
+     */
     onMouseOver?: (e: Event<Key>) => any;
+
+    /**
+     * Mouse leave at end of hover event
+     */
     onMouseLeave?: (b: boolean) => any;
 };
 

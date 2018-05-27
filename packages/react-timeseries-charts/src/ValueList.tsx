@@ -14,10 +14,29 @@ import { LabelValueList } from "./types";
 import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
 
 export type ValueListProps = {
+    /**
+     * Where to position the label, either "left" or "center" within the box
+     */
     align?: "center" | "left";
+
+    /**
+     * An array of label value pairs to render
+     */
     values: LabelValueList;
+
+    /**
+     * CSS object to be applied to the ValueList surrounding box
+     */
     style?: InfoBoxStyle;
+
+    /**
+     * The width of the rectangle to render into
+     */
     width?: number;
+
+    /**
+     * The height of the rectangle to render into
+     */
     height?: number;
 };
 

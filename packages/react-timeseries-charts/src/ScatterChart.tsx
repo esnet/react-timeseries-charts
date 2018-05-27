@@ -33,23 +33,137 @@ export type EventColumnPair = {
 };
 
 export type ScatterChartProps = ChartProps & {
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     */
     series: TimeSeries<Key>;
+
+    /**
+     * Which columns of the series to render
+     */
     columns?: string[];
+
+    /**
+     * Reference to the axis which provides the vertical scale for drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
     axis: string;
+
+    /**
+     * The radius of the points in the scatter chart.
+     *
+     * If this is a number it will be used as the radius for every point.
+     * If this is a function it will be called for each event.
+     *
+     * The function is called with the event and the column name and must return a number.
+     *
+     * For example this function will use the radius column of the event:
+     *
+     * ```
+     * const radius = (event, column) => {
+     *    return event.get("radius");
+     * }
+     * ```
+     */
     radius?: number | ((...args: any[]) => any) | any | Styler;
+
+    /**
+     * The style of the scatter chart drawing (using SVG CSS properties).
+     * This is an object with a key for each column which is being plotted,
+     * per the `columns` prop. Each of those keys has an object as its
+     * value which has keys which are style properties for an SVG <Circle> and
+     * the value to use.
+     *
+     * For example:
+     * ```
+     * style = {
+     *     columnName: {
+     *         normal: {
+     *             fill: "steelblue",
+     *             opacity: 0.8,
+     *         },
+     *         highlighted: {
+     *             fill: "#a7c4dd",
+     *             opacity: 1.0,
+     *         },
+     *         selected: {
+     *             fill: "orange",
+     *             opacity: 1.0,
+     *         },
+     *         muted: {
+     *             fill: "grey",
+     *             opacity: 0.5
+     *         }
+     *     }
+     * }
+     * ```
+     *
+     * You can also supply a function, which will be called with an event
+     * and column. The function should return an object containing the
+     * 4 states (normal, highlighted, selected and muted) and the corresponding
+     * CSS properties.
+     */
     style?:
         | ScatterChartStyle
         | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle)
         | Styler;
+
+    /**
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
     info?: LabelValueList | string;
+
+    /**
+     * The style of the info box and connecting lines. The style should
+     * be an object of the form { line, box }. Line and box are both objects
+     * containing the inline CSS for those elements of the info tracker.
+     */
     infoStyle?: EventMarkerStyle;
+
+    /**
+     * The width of the hover info box
+     */
     infoWidth?: number;
+
+    /**
+     * The height of the hover info box
+     */
     infoHeight?: number;
+
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
     infoTimeFormat?: ((date: Date) => string) | string;
+
+    /**
+     * The selected dot, which will be rendered in the "selected" style.
+     * If a dot is selected, all other dots will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected?: EventColumnPair;
+
+    /**
+     * A callback that will be called when the selection changes. It will be called
+     * with an object containing the event and column.
+     */
     onSelectionChange?: (...args: any[]) => any;
+
+    /**
+     * The highlighted dot, as an object containing the { event, column },
+     * which will be rendered in the "highlighted" style.
+     *
+     * See also the prop `onMouseNear`.
+     */
     highlight?: EventColumnPair;
+
+    /**
+     * Will be called with the nearest point to the cursor. The callback
+     * will contain the point, which is a map of { event, column }.
+     */
     onMouseNear?: (...args: any[]) => any;
 };
 

@@ -38,16 +38,79 @@ const defaultStyle: any = {
 };
 
 export type YAxisProps = AxisProps & {
+    /**
+     * The label to be displayed alongside the axis.
+     */
     label?: string;
+
+    /**
+     * Minium value, which combined with "max", define the scale of the axis.
+     */
     min: number;
+
+    /**
+     * Maxium value, which combined with "min,"" define the scale of the axis.
+     */
     max: number;
+
+    /**
+     * The width of the axis
+     */
     width: number;
+
+    /**
+     * Object specifying the CSS by which the axis can be styled. The object can contain:
+     * "labels" and "axis". Each of these is an inline CSS style applied
+     * to the axis label, axis values, axis line and ticks respectively.
+     *
+     * Note that these are passed into d3's styling, so are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray).
+     */
+
+    // CHECK
+    // style: PropTypes.shape({
+    //      label: PropTypes.object,
+    //      axis: PropTypes.object,
+    //      values: PropTypes.object,
+    //      ticks: PropTypes.object
+    // })
     style?: YAxisStyle;
+
+    /**
+     * Render all ticks on the axis as positive values.
+     */
     absolute?: boolean;
+
+    /**
+     * Offset the axis label from its default position. This allows you to
+     * fine tune the label location, which may be necessary depending on the
+     * scale and how much room the tick labels take up. Maybe positive or
+     * negative.
+     */
     labelOffset?: number;
+
+    /**
+     * If a string, the d3.format for the axis labels (e.g. `format=\"$,.2f\"`).
+     * If a function, that function will be called with each tick value and
+     * should generate a formatted string for that value to be used as the label
+     * for that tick (e.g. `function (n) { return Number(n).toFixed(2) }`).
+     */
     format?: string;
+
+    /**
+     * If the chart should be rendered to with the axis on the left or right.
+     * If you are using the axis in a ChartRow, you do not need to provide this.
+     */
     align?: string;
+
+    /**
+     * [Internal] The scale supplied by the ChartRow
+     */
     scale?: (...args: any[]) => any;
+
+    /**
+     * The number of ticks
+     */
     tickCount?: number;
 };
 

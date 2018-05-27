@@ -24,16 +24,102 @@ import {
 } from "./style";
 
 export type LineChartProps = ChartProps & {
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     */
     series: TimeSeries<Key>;
+
+    /**
+     * Reference to the axis which provides the vertical scale for drawing.
+     * e.g. specifying `axis="trafficRate"` would refer the y-scale of the YAxis
+     * with id="trafficRate".
+     */
     axis: string;
+
+    /**
+     * Which columns from the series to draw.
+     */
     columns?: string[];
+
+    /**
+     * The styles to apply to the underlying SVG lines. This is a mapping
+     * of column names to objects with style attributes, in the following
+     * format:
+     *
+     * ```
+     * const style = {
+     *     in: {
+     *         normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *         highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+     *         selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *         muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+     *     },
+     *     out: {
+     *         ...
+     *     }
+     * };
+     *
+     *  <LineChart style={style} ... />
+     * ```
+     *
+     * Alternatively, you can pass in a `Styler`. For example:
+     *
+     * ```
+     * const currencyStyle = Styler([
+     *     {key: "aud", color: "steelblue", width: 1, dashed: true},
+     *     {key: "euro", color: "#F68B24", width: 2}
+     * ]);
+     *
+     * <LineChart columns={["aud", "euro"]} style={currencyStyle} ... />
+     *
+     * ```
+     */
     style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
+
+    /**
+     * Any of D3's interpolation modes.
+     */
     interpolation?: CurveInterpolation;
+
+    /**
+     * The determines how to handle bad/missing values in the supplied
+     * TimeSeries. A missing value can be null or NaN. If breakLine
+     * is set to true then the line will be broken on either side of
+     * the bad value(s). If breakLine is false (the default) bad values
+     * are simply removed and the adjoining points are connected.
+     */
     breakLine?: boolean;
+
+    /**
+     * The selected item, which will be rendered in the "selected" style.
+     * If a line is selected, all other lines will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selection?: string;
+
+    /**
+     * A callback that will be called when the selection changes. It will be called
+     * with the column corresponding to the line being clicked.
+     */
     onSelectionChange?: (...args: any[]) => any;
+
+    /**
+     * The highlighted column, which will be rendered in the "highlighted" style.
+     *
+     * See also `onHighlightChange`
+     */
     highlight?: string;
+
+    /**
+     * A callback that will be called when the hovered over line changes.
+     * It will be called with the corresponding column.
+     */
     onHighlightChange?: (...args: any[]) => any;
+
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
 };
 

@@ -15,9 +15,25 @@ import { LabelValueList } from "./types";
 import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
 
 export type BoxProps = {
+    /**
+     * Where to position the label, either "left" or "center" within the box
+     */
     align?: "center" | "left";
+
+    /**
+     * The style of the label. This is the inline CSS applied directly
+     * to the label box
+     */
     style?: InfoBoxStyle;
+
+    /**
+     * The width of the rectangle to render into
+     */
     width?: number;
+
+    /**
+     * The height of the rectangle to render into
+     */
     height?: number;
 };
 
@@ -26,6 +42,9 @@ export type InfoBoxProps = BoxProps & {
 };
 
 export type LabelProps = BoxProps & {
+    /**
+     * The label to render
+     */
     label: string;
 };
 

@@ -13,8 +13,21 @@ import { TimeRange } from "pondjs";
 import { ChartProps } from "./Charts";
 
 export type TimeRangeMarkerProps = ChartProps & {
+    /**
+     * The timerange to mark. This is in the form of a
+     * [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange)
+     */
     timerange: TimeRange;
+
+    /**
+     * The style of the rect that will be rendered as a SVG <Rect>. This
+     * object is the inline CSS for that rect.
+     */
     style?: React.CSSProperties;
+    
+    /**
+     * Show or hide this marker
+     */
     visible?: boolean;
 };
 

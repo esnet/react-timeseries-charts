@@ -34,17 +34,114 @@ export enum StyleType {
 }
 
 export type AreaChartProps = ChartProps & {
+    /**
+     * Reference to the axis which provides the vertical scale for ## drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
     axis: string;
+
+    /**
+     * The determines how to handle bad/missing values in the supplied
+     * TimeSeries. A missing value can be null or NaN. If breakArea
+     * is set to true then the area chart will be broken on either side of
+     * the bad value(s). If breakArea is false (the default) bad values
+     * are simply removed and the adjoining points are connected.
+     */
     breakArea?: boolean;
+
+    /**
+     * The series series columns mapped to stacking up and down.
+     * Has the format:
+     * ```
+     *  "columns": {
+     *      up: ["in", ...],
+     *      down: ["out", ...]
+     *  }
+     *  ```
+     */
     columns: AreaChartColumns;
+
+    /**
+     * The currenly highlighted column
+     */
     highlight?: string;
+
+    /**
+     * Any of D3's interpolation modes.
+     */
     interpolation: CurveInterpolation;
+
+    /**
+     * The currenly selected column
+     */
     selection?: string;
+
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     */
     series: TimeSeries<Key>;
+
+    /**
+     * Stack areas on top of each other
+     */
     stack?: boolean;
-    style: AreaChartStyle;
+
+    /**
+     * The styles to apply to the underlying SVG lines. This is a mapping
+     * of column names to objects with style attributes, in the following
+     * format:
+     *
+     * ```
+     * const style = {
+     *     in: {
+     *         line: {
+     *             normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *             highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+     *             selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *             muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+     *         },
+     *         area: {
+     *             normal: {fill: "steelblue", stroke: "none", opacity: 0.75},
+     *             highlighted: {fill: "#5a98cb", stroke: "none", opacity: 0.75},
+     *             selected: {fill: "steelblue", stroke: "none", opacity: 0.75},
+     *             muted: {fill: "steelblue", stroke: "none", opacity: 0.25}
+     *         }
+     *     },
+     *     out: {
+     *         ...
+     *     }
+     * };
+     *
+     * <AreaChart style={style} ... />
+     * ```
+     *
+     * Alternatively, you can pass in a Styler. For example:
+     *
+     * ```
+     * const upDownStyler = styler([
+     *     {key: "in", color: "#C8D5B8"},
+     *     {key: "out", color: "#9BB8D7"}
+     * ]);
+     *
+     * <AreaChart columns={["in", "out"]} style={upDownStyler} ... />
+     *
+     * ```
+     */
+    style: AreaChartStyle | ((column: string) => AreaChartChannelStyle) | Styler;
+
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
+
+    /**
+     * Callback called when the highlight changes, i.e. hover event
+     */
     onHighlightChange?: (column: string) => any;
+
+    /**
+     * Callback called when the selection changes, i.e. area is clicked
+     */
     onSelectionChange?: (column: string) => any;
 };
 

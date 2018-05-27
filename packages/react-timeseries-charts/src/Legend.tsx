@@ -31,16 +31,74 @@ export type LegendCategory = {
 };
 
 export type LegendProps = {
+    /**
+     * The overall style of the legend items, either a color "swatch", a
+     * colored "line", or a "dot".
+     */
     type?: LegendItemType;
+
+    /**
+     * Alignment of the legend within the available space. Either left or right.
+     */
     align?: "left" | "right";
+
     style?: LegendStyle | ((column: string) => CategoryStyle) | Styler;
+
+    /**
+     * The categories array specifies details and style for each item in the legend. For each item:
+     *  * "key" - (required) the name by which the legend will be known
+     *  * "label" - (required) the displayed label
+     *  * "style" - the swatch, dot, or line style. Typically you'd just
+     *              specify {backgroundColor: "#1f77b4"}
+     *  * "labelStyle" - the label style
+     *  * "disabled" - a disabled state
+     *
+     * ```
+     * const categories = [
+     *    {key: "aust", label: "AUD", disabled: this.state.disabled["aust"],
+     *      style: {backgroundColor: "#1f77b4"}},
+     *    {key: "usa", label: "USD", disabled: this.state.disabled["usa"],
+     *      style: {backgroundColor: "#aec7e8"}}
+     * ];
+     * ```
+     */
     categories: LegendCategory[];
+
+    /**
+     * The width of the legend symbol
+     */
     symbolWidth?: number;
+
+    /**
+     * The height of the legend symbol
+     */
     symbolHeight?: number;
+
+    /**
+     * Which item, specified by its key, should be rendered as highlighted
+     */
     highlight?: string;
+
+    /**
+     * Which item, specified by its key, should be rendered as selected
+     */
     selection?: string;
+
+    /**
+     * Defines whether to stack legend items vertically or not
+     */
     stack?: boolean;
+
+    /**
+     * Callback will be called with a legend item is selected (i.e. it is clicked
+     * on by the user)
+     */
     onSelectionChange?: (...args: any[]) => any;
+
+    /**
+     * Callback will be called with a legend item is highlighted (i.e. it is hovered
+     * over by the user)
+     */
     onHighlightChange?: (...args: any[]) => any;
 };
 

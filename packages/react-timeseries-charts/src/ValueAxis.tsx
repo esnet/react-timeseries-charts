@@ -11,10 +11,30 @@
 import * as React from "react";
 
 export type ValueAxisProps = {
+    /**
+     * If values are numbers, use this format string
+     */
     value?: string | number;
+
+    /**
+     * Use this to show what units are being used. It will appear below
+     * the value.
+     */
     detail?: string;
+    
+    /**
+     * The width of the axis
+     */
     width?: number;
+
+    /**
+     * [Internal] The height of the axis
+     */
     height?: number;
+
+    /**
+     * Show or hide this
+     */
     visible?: boolean;
 };
 

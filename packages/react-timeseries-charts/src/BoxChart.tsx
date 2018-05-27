@@ -190,23 +190,138 @@ function getAggregatedSeries(
 }
 
 export type BoxChartProps = ChartProps & {
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * data to visualize. See general notes on the BoxChart.
+     */
     series?: TimeSeries<Index> | TimeSeries<Time>;
+
+    /**
+     * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
+     * works on just a single column.
+     */
     column?: string;
+
+    /**
+     * The aggregation specification. This object should contain:
+     *   - innerMax
+     *   - innerMin
+     *   - outerMax
+     *   - outerMin
+     *   - center
+     * Though each of the pairs, and center, is optional.
+     * For each of these keys you should supply the function you
+     * want to use to calculate these. You can import common functions
+     * from Pond, e.g. min(), avg(), percentile(95), etc.
+     *
+     * For example:
+     * ```
+     *     {
+     *       size: this.state.rollup,
+     *       reducers: {
+     *         outer: [min(), max()],
+     *         inner: [percentile(25), percentile(75)],
+     *         center: median(),
+     *       },
+     *     }
+     * ```
+     */
     aggregation?: AggregationSpec;
+
+    /**
+     * The style of the box chart drawing (using SVG CSS properties) or
+     * a styler object. It is recommended to user the styler unless you need
+     * detailed customization.
+     */
     style?: BoxChartStyle | ((channel: string) => ChannelStyle) | Styler;
+
+    /**
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
+
     info?: LabelValueList | string;
+
+    /**
+     * The style of the info box and connecting lines
+     */
     infoStyle?: EventMarkerStyle;
+
+    // CHECK
     infoTimeFormat?: ((date: Date) => string) | string;
+
+    /**
+     * The width of the hover info box
+     */
     infoWidth?: number;
+
+    /**
+     * The height of the hover info box
+     */
     infoHeight?: number;
+
+    // CHECK
     infoMarkerRadius?: number;
+
+    /**
+     * If spacing is specified, then the boxes will be separated from the
+     * timerange boundary by this number of pixels. Use this to space out
+     * the boxes from each other. Inner and outer boxes are controlled
+     * separately.
+     */
     innerSpacing?: number;
+
+    /**
+     * If spacing is specified, then the boxes will be separated from the
+     * timerange boundary by this number of pixels. Use this to space out
+     * the boxes from each other. Inner and outer boxes are controlled
+     * separately.
+     */
     outerSpacing?: number;
+
+    /**
+     * If size is specified, then the innerBox will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     innerSize?: number;
+
+    /**
+     * If size is specified, then the outer box will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     outerSize?: number;
+
+    /**
+     * The selected item, which will be rendered in the "selected" style.
+     * If a bar is selected, all other bars will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected?: Event<Index>;
+
+    /**
+     * The highlighted item, which will be rendered in the "highlighted" style.
+     *
+     * See also `onHighlightChange`
+     */
     highlighted?: Event<Index>;
+
+    /**
+     * Show or hide this chart
+     */
+    visible: boolean;
+
+    /**
+     * A callback that will be called when the selection changes. It will be called
+     * with the event corresponding to the box clicked as its only arg.
+     */
     onSelectionChange?: (e: Event<Index>) => any;
+
+    /**
+     * A callback that will be called when the hovered over box changes.
+     * It will be called with the event corresponding to the box hovered over.
+     */
     onHighlightChange?: (e: Event<Index>) => any;
 };
 

@@ -111,19 +111,80 @@ const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" 
 };
 
 export type EventMarkerProps = ChartProps & {
+    /**
+     * What [Pond Event](https://esnet-pondjs.appspot.com/#/event) to mark
+     */
     event: Event<Key>;
+
+    /**
+     * Which column in the Event to use
+     */
     column?: string;
+
     type?: "point" | "flag";
+
+    /**
+     * The values to show in the info box. This is either an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box, or a simple string label. If this
+     * prop is not supplied, no infoBox will be displayed.
+     */
     info?: LabelValueList | string;
+
+    /**
+     * The style of the info box itself. Typically you'd want to
+     * specify a fill color, and stroke color/width here.
+     */
     style?: EventMarkerStyle;
+
+    /**
+     * The width of the info box
+     */
     infoWidth?: number;
+
+    /**
+     * The height of the info box
+     */
     infoHeight?: number;
+
+    /**
+     * Alter the format of the timestamp shown on the info box.
+     * This may be either a function or a string. If you provide a function
+     * that will be passed an Index and should return a string. For example:
+     * ```
+     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * ```
+     * Alternatively you can pass in a d3 format string. That will be applied
+     * to the begin time of the Index range.
+     */
     infoTimeFormat?: ((date: Date) => string) | string;
+
     markerLabel?: string;
+
+    /**
+     * Show a label to the left, right, top or bottom of the marker
+     */
     markerLabelAlign?: "left" | "right" | "top" | "bottom";
+
+    /**
+     * The radius of the dot at the end of the marker
+     */
     markerRadius?: number;
+
+    /**
+     * The y value is calculated by the column and event, but if
+     * this prop is provided this will be used instead.
+     */
     yValueFunc?: (...args: any[]) => any;
+
+    /**
+     * Offset the marker position in the x direction.
+     */
     offsetX?: number;
+
+    /**
+     * Offset the marker position in the y direction
+     */
     offsetY?: number;
 };
 

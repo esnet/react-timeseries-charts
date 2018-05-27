@@ -11,7 +11,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-import { TimeSeries, Time, Event, Key, indexedEvent } from "pondjs";
+import { TimeSeries, Time, Event, Key, indexedEvent, Index } from "pondjs";
 
 import { ChartProps } from "./Charts";
 import { EventMarker, EventMarkerProps } from "./EventMarker";
@@ -26,31 +26,170 @@ import {
 import { LabelValueList } from "./types";
 
 export type BarChartProps = ChartProps & {
+    /**
+     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * data to visualize
+     */
     series: TimeSeries<Key>;
+
+    /**
+     * The distance in pixels to inset the bar chart from its actual timerange
+     */
     spacing?: number;
+
+    /**
+     * The distance in pixels to offset the bar from its center position within the timerange
+     * it represents
+     */
     offset?: number;
+
+    /**
+     * A list of columns within the series that will be stacked on top of each other
+     */
     columns?: string[];
+
+    /**
+     * The style of the bar chart drawing (using SVG CSS properties).
+     * This is an object with a key for each column which is being drawn,
+     * per the `columns` prop. For each column a style is defined for
+     * each state the bar may be in. This style is the CSS properties for
+     * the underlying SVG <Rect>, so most likely you'll define fill and
+     * opacity.
+     *
+     * For example:
+     * ```
+     * style = {
+     *     columnName: {
+     *         bar: {
+     *             normal: {
+     *                 fill: "steelblue",
+     *                 opacity: 0.8,
+     *             },
+     *             highlighted: {
+     *                 fill: "#a7c4dd",
+     *                 opacity: 1.0,
+     *             },
+     *             selected: {
+     *                 fill: "orange",
+     *                 opacity: 1.0,
+     *             },
+     *             muted: {
+     *                 fill: "grey",
+     *                 opacity: 0.5
+     *             }
+     *          }
+     *     }
+     * }
+     * ```
+     *
+     * You can also supply a function, which will be called with an event
+     * and column. The function should return an object containing the
+     * four states (normal, highlighted, selected and muted) and the corresponding
+     * CSS properties.
+     */
     style?: BarChartStyle | ((column: string) => BarChartChannelStyle) | Styler;
+
+    /**
+     * The values to show in the info box. This is an array of
+     * objects, with each object specifying the label and value
+     * to be shown in the info box.
+     */
     info?: LabelValueList | string;
+
+    /**
+     * The style of the info box itself. Typically you'd want to
+     * specify a fill color, and stroke color / width here.
+     */
     infoStyle?: EventMarkerStyle;
+
+    /**
+     * The width of the info box
+     */
     infoWidth?: number;
+
+    /**
+     * The height of the info box
+     */
     infoHeight?: number;
+
+    /**
+     * Alter the format of the timestamp shown on the info box.
+     * This may be either a function or a string. If you provide a function
+     * that will be passed an Index and should return a string. For example:
+     * ```
+     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * ```
+     * Alternatively you can pass in a d3 format string. That will be applied
+     * to the begin time of the Index range.
+     */
+    
+    // CHECK - Any?
     infoTimeFormat?: string | ((...args: any[]) => any);
+
+    /**
+     * The radius of the infoBox dot at the end of the marker
+     */
     markerRadius?: number;
+
+    /**
+     * The style of the infoBox dot at the end of the marker
+     */
     markerStyle?: EventMarkerStyle;
+
     stemStyle?: EventMarkerStyle;
+
+    /**
+     * If size is specified, then the bar will be this number of pixels wide. This
+     * prop takes priority over "spacing".
+     */
     size?: number;
+    
+    /**
+     * Show or hide this chart
+     */
     visible?: boolean;
+
+    /**
+     * The minimum height of a bar given in pixels.
+     * By default, the minimum height of a bar is 1 pixel
+     */
     minBarHeight?: number;
+
+    /**
+     * The selected item, which will be rendered in the "selected" style.
+     * If a bar is selected, all other bars will be rendered in the "muted" style.
+     *
+     * See also `onSelectionChange`
+     */
     selected?: {
-        event?: any;
+        event?: Event<Index>;
         column?: string;
     };
+
+    /**
+     * A callback that will be called when the selection changes. It will be called
+     * with an object containing the event and column.
+     */
+
+    // CHECK - any?
     onSelectionChange?: (...args: any[]) => any;
+
+    /**
+     * The highlighted item, which will be rendered in the "highlighted" style.
+     *
+     * See also `onHighlightChange`
+     */
     highlighted?: {
         event?: any;
         column?: string;
     };
+
+    /**
+     * A callback that will be called when the hovered over bar changes.
+     * It will be called with an object containing the event and column.
+     */
+
+    // CHECK - any?
     onHighlightChange?: (...args: any[]) => any;
 };
 

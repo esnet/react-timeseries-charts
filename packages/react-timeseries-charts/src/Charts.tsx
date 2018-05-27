@@ -45,12 +45,33 @@ export type AxisProps = {
 //
 
 export type ChartProps = {
+    // CHECK - add description
     key?: string | number;
+
+    /**
+     * [Internal] The width supplied by the surrounding ChartContainer
+     */
     width?: number;
+
+    /**
+     * [Internal] The height supplied by the surrounding ChartContainer
+     */
     height?: number;
+
+    /**
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
     timeScale?: ScaleTime<number, number>;
+
+    /**
+     * [Internal] The yScale supplied by the associated YAxis
+     */
     yScale?: ScalerFunction;
+
+    // CHECK - add description
     timeFormat?: string;
+
+    // CHECK - add description
     transition?: number;
 };
 
