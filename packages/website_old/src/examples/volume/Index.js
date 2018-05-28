@@ -136,10 +136,9 @@ class volume extends React.Component {
             timerange: octoberTrafficSeries.range(),
             selection: null
         };
-        this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this);
     }
 
-    handleTimeRangeChange(timerange) {
+    handleTimeRangeChange = timerange => {
         this.setState({ timerange });
     }
 
@@ -221,7 +220,6 @@ class volume extends React.Component {
 
         return (
             <div>
-
                 <div className="row">
                     <div className="col-md-12">
                         <b>October 2014 Total Traffic</b>
@@ -237,7 +235,7 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
-                                utc={false}
+                                timezone={"local"}
                                 timeRange={this.state.timerange}
                                 format="day"
                                 enablePanZoom={true}
@@ -403,11 +401,8 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <hr />
                         BarChart can display negative values as well, as shown below for a stacked format.
-
                         Note that all bars representing positive values are stacked together above the
-
                         x-axis and the bars for negative values are stacked below the x-axis.
-
                         <hr />
                     </div>
                 </div>

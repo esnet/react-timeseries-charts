@@ -117,7 +117,8 @@ class climate extends React.Component {
         const max = 1.0;
 
         const axisStyle = {
-            labels: {
+            // labels:
+            values: {
                 labelColor: "grey", // Default label color
                 labelWeight: 100,
                 labelSize: 11

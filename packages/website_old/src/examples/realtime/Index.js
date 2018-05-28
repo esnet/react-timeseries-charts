@@ -33,17 +33,14 @@ const hours = 60 * minute;
 const rate = 80;
 
 class realtime extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            time: new Date(2015, 0, 1),
-            events: new Ring(200),
-            percentile50Out: new Ring(100),
-            percentile90Out: new Ring(100)
-        };
-    }
+    state = {
+        time: new Date(2015, 0, 1),
+        events: new Ring(200),
+        percentile50Out: new Ring(100),
+        percentile90Out: new Ring(100)
+    };
 
-    getNewEvent(t) {
+    getNewEvent = t => {
         const base = Math.sin(t.getTime() / 10000000) * 350 + 500;
         return timeEvent(time(t), Immutable.Map({ value: parseInt(base + Math.random() * 1000, 10)}));
     }

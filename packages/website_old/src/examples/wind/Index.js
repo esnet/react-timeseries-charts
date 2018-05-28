@@ -62,17 +62,15 @@ class wind extends React.Component {
             selection: null,
             timerange: series.range()
         };
-        // this.handleMouseNear = this.handleMouseNear.bind(this);
-        // this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
     }
 
-    handleSelectionChanged(point) {
+    handleSelectionChanged = point => {
         this.setState({
             selection: point
         });
     }
 
-    handleMouseNear(point) {
+    handleMouseNear = point => {
         this.setState({
             highlight: point
         });
@@ -130,9 +128,18 @@ class wind extends React.Component {
             };
         };
 
+        const timeAxisStyle = {
+            values: { valueColor: "Green", valueWeight: 200, valueSize: 12 }
+        };
+
+        const YAxisStyle = {
+            axis: { axisColor: "#C0C0C0" },
+            label: { labelColor: "Blue", labelWeight: 100, labelSize: 12 },
+            values: { valueSize: 12 }
+        };
+
         return (
             <div>
-
                 <div className="row">
                     <div className="col-md-12">
                         {text}
@@ -146,6 +153,9 @@ class wind extends React.Component {
                         <Resizable>
                             <ChartContainer
                                 timeRange={this.state.timerange}
+                                timeAxisStyle={timeAxisStyle}
+                                maxTime={series.range().end()}
+                                minTime={series.range().begin()}
                                 enablePanZoom={true}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 onTimeRangeChanged={timerange => this.setState({ timerange })}
@@ -157,6 +167,7 @@ class wind extends React.Component {
                                         labelOffset={-5}
                                         min={0}
                                         max={series.max("station1")}
+                                        style={YAxisStyle}
                                         width="70"
                                         type="linear"
                                         format=",.1f"
@@ -188,7 +199,6 @@ class wind extends React.Component {
                         </Resizable>
                     </div>
                 </div>
-
             </div>
         );
     }

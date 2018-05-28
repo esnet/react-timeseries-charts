@@ -56,28 +56,46 @@ const style = styler([
 ]);
 
 class ddos extends React.Component {
+    state = {
+        max: 6000,
+        active: {
+            requests: true,
+            connections: true
+        },
+        timerange: requestsSeries.range()
+    };
+
     constructor(props) {
         super(props);
-        this.state = {
-            active: {
-                requests: true,
-                connections: true
-            }
-        };
-        this.handleActiveChange = this.handleActiveChange.bind(this);
+        this.handleRescale = _.debounce(this.rescale, 300);
     }
 
-    handleActiveChange(key) {
+    rescale(timerange, active = this.state.active) {
+        let max = 100;
+        const maxRequests = requestsSeries.crop(this.state.timerange).max("requests");
+        if (maxRequests > max && active.requests) max = maxRequests;
+        const maxConnections = connectionsSeries.crop(this.state.timerange).max("connections");
+        if (maxConnections > max && active.connections) max = maxConnections;
+        this.setState({ max });
+    }
+    
+    handleTimeRangeChange = timerange => {
+        this.setState({ timerange });
+        this.handleRescale(timerange);
+    };
+
+    handleActiveChange = key => {
         const active = this.state.active;
         active[key] = !active[key];
         this.setState({ active });
+        this.handleRescale(this.state.timerange, active);
     }
 
-    renderChart() {
+    renderChart = () => {
         let charts = [];
         let max = 100;
         if (this.state.active.requests) {
-            const maxRequests = requestsSeries.max("requests");
+            const maxRequests = requestsSeries.crop(this.state.timerange).max("requests");
             if (maxRequests > max) max = maxRequests;
             charts.push(
                 <LineChart
@@ -91,7 +109,7 @@ class ddos extends React.Component {
             );
         }
         if (this.state.active.connections) {
-            const maxConnections = connectionsSeries.max("connections");
+            const maxConnections = connectionsSeries.crop(this.state.timerange).max("connections");
             if (maxConnections > max) max = maxConnections;
             charts.push(
                 <LineChart
@@ -106,7 +124,8 @@ class ddos extends React.Component {
         }
 
         const axisStyle = {
-            labels: {
+            // labels
+            values: {
                 labelColor: "grey", // Default label color
                 labelWeight: 100,
                 labelSize: 11
@@ -117,36 +136,83 @@ class ddos extends React.Component {
             }
         };
 
-        const requestsAxisStyle = merge(true, axisStyle, style.axisStyle("requests"));
-        const connectionsAxisStyle = merge(true, axisStyle, style.axisStyle("connections"));
-
+        const darkAxis = {
+            label: {
+                stroke: "none",
+                fill: "#AAA", // Default label color
+                fontWeight: 200,
+                fontSize: 14,
+                font: '"Goudy Bookletter 1911", sans-serif"'
+            },
+            values: {
+                stroke: "none",
+                fill: "#888",
+                fontWeight: 100,
+                fontSize: 11,
+                font: '"Goudy Bookletter 1911", sans-serif"'
+            },
+            ticks: {
+                fill: "none",
+                stroke: "#AAA",
+                opacity: 0.2
+            },
+            axis: {
+                fill: "none",
+                stroke: "#AAA",
+                opacity: 1
+            }
+        };
+        
         return (
-            <ChartContainer timeRange={requestsSeries.range()} timeAxisStyle={axisStyle}>
+            <ChartContainer
+                title="DDoS attack - connections vs requests"
+                style={{
+                    background: "#201d1e",
+                    borderRadius: 8,
+                    borderStyle: "solid",
+                    borderWidth: 1,
+                    borderColor: "#232122"
+                }}
+                timeAxisStyle={darkAxis}
+                titleStyle={{
+                    color: "#EEE",
+                    fontWeight: 500
+                }}
+                padding={20}
+                paddingTop={5}
+                paddingBottom={0}
+                enableDragZoom
+                onTimeRangeChanged={this.handleTimeRangeChange}
+                timeRange={this.state.timerange}
+                maxTime={requestsSeries.range().end()}
+                minTime={requestsSeries.range().begin()}
+            >
                 <ChartRow height="300">
                     <YAxis
                         id="axis1"
                         label="Requests"
+                        showGrid
+                        hideAxisLine
                         transition={300}
-                        style={requestsAxisStyle}
+                        style={darkAxis}
                         labelOffset={-10}
                         min={0}
-                        max={max}
+                        max={this.state.max}
                         format=",.0f"
                         width="60"
                         type="linear"
                     />
-                    <Charts>
-                        {charts}
-                    </Charts>
+                    <Charts>{charts}</Charts>
                     <YAxis
                         id="axis2"
                         label="Connections"
+                        hideAxisLine
                         transition={300}
-                        style={connectionsAxisStyle}
+                        style={darkAxis}
                         labelOffset={12}
                         min={0}
                         format=",.0f"
-                        max={max}
+                        max={this.state.max}
                         width="80"
                         type="linear"
                     />

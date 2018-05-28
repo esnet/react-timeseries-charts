@@ -14,7 +14,7 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { timeSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable } from "react-timeseries-charts";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, LineChart, ScatterChart, Resizable, Legend } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";
@@ -160,7 +160,7 @@ class weather extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
-                                utc={this.state.mode === "utc"}
+                                timezone={this.state.mode === "utc" ? "Etc/UTC" : "local"}
                                 timeRange={tempSeries.timerange()}
                                 showGrid={true}
                                 showGridPosition="under"
@@ -171,12 +171,12 @@ class weather extends React.Component {
 
                                 <ChartRow height="150">
                                     <YAxis
-                                        id="temp"
-                                        label="Temperature (°F)"
-                                        labelOffset={-5}
-                                        style={style.axisStyle("temp")}
-                                        min={50}
-                                        max={70}
+                                        id="pressure"
+                                        label="Pressure (in)"
+                                        labelOffset={5}
+                                        style={style.axisStyle("pressure")}
+                                        min={29.5}
+                                        max={30.0}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
@@ -196,32 +196,30 @@ class weather extends React.Component {
                                         />
                                     </Charts>
                                     <YAxis
-                                        id="pressure"
-                                        label="Pressure (in)"
-                                        labelOffset={5}
-                                        style={style.axisStyle("pressure")}
-                                        min={29.5}
-                                        max={30.0}
+                                        id="temp"
+                                        label="Temperature (°F)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("temp")}
+                                        min={50}
+                                        max={70}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
                                     />
-
                                 </ChartRow>
 
                                 <ChartRow height="150">
                                     <YAxis
-                                        id="wind-gust"
-                                        label="Wind gust (mph)"
-                                        labelOffset={-5}
-                                        style={style.axisStyle("gust")}
+                                        id="wind"
+                                        label="Wind (mph)"
+                                        labelOffset={5}
+                                        style={{ labelColor: scheme.wind }}
                                         min={0}
                                         max={50}
                                         width="80"
                                         type="linear"
                                         format=",.1f"
                                     />
-
                                     <Charts>
                                         <LineChart
                                             axis="wind"
@@ -240,12 +238,11 @@ class weather extends React.Component {
                                             }}
                                         />
                                     </Charts>
-
                                     <YAxis
-                                        id="wind"
-                                        label="Wind (mph)"
-                                        labelOffset={5}
-                                        style={{ labelColor: scheme.wind }}
+                                        id="wind-gust"
+                                        label="Wind gust (mph)"
+                                        labelOffset={-5}
+                                        style={style.axisStyle("gust")}
                                         min={0}
                                         max={50}
                                         width="80"
@@ -294,9 +291,24 @@ class weather extends React.Component {
                                         format=",.2f"
                                     />
                                 </ChartRow>
-
                             </ChartContainer>
                         </Resizable>
+                    </div>
+                    <div className="col-md-2">
+                        <Legend
+                            type="line"
+                            align="right"
+                            stack={true}
+                            style={style}
+                            categories={[
+                                { key: "temp", label: "Temperature" },
+                                { key: "pressure", label: "Pressure" },
+                                { key: "wind", label: "Wind speed" },
+                                { key: "gust", label: "Gust speed", symbolType: "dot" },
+                                { key: "rain", label: "Rainfall", symbolType: "swatch" },
+                                { key: "rainAccum", label: "Accumulated rainfall" }
+                            ]}
+                        />
                     </div>
                 </div>
             </div>
