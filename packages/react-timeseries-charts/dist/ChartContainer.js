@@ -16,8 +16,8 @@ var TimeMarker_1 = require("./TimeMarker");
 var Info_1 = require("./Info");
 var defaultTimeAxisStyle = {
     axis: {
-        fill: "none",
-        stroke: "#C0C0C0",
+        fill: "#C0C0C0",
+        stroke: "none",
         pointerEvents: "none"
     }
 };
@@ -209,8 +209,8 @@ var ChartContainer = (function (_super) {
         }
         var timeAxisStyle = _.merge(true, defaultTimeAxisStyle.axis, this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {});
         var xStyle = {
-            stroke: this.props.timeAxisStyle.axis.axisColor,
-            strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
+            stroke: this.props.timeAxisStyle.axis.stroke,
+            strokeWidth: this.props.timeAxisStyle.axis.strokeWidth,
             fill: "none",
             pointerEvents: "none"
         };
@@ -218,7 +218,7 @@ var ChartContainer = (function (_super) {
         var timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
         var timeAxis = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight + chartsHeight) + ")" },
             React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: chartsWidth + rightWidth, y2: 0.5, style: xStyle }),
-            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: xStyle, format: this.props.timeFormat })));
+            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: timeAxisStyle, format: this.props.timeFormat })));
         var rows = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
             React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;
@@ -243,7 +243,7 @@ var ChartContainer = (function (_super) {
         padding: 0,
         enablePanZoom: false,
         enableDragZoom: false,
-        timezone: "Etc/UTC",
+        timezone: "local",
         showGrid: false,
         showGridPosition: ShowGridPosition.Over,
         timeAxisStyle: defaultTimeAxisStyle

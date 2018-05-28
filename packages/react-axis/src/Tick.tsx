@@ -63,6 +63,7 @@ export class Tick extends React.Component<TickProps> {
         const dx = angled ? "-1.2em" : "0em";
         const dy = "0em";
 
+        console.log("this.props render Label ", this.props);
         if (labelAlign === "adjacent") {
             const x = 2;
             const y = isTop ? -6 : 6;
@@ -176,6 +177,7 @@ export class Tick extends React.Component<TickProps> {
         );
     }
     render() {
+        console.log("tick.tsx");
         const {
             id,
             label,

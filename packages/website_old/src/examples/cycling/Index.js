@@ -16,8 +16,8 @@ import moment from "moment";
 import _ from "underscore";
 import React from "react";
 import { format } from "d3-format";
-import { avg, filter, percentile, median, timeSeries, timerange, window, duration, TimeRange } from "pondjs";
-import styler, { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, TimeMarker, ValueAxis, YAxis, Legend } from "react-timeseries-charts";
+import { avg, percentile, median, timeSeries, window, duration, TimeRange } from "pondjs";
+import styler, { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, ValueAxis, YAxis, Legend } from "react-timeseries-charts";
 
 import cycling_docs from "./cycling_docs.md";
 import cycling_thumbnail from "./cycling_thumbnail.png";

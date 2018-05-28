@@ -33,8 +33,8 @@ import { ScalerFunction } from "./interpolators";
 // CHECK - fix this
 const defaultTimeAxisStyle = {
     axis: {
-        fill: "none",
-        stroke: "#C0C0C0",
+        fill: "#C0C0C0",
+        stroke: "none",
         pointerEvents: "none"
     }
 };
@@ -311,7 +311,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         padding: 0,
         enablePanZoom: false,
         enableDragZoom: false,
-        timezone: "Etc/UTC",
+        timezone: "local",
         showGrid: false,
         showGridPosition: ShowGridPosition.Over,
         timeAxisStyle: defaultTimeAxisStyle
@@ -620,8 +620,8 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         );
 
         const xStyle: React.CSSProperties = {
-            stroke: this.props.timeAxisStyle.axis.axisColor,
-            strokeWidth: this.props.timeAxisStyle.axis.axisWidth,
+            stroke: this.props.timeAxisStyle.axis.stroke,
+            strokeWidth: this.props.timeAxisStyle.axis.strokeWidth,
             fill: "none",
             pointerEvents: "none"
         };
@@ -664,7 +664,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                     margin={0}
                     height={50}
                     tickExtend={gridHeight}
-                    textStyle={xStyle}
+                    textStyle={timeAxisStyle}
                     format={this.props.timeFormat}
                 />
             </g>

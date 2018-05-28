@@ -13,7 +13,6 @@
 import React from "react";
 import _ from "underscore";
 import moment from "moment";
-import merge from "merge";
 import { timeSeries } from "pondjs";
 import styler, { ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, Legend } from "react-timeseries-charts";
 

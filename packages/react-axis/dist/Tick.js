@@ -30,6 +30,7 @@ var Tick = (function (_super) {
         var rotate = angled ? "rotate(-65)" : "rotate(0)";
         var dx = angled ? "-1.2em" : "0em";
         var dy = "0em";
+        console.log("this.props render Label ", this.props);
         if (labelAlign === "adjacent") {
             var x = 2;
             var y = isTop ? -6 : 6;
@@ -82,6 +83,7 @@ var Tick = (function (_super) {
             React.createElement("text", { key: "label-" + label, className: "tick-label", style: textStyle, transform: rotate, textAnchor: isLeft ? "end" : "begin", alignmentBaseline: "middle", x: isLeft ? -size - 3 : size + 3, y: 0, dx: dx, dy: dy }, label)));
     };
     Tick.prototype.render = function () {
+        console.log("tick.tsx");
         var _a = this.props, id = _a.id, label = _a.label, width = _a.width, height = _a.height, position = _a.position, _b = _a.size, size = _b === void 0 ? 10 : _b, _c = _a.extend, extend = _c === void 0 ? 0 : _c, _d = _a.align, align = _d === void 0 ? "top" : _d, _e = _a.smoothTransition, smoothTransition = _e === void 0 ? false : _e;
         var shouldTransition = false;
         var transition = "transform 100ms";

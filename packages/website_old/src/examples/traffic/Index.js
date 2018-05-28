@@ -14,8 +14,8 @@ import React from "react";
 import _ from "underscore";
 import { format } from "d3-format";
 
-import { TimeSeries, timeSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, MultiBrush, TimeRange } from "react-timeseries-charts";
+import { TimeSeries, timeSeries, TimeRange } from "pondjs";
+import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, MultiBrush } from "react-timeseries-charts";
 
 import traffic_docs from "./traffic_docs.md";
 import traffic_thumbnail from "./traffic_thumbnail.png";
