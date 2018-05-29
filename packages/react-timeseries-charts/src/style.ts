@@ -430,3 +430,39 @@ export const defaultLegendCategoryStyle: CategoryStyle = {
         muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
     }
 };
+
+// 
+// TimeAxis
+//
+
+export type TimeAxisChannelStyle = {
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+    axis: React.CSSProperties;
+    label: React.CSSProperties;
+};
+
+export type TimeAxisStyle = { [channel: string]: TimeAxisChannelStyle };
+
+export const defaultTimeAxisStyle: TimeAxisChannelStyle = {
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E", // Default value color
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        stroke: "#AAA", 
+        strokeWidth: 1
+    },
+    label: {
+        fill: "grey",
+        stroke: "none",
+        pointerEvents: "none"
+    }
+};

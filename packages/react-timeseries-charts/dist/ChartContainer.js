@@ -14,12 +14,11 @@ var EventHandler_1 = require("./EventHandler");
 var MultiBrush_1 = require("./MultiBrush");
 var TimeMarker_1 = require("./TimeMarker");
 var Info_1 = require("./Info");
-var defaultTimeAxisStyle = {
-    axis: {
-        fill: "#C0C0C0",
-        stroke: "none",
-        pointerEvents: "none"
-    }
+var style_1 = require("./style");
+var defaultChartAxisStyle = {
+    fill: "none",
+    stroke: "#C0C0C0",
+    pointerEvents: "none"
 };
 var defaultTitleStyle = {
     fontWeight: 100,
@@ -207,18 +206,13 @@ var ChartContainer = (function (_super) {
             tracker = (React.createElement("g", { key: "tracker-group", style: { pointerEvents: "none" }, transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
                 React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
         }
-        var timeAxisStyle = _.merge(true, defaultTimeAxisStyle.axis, this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {});
-        var xStyle = {
-            stroke: this.props.timeAxisStyle.axis.stroke,
-            strokeWidth: this.props.timeAxisStyle.axis.strokeWidth,
-            fill: "none",
-            pointerEvents: "none"
-        };
+        var timeAxisStyle = _.merge(true, style_1.defaultTimeAxisStyle, this.props.timeAxisStyle ? this.props.timeAxisStyle : {});
+        var chartAxisStyle = _.merge(true, defaultChartAxisStyle, this.props.chartAxisStyle ? this.props.chartAxisStyle : {});
         var gridHeight = this.props.showGrid ? chartsHeight : 0;
         var timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
         var timeAxis = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight + chartsHeight) + ")" },
-            React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: chartsWidth + rightWidth, y2: 0.5, style: xStyle }),
-            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, textStyle: timeAxisStyle, format: this.props.timeFormat })));
+            React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: chartsWidth + rightWidth, y2: 0.5, style: chartAxisStyle }),
+            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, style: timeAxisStyle, format: this.props.timeFormat, angled: this.props.timeAxisAngledLabels })));
         var rows = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
             React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;
@@ -246,7 +240,7 @@ var ChartContainer = (function (_super) {
         timezone: "local",
         showGrid: false,
         showGridPosition: ShowGridPosition.Over,
-        timeAxisStyle: defaultTimeAxisStyle
+        chartAxisStyle: defaultChartAxisStyle
     };
     return ChartContainer;
 }(React.Component));

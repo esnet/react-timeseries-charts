@@ -1,5 +1,9 @@
 /// <reference types="react" />
 import * as React from "react";
+export declare type TickStyle = {
+    axis: React.CSSProperties;
+    values: React.CSSProperties;
+};
 export declare type TickProps = {
     id: string;
     label: string;
@@ -12,15 +16,14 @@ export declare type TickProps = {
     width: number;
     height: number;
     smoothTransition?: boolean;
-    extend?: number;
-    textStyle?: React.CSSProperties;
     angled?: boolean;
+    style?: TickStyle;
 };
 export declare class Tick extends React.Component<TickProps> {
-    constructor(props: TickProps);
     static defaultProps: Partial<TickProps>;
-    renderLabel(label: string, isTop: boolean, tickSize: number): JSX.Element;
-    renderVerticalTick(id: string, label: string, labelPosition: number, size: number, extend: number, isTop: boolean): JSX.Element;
-    renderHorizontalTick(id: string, label: string, labelPosition: number, size: number, extend: number, isLeft: boolean): JSX.Element;
+    constructor(props: TickProps);
+    renderLabel(label: string, isTop: boolean, isLeft: boolean, tickSize: number, direction: string): JSX.Element;
+    renderVerticalTick(id: string, label: string, labelPosition: number, size: number, tickExtend: number, isTop: boolean): JSX.Element;
+    renderHorizontalTick(id: string, label: string, labelPosition: number, size: number, tickExtend: number, isLeft: boolean): JSX.Element;
     render(): JSX.Element;
 }

@@ -95,7 +95,7 @@ var Axis = (function (_super) {
             var absolute = _this.props.absolute;
             var formatter = function (d) { return (absolute ? d3Format(Math.abs(d)) : d3Format(d)); };
             var label = formatter(tickValue);
-            return (React.createElement(Tick_1.Tick, { id: "tick-" + tickIndex, key: tickValue, align: _this.props.position, label: label, labelAlign: "center", position: tickPosition, size: _this.props.tickSize, extend: _this.props.tickExtend, width: _this.props.width, height: _this.props.height, angled: _this.props.angled }));
+            return (React.createElement(Tick_1.Tick, { id: "tick-" + tickIndex, key: tickValue, align: _this.props.position, label: label, labelAlign: "center", position: tickPosition, size: _this.props.tickSize, tickExtend: _this.props.tickExtend, width: _this.props.width, height: _this.props.height, angled: _this.props.angled }));
         });
     };
     Axis.prototype.renderAxis = function () {

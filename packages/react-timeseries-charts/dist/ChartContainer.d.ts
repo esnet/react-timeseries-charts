@@ -3,6 +3,7 @@ import * as React from "react";
 import { TimeRange } from "pondjs";
 import { ChartProps } from "./Charts";
 import { LabelValueList } from "./types";
+import { TimeAxisStyle } from "./style";
 import { ScaleTime } from "d3-scale";
 export declare type StyleTargets = {
     labels: any;
@@ -24,8 +25,9 @@ export declare type ChartContainerProps = ChartProps & {
     minTime?: Date;
     maxTime?: Date;
     timeFormat?: string | ((d: Date) => string);
-    timeAxisStyle?: any;
+    timeAxisStyle?: TimeAxisStyle;
     timeAxisAngledLabels?: boolean;
+    chartAxisStyle?: any;
     enablePanZoom?: boolean;
     enableDragZoom?: boolean;
     minDuration?: number;

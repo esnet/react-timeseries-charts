@@ -81,3 +81,13 @@ export declare type LegendStyle = {
     [key: string]: CategoryStyle;
 };
 export declare const defaultLegendCategoryStyle: CategoryStyle;
+export declare type TimeAxisChannelStyle = {
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+    axis: React.CSSProperties;
+    label: React.CSSProperties;
+};
+export declare type TimeAxisStyle = {
+    [channel: string]: TimeAxisChannelStyle;
+};
+export declare const defaultTimeAxisStyle: TimeAxisChannelStyle;

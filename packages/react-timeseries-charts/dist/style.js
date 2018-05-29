@@ -132,4 +132,26 @@ exports.defaultLegendCategoryStyle = {
         muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
     }
 };
+exports.defaultTimeAxisStyle = {
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        stroke: "#AAA",
+        strokeWidth: 1
+    },
+    label: {
+        fill: "grey",
+        stroke: "none",
+        pointerEvents: "none"
+    }
+};
 //# sourceMappingURL=style.js.map

@@ -198,7 +198,7 @@ export class Axis extends React.Component<AxisProps> {
                     labelAlign="center"
                     position={tickPosition}
                     size={this.props.tickSize}
-                    extend={this.props.tickExtend}
+                    tickExtend={this.props.tickExtend}
                     width={this.props.width}
                     height={this.props.height}
                     angled={this.props.angled}

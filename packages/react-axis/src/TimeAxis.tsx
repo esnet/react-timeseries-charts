@@ -72,6 +72,36 @@ const tickIntervals = [
     [500 * durationYear, "year", 250]
 ];
 
+const defaultTimeAxisStyle: TimeAxisStyle = {
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E", // Default value color
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        stroke: "#AAA", 
+        strokeWidth: 1
+    },
+    label: {
+        fill: "grey",
+        stroke: "none",
+        pointerEvents: "none"
+    }
+};
+
+export type TimeAxisStyle = {
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+    axis: React.CSSProperties;
+    label: React.CSSProperties;
+};
+
 export type TimeAxisProps = {
     standalone: boolean;
     beginTime: Date;
@@ -95,6 +125,7 @@ export type TimeAxisProps = {
     timezone?: string;
     transition?: boolean;
     angled?: boolean;
+    style?: TimeAxisStyle;
 };
 
 /**
@@ -140,22 +171,19 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         margin: 10,
         standalone: false,
         labelPosition: 50,
-        labelStyle: {
-            fill: "grey",
-            stroke: "none",
-            pointerEvents: "none"
-        },
-        textStyle: {
-            fill: "grey",
-            stroke: "none",
-            pointerEvents: "none"
-        },
         absolute: false,
         smoothTransition: false,
-        angled: false
+        angled: false,
+        style: defaultTimeAxisStyle
     }
+
     renderAxisLabel() {
-        const { width, height, position, labelPosition, labelStyle } = this.props;
+        const { width, height, position, labelPosition, style } = this.props;
+        const labelStyle = _.merge(
+            true,
+            defaultTimeAxisStyle.label,
+            this.props.style.label ? this.props.style.label : {}
+        );
         let translate;
         let rotate = `rotate(0)`;
         let anchor = "start";
@@ -186,13 +214,19 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             </g>
         );
     }
+
     renderAxisLine() {
         const p = this.props.position;
+        const axisStyle = _.merge(
+            true,
+            defaultTimeAxisStyle.axis,
+            this.props.style.axis ? this.props.style.axis : {}
+        );
         return (
             <line
                 key="axis"
                 className="axis"
-                style={{ stroke: "#AAA", strokeWidth: 2 }}
+                style={axisStyle}
                 x1={this.props.margin}
                 y1={p === "bottom" ? 0 : this.props.height}
                 x2={this.props.width - this.props.margin}
@@ -200,23 +234,28 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             />
         );
     }
+
     renderAxisTicks() {
-        const { textStyle } = this.props;
         let formatter = this.props.format;
         let timezone = this.props.timezone;
+
         // A duration format is relative to UTC for the purposes
         // of tick alignment
         const formatAsDuration = this.props.format === "duration";
         if (formatAsDuration) {
             timezone = "Etc/UTC";
         }
+
         const interval = 5; //this.props.interval
+
         const scale = scaleTime()
             .domain([this.props.beginTime, this.props.endTime])
             .range([this.props.margin, this.props.width - this.props.margin * 2]);
+
         const start = +this.props.beginTime;
         const stop = +this.props.endTime;
         const target = Math.abs(stop - start) / interval;
+
         // Determine the time unit of the spacing of ticks,
         // either because it's explicitly defined as the format
         // (day, month, year, etc), or using our tickInterval
@@ -233,19 +272,36 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             }
         }
         formatter = timeFormatter(type, timezone);
+
         // Formatter will be a function (date) => string, or
         // a string format type. In the case of the string type
         // that might be "duration", or "minutes", "day", etc.
         if (formatAsDuration) {
             formatter = durationFormatter();
         }
+
         const starttz = timezone ? moment(start).tz(timezone) : moment(start);
         const stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);
+
         // We want to align our minor ticks to our major ones.
         // For instance if we are showing 3 hour minor ticks then we
         // want to them to be 12am, 3am, etc (not 11pm, 2am, etc)
         const startd = starttz.startOf(majors[type]).add(num, "type");
         const stopd = stoptz.endOf(type);
+
+        const tickStyle = {
+            axis: _.merge(
+                true,
+                defaultTimeAxisStyle.axis,
+                this.props.style.axis ? this.props.style.axis : {}
+            ),
+            values: _.merge(
+                true,
+                defaultTimeAxisStyle.ticks,
+                this.props.style.values ? this.props.style.values : {}
+            )
+        };
+
         let i = 0;
         let d = startd;
         let ticks = [];
@@ -262,13 +318,13 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
                         label={label}
                         size={size}
                         position={pos}
-                        extend={this.props.tickExtend}
+                        tickExtend={this.props.tickExtend}
                         labelAlign={labelAlign}
                         width={this.props.width}
                         height={this.props.height}
                         smoothTransition={this.props.smoothTransition}
-                        textStyle={this.props.textStyle}
                         angled={this.props.angled}
+                        style={tickStyle}
                     />
                 );
             }
@@ -277,6 +333,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         }
         return ticks;
     }
+
     renderAxis() {
         if (this.props.transition === true) {
             return (

@@ -2,6 +2,12 @@
 import 'moment-timezone';
 import * as React from "react";
 import "./Axis.css";
+export declare type TimeAxisStyle = {
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+    axis: React.CSSProperties;
+    label: React.CSSProperties;
+};
 export declare type TimeAxisProps = {
     standalone: boolean;
     beginTime: Date;
@@ -23,6 +29,7 @@ export declare type TimeAxisProps = {
     timezone?: string;
     transition?: boolean;
     angled?: boolean;
+    style?: TimeAxisStyle;
 };
 export declare class TimeAxis extends React.Component<TimeAxisProps> {
     static defaultProps: {
@@ -35,19 +42,10 @@ export declare class TimeAxis extends React.Component<TimeAxisProps> {
         margin: number;
         standalone: boolean;
         labelPosition: number;
-        labelStyle: {
-            fill: string;
-            stroke: string;
-            pointerEvents: string;
-        };
-        textStyle: {
-            fill: string;
-            stroke: string;
-            pointerEvents: string;
-        };
         absolute: boolean;
         smoothTransition: boolean;
         angled: boolean;
+        style: TimeAxisStyle;
     };
     renderAxisLabel(): JSX.Element;
     renderAxisLine(): JSX.Element;

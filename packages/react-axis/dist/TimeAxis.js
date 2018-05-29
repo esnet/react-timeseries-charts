@@ -65,13 +65,36 @@ var tickIntervals = [
     [100 * durationYear, "year", 100],
     [500 * durationYear, "year", 250]
 ];
+var defaultTimeAxisStyle = {
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        stroke: "#AAA",
+        strokeWidth: 1
+    },
+    label: {
+        fill: "grey",
+        stroke: "none",
+        pointerEvents: "none"
+    }
+};
 var TimeAxis = (function (_super) {
     __extends(TimeAxis, _super);
     function TimeAxis() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TimeAxis.prototype.renderAxisLabel = function () {
-        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, labelStyle = _a.labelStyle;
+        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, style = _a.style;
+        var labelStyle = _.merge(true, defaultTimeAxisStyle.label, this.props.style.label ? this.props.style.label : {});
         var translate;
         var rotate = "rotate(0)";
         var anchor = "start";
@@ -99,10 +122,10 @@ var TimeAxis = (function (_super) {
     };
     TimeAxis.prototype.renderAxisLine = function () {
         var p = this.props.position;
-        return (React.createElement("line", { key: "axis", className: "axis", style: { stroke: "#AAA", strokeWidth: 2 }, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
+        var axisStyle = _.merge(true, defaultTimeAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+        return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
     };
     TimeAxis.prototype.renderAxisTicks = function () {
-        var textStyle = this.props.textStyle;
         var formatter = this.props.format;
         var timezone = this.props.timezone;
         var formatAsDuration = this.props.format === "duration";
@@ -138,6 +161,10 @@ var TimeAxis = (function (_super) {
         var stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);
         var startd = starttz.startOf(majors[type]).add(num, "type");
         var stopd = stoptz.endOf(type);
+        var tickStyle = {
+            axis: _.merge(true, defaultTimeAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {}),
+            values: _.merge(true, defaultTimeAxisStyle.ticks, this.props.style.values ? this.props.style.values : {})
+        };
         var i = 0;
         var d = startd;
         var ticks = [];
@@ -146,7 +173,7 @@ var TimeAxis = (function (_super) {
             var pos = scale(date);
             var _b = formatter(date), label = _b.label, size = _b.size, labelAlign = _b.labelAlign;
             if (+d >= start && +d < stop) {
-                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, extend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition, textStyle: this.props.textStyle, angled: this.props.angled }));
+                ticks.push(React.createElement(Tick_1.Tick, { key: +d, id: "" + i, align: this.props.position, label: label, size: size, position: pos, tickExtend: this.props.tickExtend, labelAlign: labelAlign, width: this.props.width, height: this.props.height, smoothTransition: this.props.smoothTransition, angled: this.props.angled, style: tickStyle }));
             }
             d = d.add(num, type);
             i++;
@@ -185,19 +212,10 @@ var TimeAxis = (function (_super) {
         margin: 10,
         standalone: false,
         labelPosition: 50,
-        labelStyle: {
-            fill: "grey",
-            stroke: "none",
-            pointerEvents: "none"
-        },
-        textStyle: {
-            fill: "grey",
-            stroke: "none",
-            pointerEvents: "none"
-        },
         absolute: false,
         smoothTransition: false,
-        angled: false
+        angled: false,
+        style: defaultTimeAxisStyle
     };
     return TimeAxis;
 }(React.Component));
