@@ -58,6 +58,9 @@ Other parts of this example are similar to other examples, such as the
 use of timerange state to control pan and zoom, and handling of selection.
 Note the use of `onBackgroundClick` on the ChartContainer to deselect any selection.
 
+We also render a `BandChart` to show the outer range from the 5th percentile to the 95th, 
+along with an inner range for the interquantile.
+
 Here is the render code:
 
 ```
@@ -73,6 +76,19 @@ Here is the render code:
             <YAxis id="wind-gust" label="Wind gust (mph)" min={0} max={max} format=",.1f"
             />
             <Charts>
+                <BandChart
+                    axis="wind-gust"
+                    series={series}
+                    column="station1"
+                    aggregation={{
+                        size: "30m",
+                        reducers: {
+                            outer: [percentile(5), percentile(95)],
+                            inner: [percentile(25), percentile(75)]
+                        }
+                    }}
+                    interpolation="curveBasis"
+                />
                 <ScatterChart
                     axis="wind-gust"
                     series={series}
