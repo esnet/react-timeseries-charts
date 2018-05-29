@@ -97,6 +97,14 @@ export type YAxisProps = AxisProps & {
      * Show / Hide axis line
      */
     hideAxisLine?: boolean;
+
+    /**
+     * Render a horizontal grid by extending the axis ticks across the chart area. Note that this
+     * can only be applied to an inner axis (one next to a chart). If you have multiple axes then
+     * this can't be used on the outer axes. Also, if you have an axis on either side of the chart
+     * then you can use this, but the UX not be ideal.
+     */
+    showGrid?: boolean
 };
 
 /**
@@ -158,7 +166,8 @@ export class YAxis extends React.Component<YAxisProps> {
         labelOffset: 0,
         transition: 100,
         width: 80,
-        hideAxisLine: false
+        hideAxisLine: false,
+        showGrid: false
     };
 
     render() {
@@ -177,6 +186,7 @@ export class YAxis extends React.Component<YAxisProps> {
                 absolute={this.props.absolute}
                 style={this.props.style}
                 hideAxisLine={this.props.hideAxisLine}
+                showGrid={this.props.showGrid}
             />
         );
     }

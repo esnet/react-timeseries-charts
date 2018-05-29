@@ -176,7 +176,7 @@ var TimeAxis = (function (_super) {
             stopd = stoptz.endOf(type);
         }
         var tickStyle = {
-            axis: _.merge(true, defaultTimeAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {}),
+            ticks: _.merge(true, defaultTimeAxisStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {}),
             values: _.merge(true, defaultTimeAxisStyle.ticks, this.props.style.values ? this.props.style.values : {})
         };
         var i = 0;

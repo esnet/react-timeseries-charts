@@ -20,6 +20,7 @@ export declare type YAxisProps = AxisProps & {
     scale?: (...args: any[]) => any;
     tickCount?: number;
     hideAxisLine?: boolean;
+    showGrid?: boolean;
 };
 export declare class YAxis extends React.Component<YAxisProps> {
     static defaultProps: Partial<YAxisProps>;

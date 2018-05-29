@@ -10,7 +10,7 @@ var YAxis = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     YAxis.prototype.render = function () {
-        return (React.createElement(react_axis_1.Axis, { label: this.props.label ? this.props.label : this.props.id, width: this.props.width, position: this.props.align, margin: 5, height: this.props.height, max: this.props.max, min: this.props.min, type: this.props.type, format: this.props.format, tickCount: this.props.tickCount, absolute: this.props.absolute, style: this.props.style, hideAxisLine: this.props.hideAxisLine }));
+        return (React.createElement(react_axis_1.Axis, { label: this.props.label ? this.props.label : this.props.id, width: this.props.width, position: this.props.align, margin: 5, height: this.props.height, max: this.props.max, min: this.props.min, type: this.props.type, format: this.props.format, tickCount: this.props.tickCount, absolute: this.props.absolute, style: this.props.style, hideAxisLine: this.props.hideAxisLine, showGrid: this.props.showGrid }));
     };
     YAxis.defaultProps = {
         id: "yaxis",
@@ -23,7 +23,8 @@ var YAxis = (function (_super) {
         labelOffset: 0,
         transition: 100,
         width: 80,
-        hideAxisLine: false
+        hideAxisLine: false,
+        showGrid: false
     };
     return YAxis;
 }(React.Component));

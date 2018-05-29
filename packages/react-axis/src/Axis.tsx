@@ -72,6 +72,7 @@ export type AxisProps = {
     absolute: boolean;
     angled?: boolean;
     hideAxisLine?: boolean;
+    showGrid?: boolean;
     style?: AxisStyle;
 };
 
@@ -107,6 +108,7 @@ export class Axis extends React.Component<AxisProps> {
         absolute: false,
         angled: false,
         hideAxisLine: false,
+        showGrid: false,
         style: defaultAxisStyle
     };
 
@@ -226,10 +228,10 @@ export class Axis extends React.Component<AxisProps> {
         }
 
         const tickStyle = {
-            axis: _.merge(
+            ticks: _.merge(
                 true,
-                defaultAxisStyle.axis,
-                this.props.style.axis ? this.props.style.axis : {}
+                defaultAxisStyle.ticks,
+                this.props.style.ticks ? this.props.style.ticks : {}
             ),
             values: _.merge(
                 true,
@@ -254,7 +256,7 @@ export class Axis extends React.Component<AxisProps> {
             
             const formatter = d => (absolute ? d3Format(Math.abs(d)) : d3Format(d));
             const label = formatter(tickValue);
-            
+
             return (
                 <Tick
                     id={`tick-${tickIndex}`}

@@ -121,8 +121,6 @@ export type TimeAxisProps = {
     smoothTransition?: boolean;
     position?: "left" | "right" | "top" | "bottom";
     labelPosition?: number;
-    labelStyle?: React.CSSProperties;
-    textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
     angled?: boolean;
@@ -303,10 +301,10 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         }
 
         const tickStyle = {
-            axis: _.merge(
+            ticks: _.merge(
                 true,
-                defaultTimeAxisStyle.axis,
-                this.props.style.axis ? this.props.style.axis : {}
+                defaultTimeAxisStyle.ticks,
+                this.props.style.ticks ? this.props.style.ticks : {}
             ),
             values: _.merge(
                 true,

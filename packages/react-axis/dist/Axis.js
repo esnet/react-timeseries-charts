@@ -119,7 +119,7 @@ var Axis = (function (_super) {
             default:
         }
         var tickStyle = {
-            axis: _.merge(true, defaultAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {}),
+            ticks: _.merge(true, defaultAxisStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {}),
             values: _.merge(true, defaultAxisStyle.values, this.props.style.values ? this.props.style.values : {})
         };
         return scale.ticks(this.props.tickCount).map(function (tickValue, tickIndex) {
@@ -162,6 +162,7 @@ var Axis = (function (_super) {
         absolute: false,
         angled: false,
         hideAxisLine: false,
+        showGrid: false,
         style: defaultAxisStyle
     };
     return Axis;

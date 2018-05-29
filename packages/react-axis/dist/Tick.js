@@ -21,9 +21,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var React = require("react");
 var defaultStyle = {
-    axis: {
-        stroke: "#AAA",
-        strokeWidth: 1
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
     },
     values: {
         stroke: "none",
@@ -72,11 +72,11 @@ var Tick = (function (_super) {
         var tickTransitionStyle = {
             transition: "transform 100ms"
         };
-        var axisStyle = _.merge(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+        var tickStyle = _.merge(true, defaultStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {});
         var groupKey = "grp-" + id + "}";
         var tickKey = "tick-" + id;
         return (React.createElement("g", { style: tickTransitionStyle, key: groupKey },
-            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: axisStyle }, line)),
+            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: tickStyle }, line)),
             this.renderLabel(label, isTop, false, size, "vertical")));
     };
     Tick.prototype.renderHorizontalTick = function (id, label, labelPosition, size, tickExtend, isLeft) {
@@ -87,7 +87,7 @@ var Tick = (function (_super) {
             x2: dir * size,
             y2: 0
         };
-        var axisStyle = _.merge(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+        var tickStyle = _.merge(true, defaultStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {});
         var groupKey = "grp-" + id + "}";
         var tickKey = "tick-" + id;
         var rotate = this.props.angled ? "rotate(-65)" : "rotate(0)";
@@ -97,7 +97,7 @@ var Tick = (function (_super) {
             transition: "transform 100ms"
         };
         return (React.createElement("g", { style: tickTransitionStyle, key: groupKey },
-            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: axisStyle }, line)),
+            React.createElement("line", __assign({ key: tickKey, className: "tick-line", style: tickStyle }, line)),
             this.renderLabel(label, false, isLeft, size, "horizontal")));
     };
     Tick.prototype.render = function () {

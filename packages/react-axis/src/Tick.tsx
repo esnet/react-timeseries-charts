@@ -12,9 +12,9 @@ import * as _ from "lodash";
 import * as React from "react";
 
 const defaultStyle: TickStyle= {
-    axis: {
-        stroke: "#AAA", 
-        strokeWidth: 1
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
     },
     values: {
         stroke: "none",
@@ -26,8 +26,8 @@ const defaultStyle: TickStyle= {
 };
 
 export type TickStyle = {
-    axis: React.CSSProperties;
-    values: React.CSSProperties
+    ticks: React.CSSProperties;
+    values: React.CSSProperties;
 };
 
 export type TickProps = {
@@ -169,14 +169,14 @@ export class Tick extends React.Component<TickProps> {
             transition: "transform 100ms"
         };
 
-        const axisStyle = _.merge(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+        const tickStyle = _.merge(true, defaultStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {});
 
         const groupKey = `grp-${id}}`;
         const tickKey = `tick-${id}`;
 
         return (
             <g style={tickTransitionStyle} key={groupKey}>
-                <line key={tickKey} className="tick-line" style={axisStyle} {...line} />
+                <line key={tickKey} className="tick-line" style={tickStyle} {...line} />
                 {this.renderLabel(label, isTop, false, size, "vertical")}
             </g>
         );
@@ -198,7 +198,7 @@ export class Tick extends React.Component<TickProps> {
             y2: 0
         };
 
-        const axisStyle = _.merge(true, defaultStyle.axis, this.props.style.axis ? this.props.style.axis : {});
+        const tickStyle = _.merge(true, defaultStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {});
 
         const groupKey = `grp-${id}}`;
         const tickKey = `tick-${id}`;
@@ -214,7 +214,7 @@ export class Tick extends React.Component<TickProps> {
 
         return (
             <g style={tickTransitionStyle} key={groupKey}>
-                <line key={tickKey} className="tick-line" style={axisStyle} {...line} />
+                <line key={tickKey} className="tick-line" style={tickStyle} {...line} />
                 {this.renderLabel(label, false, isLeft, size, "horizontal")}
             </g>
         );

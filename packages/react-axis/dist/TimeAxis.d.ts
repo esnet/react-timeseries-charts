@@ -24,8 +24,6 @@ export declare type TimeAxisProps = {
     smoothTransition?: boolean;
     position?: "left" | "right" | "top" | "bottom";
     labelPosition?: number;
-    labelStyle?: React.CSSProperties;
-    textStyle?: React.CSSProperties;
     timezone?: string;
     transition?: boolean;
     angled?: boolean;

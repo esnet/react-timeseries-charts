@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as React from "react";
 export declare type TickStyle = {
-    axis: React.CSSProperties;
+    ticks: React.CSSProperties;
     values: React.CSSProperties;
 };
 export declare type TickProps = {
