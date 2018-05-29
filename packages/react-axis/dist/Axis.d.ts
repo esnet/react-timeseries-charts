@@ -1,6 +1,12 @@
 /// <reference types="react" />
 import * as React from "react";
 import "./Axis.css";
+export declare type AxisStyle = {
+    label: React.CSSProperties;
+    axis: React.CSSProperties;
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+};
 export declare type AxisProps = {
     standalone: boolean;
     position: "left" | "right" | "top" | "bottom";
@@ -18,9 +24,9 @@ export declare type AxisProps = {
     exponent: number;
     label: string;
     labelPosition: number;
-    labelStyle: React.CSSProperties;
     absolute: boolean;
     angled?: boolean;
+    style?: AxisStyle;
 };
 export declare class Axis extends React.Component<AxisProps> {
     static defaultProps: Partial<AxisProps>;

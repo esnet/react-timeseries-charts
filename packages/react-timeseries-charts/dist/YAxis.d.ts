@@ -1,10 +1,12 @@
 /// <reference types="react" />
 import * as React from "react";
 import { AxisProps } from "./Charts";
-export interface YAxisStyle {
-    labels: React.CSSProperties;
+export declare type YAxisStyle = {
+    label: React.CSSProperties;
     axis: React.CSSProperties;
-}
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+};
 export declare type YAxisProps = AxisProps & {
     label?: string;
     min: number;

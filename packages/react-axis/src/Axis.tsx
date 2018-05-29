@@ -8,6 +8,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import * as _ from "lodash";
 import * as React from "react";
 
 import ReactCSSTransitionGroup = require('react-addons-css-transition-group');
@@ -16,6 +17,40 @@ import { scaleLinear, scaleLog, scalePow, ScaleLinear } from "d3-scale";
 
 import { Tick } from "./Tick";
 import "./Axis.css";
+
+const defaultAxisStyle: AxisStyle = {
+    label: {
+        stroke: "none",
+        fill: "#8B7E7E", // Default label color
+        fontWeight: 100,
+        fontSize: 12,
+        font: '"Goudy Bookletter 1911", sans-serif"',
+        pointerEvents: "none"
+    },
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E", // Default values color
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        fill: "none",
+        stroke: "#C0C0C0",
+        strokeWidth: 0.5
+    }
+};
+
+export type AxisStyle = {
+    label: React.CSSProperties;
+    axis: React.CSSProperties;
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
+};
 
 export type AxisProps = {
     standalone: boolean;
@@ -34,9 +69,9 @@ export type AxisProps = {
     exponent: number;
     label: string;
     labelPosition: number;
-    labelStyle: React.CSSProperties;
     absolute: boolean;
     angled?: boolean;
+    style?: AxisStyle;
 };
 
 /**
@@ -68,22 +103,22 @@ export class Axis extends React.Component<AxisProps> {
         exponent: 2,
         standalone: false,
         labelPosition: 50,
-        labelStyle: {
-            fill: "#8B7E7E",
-            fontWeight: 100,
-            fontSize: 12,
-            fontFamily: '"Goudy Bookletter 1911", sans-serif"',
-            stroke: "none",
-            pointerEvents: "none"
-        },
         absolute: false,
-        angled: false
+        angled: false,
+        style: defaultAxisStyle
     };
+
     constructor(props: AxisProps) {
         super(props);
     }
+
     renderAxisLabel() {
-        const { width, height, position, labelPosition, labelStyle } = this.props;
+        const { width, height, position, labelPosition, style } = this.props;
+        const labelStyle = _.merge(
+            true,
+            defaultAxisStyle.label,
+            this.props.style.label ? this.props.style.label : {}
+        );
         let translate;
         let rotate = `rotate(0)`;
         let anchor = "start";
@@ -114,14 +149,20 @@ export class Axis extends React.Component<AxisProps> {
             </g>
         );
     }
+
     renderAxisLine() {
         const p = this.props.position;
+        const axisStyle = _.merge(
+            true,
+            defaultAxisStyle.axis,
+            this.props.style.axis ? this.props.style.axis : {}
+        );
         if (p === "left" || p === "right") {
             return (
                 <line
                     key="axis"
                     className="axis"
-                    style={{ stroke: "#AAA", strokeWidth: 0.5 }}
+                    style={axisStyle}
                     x1={p === "left" ? this.props.width : 0}
                     y1={this.props.margin}
                     x2={p === "left" ? this.props.width : 0}
@@ -133,7 +174,7 @@ export class Axis extends React.Component<AxisProps> {
                 <line
                     key="axis"
                     className="axis"
-                    style={{ stroke: "#AAA", strokeWidth: 0.5 }}
+                    style={axisStyle}
                     x1={this.props.margin}
                     y1={p === "bottom" ? 0 : this.props.height}
                     x2={this.props.width - this.props.margin}
@@ -142,8 +183,10 @@ export class Axis extends React.Component<AxisProps> {
             );
         }
     }
+
     renderAxisTicks() {
         const p = this.props.position;
+
         let scale: ScaleLinear<number, number>;
         switch (this.props.type.toLowerCase()) {
             case "linear":
@@ -176,19 +219,36 @@ export class Axis extends React.Component<AxisProps> {
                 break;
             default:
         }
+
+        const tickStyle = {
+            axis: _.merge(
+                true,
+                defaultAxisStyle.axis,
+                this.props.style.axis ? this.props.style.axis : {}
+            ),
+            values: _.merge(
+                true,
+                defaultAxisStyle.values,
+                this.props.style.values ? this.props.style.values : {}
+            )
+        };
+
         return scale.ticks(this.props.tickCount).map((tickValue, tickIndex) => {
             const tickPosition = scale(tickValue) + this.props.margin;
             const tickFormatSpecifier = this.props.tickFormatSpecifier;
+            
             // Get a d3 format function, either from the string the user
             // supplied in the format prop, or ask the scale for its
             // suggestion
             const d3Format: (n: number) => string = this.props.format
                 ? format(this.props.format)
                 : scale.tickFormat(this.props.tickCount, tickFormatSpecifier);
-            // The user can specify the values all be positive
+            
+                // The user can specify the values all be positive
             const absolute = this.props.absolute;
             const formatter = d => (absolute ? d3Format(Math.abs(d)) : d3Format(d));
             const label = formatter(tickValue);
+            
             return (
                 <Tick
                     id={`tick-${tickIndex}`}
@@ -202,10 +262,12 @@ export class Axis extends React.Component<AxisProps> {
                     width={this.props.width}
                     height={this.props.height}
                     angled={this.props.angled}
+                    style={tickStyle}
                 />
             );
         });
     }
+
     renderAxis() {
         return (
             <g>
@@ -222,6 +284,7 @@ export class Axis extends React.Component<AxisProps> {
             </g>
         );
     }
+
     render() {
         if (this.props.standalone) {
             return (

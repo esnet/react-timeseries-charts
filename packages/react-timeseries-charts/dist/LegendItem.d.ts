@@ -10,7 +10,7 @@ export declare type LegendItemProps = {
     type: LegendItemType;
     label: string;
     value: string;
-    symbolType: string;
+    symbolType: LegendItemType;
     symbolWidth: number;
     symbolHeight: number;
     symbolStyle: React.CSSProperties;

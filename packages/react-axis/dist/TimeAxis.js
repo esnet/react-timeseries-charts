@@ -27,14 +27,15 @@ var durationDay = durationHour * 24;
 var durationWeek = durationDay * 7;
 var durationMonth = durationDay * 30;
 var durationYear = durationDay * 365;
+var durationDecade = durationYear * 10;
 var majors = {
-    second: "minute",
-    minute: "hour",
-    hour: "day",
-    day: "month",
-    week: "month",
-    month: "year",
-    year: "year"
+    "second": "minute",
+    "minute": "hour",
+    "hour": "day",
+    "day": "month",
+    "week": "month",
+    "month": "year",
+    "year": "year"
 };
 var tickIntervals = [
     [durationSecond, "second", 1],
@@ -60,7 +61,7 @@ var tickIntervals = [
     [durationYear, "year", 1],
     [2 * durationYear, "year", 2],
     [5 * durationYear, "year", 5],
-    [10 * durationYear, "year", 10],
+    [durationDecade, "year", 10],
     [25 * durationYear, "year", 25],
     [100 * durationYear, "year", 100],
     [500 * durationYear, "year", 250]
@@ -140,7 +141,7 @@ var TimeAxis = (function (_super) {
         var stop = +this.props.endTime;
         var target = Math.abs(stop - start) / interval;
         var type, num;
-        if (_.isString(formatter) && formatter !== "duration") {
+        if (_.isString(formatter) && !(formatter == "duration" || formatter == "decade")) {
             type = formatter;
             num = 1;
         }
@@ -153,14 +154,27 @@ var TimeAxis = (function (_super) {
                 num = n;
             }
         }
-        formatter = time_format_1.default(type, timezone);
-        if (formatAsDuration) {
+        if (typeof this.props.format === 'function') {
+            formatter = this.props.format;
+        }
+        else if (formatAsDuration) {
             formatter = duration_format_1.default();
+        }
+        else {
+            formatter = time_format_1.default(type, timezone);
         }
         var starttz = timezone ? moment(start).tz(timezone) : moment(start);
         var stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);
-        var startd = starttz.startOf(majors[type]).add(num, "type");
-        var stopd = stoptz.endOf(type);
+        var startd;
+        var stopd;
+        if (this.props.format === "decade") {
+            startd = starttz.set('year', Math.floor(starttz.year() / 10) * 10);
+            stopd = stoptz.set('year', Math.ceil(stoptz.year() / 10) * 10);
+        }
+        else {
+            startd = starttz.startOf(majors[type]).add(num, "type");
+            stopd = stoptz.endOf(type);
+        }
         var tickStyle = {
             axis: _.merge(true, defaultTimeAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {}),
             values: _.merge(true, defaultTimeAxisStyle.ticks, this.props.style.values ? this.props.style.values : {})

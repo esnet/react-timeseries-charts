@@ -44,7 +44,7 @@ var Tick = (function (_super) {
         var rotate = angled ? "rotate(-65)" : "rotate(0)";
         var dx = angled ? "-1.2em" : "0em";
         var dy = "0em";
-        var valueStyle = _.merge(true, defaultStyle.values, this.props.style.values ? this.props.style.values : {});
+        var valueStyle = _.merge(defaultStyle.values, this.props.style.values ? this.props.style.values : {});
         if (direction === "horizontal") {
             return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: valueStyle, textAnchor: isLeft ? "end" : "begin", transform: rotate, x: isLeft ? -tickSize - 3 : tickSize + 3, y: 0, dx: dx, dy: dy, alignmentBaseline: "middle" }, label));
         }

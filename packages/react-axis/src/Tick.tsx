@@ -85,7 +85,6 @@ export class Tick extends React.Component<TickProps> {
         const dy = "0em";
 
         const valueStyle = _.merge(
-            true,
             defaultStyle.values,
             this.props.style.values ? this.props.style.values : {}
         );

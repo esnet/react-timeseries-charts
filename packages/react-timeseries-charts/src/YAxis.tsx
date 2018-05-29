@@ -20,48 +20,11 @@ import { scaleAsString } from "./util";
 
 type CSSProperties = { [key: string]: any };
 
-export interface YAxisStyle {
-    labels: React.CSSProperties;
+export type YAxisStyle = {
+    label: React.CSSProperties;
     axis: React.CSSProperties;
-}
-
-// const defaultStyle: YAxisStyle = {
-//     label: {
-//         stroke: "none",
-//         fill: "#8B7E7E", // Default label color
-//         fontWeight: 100,
-//         fontSize: 12,
-//         font: '"Goudy Bookletter 1911", sans-serif"'
-//     },
-//     values: {
-//         stroke: "none",
-//         fill: "#8B7E7E", // Default value color
-//         fontWeight: 100,
-//         fontSize: 11,
-//         font: '"Goudy Bookletter 1911", sans-serif"'
-//     },
-//     ticks: {
-//         fill: "none",
-//         stroke: "#C0C0C0"
-//     },
-//     axis: {
-//         fill: "none",
-//         stroke: "#C0C0C0"
-//     }
-// };
-
-const defaultStyle: any = {
-    labels: {
-        fill: "#8B7E7E",
-        fontWeight: 100,
-        fontSize: 12,
-        fontFamily: '"Goudy Bookletter 1911", sans-serif"',
-        stroke: "none",
-        pointerEvents: "none"
-    },
-    axis: {
-        axisColor: "#C0C0C0"
-    }
+    values: React.CSSProperties;
+    ticks: React.CSSProperties;
 };
 
 export type YAxisProps = AxisProps & {
@@ -93,14 +56,6 @@ export type YAxisProps = AxisProps & {
      * Note that these are passed into d3's styling, so are regular CSS property names
      * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray).
      */
-
-    // CHECK
-    // style: PropTypes.shape({
-    //      label: PropTypes.object,
-    //      axis: PropTypes.object,
-    //      values: PropTypes.object,
-    //      ticks: PropTypes.object
-    // })
     style?: YAxisStyle;
 
     /**
@@ -199,15 +154,13 @@ export class YAxis extends React.Component<YAxisProps> {
         format: ".2s",
         labelOffset: 0,
         transition: 100,
-        width: 80,
-        style: defaultStyle
+        width: 80
     };
 
     render() {
         return (
             <Axis
                 label={this.props.label ? this.props.label : this.props.id}
-                labelStyle={this.props.style}
                 width={this.props.width}
                 position={this.props.align}
                 margin={5}
@@ -218,6 +171,7 @@ export class YAxis extends React.Component<YAxisProps> {
                 format={this.props.format}
                 tickCount={this.props.tickCount}
                 absolute={this.props.absolute}
+                style={this.props.style}
             />
         );
     }

@@ -102,11 +102,10 @@ class climate extends React.Component {
                     axis="axis"
                     event={this.state.trackerEvent}
                     column="temperature"
+                    style={{ marker: { fill: "#2db3d1" }, text: { fill: "#2db3d1", stroke: "white" }}}
                     markerLabel={this.state.trackerValue}
                     markerLabelAlign="left"
-                    markerLabelStyle={{ fill: "#2db3d1", stroke: "white" }}
                     markerRadius={3}
-                    markerStyle={{ fill: "#2db3d1" }}
                 />
             );
         }
@@ -117,15 +116,19 @@ class climate extends React.Component {
         const max = 1.0;
 
         const axisStyle = {
-            // labels:
+            label: {
+                fill: "grey",
+                fontWeight: 100,
+                fontSize: 11
+            },
             values: {
-                labelColor: "grey", // Default label color
-                labelWeight: 100,
-                labelSize: 11
+                fill: "grey",
+                fontWeight: 100,
+                fontSize: 11
             },
             axis: {
-                axisColor: "grey",
-                axisWidth: 1
+                fill: "grey",
+                strokeWidth: 1
             }
         };
 

@@ -232,6 +232,8 @@ export class EventMarker extends React.Component<EventMarkerProps> {
     static defaultProps: Partial<EventMarkerProps> = {
         type: "flag",
         column: "value",
+        infoWidth: 90,
+        infoHeight: 25,
         style: defaultStyle,
         markerRadius: 2,
         markerLabelAlign: "left",

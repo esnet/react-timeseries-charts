@@ -31,15 +31,16 @@ const durationDay = durationHour * 24;
 const durationWeek = durationDay * 7;
 const durationMonth = durationDay * 30;
 const durationYear = durationDay * 365;
+const durationDecade = durationYear * 10;
 
 const majors = {
-    second: "minute",
-    minute: "hour",
-    hour: "day",
-    day: "month",
-    week: "month",
-    month: "year",
-    year: "year"
+    "second": "minute",
+    "minute": "hour",
+    "hour": "day",
+    "day": "month",
+    "week": "month",
+    "month": "year",
+    "year": "year"
 };
 
 const tickIntervals = [
@@ -66,7 +67,7 @@ const tickIntervals = [
     [durationYear, "year", 1],
     [2 * durationYear, "year", 2],
     [5 * durationYear, "year", 5],
-    [10 * durationYear, "year", 10],
+    [durationDecade, "year", 10],
     [25 * durationYear, "year", 25],
     [100 * durationYear, "year", 100],
     [500 * durationYear, "year", 250]
@@ -261,7 +262,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         // (day, month, year, etc), or using our tickInterval
         // lookup
         let type, num;
-        if (_.isString(formatter) && formatter !== "duration") {
+        if (_.isString(formatter) && !(formatter == "duration" || formatter == "decade")) {
             type = formatter;
             num = 1;
         } else {
@@ -271,14 +272,23 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
                 num = n;
             }
         }
-        formatter = timeFormatter(type, timezone);
+
+        // formatter = timeFormatter(type, timezone);
 
         // Formatter will be a function (date) => string, or
         // a string format type. In the case of the string type
         // that might be "duration", or "minutes", "day", etc.
-        if (formatAsDuration) {
+        if (typeof this.props.format === 'function') {
+            formatter = this.props.format;
+        } else if (formatAsDuration) {
             formatter = durationFormatter();
+        } else {
+            formatter = timeFormatter(type, timezone);
         }
+
+        // if (formatAsDuration) {
+        //     formatter = durationFormatter();
+        // }
 
         const starttz = timezone ? moment(start).tz(timezone) : moment(start);
         const stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);
@@ -286,8 +296,17 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         // We want to align our minor ticks to our major ones.
         // For instance if we are showing 3 hour minor ticks then we
         // want to them to be 12am, 3am, etc (not 11pm, 2am, etc)
-        const startd = starttz.startOf(majors[type]).add(num, "type");
-        const stopd = stoptz.endOf(type);
+        let startd;
+        let stopd;
+        if (this.props.format === "decade") {
+            // sets start and stop closest to the nearest 100
+            // example : 1981 would set to 1980, 2009 would set to 2010
+            startd = starttz.set('year', Math.floor(starttz.year()/10)*10);
+            stopd = stoptz.set('year', Math.ceil(stoptz.year()/10)*10);
+        } else {
+            startd = starttz.startOf(majors[type]).add(num, "type");
+            stopd = stoptz.endOf(type);
+        }
 
         const tickStyle = {
             axis: _.merge(

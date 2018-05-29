@@ -197,6 +197,8 @@ var EventMarker = (function (_super) {
     EventMarker.defaultProps = {
         type: "flag",
         column: "value",
+        infoWidth: 90,
+        infoHeight: 25,
         style: style_1.defaultEventMarkerStyle,
         markerRadius: 2,
         markerLabelAlign: "left",

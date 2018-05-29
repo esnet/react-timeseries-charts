@@ -10,19 +10,47 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var _ = require("lodash");
 var React = require("react");
 var ReactCSSTransitionGroup = require("react-addons-css-transition-group");
 var d3_format_1 = require("d3-format");
 var d3_scale_1 = require("d3-scale");
 var Tick_1 = require("./Tick");
 require("./Axis.css");
+var defaultAxisStyle = {
+    label: {
+        stroke: "none",
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 12,
+        font: '"Goudy Bookletter 1911", sans-serif"',
+        pointerEvents: "none"
+    },
+    values: {
+        stroke: "none",
+        fill: "#8B7E7E",
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#C0C0C0"
+    },
+    axis: {
+        fill: "none",
+        stroke: "#C0C0C0",
+        strokeWidth: 0.5
+    }
+};
 var Axis = (function (_super) {
     __extends(Axis, _super);
     function Axis(props) {
         return _super.call(this, props) || this;
     }
     Axis.prototype.renderAxisLabel = function () {
-        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, labelStyle = _a.labelStyle;
+        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, style = _a.style;
+        var labelStyle = _.merge(true, defaultAxisStyle.label, this.props.style.label ? this.props.style.label : {});
         var translate;
         var rotate = "rotate(0)";
         var anchor = "start";
@@ -50,11 +78,12 @@ var Axis = (function (_super) {
     };
     Axis.prototype.renderAxisLine = function () {
         var p = this.props.position;
+        var axisStyle = _.merge(true, defaultAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {});
         if (p === "left" || p === "right") {
-            return (React.createElement("line", { key: "axis", className: "axis", style: { stroke: "#AAA", strokeWidth: 0.5 }, x1: p === "left" ? this.props.width : 0, y1: this.props.margin, x2: p === "left" ? this.props.width : 0, y2: this.props.height - this.props.margin }));
+            return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: p === "left" ? this.props.width : 0, y1: this.props.margin, x2: p === "left" ? this.props.width : 0, y2: this.props.height - this.props.margin }));
         }
         else {
-            return (React.createElement("line", { key: "axis", className: "axis", style: { stroke: "#AAA", strokeWidth: 0.5 }, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
+            return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
         }
     };
     Axis.prototype.renderAxisTicks = function () {
@@ -86,6 +115,10 @@ var Axis = (function (_super) {
                 break;
             default:
         }
+        var tickStyle = {
+            axis: _.merge(true, defaultAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {}),
+            values: _.merge(true, defaultAxisStyle.values, this.props.style.values ? this.props.style.values : {})
+        };
         return scale.ticks(this.props.tickCount).map(function (tickValue, tickIndex) {
             var tickPosition = scale(tickValue) + _this.props.margin;
             var tickFormatSpecifier = _this.props.tickFormatSpecifier;
@@ -95,7 +128,7 @@ var Axis = (function (_super) {
             var absolute = _this.props.absolute;
             var formatter = function (d) { return (absolute ? d3Format(Math.abs(d)) : d3Format(d)); };
             var label = formatter(tickValue);
-            return (React.createElement(Tick_1.Tick, { id: "tick-" + tickIndex, key: tickValue, align: _this.props.position, label: label, labelAlign: "center", position: tickPosition, size: _this.props.tickSize, tickExtend: _this.props.tickExtend, width: _this.props.width, height: _this.props.height, angled: _this.props.angled }));
+            return (React.createElement(Tick_1.Tick, { id: "tick-" + tickIndex, key: tickValue, align: _this.props.position, label: label, labelAlign: "center", position: tickPosition, size: _this.props.tickSize, tickExtend: _this.props.tickExtend, width: _this.props.width, height: _this.props.height, angled: _this.props.angled, style: tickStyle }));
         });
     };
     Axis.prototype.renderAxis = function () {
@@ -123,16 +156,9 @@ var Axis = (function (_super) {
         exponent: 2,
         standalone: false,
         labelPosition: 50,
-        labelStyle: {
-            fill: "#8B7E7E",
-            fontWeight: 100,
-            fontSize: 12,
-            fontFamily: '"Goudy Bookletter 1911", sans-serif"',
-            stroke: "none",
-            pointerEvents: "none"
-        },
         absolute: false,
-        angled: false
+        angled: false,
+        style: defaultAxisStyle
     };
     return Axis;
 }(React.Component));
