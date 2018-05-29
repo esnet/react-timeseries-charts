@@ -591,27 +591,29 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         // Hover tracker line
         //
         let tracker;
-        if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
-            tracker = (
-                <g
-                    key="tracker-group"
-                    style={{ pointerEvents: "none" }}
-                    transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}
-                >
-                    <TimeMarker
-                        key="marker"
-                        width={chartsWidth}
-                        height={chartsHeight}
-                        showInfoBox={false}
-                        time={this.props.trackerTime}
-                        timeScale={timeScale}
-                        timeFormat={this.props.timeFormat}
-                        info={this.props.trackerInfo}
-                        infoWidth={this.props.trackerInfoWidth}
-                        infoHeight={this.props.trackerInfoHeight}
-                    />
-                </g>
-            );
+        if (this.props.trackerTime) {
+            if(this.props.timeRange.contains(this.props.trackerTime)) {
+                tracker = (
+                    <g
+                        key="tracker-group"
+                        style={{ pointerEvents: "none" }}
+                        transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}
+                    >
+                        <TimeMarker
+                            key="marker"
+                            width={chartsWidth}
+                            height={chartsHeight}
+                            showInfoBox={false}
+                            time={this.props.trackerTime}
+                            timeScale={timeScale}
+                            timeFormat={this.props.timeFormat}
+                            info={this.props.trackerInfo}
+                            infoWidth={this.props.trackerInfoWidth}
+                            infoHeight={this.props.trackerInfoHeight}
+                        />
+                    </g>
+                );
+            }
         }
 
         //

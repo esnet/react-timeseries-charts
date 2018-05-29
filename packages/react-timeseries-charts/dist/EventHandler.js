@@ -194,7 +194,7 @@ var EventHandler = (function (_super) {
             }
         }
         else if (this.props.onMouseMove) {
-            var mousePosition = this.getOffsetMousePosition(e)[0];
+            var mousePosition = this.getOffsetMousePosition(e);
             if (this.props.onMouseMove) {
                 this.props.onMouseMove(mousePosition[0], mousePosition[1]);
             }

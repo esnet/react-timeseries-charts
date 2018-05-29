@@ -202,9 +202,11 @@ var ChartContainer = (function (_super) {
             i += 1;
         });
         var tracker;
-        if (this.props.trackerTime && this.props.timeRange.contains(this.props.trackerTime)) {
-            tracker = (React.createElement("g", { key: "tracker-group", style: { pointerEvents: "none" }, transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
-                React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
+        if (this.props.trackerTime) {
+            if (this.props.timeRange.contains(this.props.trackerTime)) {
+                tracker = (React.createElement("g", { key: "tracker-group", style: { pointerEvents: "none" }, transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
+                    React.createElement(TimeMarker_1.TimeMarker, { key: "marker", width: chartsWidth, height: chartsHeight, showInfoBox: false, time: this.props.trackerTime, timeScale: timeScale, timeFormat: this.props.timeFormat, info: this.props.trackerInfo, infoWidth: this.props.trackerInfoWidth, infoHeight: this.props.trackerInfoHeight })));
+            }
         }
         var timeAxisStyle = _.merge(true, style_1.defaultTimeAxisStyle, this.props.timeAxisStyle ? this.props.timeAxisStyle : {});
         var chartAxisStyle = _.merge(true, defaultChartAxisStyle, this.props.chartAxisStyle ? this.props.chartAxisStyle : {});

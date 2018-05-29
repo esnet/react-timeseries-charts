@@ -300,7 +300,7 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
                 this.props.onZoom(newTimeRange);
             }
         } else if (this.props.onMouseMove) {
-            const mousePosition = this.getOffsetMousePosition(e)[0];
+            const mousePosition = this.getOffsetMousePosition(e);
             if (this.props.onMouseMove) {
                 this.props.onMouseMove(mousePosition[0], mousePosition[1]);
             }
