@@ -162,7 +162,6 @@ class weather extends React.Component {
                             <ChartContainer
                                 timezone={this.state.mode === "utc" ? "Etc/UTC" : "local"}
                                 timeRange={tempSeries.timerange()}
-                                showGrid={true}
                                 showGridPosition="under"
                                 trackerTime={this.state.tracker}
                                 trackerTimeFormat="%X"

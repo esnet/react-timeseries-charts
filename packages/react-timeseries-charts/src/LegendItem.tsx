@@ -25,11 +25,12 @@ export type LegendItemProps = {
     type: LegendItemType;
     label: string;
     value: string;
+    symbolType: LegendItemType;
     symbolWidth: number;
     symbolHeight: number;
-    symbolStyle: ElementStyle;
-    labelStyle: ElementStyle;
-    valueStyle: ElementStyle;
+    symbolStyle: React.CSSProperties;
+    labelStyle: React.CSSProperties;
+    valueStyle: React.CSSProperties;
     onSelectionChange: (key: string) => any;
     onHighlightChange: (key: string) => any;
 };
@@ -54,7 +55,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         }
     }
 
-    renderLine(style: ElementStyle) {
+    renderLine(style: React.CSSProperties) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -71,7 +72,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         );
     }
 
-    renderSwatch(style: ElementStyle) {
+    renderSwatch(style: React.CSSProperties) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -88,7 +89,7 @@ export class LegendItem extends React.Component<LegendItemProps> {
         );
     }
 
-    renderDot(style: ElementStyle) {
+    renderDot(style: React.CSSProperties) {
         const { symbolWidth, symbolHeight } = this.props;
         return (
             <svg style={{ float: "left" }} width={symbolWidth} height={symbolHeight}>
@@ -104,10 +105,10 @@ export class LegendItem extends React.Component<LegendItemProps> {
     }
 
     render() {
-        const { symbolStyle, labelStyle, valueStyle, itemKey, type } = this.props;
+        const { symbolStyle, labelStyle, valueStyle, itemKey, type, symbolType } = this.props;
         
         let symbol: JSX.Element;
-        switch (type.toUpperCase()) {
+        switch (symbolType.toUpperCase()) {
             case LegendItemType.Swatch:
                 symbol = this.renderSwatch(symbolStyle);
                 break;

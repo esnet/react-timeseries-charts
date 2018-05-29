@@ -1,6 +1,5 @@
 /// <reference types="react" />
 import * as React from "react";
-import { ElementStyle } from "./style";
 export declare enum LegendItemType {
     Swatch = "SWATCH",
     Line = "LINE",
@@ -11,11 +10,12 @@ export declare type LegendItemProps = {
     type: LegendItemType;
     label: string;
     value: string;
+    symbolType: string;
     symbolWidth: number;
     symbolHeight: number;
-    symbolStyle: ElementStyle;
-    labelStyle: ElementStyle;
-    valueStyle: ElementStyle;
+    symbolStyle: React.CSSProperties;
+    labelStyle: React.CSSProperties;
+    valueStyle: React.CSSProperties;
     onSelectionChange: (key: string) => any;
     onHighlightChange: (key: string) => any;
 };
@@ -23,8 +23,8 @@ export declare class LegendItem extends React.Component<LegendItemProps> {
     handleClick(e: React.MouseEvent<HTMLDivElement>, key: string): void;
     handleHover(e: React.MouseEvent<HTMLDivElement>, key: string): void;
     handleHoverLeave(): void;
-    renderLine(style: ElementStyle): JSX.Element;
-    renderSwatch(style: ElementStyle): JSX.Element;
-    renderDot(style: ElementStyle): JSX.Element;
+    renderLine(style: React.CSSProperties): JSX.Element;
+    renderSwatch(style: React.CSSProperties): JSX.Element;
+    renderDot(style: React.CSSProperties): JSX.Element;
     render(): JSX.Element;
 }

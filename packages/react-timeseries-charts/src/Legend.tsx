@@ -28,6 +28,7 @@ export type LegendCategory = {
     disabled?: boolean;
     style?: object;
     labelStyle?: object;
+    symbolType?: LegendItemType;
 };
 
 export type LegendProps = {
@@ -320,12 +321,12 @@ export class Legend extends React.Component<LegendProps> {
         return mode;
     }
 
-    symbolStyle(category: LegendCategory) {
-        const styleMap = this.providedStyle(category, this.props.type);
+    symbolStyle(category: LegendCategory, type: LegendItemType) {
+        const styleMap = this.providedStyle(category, type);
         const styleMode = this.styleMode(category) as string;
         return _.merge(
             true,
-            defaultStyle[styleMode],
+            defaultStyle.symbol[styleMode],
             styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {}
         );
     }
@@ -335,7 +336,7 @@ export class Legend extends React.Component<LegendProps> {
         const styleMode = this.styleMode(category);
         return _.merge(
             true,
-            defaultStyle[styleMode],
+            defaultStyle.label[styleMode],
             styleMap.label[styleMode] ? styleMap.label[styleMode] : {}
         );
     }
@@ -345,7 +346,7 @@ export class Legend extends React.Component<LegendProps> {
         const styleMode = this.styleMode(category);
         return _.merge(
             true,
-            defaultStyle[styleMode],
+            defaultStyle.value[styleMode],
             styleMap.value[styleMode] ? styleMap.value[styleMode] : {}
         );
     }
@@ -354,8 +355,8 @@ export class Legend extends React.Component<LegendProps> {
         const { type, symbolWidth, symbolHeight } = this.props;
 
         const items = this.props.categories.map(category => {
-            const { key, label, value } = category;
-            const symbolStyle = this.symbolStyle(category);
+            const { key, label, value, symbolType = type } = category;
+            const symbolStyle = this.symbolStyle(category, symbolType);
             const labelStyle = this.labelStyle(category);
             const valueStyle = this.valueStyle(category);
             return (
@@ -365,6 +366,7 @@ export class Legend extends React.Component<LegendProps> {
                     itemKey={key}
                     label={label}
                     value={value}
+                    symbolType={symbolType}
                     symbolWidth={symbolWidth}
                     symbolHeight={symbolHeight}
                     symbolStyle={symbolStyle}

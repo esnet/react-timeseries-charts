@@ -139,7 +139,7 @@ class traffic extends React.Component {
                                 timeRange={this.state.timerange}
                                 trackerTime={this.state.tracker}
                                 onTrackerChanged={this.handleTrackerChanged}
-                                enablePanZoom={true}
+                                enablePanZoom={false}
                                 maxTime={trafficSeries.range().end()}
                                 minTime={trafficSeries.range().begin()}
                                 minDuration={1000 * 60 * 60}

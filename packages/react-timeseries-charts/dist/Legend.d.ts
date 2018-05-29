@@ -10,6 +10,7 @@ export declare type LegendCategory = {
     disabled?: boolean;
     style?: object;
     labelStyle?: object;
+    symbolType?: LegendItemType;
 };
 export declare type LegendProps = {
     type?: LegendItemType;
@@ -28,26 +29,8 @@ export declare class Legend extends React.Component<LegendProps> {
     static defaultProps: Partial<LegendProps>;
     providedStyle(category: LegendCategory, type: LegendItemType): CategoryStyle;
     styleMode(category: LegendCategory): StyleMode;
-    symbolStyle(category: LegendCategory): true & {
-        [mode: string]: React.CSSProperties;
-        normal: React.CSSProperties;
-        highlighted: React.CSSProperties;
-        selected: React.CSSProperties;
-        muted: React.CSSProperties;
-    } & React.CSSProperties;
-    labelStyle(category: LegendCategory): true & {
-        [mode: string]: React.CSSProperties;
-        normal: React.CSSProperties;
-        highlighted: React.CSSProperties;
-        selected: React.CSSProperties;
-        muted: React.CSSProperties;
-    } & React.CSSProperties;
-    valueStyle(category: LegendCategory): true & {
-        [mode: string]: React.CSSProperties;
-        normal: React.CSSProperties;
-        highlighted: React.CSSProperties;
-        selected: React.CSSProperties;
-        muted: React.CSSProperties;
-    } & React.CSSProperties;
+    symbolStyle(category: LegendCategory, type: LegendItemType): true & React.CSSProperties;
+    labelStyle(category: LegendCategory): true & React.CSSProperties;
+    valueStyle(category: LegendCategory): true & React.CSSProperties;
     render(): JSX.Element;
 }
