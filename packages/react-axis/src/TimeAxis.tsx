@@ -44,33 +44,33 @@ const majors = {
 };
 
 const tickIntervals = [
-    [durationSecond, "second", 1],
-    [5 * durationSecond, "second", 5],
-    [15 * durationSecond, "second", 15],
-    [30 * durationSecond, "second", 30],
-    [durationMinute, "minute", 1],
-    [5 * durationMinute, "minute", 5],
-    [15 * durationMinute, "minute", 15],
-    [30 * durationMinute, "minute", 30],
-    [durationHour, "hour", 1],
-    [3 * durationHour, "hour", 3],
-    [6 * durationHour, "hour", 6],
-    [12 * durationHour, "hour", 12],
-    [durationDay, "day", 1],
-    [2 * durationDay, "day", 2],
-    [3 * durationDay, "day", 3],
-    [4 * durationDay, "day", 4],
-    [5 * durationDay, "day", 5],
-    [durationWeek, "week", 1],
-    [durationMonth, "month", 1],
-    [3 * durationMonth, "month", 3],
-    [durationYear, "year", 1],
-    [2 * durationYear, "year", 2],
-    [5 * durationYear, "year", 5],
-    [durationDecade, "year", 10],
-    [25 * durationYear, "year", 25],
-    [100 * durationYear, "year", 100],
-    [500 * durationYear, "year", 250]
+    [      durationSecond, "second", 1],
+    [  5 * durationSecond, "second", 5],
+    [ 15 * durationSecond, "second", 15],
+    [ 30 * durationSecond, "second", 30],
+    [      durationMinute, "minute", 1],
+    [  5 * durationMinute, "minute", 5],
+    [ 15 * durationMinute, "minute", 15],
+    [ 30 * durationMinute, "minute", 30],
+    [      durationHour  ,   "hour", 1],
+    [  3 * durationHour  ,   "hour", 3],
+    [  6 * durationHour  ,   "hour", 6],
+    [ 12 * durationHour  ,   "hour", 12],
+    [      durationDay   ,    "day", 1],
+    [  2 * durationDay   ,    "day", 2],
+    [  3 * durationDay   ,    "day", 3],
+    [  4 * durationDay   ,    "day", 4],
+    [  5 * durationDay   ,    "day", 5],
+    [      durationWeek  ,   "week", 1],
+    [      durationMonth ,  "month", 1],
+    [  3 * durationMonth ,  "month", 3],
+    [      durationYear  ,   "year", 1],
+    [  2 * durationYear  ,   "year", 2],
+    [  5 * durationYear  ,   "year", 5],
+    [      durationDecade,   "year", 10],
+    [ 25 * durationYear  ,   "year", 25],
+    [100 * durationYear  ,   "year", 100],
+    [500 * durationYear  ,   "year", 250]
 ];
 
 const defaultTimeAxisStyle: TimeAxisStyle = {
@@ -273,8 +273,6 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             }
         }
 
-        // formatter = timeFormatter(type, timezone);
-
         // Formatter will be a function (date) => string, or
         // a string format type. In the case of the string type
         // that might be "duration", or "minutes", "day", etc.
@@ -285,10 +283,6 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         } else {
             formatter = timeFormatter(type, timezone);
         }
-
-        // if (formatAsDuration) {
-        //     formatter = durationFormatter();
-        // }
 
         const starttz = timezone ? moment(start).tz(timezone) : moment(start);
         const stoptz = timezone ? moment(stop).tz(timezone) : moment(stop);

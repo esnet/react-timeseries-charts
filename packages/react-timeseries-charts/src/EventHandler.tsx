@@ -159,7 +159,6 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
 
         e.preventDefault();
 
-        // CHECK
         document.addEventListener("mouseover", this.handleMouseMove as any);
         document.addEventListener("mouseup", this.handleMouseUp as any);
 
@@ -198,7 +197,6 @@ export class EventHandler extends React.Component<EventHandlerProps, EventHandle
 
         e.stopPropagation();
         
-        // CHECK
         document.removeEventListener("mouseover", this.handleMouseMove as any);
         document.removeEventListener("mouseup", this.handleMouseUp as any);
         

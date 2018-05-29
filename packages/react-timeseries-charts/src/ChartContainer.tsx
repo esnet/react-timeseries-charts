@@ -695,7 +695,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         const svgStyle = _.merge(
             true,
             { display: "block" },
-            this.props.timeAxisStyle ? this.props.timeAxisStyle : {}
+            this.props.chartAxisStyle ? this.props.chartAxisStyle : {}
         );
 
         return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (

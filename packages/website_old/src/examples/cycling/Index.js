@@ -152,11 +152,12 @@ class cycling extends React.Component {
 
                 if (_.contains(displayChannels, channelName)) {
                     const rollups = _.map(rollupLevels, rollupLevel => {
+                        console.log("channelName is ", channelName, rollupLevel);
                         return {
                             duration: parseInt(rollupLevel.split("s")[0], 10),
                             series: series.fixedWindowRollup({
                                 window: window(duration(rollupLevel)),
-                                aggregation: { [channelName]: { [channelName]: avg() } }
+                                aggregation: { channelName: { channelName: avg() } }
                             })
                         };
                     });

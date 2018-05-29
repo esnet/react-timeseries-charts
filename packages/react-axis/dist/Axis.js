@@ -77,13 +77,16 @@ var Axis = (function (_super) {
             React.createElement("text", { transform: rotate, textAnchor: anchor, style: labelStyle }, this.props.label)));
     };
     Axis.prototype.renderAxisLine = function () {
+        console.log("hide Axis Line ", this.props.hideAxisLine);
         var p = this.props.position;
         var axisStyle = _.merge(true, defaultAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {});
-        if (p === "left" || p === "right") {
-            return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: p === "left" ? this.props.width : 0, y1: this.props.margin, x2: p === "left" ? this.props.width : 0, y2: this.props.height - this.props.margin }));
-        }
-        else {
-            return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
+        if (!this.props.hideAxisLine) {
+            if (p === "left" || p === "right") {
+                return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: p === "left" ? this.props.width : 0, y1: this.props.margin, x2: p === "left" ? this.props.width : 0, y2: this.props.height - this.props.margin }));
+            }
+            else {
+                return (React.createElement("line", { key: "axis", className: "axis", style: axisStyle, x1: this.props.margin, y1: p === "bottom" ? 0 : this.props.height, x2: this.props.width - this.props.margin, y2: p === "bottom" ? 0 : this.props.height }));
+            }
         }
     };
     Axis.prototype.renderAxisTicks = function () {
@@ -158,6 +161,7 @@ var Axis = (function (_super) {
         labelPosition: 50,
         absolute: false,
         angled: false,
+        hideAxisLine: false,
         style: defaultAxisStyle
     };
     return Axis;

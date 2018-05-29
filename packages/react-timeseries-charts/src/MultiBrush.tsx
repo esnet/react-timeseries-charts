@@ -34,9 +34,6 @@ export type MultiBrushProps = ChartProps & {
      * provide. It will be called with the index of the TimeRange, corresponding
      * to those in the `timeRanges` prop.
      */
-
-    // CHECK?
-    // style?: React.CSSProperties | ((index: number) => any);
     style?: any;
 
     /**

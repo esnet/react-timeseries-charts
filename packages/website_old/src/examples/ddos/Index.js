@@ -69,7 +69,7 @@ class ddos extends React.Component {
         this.handleRescale = _.debounce(this.rescale, 300);
     }
 
-    rescale(timerange, active = this.state.active) {
+    rescale = (timerange, active = this.state.active) => {
         let max = 100;
         const maxRequests = requestsSeries.crop(this.state.timerange).max("requests");
         if (maxRequests > max && active.requests) max = maxRequests;
@@ -122,19 +122,6 @@ class ddos extends React.Component {
             );
         }
 
-        const axisStyle = {
-            // labels
-            values: {
-                labelColor: "grey", // Default label color
-                labelWeight: 100,
-                labelSize: 11
-            },
-            axis: {
-                axisColor: "grey",
-                axisWidth: 1
-            }
-        };
-
         const darkAxis = {
             label: {
                 stroke: "none",
@@ -165,7 +152,7 @@ class ddos extends React.Component {
         return (
             <ChartContainer
                 title="DDoS attack - connections vs requests"
-                style={{
+                chartAxisStyle={{
                     background: "#201d1e",
                     borderRadius: 8,
                     borderStyle: "solid",

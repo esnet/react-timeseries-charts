@@ -26,6 +26,7 @@ export declare type AxisProps = {
     labelPosition: number;
     absolute: boolean;
     angled?: boolean;
+    hideAxisLine?: boolean;
     style?: AxisStyle;
 };
 export declare class Axis extends React.Component<AxisProps> {

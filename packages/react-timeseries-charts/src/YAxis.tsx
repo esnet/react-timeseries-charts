@@ -8,8 +8,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// CHECK
-// Fix YAxis and React Axis styling to include style as label, axis, values, ticks
 import * as React from "react";
 
 import { format } from "d3-format";
@@ -94,6 +92,11 @@ export type YAxisProps = AxisProps & {
      * The number of ticks
      */
     tickCount?: number;
+
+    /**
+     * Show / Hide axis line
+     */
+    hideAxisLine?: boolean;
 };
 
 /**
@@ -154,7 +157,8 @@ export class YAxis extends React.Component<YAxisProps> {
         format: ".2s",
         labelOffset: 0,
         transition: 100,
-        width: 80
+        width: 80,
+        hideAxisLine: false
     };
 
     render() {
@@ -172,6 +176,7 @@ export class YAxis extends React.Component<YAxisProps> {
                 tickCount={this.props.tickCount}
                 absolute={this.props.absolute}
                 style={this.props.style}
+                hideAxisLine={this.props.hideAxisLine}
             />
         );
     }

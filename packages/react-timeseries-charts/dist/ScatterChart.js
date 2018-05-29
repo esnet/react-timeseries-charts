@@ -150,6 +150,7 @@ var ScatterChart = (function (_super) {
                             yScale: _this.props.yScale
                         };
                         eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
+                        console.log("eventMarker is ", eventMarker);
                     }
                     var point = (React.createElement("circle", { key: column + "-" + key, cx: x, cy: y, r: radius, style: style, pointerEvents: pointerEvents, onMouseMove: function (e) { return _this.handleHover(e); }, onClick: function (e) { return _this.handleClick(e, event, column); } }));
                     points.push(point);

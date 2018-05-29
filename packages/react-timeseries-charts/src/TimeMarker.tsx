@@ -128,7 +128,6 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
             const formatter = timeFormat("%Y");
             dateStr = formatter(d);
         } else if (this.props.timeFormat === "relative") {
-            // CHECK ?
             dateStr = moment.duration(+d).format();
         } else if (_.isString(this.props.timeFormat)) {
             const formatter = timeFormat(this.props.timeFormat);

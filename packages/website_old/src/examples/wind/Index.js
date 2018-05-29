@@ -182,8 +182,10 @@ class wind extends React.Component {
                                             infoHeight={28}
                                             infoWidth={110}
                                             infoStyle={{
-                                                fill: "black",
-                                                color: "#DDD"
+                                                box: {
+                                                    fill: "black",
+                                                    color: "#DDD"
+                                                }
                                             }}
                                             format=".1f"
                                             selected={this.state.selection}

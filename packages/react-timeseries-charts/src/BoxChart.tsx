@@ -434,7 +434,6 @@ export class BoxChart extends React.Component<BoxChartProps> {
     // Cached styles
     providedStyle: LevelStyle[];
 
-    // CHECK - fix any
     selectedStyle: any;
     highlightedStyle: any;
     mutedStyle: any;
@@ -651,11 +650,6 @@ export class BoxChart extends React.Component<BoxChartProps> {
                 );
             }
             style = this.highlightedStyle[level];
-            // CHECK - is the above method correct?
-            // style = _.merge(
-            //     defaultStyle[level].highlighted,
-            //     this.providedStyle[level].highlighted ? this.providedStyle[level].highlighted : {}
-            // );
         } else {
             if (!this.normalStyle) {
                 this.normalStyle = [];

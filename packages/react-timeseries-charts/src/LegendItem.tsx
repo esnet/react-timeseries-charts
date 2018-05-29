@@ -121,7 +121,6 @@ export class LegendItem extends React.Component<LegendItemProps> {
             default:
         }
 
-        // CHECK
         // TODO: We shouldn't be adding interactions to a element like this.
         //       The alternative it to put it on a <a> or something?
         

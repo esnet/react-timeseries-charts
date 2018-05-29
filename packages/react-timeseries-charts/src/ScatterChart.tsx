@@ -383,6 +383,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                         // * the info values themselves
                         // * the infoStyle
                         // * infoWidth and infoHeight
+
                         if (isHighlighted && this.props.info) {
                             const eventMarkerProps: EventMarkerProps = {
                                 key: `marker`,
@@ -402,6 +403,7 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                                 yScale: this.props.yScale
                             };
                             eventMarker = <EventMarker {...eventMarkerProps} />;
+                            console.log("eventMarker is ", eventMarker);
                         }
 
                         const point = (
