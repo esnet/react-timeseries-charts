@@ -134,6 +134,7 @@ class climate extends React.Component {
 
         return (
             <ChartContainer
+                timeFormat={"decade"}
                 timeRange={temperatureSeries.range()}
                 timeAxisStyle={axisStyle}
                 onTrackerChanged={this.handleTrackerChanged}

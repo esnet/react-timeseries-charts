@@ -28,7 +28,7 @@ var TimeMarker = (function (_super) {
             var formatter = d3_time_format_1.timeFormat("%B");
             dateStr = formatter(d);
         }
-        else if (this.props.timeFormat === "year") {
+        else if (this.props.timeFormat === "year" || this.props.timeFormat === "decade") {
             var formatter = d3_time_format_1.timeFormat("%Y");
             dateStr = formatter(d);
         }

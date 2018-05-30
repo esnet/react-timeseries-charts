@@ -17,7 +17,7 @@ export declare type TimeAxisProps = {
     width?: number;
     height?: number;
     margin?: number;
-    format?: ("second" | "minute" | "hour" | "day" | "month" | "year" | "duration") | ((...args: any[]) => any);
+    format?: ("second" | "minute" | "hour" | "day" | "month" | "year" | "decade" | "duration") | ((...args: any[]) => any);
     tickMinor?: number;
     tickMajor?: number;
     tickExtend?: number;

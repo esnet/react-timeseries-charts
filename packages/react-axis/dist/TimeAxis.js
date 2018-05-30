@@ -62,7 +62,6 @@ var tickIntervals = [
     [2 * durationYear, "year", 2],
     [5 * durationYear, "year", 5],
     [durationDecade, "year", 10],
-    [25 * durationYear, "year", 25],
     [100 * durationYear, "year", 100],
     [500 * durationYear, "year", 250]
 ];

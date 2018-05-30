@@ -68,7 +68,6 @@ const tickIntervals = [
     [  2 * durationYear  ,   "year", 2],
     [  5 * durationYear  ,   "year", 5],
     [      durationDecade,   "year", 10],
-    [ 25 * durationYear  ,   "year", 25],
     [100 * durationYear  ,   "year", 100],
     [500 * durationYear  ,   "year", 250]
 ];
@@ -113,7 +112,7 @@ export type TimeAxisProps = {
     height?: number;
     margin?: number;
     format?:
-        | ("second" | "minute" | "hour" | "day" | "month" | "year" | "duration")
+        | ("second" | "minute" | "hour" | "day" | "month" | "year" | "decade" | "duration")
         | ((...args: any[]) => any);
     tickMinor?: number;
     tickMajor?: number;

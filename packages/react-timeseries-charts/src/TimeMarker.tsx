@@ -124,7 +124,7 @@ export class TimeMarker extends React.Component<TimeMarkerProps> {
         } else if (this.props.timeFormat === "month") {
             const formatter = timeFormat("%B");
             dateStr = formatter(d);
-        } else if (this.props.timeFormat === "year") {
+        } else if (this.props.timeFormat === "year" || this.props.timeFormat === "decade") {
             const formatter = timeFormat("%Y");
             dateStr = formatter(d);
         } else if (this.props.timeFormat === "relative") {
