@@ -219,8 +219,7 @@ var ChartContainer = (function (_super) {
             React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;
         var svgHeight = yPosition + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
-        var svgStyle = _.merge(true, { display: "block" }, this.props.chartAxisStyle ? this.props.chartAxisStyle : {});
-        return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (React.createElement("svg", { width: svgWidth, height: svgHeight, style: svgStyle, ref: function (c) {
+        return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (React.createElement("svg", { width: svgWidth, height: svgHeight, style: { display: "block" }, ref: function (c) {
                 _this.svg = c;
             } },
             title,

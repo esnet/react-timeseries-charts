@@ -300,10 +300,10 @@ export type ScatterChartStyle = { [channel: string]: ScatterChartChannelStyle };
 
 export const defaultScatterChartChannelStyle: ScatterChartChannelStyle = {
     point: {
-        normal: { fill: "steelblue", opacity: 0.8 },
-        highlighted: { fill: "steelblue", opacity: 1.0 },
-        selected: { fill: "steelblue", opacity: 1.0 },
-        muted: { fill: "steelblue", opacity: 0.4 }
+        normal: { fill: "steelblue", opacity: 0.8, stroke: "none" },
+        highlighted: { fill: "steelblue", opacity: 1.0, stroke: "none" },
+        selected: { fill: "steelblue", opacity: 1.0, stroke: "none" },
+        muted: { fill: "steelblue", opacity: 0.4, stroke: "none" }
     }
 };
 
@@ -325,6 +325,7 @@ export type BaselineStyle = {
 export const defaultBaselineStyle: BaselineStyle = {
     label: {
         fill: "#8B7E7E",
+        stroke: "none",
         fontSize: 11,
         pointerEvents: "none" as "none"
     },
@@ -355,6 +356,7 @@ export const defaultInfoBoxStyle: InfoBoxStyle = {
     text: {
         fontSize: 11,
         fill: "#bdbdbd",
+        stroke: "none",
         pointerEvents: "none"
     }
 };
@@ -375,7 +377,8 @@ export const defaultEventMarkerStyle: EventMarkerStyle = {
         pointerEvents: "none"
     },
     marker: {
-        fill: "#999"
+        fill: "#999",
+        stroke: "none"
     },
     ...defaultInfoBoxStyle
 };
@@ -418,16 +421,16 @@ export const defaultLegendCategoryStyle: CategoryStyle = {
         muted: { stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1 }
     },
     label: {
-        normal: { fontSize: "normal", color: "#333" },
-        highlighted: { fontSize: "normal", color: "#222" },
-        selected: { fontSize: "normal", color: "#333" },
-        muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
+        normal: { stroke: "none", fontSize: "normal", color: "#333" },
+        highlighted: { stroke: "none", fontSize: "normal", color: "#222" },
+        selected: { stroke: "none", fontSize: "normal", color: "#333" },
+        muted: { stroke: "none", fontSize: "normal", color: "#333", opacity: 0.4 }
     },
     value: {
-        normal: { fontSize: "normal", color: "#333" },
-        highlighted: { fontSize: "normal", color: "#222" },
-        selected: { fontSize: "normal", color: "#333" },
-        muted: { fontSize: "normal", color: "#333", opacity: 0.4 }
+        normal: { stroke: "none", fontSize: "normal", color: "#333" },
+        highlighted: { stroke: "none", fontSize: "normal", color: "#222" },
+        selected: { stroke: "none", fontSize: "normal", color: "#333" },
+        muted: { stroke: "none", fontSize: "normal", color: "#333", opacity: 0.4 }
     }
 };
 

@@ -131,7 +131,6 @@ class nyc extends React.Component {
                                         min={0}
                                         max={120}
                                         width="70"
-                                        format={n => Number(n).toFixed() + "°F"}
                                     />
                                 </ChartRow>
                             </ChartContainer>

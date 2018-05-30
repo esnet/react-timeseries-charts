@@ -6,21 +6,19 @@ To begin with we converted the original data into Pond's TimeSeries data structu
 
     const octoberTraffic = indexedSeries({
         name: "Traffic",
-        utc: false,
+        tz: "Etc/UTC",
         columns: ["index", "in", "out"],
         points: trafficPoints
     });
 
 Points are simply an array of tuples, each of which is `[index, value1, value2, ...]`. In this case this looks like `['2014-10-DD', volIn, volOut]`. An index can be of several forms, but is a string that represents a time range (e.g. 2014-10-08 represents the time range spanning October 8th 2014).
 
-We also set `utc` to false here so that the index time ranges are defined in local time. Visualizations of time series data default to showing local time (though UTC is also possible), while `IndexedEvents` default to being in UTC.
-
 Now we can render a the chart. The `<BarChart>` element does the rendering of the chart itself. As with other chart types, the vertical scale is provided by referencing the `<YAxis>` (`axis='traffic'`).
 
     <ChartContainer
-        utc={false}
+        timezone={"Etc/UTC"}
         timeRange={this.state.timerange}
-        format="day"
+        timeFormat={"day"}
         enablePanZoom={true} onTimeRangeChanged={this.handleTimeRangeChange}
         maxTime={maxTimeDate}
         minTime={minTimeDate}

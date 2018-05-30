@@ -46,7 +46,7 @@ _.each(days, (value, day) => {
 
 const octoberTrafficSeries = indexedSeries({
     name: "October Traffic",
-    utc: false,
+    tz: "Etc/UTC",
     columns: ["index", "in", "out"],
     points: trafficPoints
 });
@@ -217,7 +217,7 @@ class volume extends React.Component {
             infoValues = [{ label: "Traffic", value: trafficText }];
             infoNetValues = [{ label: "Traffic " + highlight.column, value: trafficText }];
         }
-
+        
         return (
             <div>
                 <div className="row">
@@ -235,9 +235,9 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
-                                timezone={"local"}
+                                timezone={"Etc/UTC"}
                                 timeRange={this.state.timerange}
-                                format="day"
+                                timeFormat={"day"}
                                 enablePanZoom={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                                 onBackgroundClick={() => this.setState({ selection: null })}
@@ -260,8 +260,7 @@ class volume extends React.Component {
                                             columns={["in"]}
                                             series={octoberTrafficSeries}
                                             info={infoValues}
-                                            infoTimeFormat={index =>
-                                                moment(index).format("Do MMM 'YY")}
+                                            infoTimeFormat={index => moment(index).format("Do MMM 'YY")}
                                             highlighted={this.state.highlight}
                                             onHighlightChange={highlight =>
                                                 this.setState({ highlight })}
@@ -295,8 +294,9 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
+                                timezone={"Etc/UTC"}
                                 timeRange={octoberTrafficSeries.range()}
-                                format="day"
+                                timeFormat="day"
                                 onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
@@ -361,8 +361,9 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
+                                timezone={"Etc/UTC"}
                                 timeRange={octoberTrafficSeries.range()}
-                                format="day"
+                                timeFormat={"day"}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">
@@ -411,8 +412,9 @@ class volume extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer
+                                timezone={"Etc/UTC"}
                                 timeRange={octoberNetTrafficSeries.range()}
-                                format="day"
+                                timeFormat={"day"}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                             >
                                 <ChartRow height="150">

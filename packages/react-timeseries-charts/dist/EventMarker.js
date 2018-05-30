@@ -11,7 +11,8 @@ var textStyle = {
     fontSize: 11,
     textAnchor: "start",
     fill: "#bdbdbd",
-    pointerEvents: "none"
+    pointerEvents: "none",
+    stroke: "none"
 };
 var EventTime = function (_a) {
     var time = _a.time, _b = _a.format, format = _b === void 0 ? "%m/%d/%y %X" : _b;
@@ -44,19 +45,13 @@ var EventTimeRange = function (_a) {
 };
 var EventIndex = function (_a) {
     var index = _a.index, _b = _a.format, format = _b === void 0 ? "%m/%d/%y %X" : _b;
-    var textStyle = {
-        fontSize: 11,
-        textAnchor: "start",
-        fill: "#bdbdbd",
-        pointerEvents: "none"
-    };
     var text;
     if (_.isFunction(format)) {
-        text = format(index.begin());
+        text = format(index.timestamp());
     }
     else if (_.isString(format)) {
         var fmt = d3_time_format_1.timeFormat(format);
-        text = fmt(index.begin());
+        text = fmt(index.timestamp());
     }
     else {
         text = index.toString();
@@ -127,6 +122,7 @@ var EventMarker = (function (_super) {
                 pointerEvents: "none",
                 paintOrder: "stroke",
                 fill: "#b0b0b0",
+                stroke: "none",
                 strokeWidth: 2,
                 strokeLinecap: "butt",
                 strokeLinejoin: "miter",

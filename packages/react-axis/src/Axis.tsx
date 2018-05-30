@@ -155,7 +155,6 @@ export class Axis extends React.Component<AxisProps> {
     }
 
     renderAxisLine() {
-        console.log("hide Axis Line ", this.props.hideAxisLine);
         const p = this.props.position;
         const axisStyle = _.merge(
             true,

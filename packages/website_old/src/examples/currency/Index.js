@@ -118,13 +118,13 @@ class currency extends React.Component {
                                     ticks: {
                                         stroke: "#AAA",
                                         opacity: 0.25,
-                                        "stroke-dasharray": "1,1"
+                                        strokeDasharray: "1,1"
                                         // Note: this isn't in camel case because this is
                                         // passed into d3's style
                                     },
                                     values: {
                                         fill: "#AAA",
-                                        "font-size": 12
+                                        fontSize: 12
                                     }
                                 }}
                                 showGrid={true}
@@ -150,9 +150,7 @@ class currency extends React.Component {
                                             ticks: {
                                                 stroke: "#AAA",
                                                 opacity: 0.25,
-                                                "stroke-dasharray": "1,1"
-                                                // Note: this isn't in camel case because this is
-                                                // passed into d3's style
+                                                strokeDasharray: "1,1"
                                             }
                                         }}
                                         showGrid

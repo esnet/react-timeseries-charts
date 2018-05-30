@@ -66,7 +66,7 @@ class ddos extends React.Component {
 
     constructor(props) {
         super(props);
-        this.handleRescale = _.debounce(this.rescale, 300);
+        this.handleRescale = _.debounce(this.rescale, 300).bind(this);
     }
 
     rescale = (timerange, active = this.state.active) => {

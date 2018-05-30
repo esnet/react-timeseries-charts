@@ -108,8 +108,63 @@ if (this.state.active.connections) {
         />
     );
 }
-const lineCharts = (
-    <ChartContainer timeRange={requestsSeries.range()}>
+```
+
+Finally we implement the `render()` method of our component to return our final chart like this:
+
+```jsx
+const darkAxis = {
+    label: {
+        stroke: "none",
+        fill: "#AAA", // Default label color
+        fontWeight: 200,
+        fontSize: 14,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    values: {
+        stroke: "none",
+        fill: "#888",
+        fontWeight: 100,
+        fontSize: 11,
+        font: '"Goudy Bookletter 1911", sans-serif"'
+    },
+    ticks: {
+        fill: "none",
+        stroke: "#AAA",
+        opacity: 0.2
+    },
+    axis: {
+        fill: "none",
+        stroke: "#AAA",
+        opacity: 1
+    }
+};
+
+<Resizable>
+    <ChartContainer
+        title="DDoS attack - connections vs requests"
+        chartAxisStyle={{
+            background: "#201d1e",
+            borderRadius: 8,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#232122"
+        }}
+        timeAxisStyle={darkAxis}
+        titleStyle={{
+            color: "#EEE",
+            fontWeight: 500
+        }}
+        padding={20}
+        paddingTop={5}
+        paddingBottom={0}
+        enableDragZoom
+        onTimeRangeChanged={this.handleTimeRangeChange}
+        timeRange={this.state.timerange}
+        maxTime={requestsSeries.range().end()}
+        minTime={requestsSeries.range().begin()}
+        timeAxisStyle={axisStyle}
+    >
         <ChartRow height="300">
             <YAxis
                 id="axis1"
@@ -141,55 +196,5 @@ const lineCharts = (
             />
         </ChartRow>
     </ChartContainer>
-);
-```
-
-Finally we implement the `render()` method of our component to return our final chart like this:
-
-```jsx
-<ChartContainer
-    title="DDoS attack - connections vs requests"
-    style={{
-        background: "#201d1e",
-        borderRadius: 8,
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "#232122"
-    }}
-    padding={20}
-    paddingTop={5}
-    paddingBottom={0}
-    enableDragZoom
-    onTimeRangeChanged={this.handleTimeRangeChange}
-    timeRange={this.state.timerange}
-    maxTime={requestsSeries.range().end()}
-    minTime={requestsSeries.range().begin()}
-    timeAxisStyle={axisStyle}
->
-    <ChartRow height="300">
-        <YAxis
-            id="axis1"
-            label="Requests"
-            style={{ labelColor: scheme.requests }}
-            labelOffset={-10}
-            min={0}
-            max={1000}
-            format=",.0f"
-            width="60"
-            type="linear"
-        />
-        <Charts>{linecharts}</Charts>
-        <YAxis
-            id="axis2"
-            label="Connections"
-            style={{ labelColor: scheme.connections }}
-            labelOffset={12}
-            min={0}
-            format=",.0f"
-            max={10000}
-            width="80"
-            type="linear"
-        />
-    </ChartRow>
-</ChartContainer>
+</Resizable>
 ```

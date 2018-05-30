@@ -77,7 +77,6 @@ var Axis = (function (_super) {
             React.createElement("text", { transform: rotate, textAnchor: anchor, style: labelStyle }, this.props.label)));
     };
     Axis.prototype.renderAxisLine = function () {
-        console.log("hide Axis Line ", this.props.hideAxisLine);
         var p = this.props.position;
         var axisStyle = _.merge(true, defaultAxisStyle.axis, this.props.style.axis ? this.props.style.axis : {});
         if (!this.props.hideAxisLine) {

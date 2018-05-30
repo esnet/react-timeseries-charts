@@ -26,7 +26,8 @@ const textStyle: React.CSSProperties = {
     fontSize: 11,
     textAnchor: "start",
     fill: "#bdbdbd",
-    pointerEvents: "none"
+    pointerEvents: "none",
+    stroke: "none"
 };
 
 type EventTimeProps = {
@@ -91,19 +92,12 @@ const EventTimeRange: React.SFC<EventTimeRangeProps> = ({ timerange, format = "%
  * Helper component to render a `index`'s begin time in the `format` provided
  */
 const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" }) => {
-    const textStyle: React.CSSProperties = {
-        fontSize: 11,
-        textAnchor: "start",
-        fill: "#bdbdbd",
-        pointerEvents: "none"
-    };
-
     let text: string;
     if (_.isFunction(format)) {
-        text = format(index.begin());
+        text = format(index.timestamp());
     } else if (_.isString(format)) {
         const fmt = timeFormat(format);
-        text = fmt(index.begin());
+        text = fmt(index.timestamp());
     } else {
         text = index.toString();
     }
@@ -322,6 +316,7 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 pointerEvents: "none",
                 paintOrder: "stroke",
                 fill: "#b0b0b0",
+                stroke: "none",
                 strokeWidth: 2,
                 strokeLinecap: "butt",
                 strokeLinejoin: "miter",
