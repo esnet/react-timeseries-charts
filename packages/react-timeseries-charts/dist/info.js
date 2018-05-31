@@ -10,11 +10,11 @@ var Label = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Label.prototype.render = function () {
-        var _a = this.props, label = _a.label, style = _a.style, align = _a.align, width = _a.width, height = _a.height;
-        var textStyle = tslib_1.__assign({}, style.text, { textAnchor: "start", pointerEvents: "none" });
-        var textStyleCentered = tslib_1.__assign({}, style.text, { textAnchor: "middle", pointerEvents: "none" });
+        var _a = this.props, label = _a.label, align = _a.align, width = _a.width, height = _a.height;
+        var textStyle = _.merge(true, style_1.defaultInfoBoxStyle.text, this.props.style.text ? this.props.style.text : {}, { textAnchor: "start", pointerEvents: "none" });
+        var textStyleCentered = _.merge(true, style_1.defaultInfoBoxStyle.text, this.props.style.text ? this.props.style.text : {}, { textAnchor: "middle", pointerEvents: "none" });
         var labelStyle = align === "center" ? textStyleCentered : textStyle;
-        var boxStyle = style.box;
+        var boxStyle = _.merge(true, style_1.defaultInfoBoxStyle.box, this.props.style.box ? this.props.style.box : {});
         var posx = align === "center" ? Math.round(width / 2) : 10;
         var text = (React.createElement("text", { x: posx, y: 5, dy: "1.2em", style: labelStyle }, label));
         var box = React.createElement("rect", { x: 0, y: 0, style: boxStyle, width: width, height: height });
@@ -38,9 +38,10 @@ var ValueList = (function (_super) {
     }
     ValueList.prototype.render = function () {
         var _this = this;
-        var _a = this.props, align = _a.align, style = _a.style, width = _a.width, height = _a.height;
-        var textStyle = tslib_1.__assign({}, style.text, { textAnchor: "start", pointerEvents: "none" });
-        var textStyleCentered = tslib_1.__assign({}, style.text, { textAnchor: "middle", pointerEvents: "none" });
+        var _a = this.props, align = _a.align, width = _a.width, height = _a.height;
+        var textStyle = _.merge(true, style_1.defaultInfoBoxStyle.text, this.props.style.text ? this.props.style.text : {}, { textAnchor: "start", pointerEvents: "none" });
+        var textStyleCentered = _.merge(true, style_1.defaultInfoBoxStyle.text, this.props.style.text ? this.props.style.text : {}, { textAnchor: "middle", pointerEvents: "none" });
+        var boxStyle = _.merge(true, style_1.defaultInfoBoxStyle.box, this.props.style.box ? this.props.style.box : {});
         var values = this.props.values.map(function (item, i) {
             if (align === "left") {
                 return (React.createElement("g", { key: i },
@@ -54,7 +55,7 @@ var ValueList = (function (_super) {
                     React.createElement("tspan", { style: { fontWeight: 700 } }, item.label + ": "),
                     React.createElement("tspan", null, "" + item.value))));
         });
-        var box = React.createElement("rect", { style: style.box, x: 0, y: 0, width: width, height: height });
+        var box = React.createElement("rect", { style: boxStyle, x: 0, y: 0, width: width, height: height });
         return (React.createElement("g", null,
             box,
             values));

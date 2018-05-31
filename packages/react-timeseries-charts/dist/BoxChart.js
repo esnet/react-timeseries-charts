@@ -314,7 +314,6 @@ var BoxChart = (function (_super) {
             var outerMin = scaled(d, "outerMin");
             var outerMax = scaled(d, "outerMax");
             var center = scaled(d, "center");
-            console.log("d innerMin innerMax outerMin outerMax center ", d, innerMin, innerMax, outerMin, outerMax, center);
             var hasInner = true;
             var hasOuter = true;
             var hasCenter = true;

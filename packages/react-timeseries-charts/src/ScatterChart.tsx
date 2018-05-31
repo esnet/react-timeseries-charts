@@ -223,7 +223,6 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
     static defaultProps: Partial<ScatterChartProps> = {
         columns: ["value"],
         radius: 2.0,
-        infoStyle: defaultEventMarkerStyle,
         infoWidth: 90,
         infoHeight: 30,
         visible: true
@@ -373,23 +372,22 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                             ? this.props.radius(event, column)
                             : +this.props.radius;
 
-                        const isHighlighted =
-                            this.props.highlight &&
-                            Event.is(this.props.highlight.event, event) &&
-                            column === this.props.highlight.column;
-
                         // Hover info. Note that we just pass all of our props down
                         // into the EventMarker here, but the interesting ones are:
                         // * the info values themselves
                         // * the infoStyle
                         // * infoWidth and infoHeight
-
+                        
+                        const isHighlighted =
+                            this.props.highlight &&
+                            Event.is(this.props.highlight.event, event) &&
+                            column === this.props.highlight.column;
                         if (isHighlighted && this.props.info) {
                             const eventMarkerProps: EventMarkerProps = {
                                 key: `marker`,
                                 event,
                                 column,
-                                type: "point",
+                                type: "flag",
                                 info: this.props.info,
                                 style: this.props.infoStyle,
                                 width: this.props.width,
@@ -397,7 +395,6 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                                 infoWidth: this.props.infoWidth,
                                 infoHeight: this.props.infoHeight,
                                 infoTimeFormat: this.props.infoTimeFormat,
-                                // marker: "circle",
                                 markerRadius: 0,
                                 timeScale: this.props.timeScale,
                                 yScale: this.props.yScale

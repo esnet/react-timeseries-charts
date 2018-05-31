@@ -64,21 +64,30 @@ export class Label extends React.Component<LabelProps> {
     };
 
     render() {
-        const { label, style, align, width, height } = this.props;
+        const { label, align, width, height } = this.props;
 
-        const textStyle: React.CSSProperties = {
-            ...style.text,
-            textAnchor: "start",
-            pointerEvents: "none"
-        };
-        const textStyleCentered: React.CSSProperties = {
-            ...style.text,
-            textAnchor: "middle",
-            pointerEvents: "none"
-        };
+        const textStyle: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.text,
+            this.props.style.text ? this.props.style.text : {},
+            { textAnchor: "start", pointerEvents: "none"}
+        );
+
+        const textStyleCentered: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.text,
+            this.props.style.text ? this.props.style.text : {},
+            { textAnchor: "middle", pointerEvents: "none"}
+        );
 
         const labelStyle = align === "center" ? textStyleCentered : textStyle;
-        const boxStyle = style.box;
+        
+        const boxStyle: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.box,
+            this.props.style.box ? this.props.style.box : {}
+        );
+        
         const posx = align === "center" ? Math.round(width / 2) : 10;
 
         const text = (
@@ -113,17 +122,28 @@ export class ValueList extends React.Component<ValueListProps> {
     };
 
     render() {
-        const { align, style, width, height } = this.props;
-        const textStyle: React.CSSProperties = {
-            ...style.text,
-            textAnchor: "start",
-            pointerEvents: "none"
-        };
-        const textStyleCentered: React.CSSProperties = {
-            ...style.text,
-            textAnchor: "middle",
-            pointerEvents: "none"
-        };
+        const { align, width, height } = this.props;
+        
+        const textStyle: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.text,
+            this.props.style.text ? this.props.style.text : {},
+            { textAnchor: "start", pointerEvents: "none"}
+        );
+
+        const textStyleCentered: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.text,
+            this.props.style.text ? this.props.style.text : {},
+            { textAnchor: "middle", pointerEvents: "none"}
+        );
+
+        const boxStyle: React.CSSProperties = _.merge(
+            true,
+            defaultStyle.box,
+            this.props.style.box ? this.props.style.box : {}
+        );
+
         const values = this.props.values.map((item, i) => {
             if (align === "left") {
                 return (
@@ -145,7 +165,7 @@ export class ValueList extends React.Component<ValueListProps> {
                 </g>
             );
         });
-        const box = <rect style={style.box} x={0} y={0} width={width} height={height} />;
+        const box = <rect style={boxStyle} x={0} y={0} width={width} height={height} />;
         return (
             <g>
                 {box}

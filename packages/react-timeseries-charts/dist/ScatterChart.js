@@ -137,7 +137,7 @@ var ScatterChart = (function (_super) {
                             key: "marker",
                             event: event,
                             column: column,
-                            type: "point",
+                            type: "flag",
                             info: _this.props.info,
                             style: _this.props.infoStyle,
                             width: _this.props.width,
@@ -172,7 +172,6 @@ var ScatterChart = (function (_super) {
     ScatterChart.defaultProps = {
         columns: ["value"],
         radius: 2.0,
-        infoStyle: style_1.defaultEventMarkerStyle,
         infoWidth: 90,
         infoHeight: 30,
         visible: true
