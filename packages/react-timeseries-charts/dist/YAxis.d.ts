@@ -1,17 +1,21 @@
 /// <reference types="react" />
 import * as React from "react";
-import { AxisProps } from "./Charts";
+import { ChartRowProps } from "./ChartRow";
+import { ScaleType } from "./Charts";
 export declare type YAxisStyle = {
     label: React.CSSProperties;
     axis: React.CSSProperties;
     values: React.CSSProperties;
     ticks: React.CSSProperties;
 };
-export declare type YAxisProps = AxisProps & {
+export declare type YAxisProps = ChartRowProps & {
+    id: string;
+    chartExtent: number;
     label?: string;
     min: number;
     max: number;
     width: number;
+    type: ScaleType;
     style?: YAxisStyle;
     absolute?: boolean;
     labelOffset?: number;

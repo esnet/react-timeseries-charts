@@ -287,6 +287,11 @@ export type ChartContainerProps = ChartProps & {
      * Define the styling of the chart's title
      */
     titleStyle?: React.CSSProperties;
+
+    /**
+     * Style the chart container
+     */
+    style?: React.CSSProperties;
 };
 
 /**
@@ -632,7 +637,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
             this.props.chartAxisStyle ? this.props.chartAxisStyle : {}
         );
 
-        const gridHeight = this.props.showGrid ? chartsHeight : 0;
+        const tickSize = this.props.showGrid ? chartsHeight : 0;
         const timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
 
         const timeAxis = (
@@ -652,7 +657,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
                     width={timeAxisWidth}
                     margin={0}
                     height={50}
-                    tickExtend={gridHeight}
+                    tickExtend={tickSize}
                     style={timeAxisStyle}
                     format={this.props.timeFormat}
                     angled={this.props.timeAxisAngledLabels}
@@ -692,11 +697,17 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
         const svgWidth = this.props.width;
         const svgHeight = yPosition + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
 
+        const svgStyle = _.merge(
+            true,
+            { display: "block" },
+            this.props.style ? this.props.style : {}
+        );
+
         return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (
             <svg 
                 width={svgWidth} 
                 height={svgHeight} 
-                style={{ display: "block" }}
+                style={svgStyle}
                 ref={c => {
                     this.svg = c;
                 }}
@@ -710,7 +721,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
             <svg 
                 width={svgWidth} 
                 height={svgHeight} 
-                style={{ display: "block" }}
+                style={svgStyle}
                 ref={c => {
                     this.svg = c;
                 }}

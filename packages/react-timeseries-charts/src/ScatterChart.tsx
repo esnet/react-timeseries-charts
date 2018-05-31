@@ -403,7 +403,6 @@ export class ScatterChart extends React.Component<ScatterChartProps> {
                                 yScale: this.props.yScale
                             };
                             eventMarker = <EventMarker {...eventMarkerProps} />;
-                            console.log("eventMarker is ", eventMarker);
                         }
 
                         const point = (

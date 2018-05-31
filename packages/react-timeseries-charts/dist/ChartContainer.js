@@ -210,22 +210,23 @@ var ChartContainer = (function (_super) {
         }
         var timeAxisStyle = _.merge(true, style_1.defaultTimeAxisStyle, this.props.timeAxisStyle ? this.props.timeAxisStyle : {});
         var chartAxisStyle = _.merge(true, defaultChartAxisStyle, this.props.chartAxisStyle ? this.props.chartAxisStyle : {});
-        var gridHeight = this.props.showGrid ? chartsHeight : 0;
+        var tickSize = this.props.showGrid ? chartsHeight : 0;
         var timezone = this.props.timezone === "local" ? moment.tz.guess() : this.props.timezone;
         var timeAxis = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight + chartsHeight) + ")" },
             React.createElement("line", { x1: -leftWidth, y1: 0.5, x2: chartsWidth + rightWidth, y2: 0.5, style: chartAxisStyle }),
-            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: gridHeight, style: timeAxisStyle, format: this.props.timeFormat, angled: this.props.timeAxisAngledLabels })));
+            React.createElement(react_axis_1.TimeAxis, { timezone: timezone, position: "bottom", beginTime: new Date(this.props.timeRange.begin().getTime()), endTime: new Date(this.props.timeRange.end().getTime()), width: timeAxisWidth, margin: 0, height: 50, tickExtend: tickSize, style: timeAxisStyle, format: this.props.timeFormat, angled: this.props.timeAxisAngledLabels })));
         var rows = (React.createElement("g", { transform: "translate(" + (leftWidth + paddingLeft) + "," + (paddingTop + titleHeight) + ")" },
             React.createElement(EventHandler_1.EventHandler, { key: "event-handler", width: chartsWidth, height: chartsHeight + timeAxisHeight, scale: timeScale, enablePanZoom: this.props.enablePanZoom, enableDragZoom: this.props.enableDragZoom, minDuration: this.props.minDuration, minTime: this.props.minTime, maxTime: this.props.maxTime, onMouseOut: this.handleMouseOut, onMouseMove: function (x, y) { return _this.handleMouseMove(x, y); }, onMouseClick: this.handleBackgroundClick, onZoom: function (tr) { return _this.handleZoom(tr); } }, chartRows)));
         var svgWidth = this.props.width;
         var svgHeight = yPosition + timeAxisHeight + paddingTop + paddingBottom + titleHeight;
-        return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (React.createElement("svg", { width: svgWidth, height: svgHeight, style: { display: "block" }, ref: function (c) {
+        var svgStyle = _.merge(true, { display: "block" }, this.props.style ? this.props.style : {});
+        return this.props.showGridPosition.toUpperCase() === ShowGridPosition.Over ? (React.createElement("svg", { width: svgWidth, height: svgHeight, style: svgStyle, ref: function (c) {
                 _this.svg = c;
             } },
             title,
             rows,
             tracker,
-            timeAxis)) : (React.createElement("svg", { width: svgWidth, height: svgHeight, style: { display: "block" }, ref: function (c) {
+            timeAxis)) : (React.createElement("svg", { width: svgWidth, height: svgHeight, style: svgStyle, ref: function (c) {
                 _this.svg = c;
             } },
             title,

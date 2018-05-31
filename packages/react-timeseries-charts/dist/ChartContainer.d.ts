@@ -53,6 +53,7 @@ export declare type ChartContainerProps = ChartProps & {
     title?: string;
     titleHeight?: number;
     titleStyle?: React.CSSProperties;
+    style?: React.CSSProperties;
 };
 export declare class ChartContainer extends React.Component<ChartContainerProps> {
     static defaultProps: Partial<ChartContainerProps>;

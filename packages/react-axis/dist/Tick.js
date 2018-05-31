@@ -52,7 +52,7 @@ var Tick = (function (_super) {
             if (labelAlign === "adjacent") {
                 var x = 2;
                 var y = isTop ? -6 : 6;
-                return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: valueStyle, textAnchor: "start", transform: rotate, x: x, y: y, dx: dx, dy: dy, alignmentBaseline: baseLine }, label));
+                return (React.createElement("text", { key: "label-" + label, className: "tick-label", style: valueStyle, textAnchor: angled ? "end" : "start", transform: rotate, x: x, y: y, dx: dx, dy: dy, alignmentBaseline: baseLine }, label));
             }
             else if (labelAlign === "center") {
                 var x = 0;

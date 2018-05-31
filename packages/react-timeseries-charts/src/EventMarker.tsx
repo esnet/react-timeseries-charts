@@ -347,7 +347,6 @@ export class EventMarker extends React.Component<EventMarkerProps> {
                 default:
             }
 
-            // const tstyle = _.merge(true, textDefaultStyle, this.props.markerLabelStyle);
             const tstyle = _.merge(true, textDefaultStyle, this.props.style.text);
 
             dot = (

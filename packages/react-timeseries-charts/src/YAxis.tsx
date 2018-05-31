@@ -13,6 +13,7 @@ import * as React from "react";
 import { format } from "d3-format";
 import { Axis } from "react-axis";
 
+import { ChartRowProps } from "./ChartRow";
 import { AxisProps, ScaleType } from "./Charts";
 import { scaleAsString } from "./util";
 
@@ -25,7 +26,18 @@ export type YAxisStyle = {
     ticks: React.CSSProperties;
 };
 
-export type YAxisProps = AxisProps & {
+export type YAxisProps = ChartRowProps & {
+    /**
+     * A name for the axis which can be used by a chart to reference the axis.
+     * This is used by the ChartRow to match charts to this axis.
+     */
+    id: string;
+
+    /**
+     * Width of the chart
+     */
+    chartExtent: number;
+
     /**
      * The label to be displayed alongside the axis.
      */
@@ -45,6 +57,11 @@ export type YAxisProps = AxisProps & {
      * The width of the axis
      */
     width: number;
+
+    /**
+     * The scale type: linear, power, or log.
+     */
+    type: ScaleType;
 
     /**
      * Object specifying the CSS by which the axis can be styled. The object can contain:
@@ -187,6 +204,7 @@ export class YAxis extends React.Component<YAxisProps> {
                 style={this.props.style}
                 hideAxisLine={this.props.hideAxisLine}
                 showGrid={this.props.showGrid}
+                tickExtend={this.props.showGrid ? this.props.chartExtent : 0}
             />
         );
     }

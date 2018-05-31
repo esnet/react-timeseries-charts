@@ -143,7 +143,7 @@ const darkAxis = {
 <Resizable>
     <ChartContainer
         title="DDoS attack - connections vs requests"
-        chartAxisStyle={{
+        style={{
             background: "#201d1e",
             borderRadius: 8,
             borderStyle: "solid",

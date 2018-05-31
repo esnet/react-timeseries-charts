@@ -152,12 +152,13 @@ class ddos extends React.Component {
         return (
             <ChartContainer
                 title="DDoS attack - connections vs requests"
-                chartAxisStyle={{
+                style={{
                     background: "#201d1e",
                     borderRadius: 8,
                     borderStyle: "solid",
                     borderWidth: 1,
-                    borderColor: "#232122"
+                    borderColor: "#232122",
+                    stroke: "none"
                 }}
                 timeAxisStyle={darkAxis}
                 titleStyle={{

@@ -78,9 +78,6 @@ class climate extends React.Component {
     }
 
     renderMarker() {
-        if (!this.state.tracker) {
-            return <g />;
-        }
         if (this.state.markerMode === "flag") {
             return (
                 <EventMarker

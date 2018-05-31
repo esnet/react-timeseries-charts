@@ -25,27 +25,56 @@ The `Legend` is rendered as follows, supporting highlighting and selection. In t
 The LineChart itself is rendered like this:
 
     <ChartContainer
-        timeRange={this.state.timerange}
-        trackerTime={this.state.tracker}
+        timeRange={range}
+        showGrid={true}
+        paddingRight={100}
+        maxTime={currencySeries.range().end()}
+        minTime={currencySeries.range().begin()}
+        timeAxisAngledLabels={true}
+        timeAxisHeight={65}
         onTrackerChanged={this.handleTrackerChanged}
-        onBackgroundClick={() => this.setState({selection: null})}
+        onBackgroundClick={() => this.setState({ selection: null })}
         enablePanZoom={true}
         onTimeRangeChanged={this.handleTimeRangeChange}
-        minDuration={1000 * 60 * 60 * 24 * 30} >
-        <ChartRow height="200" debug={false}>
-            <YAxis id="y" label="Price ($)" min={0.5} max={1.5} format="$,.2f" />
+        onMouseMove={(x, y) => this.handleMouseMove(x, y)}
+        minDuration={1000 * 60 * 60 * 24 * 30}
+    >
+        <ChartRow height="400">
+            <YAxis
+                id="y"
+                label="Price ($)"
+                min={0.5}
+                max={1.5}
+                showGrid
+                hideAxisLine
+                width="60"
+                type="linear"
+                format="$,.2f"
+            />
             <Charts>
                 <LineChart
                     axis="y"
                     breakLine={false}
                     series={currencySeries}
                     columns={["aud", "euro"]}
-                    style={styler}
+                    style={style}
                     interpolation="curveBasis"
                     highlight={this.state.highlight}
-                    onHighlightChange={highlight => this.setState({highlight})}
+                    onHighlightChange={highlight =>
+                        this.setState({ highlight })
+                    }
                     selection={this.state.selection}
-                    onSelectionChange={selection => this.setState({selection})} />
+                    onSelectionChange={selection =>
+                        this.setState({ selection })
+                    }
+                />
+                <CrossHairs x={this.state.x} y={this.state.y} />
+                <Baseline
+                    axis="y"
+                    value={1.0}
+                    label="USD Baseline"
+                    position="right"
+                />
             </Charts>
         </ChartRow>
     </ChartContainer>

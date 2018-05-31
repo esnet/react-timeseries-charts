@@ -115,7 +115,7 @@ export class Tick extends React.Component<TickProps> {
                         key={`label-${label}`}
                         className="tick-label"
                         style={valueStyle}
-                        textAnchor="start"
+                        textAnchor={angled ? "end" : "start"}
                         transform={rotate}
                         x={x}
                         y={y}
