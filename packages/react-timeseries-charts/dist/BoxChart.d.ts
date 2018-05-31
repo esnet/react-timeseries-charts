@@ -47,20 +47,6 @@ export declare class BoxChart extends React.Component<BoxChartProps> {
         column: string;
         innerSpacing: number;
         outerSpacing: number;
-        infoStyle: {
-            stroke: string;
-            fill: string;
-            opacity: number;
-            pointerEvents: string;
-        };
-        stemStyle: {
-            stroke: string;
-            cursor: string;
-            pointerEvents: string;
-        };
-        markerStyle: {
-            fill: string;
-        };
         infoMarkerRadius: number;
         infoWidth: number;
         infoHeight: number;

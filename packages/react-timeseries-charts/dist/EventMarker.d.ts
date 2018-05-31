@@ -1,7 +1,9 @@
 /// <reference types="react" />
 import * as React from "react";
+import { ScaleTime } from "d3-scale";
 import { Event, Key } from "pondjs";
 import { ChartProps } from "./Charts";
+import { ScalerFunction } from "./interpolators";
 import { EventMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 export declare type EventMarkerProps = ChartProps & {
@@ -19,6 +21,8 @@ export declare type EventMarkerProps = ChartProps & {
     yValueFunc?: (...args: any[]) => any;
     offsetX?: number;
     offsetY?: number;
+    timeScale: ScaleTime<number, number>;
+    yScale?: ScalerFunction;
 };
 export declare class EventMarker extends React.Component<EventMarkerProps> {
     static defaultProps: Partial<EventMarkerProps>;

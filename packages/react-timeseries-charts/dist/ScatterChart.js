@@ -143,7 +143,7 @@ var ScatterChart = (function (_super) {
                             width: _this.props.width,
                             height: _this.props.height,
                             infoWidth: _this.props.infoWidth,
-                            infoHeight: _this.props.infoWidth,
+                            infoHeight: _this.props.infoHeight,
                             infoTimeFormat: _this.props.infoTimeFormat,
                             markerRadius: 0,
                             timeScale: _this.props.timeScale,

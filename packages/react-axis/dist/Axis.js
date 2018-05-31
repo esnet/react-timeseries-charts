@@ -121,7 +121,6 @@ var Axis = (function (_super) {
             ticks: _.merge(true, defaultAxisStyle.ticks, this.props.style.ticks ? this.props.style.ticks : {}),
             values: _.merge(true, defaultAxisStyle.values, this.props.style.values ? this.props.style.values : {})
         };
-        console.log("this is ", this);
         return scale.ticks(this.props.tickCount).map(function (tickValue, tickIndex) {
             var tickPosition = scale(tickValue) + _this.props.margin;
             var tickFormatSpecifier = _this.props.tickFormatSpecifier;

@@ -238,8 +238,6 @@ export class Axis extends React.Component<AxisProps> {
                 this.props.style.values ? this.props.style.values : {}
             )
         };
-
-        console.log("this is ", this);
         
         return scale.ticks(this.props.tickCount).map((tickValue, tickIndex) => {
             const tickPosition = scale(tickValue) + this.props.margin;

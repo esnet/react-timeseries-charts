@@ -11,10 +11,13 @@
 import * as _ from "lodash";
 import * as React from "react";
 
+import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
 import { timeFormat } from "d3-time-format";
+
 import { Event, Index, TimeRange, Time, Key, index } from "pondjs";
 
 import { ChartProps } from "./Charts";
+import { ScalerFunction } from "./interpolators";
 import { InfoBox, InfoBoxProps } from "./Info";
 import { 
     EventMarkerStyle, 
@@ -190,6 +193,17 @@ export type EventMarkerProps = ChartProps & {
      * Offset the marker position in the y direction
      */
     offsetY?: number;
+
+    /**
+     * [Internal] The timeScale supplied by the surrounding ChartContainer
+     */
+    timeScale: ScaleTime<number, number>;
+
+    /**
+     * [Internal] The yScale supplied by the associated YAxis
+     */
+    yScale?: ScalerFunction;
+
 };
 
 /**

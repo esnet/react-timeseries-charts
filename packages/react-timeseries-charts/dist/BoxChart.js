@@ -56,7 +56,7 @@ function getSeries(series, column) {
             default:
                 console.error("Tried to make boxchart from invalid array");
         }
-        return pondjs_1.indexedEvent(e.index(), Immutable.Map(d));
+        return new pondjs_1.Event(pondjs_1.index(e.indexAsString()), Immutable.Map(d));
     });
 }
 function getAggregatedSeries(series, column, aggregation) {
@@ -273,7 +273,12 @@ var BoxChart = (function (_super) {
         var outerSize = +this.props.outerSize;
         var bars = [];
         var eventMarker;
-        var events = this.series.collection().eventList();
+        var scaled = function (d, field) {
+            return d.has(field) && !_.isUndefined(d.get(field)) && !_.isNaN(d.get(field)) && !_.isNull(d.get(field))
+                ? yScale(d.get(field))
+                : null;
+        };
+        var events = this.series.eventList();
         events.forEach(function (event) {
             var index = event.index();
             var begin = event.begin();
@@ -304,11 +309,12 @@ var BoxChart = (function (_super) {
             styles[0] = _this.style(column, event, 0);
             styles[1] = _this.style(column, event, 1);
             styles[2] = _this.style(column, event, 2);
-            var innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
-            var innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
-            var outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
-            var outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
-            var center = d.has("center") ? yScale(event.get("center")) : null;
+            var innerMin = scaled(d, "innerMin");
+            var innerMax = scaled(d, "innerMax");
+            var outerMin = scaled(d, "outerMin");
+            var outerMax = scaled(d, "outerMax");
+            var center = scaled(d, "center");
+            console.log("d innerMin innerMax outerMin outerMax center ", d, innerMin, innerMax, outerMin, outerMax, center);
             var hasInner = true;
             var hasOuter = true;
             var hasCenter = true;
@@ -413,16 +419,18 @@ var BoxChart = (function (_super) {
                     key: "marker-" + index,
                     event: event,
                     column: column,
-                    type: "point",
+                    type: "flag",
                     info: _this.props.info,
                     style: _this.props.infoStyle,
                     yValueFunc: function (e) { return e.get(ymax); },
                     width: _this.props.width,
                     height: _this.props.height,
                     infoWidth: _this.props.infoWidth,
-                    infoHeight: _this.props.infoWidth,
+                    infoHeight: _this.props.infoHeight,
                     infoTimeFormat: _this.props.infoTimeFormat,
-                    markerRadius: _this.props.infoMarkerRadius
+                    markerRadius: _this.props.infoMarkerRadius,
+                    timeScale: _this.props.timeScale,
+                    yScale: _this.props.yScale
                 };
                 eventMarker = React.createElement(EventMarker_1.EventMarker, tslib_1.__assign({}, eventMarkerProps));
             }
@@ -438,20 +446,6 @@ var BoxChart = (function (_super) {
         column: "value",
         innerSpacing: 1.0,
         outerSpacing: 2.0,
-        infoStyle: {
-            stroke: "#999",
-            fill: "white",
-            opacity: 0.9,
-            pointerEvents: "none"
-        },
-        stemStyle: {
-            stroke: "#999",
-            cursor: "crosshair",
-            pointerEvents: "none"
-        },
-        markerStyle: {
-            fill: "#999"
-        },
         infoMarkerRadius: 2,
         infoWidth: 90,
         infoHeight: 30

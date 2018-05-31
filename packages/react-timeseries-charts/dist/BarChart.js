@@ -139,7 +139,7 @@ var BarChart = (function (_super) {
                             width: _this.props.width,
                             height: _this.props.height,
                             infoWidth: _this.props.infoWidth,
-                            infoHeight: _this.props.infoWidth,
+                            infoHeight: _this.props.infoHeight,
                             infoTimeFormat: _this.props.infoTimeFormat,
                             markerRadius: _this.props.markerRadius,
                             offsetX: offset,

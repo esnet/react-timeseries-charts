@@ -14,6 +14,7 @@ import * as React from "react";
 import {
     Event,
     Key,
+    index,
     Index,
     indexedEvent,
     max,
@@ -131,7 +132,7 @@ function getSeries(series: TimeSeries<Index>, column: string): TimeSeries<Index>
             default:
                 console.error("Tried to make boxchart from invalid array");
         }
-        return indexedEvent(e.index(), Immutable.Map(d));
+        return new Event(index(e.indexAsString()), Immutable.Map(d));
     });
 }
 
@@ -409,20 +410,6 @@ export class BoxChart extends React.Component<BoxChartProps> {
         column: "value",
         innerSpacing: 1.0,
         outerSpacing: 2.0,
-        infoStyle: {
-            stroke: "#999",
-            fill: "white",
-            opacity: 0.9,
-            pointerEvents: "none"
-        },
-        stemStyle: {
-            stroke: "#999",
-            cursor: "crosshair",
-            pointerEvents: "none"
-        },
-        markerStyle: {
-            fill: "#999"
-        },
         infoMarkerRadius: 2,
         infoWidth: 90,
         infoHeight: 30
@@ -455,15 +442,18 @@ export class BoxChart extends React.Component<BoxChartProps> {
 
     componentWillReceiveProps(nextProps: BoxChartProps) {
         const aggregation = nextProps.aggregation;
+
         let aggregationChanged = false;
         if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
             aggregationChanged = true;
         }
+
         if (aggregation && this.props.aggregation) {
             if (aggregation.size !== this.props.aggregation.size) {
                 aggregationChanged = true;
             }
         }
+
         if (aggregationChanged) {
             this.series = getAggregatedSeries(
                 nextProps.series,
@@ -497,17 +487,20 @@ export class BoxChart extends React.Component<BoxChartProps> {
         if (_.isUndefined(aggregation) !== _.isUndefined(this.props.aggregation)) {
             aggregationChanged = true;
         }
+
         if (aggregation && this.props.aggregation) {
             if (aggregation.size !== this.props.aggregation.size) {
                 aggregationChanged = true;
             }
         }
+
         let seriesChanged = false;
         if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
         }
+
         // If the series changes we need to rebuild this.series with
         // the incoming props
         if (seriesChanged) {
@@ -528,6 +521,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
                 }
             }
         }
+
         return (
             seriesChanged ||
             timeScaleChanged ||
@@ -588,6 +582,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
         if (!this.providedStyle) {
             this.providedStyle = this.providedStyleArray(this.props.column);
         }
+
         if (
             !_.isNull(this.providedStyle) &&
             (!_.isArray(this.providedStyle) || this.providedStyle.length !== 3)
@@ -672,10 +667,17 @@ export class BoxChart extends React.Component<BoxChartProps> {
         const outerSpacing = +this.props.outerSpacing;
         const innerSize = +this.props.innerSize;
         const outerSize = +this.props.outerSize;
+
         const bars: JSX.Element[] = [];
         let eventMarker;
 
-        const events = this.series.collection().eventList();
+        const scaled = (d, field) => {
+            return d.has(field) && !_.isUndefined(d.get(field)) && !_.isNaN(d.get(field)) && !_.isNull(d.get(field))
+                ? yScale(d.get(field))
+                : null;
+        }
+
+        const events = this.series.eventList();
         events.forEach(event => {
             const index = event.index();
             const begin = event.begin();
@@ -684,6 +686,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
 
             const beginPosInner = timeScale(begin) + innerSpacing;
             const endPosInner = timeScale(end) - innerSpacing;
+
             const beginPosOuter = timeScale(begin) + outerSpacing;
             const endPosOuter = timeScale(end) - outerSpacing;
 
@@ -691,12 +694,14 @@ export class BoxChart extends React.Component<BoxChartProps> {
             if (innerWidth < 1) {
                 innerWidth = 1;
             }
+
             let outerWidth = outerSize || endPosOuter - beginPosOuter;
             if (outerWidth < 1) {
                 outerWidth = 1;
             }
 
             const c = timeScale(begin) + (timeScale(end) - timeScale(begin)) / 2;
+
             let xInner = timeScale(begin) + innerSpacing;
             if (innerSize) {
                 xInner = c - innerSize / 2;
@@ -710,11 +715,13 @@ export class BoxChart extends React.Component<BoxChartProps> {
             styles[0] = this.style(column, event, 0);
             styles[1] = this.style(column, event, 1);
             styles[2] = this.style(column, event, 2);
-            const innerMin = d.has("innerMin") ? yScale(event.get("innerMin")) : null;
-            const innerMax = d.has("innerMax") ? yScale(event.get("innerMax")) : null;
-            const outerMin = d.has("outerMin") ? yScale(event.get("outerMin")) : null;
-            const outerMax = d.has("outerMax") ? yScale(event.get("outerMax")) : null;
-            const center = d.has("center") ? yScale(event.get("center")) : null;
+
+            const innerMin = scaled(d, "innerMin");
+            const innerMax = scaled(d, "innerMax");
+            const outerMin = scaled(d, "outerMin");
+            const outerMax = scaled(d, "outerMax");
+            const center = scaled(d, "center");
+
             let hasInner = true;
             let hasOuter = true;
             let hasCenter = true;
@@ -727,6 +734,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
             if (_.isNull(center)) {
                 hasCenter = false;
             }
+
             let ymax: string = null;
             if (hasOuter) {
                 let level = 0;
@@ -750,18 +758,22 @@ export class BoxChart extends React.Component<BoxChartProps> {
                     style: styles[level],
                     ...boxOuter
                 };
+
                 if (this.props.onSelectionChange) {
                     barOuterProps.onClick = (e: React.MouseEvent<SVGElement>) =>
                         this.handleClick(e, event);
                 }
+                
                 if (this.props.onHighlightChange) {
                     barOuterProps.onMouseMove = (e: React.MouseEvent<SVGElement>) =>
                         this.handleHover(e, event);
                     barOuterProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barOuterProps} />);
                 ymax = "outerMax";
             }
+
             if (hasInner) {
                 let level = 1;
                 if (!hasCenter) {
@@ -790,9 +802,11 @@ export class BoxChart extends React.Component<BoxChartProps> {
                         this.handleHover(e, event);
                     barInnerProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barInnerProps} />);
                 ymax = ymax || "innerMax";
             }
+
             if (hasCenter) {
                 const level = 2;
                 const keyCenter = `${this.series.name()}-${index}-center`;
@@ -816,9 +830,11 @@ export class BoxChart extends React.Component<BoxChartProps> {
                         this.handleHover(e, event);
                     barCenterProps.onMouseLeave = () => this.handleHoverLeave();
                 }
+
                 bars.push(<rect {...barCenterProps} />);
                 ymax = ymax || "center";
             }
+
             // Event marker if info provided and hovering
             const isHighlighted = this.props.highlighted && Event.is(this.props.highlighted, event);
             if (isHighlighted && this.props.info) {
@@ -826,20 +842,23 @@ export class BoxChart extends React.Component<BoxChartProps> {
                     key: `marker-${index}`,
                     event,
                     column,
-                    type: "point",
+                    type: "flag",
                     info: this.props.info,
                     style: this.props.infoStyle,
                     yValueFunc: e => e.get(ymax),
                     width: this.props.width,
                     height: this.props.height,
                     infoWidth: this.props.infoWidth,
-                    infoHeight: this.props.infoWidth,
+                    infoHeight: this.props.infoHeight,
                     infoTimeFormat: this.props.infoTimeFormat,
-                    markerRadius: this.props.infoMarkerRadius
+                    markerRadius: this.props.infoMarkerRadius,
+                    timeScale: this.props.timeScale,
+                    yScale: this.props.yScale
                 };
                 eventMarker = <EventMarker {...eventMarkerProps} />;
             }
         });
+
         return (
             <g>
                 {bars}
@@ -847,6 +866,7 @@ export class BoxChart extends React.Component<BoxChartProps> {
             </g>
         );
     }
+
     render() {
         return <g>{this.renderBars()}</g>;
     }

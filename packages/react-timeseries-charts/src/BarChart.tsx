@@ -474,7 +474,7 @@ export class BarChart extends React.Component<BarChartProps> {
                                 width: this.props.width,
                                 height: this.props.height,
                                 infoWidth: this.props.infoWidth,
-                                infoHeight: this.props.infoWidth,
+                                infoHeight: this.props.infoHeight,
                                 infoTimeFormat: this.props.infoTimeFormat,
                                 markerRadius: this.props.markerRadius,
                                 offsetX: offset,

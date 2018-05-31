@@ -46,6 +46,7 @@ var MultiBrush = (function (_super) {
             e.preventDefault();
             var offset = util_1.getElementOffset(this.overlay);
             var x = e.pageX - offset.left;
+            console.log("this.props.timeScale is ", this.props.timeScale);
             var t = this.props.timeScale.invert(x).getTime();
             document.addEventListener("mouseup", this.handleMouseUp);
             var drawingPosition = this.props.allowFreeDrawing
@@ -191,6 +192,7 @@ var MultiBrush = (function (_super) {
     };
     MultiBrush.prototype.renderBrush = function (timeRange, index) {
         var _this = this;
+        console.log("timeScale is ", this.props.timeScale);
         var _a = this.props, timeScale = _a.timeScale, height = _a.height;
         if (!timeRange) {
             return React.createElement("g", null);
