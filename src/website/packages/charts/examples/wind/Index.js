@@ -16,7 +16,7 @@ import Moment from "moment";
 import { format } from "d3-format";
 
 // Pond
-import { TimeSeries } from "pondjs";
+import { TimeSeries, percentile } from "pondjs";
 
 // Imports from the charts library
 import ChartContainer from "../../../../../components/ChartContainer";
@@ -24,6 +24,7 @@ import ChartRow from "../../../../../components/ChartRow";
 import Charts from "../../../../../components/Charts";
 import YAxis from "../../../../../components/YAxis";
 import ScatterChart from "../../../../../components/ScatterChart";
+import BandChart from "../../../../../components/BandChart";
 import Resizable from "../../../../../components/Resizable";
 
 // Weather data
@@ -110,7 +111,7 @@ class wind extends React.Component {
         ];
 
         const perEventStyle = (column, event) => {
-            const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
+            const color = "steelblue"; // heat[Math.floor((1 - event.get("station1") / 40) * 9)];
             return {
                 normal: {
                     fill: color,
@@ -178,10 +179,23 @@ class wind extends React.Component {
                                         format=",.1f"
                                     />
                                     <Charts>
+                                        <BandChart
+                                            axis="wind-gust"
+                                            series={series}
+                                            column="station1"
+                                            aggregation={{
+                                                size: "30m",
+                                                reducers: {
+                                                    outer: [percentile(5), percentile(95)],
+                                                    inner: [percentile(25), percentile(75)]
+                                                }
+                                            }}
+                                            interpolation="curveBasis"
+                                        />
                                         <ScatterChart
                                             axis="wind-gust"
                                             series={series}
-                                            columns={["station1", "station2"]}
+                                            columns={["station1"]} // {["station1", "station2"]}
                                             style={perEventStyle}
                                             info={infoValues}
                                             infoHeight={28}

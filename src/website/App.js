@@ -94,6 +94,9 @@ class App extends Component {
                                 <Link to="/example/continents">Stacked AreaCharts</Link>
                             </li>
                             <li>
+                                <Link to="/example/trend">Trend example</Link>
+                            </li>
+                            <li>
                                 <Link to="/example/currency">Currency example</Link>
                             </li>
                             <li>
@@ -104,6 +107,9 @@ class App extends Component {
                             </li>
                             <li>
                                 <Link to="/example/outages">Outage events</Link>
+                            </li>
+                            <li>
+                                <Link to="/example/stockchart">Stockchart example</Link>
                             </li>
                             <li>
                                 <Link to="/example/traffic">Network traffic</Link>

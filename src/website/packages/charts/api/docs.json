@@ -1,6 +1,7 @@
 {
   "src/components/AreaChart.js": {
     "description": "The `<AreaChart>` component is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe `<AreaChart>` should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an `<AreaChart>` with an up and down\nnetwork traffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}\n                      />\n                 </Charts>\n                 <YAxis\n                     id=\"traffic\"\n                     label=\"Traffic (bps)\"\n                     min={-max} max={max}\n                     absolute={true}\n                     width=\"60\"\n                     type=\"linear\"\n                 />\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.",
+    "displayName": "AreaChart",
     "methods": [
       {
         "name": "handleHover",
@@ -355,8 +356,329 @@
       }
     }
   },
+  "src/components/BandChart.js": {
+    "description": "Renders a band chart.\n\nThe TimeSeries supplied to the band chart, as the `series` prop can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    data column containing the dimensions of the boxes. This props\n    should be an array of size 1 to 5 elements. e.g. [12, 18, 22, 28]. The\n    numbers should be ordered, lowest to greatest.\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    band chart will be aggregated for you. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.\n\nIn both cases you are generating up to two ranges and a center marker. In the\nfirst case you are defining this based on the array of numbers. The outer numbers\nspecify the outerRange, the inner numbers specify the innerRange and the middle\nnumber specifies the center marker. In the second case you are building those ranges\nfrom denser data, specifying a window and aggregation functions to build each\nof the ranges and center maker.\n\nIn both cases you do not need to supply all the values. For example if you\nprovide an array of 2 elements, that would define a single range, with no outer range\nand no center marker. The Band Chart is pretty flexible in that way, so you\ncan use it in many situations.\n\nHere is an example of using it to display temperature ranges. The series\npassed to this code would be a TimeSeries containing IndexedEvents. For\neach event, the column `temp` contains an array of values used for the\nbox plot ranges:\n\n```\n    <BandChart\n      axis=\"temperatureAxis\"\n      style={style}\n      column=\"temp\"\n      series={series} />\n```\n\nWhile here is an example with a dense TimeSeries of Events supplied,\nalong with an aggregation specification. This code would produce an\nouter range from the 5th percentile to the 95th, along with an inner\nrange for the interquantile, and a center marker at the median:\n\n```\n   <BandChart\n     axis=\"speedaxis\"\n     series={speed}\n     column=\"speed\"\n     style={style}\n     aggregation={{\n       size: this.state.rollup,\n       reducers: {\n         outer: [percentile(5), percentile(95)],\n         inner: [percentile(25), percentile(75)],\n         center: median(),\n       },\n     }}\n   />\n```",
+    "displayName": "BandChart",
+    "methods": [
+      {
+        "name": "handleHover",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleHoverLeave",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "event",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "providedStyleArray",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "style",
+        "docblock": "Returns the style used for drawing the path",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column"
+          },
+          {
+            "name": "event"
+          },
+          {
+            "name": "level"
+          }
+        ],
+        "returns": null,
+        "description": "Returns the style used for drawing the path"
+      },
+      {
+        "name": "renderAreas",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "series": {
+        "type": {
+          "name": "instanceOf",
+          "value": "TimeSeries"
+        },
+        "required": true,
+        "description": "What [Pond TimeSeries](http://software.es.net/pond#timeseries)\ndata to visualize. See general notes on the BandChart."
+      },
+      "column": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BandChart\nworks on just a single column.",
+        "defaultValue": {
+          "value": "\"value\"",
+          "computed": false
+        }
+      },
+      "aggregation": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "size": {
+              "name": "string",
+              "required": false
+            },
+            "reducers": {
+              "name": "shape",
+              "value": {
+                "inner": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "outer": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "func"
+                  },
+                  "required": false
+                },
+                "center": {
+                  "name": "func",
+                  "required": false
+                }
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The aggregation specification. This object should contain:\n  - innerMax\n  - innerMin\n  - outerMax\n  - outerMin\n  - center\nThough each of the pairs, and center, is optional.\nFor each of these keys you should supply the function you\nwant to use to calculate these. You can import common functions\nfrom Pond, e.g. min(), avg(), percentile(95), etc.\n\nFor example:\n```\n    {\n      size: this.state.rollup,\n      reducers: {\n        outer: [min(), max()],\n        inner: [percentile(25), percentile(75)],\n        center: median(),\n      },\n    }\n```"
+      },
+      "style": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "func"
+            },
+            {
+              "name": "instanceOf",
+              "value": "Styler"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The style of the box chart drawing (using SVG CSS properties) or\na styler object. It is recommended to user the styler unless you need\ndetailed customization."
+      },
+      "infoStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the info box and connecting lines",
+        "defaultValue": {
+          "value": "{\n    stroke: \"#999\",\n    fill: \"white\",\n    opacity: 0.9,\n    pointerEvents: \"none\"\n}",
+          "computed": false
+        }
+      },
+      "infoWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the hover info box",
+        "defaultValue": {
+          "value": "90",
+          "computed": false
+        }
+      },
+      "infoHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the hover info box",
+        "defaultValue": {
+          "value": "30",
+          "computed": false
+        }
+      },
+      "info": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "label": {
+                "name": "string",
+                "required": false
+              },
+              "value": {
+                "name": "string",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "The values to show in the info box. This is an array of\nobjects, with each object specifying the label and value\nto be shown in the info box."
+      },
+      "innerSpacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "1.0",
+          "computed": false
+        }
+      },
+      "outerSpacing": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If spacing is specified, then the boxes will be separated from the\ntimerange boundary by this number of pixels. Use this to space out\nthe boxes from each other. Inner and outer boxes are controlled\nseparately.",
+        "defaultValue": {
+          "value": "2.0",
+          "computed": false
+        }
+      },
+      "innerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the innerBox will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "outerSize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If size is specified, then the outer box will be this number of pixels wide. This\nprop takes priority over \"spacing\"."
+      },
+      "selected": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The selected item, which will be rendered in the \"selected\" style.\nIf a bar is selected, all other bars will be rendered in the \"muted\" style.\n\nSee also `onSelectionChange`"
+      },
+      "highlighted": {
+        "type": {
+          "name": "instanceOf",
+          "value": "IndexedEvent"
+        },
+        "required": false,
+        "description": "The highlighted item, which will be rendered in the \"highlighted\" style.\n\nSee also `onHighlightChange`"
+      },
+      "onSelectionChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the selection changes. It will be called\nwith the event corresponding to the box clicked as its only arg."
+      },
+      "onHighlightChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "A callback that will be called when the hovered over box changes.\nIt will be called with the event corresponding to the box hovered over."
+      },
+      "timeScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The timeScale supplied by the surrounding ChartContainer"
+      },
+      "yScale": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "[Internal] The yScale supplied by the associated YAxis"
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "[Internal] The width supplied by the surrounding ChartContainer"
+      },
+      "stemStyle": {
+        "defaultValue": {
+          "value": "{\n    stroke: \"#999\",\n    cursor: \"crosshair\",\n    pointerEvents: \"none\"\n}",
+          "computed": false
+        },
+        "required": false
+      },
+      "markerStyle": {
+        "defaultValue": {
+          "value": "{\n    fill: \"#999\"\n}",
+          "computed": false
+        },
+        "required": false
+      },
+      "markerRadius": {
+        "defaultValue": {
+          "value": "2",
+          "computed": false
+        },
+        "required": false
+      }
+    }
+  },
   "src/components/BarChart.js": {
     "description": "Renders a bar chart based on IndexedEvents within a TimeSeries.\n\nThis BarChart implementation is a little different that other time axis\nbar charts in that it will render across a the time range of the event\nrather than rendering to specific categories. As a result,\na Aug-2014 bar will render between the Aug 2014 tick mark and\nthe Sept 2014 tickmark. However, this allows it to play well with other\ntypes of charts that maybe integrated into the same visualization.\n\nThe BarChart will render a single TimeSeries. You can specify the columns\nyou want to render with the `columns` prop. Each column will be stacked on\nthe other, in the order specified in the `columns` array.\n\n### IndexedEvents\n\nBarCharts are supposed to be for aggregated values (e.g. average of\nmany points over an hour), so the hours themselves are specified\nwith an \"Index\". An Index is a string that represents that range of time,\nrather than a specific time like a timestamp would.\n\nPond provides several mechanisms for building aggregated series from\na TimeSeries, and the BarChart code is suited to visualizing that\noutput. See Pond for more details (especially TimeSeries.fixedWindowRollup\nand the Pipeline processing facilities). The realtime example in this\nlibrary also shows how to do this on incoming streams of data.\n\nIf you have one timestamped point per hour and really want to represent\nthose with a BarChart, you can use the Pond static method\n`Index.getIndexString(period, date)` to take the Date and return an\nIndex string. Say if those points were hourly, you'll end up with\nstrings that look like \"1h-412715\". This represents a specific hour\nin time (the 412,715th hour since midnight 1 Jan 1970, actually).\nNote that for larger time periods, index strings can be partial\ndates, like \"2016-08-31\" for Aug 31st, 2016 or \"2016-08\" for Aug 2016.\n\nUse those index strings to build your timeseries instead of timestamps.\nHere's the Pond code needed to convert a date to an index string:\n\n```\n  import { Index } from \"pondjs\";\n  const d = new Date(\"2017-01-30T11:58:38.741Z\");\n  const index = Index.getIndexString(\"1h\", d);   // '1h-412715'\n```\n\nWith either the aggregated approach, or the above timestamped\nconversion, you will want a `TimeSeries` of `IndexedEvent`s that\nlooks like this:\n```\n  const series = new TimeSeries({\n    name: \"myseries\",\n    columns: [\"index\", \"value\"],\n    points: [\n      [\"1h-41275\", 22],\n      [\"1h-41276\", 35],\n      [\"1h-41277\", 72],\n      ...\n    ]\n  })\n```\n\nNote: the first column of the timeseries should be \"index\" (not \"time\")\nand each point should have an index string at the beginning.\n\n### Interactivity\n\nThe BarChart supports selection of individual bars. To control this use\n`onSelectionChange` to get a callback of selection changed. Your callback\nwill be called with the selection (an object containing the event\nand column). You can pass this back into the BarChart as `selection`. For\nexample:\n\n```\n <BarChart\n     ...\n     selection={this.state.selection}\n     onSelectionChange={selection => this.setState({selection})} />\n```\n\nSimilarly you can monitor which bar is being hovered over with the\n`onHighlightChange` callback. This can be used to determine the info box\nto display. Info box will display a box (like a tooltip) with a line\nconnecting it to the bar. You use the `info` prop to evoke this and to\nsupply the text for the info box. See the styling notes below for more\ninformation on this.\n\n### Styling\n\nA BarChart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible: normal, highlighted,\nselected and muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon should return a style object.\n\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the bars can be controlled with the `spacing` and\n`offset` props. Spacing controls the gap between the bars. Offset moves the\nbars left or right by the given number of pixels. You can use this to place\nbars along side each other. Alternatively, you can give each column a fixed width\nusing the `size` prop. In this case this size will be used in preference to the size\ndetermined from the timerange of the event and the `spacing`.\n\nThe info box is also able to be styled using `infoStyle`, `stemStyle` and\n`markerStyle` This enables you to control the drawing of the box, the connecting\nlines (stem) and dot respectively. Using the `infoWidth` and `infoHeight`\nprops you can control the size of the box, which is fixed. For the info inside\nthe box, it's up to you: it can either be a simple string or an array of\n{label, value} pairs.",
+    "displayName": "BarChart",
     "methods": [
       {
         "name": "handleHover",
@@ -691,12 +1013,14 @@
         "defaultValue": {
           "value": "{\n    stroke: \"#999\",\n    cursor: \"crosshair\",\n    pointerEvents: \"none\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/Baseline.js": {
     "description": "The BaseLine component displays a simple horizontal line at a value.\n\nFor example the following code overlays Baselines for the mean and stdev\nof a series on top of another chart.\n\n```\n<ChartContainer timeRange={series.timerange()} >\n    <ChartRow height=\"150\">\n        <YAxis\n          id=\"price\"\n          label=\"Price ($)\"\n          min={series.min()} max={series.max()}\n          width=\"60\" format=\"$,.2f\"\n        />\n        <Charts>\n            <LineChart axis=\"price\" series={series} style={style} />\n            <Baseline axis=\"price\" value={series.avg()} label=\"Avg\" position=\"right\" />\n            <Baseline axis=\"price\" value={series.avg()-series.stdev()} />\n            <Baseline axis=\"price\" value={series.avg()+series.stdev()} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "Baseline",
     "methods": [],
     "props": {
       "visible": {
@@ -824,6 +1148,7 @@
   },
   "src/components/BoxChart.js": {
     "description": "Renders a boxplot chart.\n\nThe TimeSeries supplied to the boxplot, as the `series` prop can be one of two types:\n\n 1) It can be a TimeSeries containing IndexedEvents or TimeRangeEvents.\n    In this case a `column` prop should be supplied to specify the\n    data column containing the dimensions of the boxes. This props\n    should be an array of size 1 to 5 elements. e.g. [12, 18, 22, 28]. The\n    numbers should be ordered, lowest to greatest.\n\n 2) A TimeSeries containing timestamp based Events. In this case the\n    boxplot will be aggregated for you. To control the aggregation you can supply\n    an `aggregation` prop: a structure to specify the window size and\n    reducers used to determine the boxes.\n\nIn both cases you are generating up to two ranges and a center marker. In the\nfirst case you are defining this based on the array of numbers. The outer numbers\nspecify the outerRange, the inner numbers specify the innerRange and the middle\nnumber specifies the center marker. In the second case you are building those ranges\nfrom denser data, specifying a window and aggregation functions to build each\nof the ranges and center maker.\n\nIn both cases you do not need to supply all the values. For example if you\nprovide an array of 2 elements, that would define a single range, with no outer range\nand no center marker. The BoxChart is pretty flexible in that way, so you\ncan use it in many situations.\n\nHere is an example of using it to display temperature ranges. The series\npassed to this code would be a TimeSeries containing IndexedEvents. For\neach event, the column `temp` contains an array of values used for the\nbox plot ranges:\n\n```\n    <BoxChart\n      axis=\"temperatureAxis\"\n      style={style}\n      column=\"temp\"\n      series={series} />\n```\n\nWhile here is an example with a dense TimeSeries of Events supplied,\nalong with an aggregation specification. This code would produce an\nouter range from the 5th percentile to the 95th, along with an inner\nrange for the interquantile, and a center marker at the median:\n\n```\n   <BoxChart\n     axis=\"speedaxis\"\n     series={speed}\n     column=\"speed\"\n     style={style}\n     aggregation={{\n       size: this.state.rollup,\n       reducers: {\n         outer: [percentile(5), percentile(95)],\n         inner: [percentile(25), percentile(75)],\n         center: median(),\n       },\n     }}\n   />\n```\n\nThe BoxChart supports Info boxes, highlighting and selection.\n\nNote: selection and highlighting is on the whole event, not individual ranges.\nAlso note that since the box chart builds an internal TimeSeries for performance\nreasons, selection will give you and IndexedEvent, but it won't be the same\nIndexedEvent in your `series`. Similarly if you are using the aggregation\nspecification you will get events for the rollup, not your original data.",
+    "displayName": "BoxChart",
     "methods": [
       {
         "name": "handleHover",
@@ -1133,24 +1458,28 @@
         "defaultValue": {
           "value": "{\n    stroke: \"#999\",\n    cursor: \"crosshair\",\n    pointerEvents: \"none\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       },
       "markerStyle": {
         "defaultValue": {
           "value": "{\n    fill: \"#999\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       },
       "markerRadius": {
         "defaultValue": {
           "value": "2",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/Brush.js": {
     "description": "Renders a brush with the range defined in the prop `timeRange`.",
+    "displayName": "Brush",
     "methods": [
       {
         "name": "viewport",
@@ -1323,6 +1652,7 @@
   },
   "src/components/ChartContainer.js": {
     "description": "The `<ChartContainer>` is the outer most element of a chart and is\nresponsible for generating and arranging its sub-elements. Specifically,\nit is a container for one or more `<ChartRows>` (each of which contains\ncharts, axes etc) and in addition it manages the overall time range of\nthe chart and so also is responsible for the time axis, which is always\nshared by all the rows.\n\nHere is an example:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()} width=\"800\">\n    <ChartRow>\n        ...\n    </ChartRow>\n    <ChartRow>\n        ...\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "ChartContainer",
     "methods": [
       {
         "name": "handleTrackerChanged",
@@ -1656,19 +1986,34 @@
         "defaultValue": {
           "value": "0",
           "computed": false
-        }
+        },
+        "required": false
       },
       "timeAxisStyle": {
         "defaultValue": {
           "value": "{\n    axis: {\n        fill: \"none\",\n        stroke: \"#C0C0C0\",\n        pointerEvents: \"none\"\n    }\n}",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/ChartRow.js": {
     "description": "A ChartRow is a container for a set of YAxis and multiple charts\nwhich are overlaid on each other in a central canvas.\n\nHere is an example where a single `<ChartRow>` is defined within\nthe `<ChartContainer>`. Of course you can have any number of rows.\n\nFor this row we specify the one prop `height` as 200 pixels high.\n\nWithin the `<ChartRow>` we add:\n\n* `<YAxis>` elements for axes to the left of the chart\n* `<Chart>` block containing our central chart area\n* `<YAxis>` elements for our axes to the right of the charts\n\n```\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis />\n        <YAxis />\n        <Charts>\n            charts...\n       </Charts>\n        <YAxis />\n    </ChartRow>\n</ChartContainer>\n```",
+    "displayName": "ChartRow",
     "methods": [
+      {
+        "name": "isChildYAxis",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "child",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
       {
         "name": "updateScales",
         "docblock": null,
@@ -1860,16 +2205,19 @@
         "defaultValue": {
           "value": "false",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/Charts.js": {
     "description": "The `<Charts>` element is a grouping for charts within a row.\nIt takes no props. Each chart within the group will be overlaid\non top of each other.\n\nHere is an example of two line charts within a `<Charts>` group:\n\n```xml\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis/>\n    </ChartRow>\n</ChartContainer>\n```\n\n## Making your own chart\n\nAnything within this grouping is considered a chart, meaning it will have\ncertain props injected into it. As a result you can easily implement your own chart\nby simply expecting to have these props available and rendering as such.\n\nFor your own chart, the render() method should return a SVG group `<g>` at the\ntop level, and then your chart rendering within that.\n\nIn addition to any props you add to your chart, the following props are passed into\neach chart automatically:\n\n#### timeScale\n\nA d3 scale for the time axis which you can use to transform your data in the x direction\n\n#### yScale\n\nA d3 scale for the y-axis which you can use to transform your data in the y direction\n\n#### width\n\nA the width your chart will render into",
+    "displayName": "Charts",
     "methods": []
   },
   "src/components/EventChart.js": {
     "description": "Renders an event view that shows the supplied set of events along a time axis.\nThe events should be supplied as a Pond TimeSeries.\nThat series may contain regular TimeEvents, TimeRangeEvents\nor IndexedEvents.",
+    "displayName": "EventChart",
     "methods": [
       {
         "name": "onMouseOver",
@@ -2046,6 +2394,7 @@
   },
   "src/components/EventHandler.js": {
     "description": "Internal component which provides the top level event catcher for the charts.\nThis is a higher order component. It wraps a tree of SVG elements below it,\npassed in as this.props.children, and catches events that they do not handle.\n\nThe EventHandler is responsible for pan and zoom events as well as other click\nand hover actions.",
+    "displayName": "EventHandler",
     "methods": [
       {
         "name": "getOffsetMousePosition",
@@ -2237,6 +2586,7 @@
   },
   "src/components/EventMarker.js": {
     "description": "Renders a marker at a specific event on the chart.\n\nTo explain how EventMarkers work, it's useful to explain a little\nterminology used here. A marker has several parts:\n\n * the \"marker\" itself which appears at the (value, time) of the event.\n   This is a dot which whose radius is defined by markerRadius, and\n   whose style is set with markerStyle\n * the \"markerLabel\" which is a string that will be rendered next to\n   the marker. The label can be aligned with markerAlign and also\n   styled with markerLabelStyle\n * the \"info box\" which is a box containing values that hovers that the\n   top of the chart. Optionally it can show the time above the box.\n   The values themselves are supplied as an array of objects using\n   the `info` prop. The info box can be styled with `infoStyle`,\n   sized with `infoWidth` and `infoHeight`, and the time formatted\n   with `infoTimeFormat`\n * the \"stem\" which is a connector between the marker and the\n   info box to visually link the two\n\nCombining these attributes, Event markers fall into two flavors, either\nyou want to omit the infoBox and mark the event with a dot and optionally\na label, or you want to omit the label (and perhaps marker dot) and show\na flag style marker with the infoBox connected to the event with the stem.\n\nAs with other IndexedEvents or TimeRangeEvents, the marker will appear at\nthe center of the timerange represented by that event. You can, however,\noverride either the x or y position by a number of pixels.",
+    "displayName": "EventMarker",
     "methods": [
       {
         "name": "renderTime",
@@ -2506,18 +2856,21 @@
         "defaultValue": {
           "value": "{\n    stroke: \"#999\",\n    cursor: \"crosshair\",\n    pointerEvents: \"none\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       },
       "markerLabelStyle": {
         "defaultValue": {
           "value": "{\n    fill: \"#999\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/Label.js": {
     "description": "Renders a simple label surrounded by a box within in svg\n\n     +----------------+\n     | My label       |\n     |                |\n     +----------------+",
+    "displayName": "Label",
     "methods": [],
     "props": {
       "align": {
@@ -2581,12 +2934,14 @@
         "defaultValue": {
           "value": "\"none\"",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/LabelAxis.js": {
     "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value:\n```\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n```\n\nThis can be used for data channel style displays where the user will see many\nrows of data stacked on top of each other and will need to interact with the\ndata to see actual values. You can combine this with the `ValueAxis` to help\ndo that. See the Cycling example for exactly how to arrange that.",
+    "displayName": "LabelAxis",
     "methods": [
       {
         "name": "renderAxis",
@@ -2640,7 +2995,7 @@
             }
           }
         },
-        "required": true,
+        "required": false,
         "description": "Supply a list of label value pairs to render within the LabelAxis.\nThis expects an array of objects. Each object is of the form:\n    {label: \"Speed\", value: \"26.2 mph\"}.",
         "defaultValue": {
           "value": "[]",
@@ -2701,6 +3056,7 @@
   },
   "src/components/Legend.js": {
     "description": "",
+    "displayName": "Legend",
     "methods": [
       {
         "name": "handleClick",
@@ -2872,7 +3228,7 @@
             }
           ]
         },
-        "required": true,
+        "required": false,
         "description": "",
         "defaultValue": {
           "value": "{}",
@@ -2976,12 +3332,14 @@
         "defaultValue": {
           "value": "{}",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/LineChart.js": {
     "description": "The `<LineChart>` component is able to display multiple columns of a TimeSeries\nas separate line charts.\n\nThe `<LineChart>` should be used within `<ChartContainer>` etc., as this will\nconstruct the horizontal and vertical axis, and manage other elements.\n\nHere is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:\n\n```\n  <ChartContainer timeRange={this.state.timerange} >\n    <ChartRow height=\"200\">\n      <YAxis id=\"y\" label=\"Price ($)\" min={0.5} max={1.5} format=\"$,.2f\" />\n      <Charts>\n        <LineChart\n          axis=\"y\"\n          breakLine={false}\n          series={currencySeries}\n          columns={[\"aud\", \"euro\"]}\n          style={style}\n          interpolation=\"curveBasis\" />\n      </Charts>\n    </ChartRow>\n  </ChartContainer>\n```",
+    "displayName": "LineChart",
     "methods": [
       {
         "name": "handleHover",
@@ -3283,12 +3641,14 @@
         "defaultValue": {
           "value": "true",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/MultiBrush.js": {
     "description": "Renders a brush with the range defined in the prop `timeRange`.",
+    "displayName": "MultiBrush",
     "methods": [
       {
         "name": "viewport",
@@ -3320,6 +3680,29 @@
         "params": [
           {
             "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "hasNullBrush",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleMouseClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "brushIndex",
             "type": null
           }
         ],
@@ -3496,6 +3879,7 @@
   },
   "src/components/Resizable.js": {
     "description": "This takes a single child and inserts a prop 'width' on it that is the\ncurrent width of the this container. This is handy if you want to surround\na chart or other svg diagram and have this drive the chart width.",
+    "displayName": "Resizable",
     "methods": [
       {
         "name": "handleResize",
@@ -3517,6 +3901,7 @@
   },
   "src/components/ScatterChart.js": {
     "description": "The `<ScatterChart >` widget is able to display multiple columns of a series\nscattered across a time axis.\n\nThe ScatterChart should be used within `<ChartContainer>` etc.,\nas this will construct the horizontal and vertical axis, and\nmanage other elements. As with other charts, this lets them be stacked or\noverlaid on top of each other.\n\nA custom info overlay lets you hover over the data and examine points. Points\ncan be selected or highlighted.\n\n```\n<ChartContainer timeRange={series.timerange()}>\n    <ChartRow height=\"150\">\n        <YAxis id=\"wind\" label=\"Wind gust (mph)\" labelOffset={-5}\n               min={0} max={series.max()} width=\"100\" type=\"linear\" format=\",.1f\"/>\n        <Charts>\n            <ScatterChart\n              axis=\"wind\"\n              series={series}\n              style={{color: \"steelblue\", opacity: 0.5}} />\n        </Charts>\n    </ChartRow>\n</ChartContainer>\n```\n\n### Styling\n\nA scatter chart supports per-column or per-event styling. Styles can be set for\neach of the four states that are possible for each event: normal, highlighted,\nselected or muted. To style per-column, supply an object. For per-event styling\nsupply a function: `(event, column) => {}` The functon will return a style object.\nSee the `style` prop in the API documentation for more information.\n\nSeparately the size of the dots can be controlled with the `radius` prop. This\ncan either be a fixed value (e.g. 2.0), or a function. If a function is supplied\nit will be called as `(event, column) => {}` and should return the size.\n\nThe hover info for each point is also able to be styled using the info style.\nThis enables you to control the drawing of the box and connecting lines. Using\nthe `infoWidth` and `infoHeight` props you can control the size of the box, which\nis fixed.",
+    "displayName": "ScatterChart",
     "methods": [
       {
         "name": "getOffsetMousePosition",
@@ -3835,18 +4220,21 @@
         "defaultValue": {
           "value": "{\n    stroke: \"#999\",\n    cursor: \"crosshair\",\n    pointerEvents: \"none\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       },
       "markerStyle": {
         "defaultValue": {
           "value": "{\n    fill: \"#999\"\n}",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/TimeAxis.js": {
     "description": "Renders a horizontal time axis. This is used internally by the ChartContainer\nas a result of you specifying the timerange for the chart. Please see the API\ndocs for ChartContainer for more information.",
+    "displayName": "TimeAxis",
     "methods": [
       {
         "name": "mergeStyles",
@@ -3980,6 +4368,7 @@
   },
   "src/components/TimeMarker.js": {
     "description": "",
+    "displayName": "TimeMarker",
     "methods": [
       {
         "name": "renderLine",
@@ -4186,6 +4575,7 @@
   },
   "src/components/TimeRangeMarker.js": {
     "description": "Renders a band with extents defined by the supplied TimeRange. This\nis a super simple component right now which just renders a simple\nrectangle, in the style of the prop `style` across the timerange\nspecified. However, this is useful for highlighting a timerange to\ncorrespond with another part of the your UI.\n\nSee also the Brush component for a TimeRange marker that you can\nresize interactively.",
+    "displayName": "TimeRangeMarker",
     "methods": [
       {
         "name": "renderBand",
@@ -4251,18 +4641,21 @@
         "defaultValue": {
           "value": "1",
           "computed": false
-        }
+        },
+        "required": false
       },
       "offset": {
         "defaultValue": {
           "value": "0",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/ValueAxis.js": {
     "description": "Renders a 'axis' that display a label for a current tracker value:\n```\n     ----+----------------+\n         |     56.2G      |\n         |      bps       |\n         |                |\n     ----+----------------+\n```\nThis would be used when you have many rows of data and the user is required\nto interact with the data to see actual values. You would use this at the\nend of the row and supply it with the current value. See the cycling example\nfor how that would all work.",
+    "displayName": "ValueAxis",
     "methods": [],
     "props": {
       "visible": {
@@ -4316,6 +4709,7 @@
   },
   "src/components/ValueList.js": {
     "description": "Renders a list of values in svg\n\n     +----------------+\n     | Max 100 Gbps   |\n     | Avg 26 Gbps    |\n     +----------------+",
+    "displayName": "ValueList",
     "methods": [],
     "props": {
       "align": {
@@ -4404,12 +4798,14 @@
         "defaultValue": {
           "value": "\"none\"",
           "computed": false
-        }
+        },
+        "required": false
       }
     }
   },
   "src/components/YAxis.js": {
     "description": "The `YAxis` widget displays a vertical axis to the left or right\nof the charts. A `YAxis` always appears within a `ChartRow`, from\nwhich it gets its height and positioning. You can have more than\none axis per row. You do control how wide it is.\n\nHere's a simple YAxis example:\n\n```js\n<YAxis\n  id=\"price-axis\"\n  label=\"Price (USD)\"\n  min={0} max={100}\n  width=\"60\"\n  type=\"linear\"\n  format=\"$,.2f\"\n/>\n```\n\nVisually you can control the axis `label`, its size via the `width`\nprop, its `format`, and `type` of scale (linear). You can quicky turn\nit on and off with the `visible` prop.\n\nEach axis also defines a scale through a `min` and `max` prop. Chart\nthen refer to the axis by by citing the axis `id` in their `axis`\nprop. Those charts will then use the axis scale for their y-scale.\nThis is what ties them together. Many charts can use the same axis,\nor not.\n\nHere is an example of two line charts that each have their own axis:\n\n```js\n<ChartContainer timeRange={audSeries.timerange()}>\n    <ChartRow height=\"200\">\n        <YAxis id=\"aud\" label=\"AUD\" min={0.5} max={1.5} width=\"60\" format=\"$,.2f\"/>\n        <Charts>\n            <LineChart axis=\"aud\" series={audSeries} style={audStyle}/>\n            <LineChart axis=\"euro\" series={euroSeries} style={euroStyle}/>\n        </Charts>\n        <YAxis id=\"euro\" label=\"Euro\" min={0.5} max={1.5} width=\"80\" format=\"$,.2f\"/>\n    </ChartRow>\n</ChartContainer>\n```\n\n Note that there are two `<YAxis>` components defined here, one before\n the `<Charts>` block and one after. This defines that the first axis will\n appear to the left of the charts and the second will appear right of the charts.\n Each of the line charts uses its `axis` prop to identify the axis (\"aud\" or \"euro\")\n it will use for its vertical scale.",
+    "displayName": "YAxis",
     "methods": [
       {
         "name": "yformat",
@@ -4585,7 +4981,7 @@
         "type": {
           "name": "string"
         },
-        "required": true,
+        "required": false,
         "description": "A name for the axis which can be used by a chart to reference the axis.\nThis is used by the ChartRow to match charts to this axis.",
         "defaultValue": {
           "value": "\"yaxis\"",
@@ -4635,7 +5031,7 @@
         "type": {
           "name": "number"
         },
-        "required": true,
+        "required": false,
         "description": "Minium value, which combined with \"max\", define the scale of the axis.",
         "defaultValue": {
           "value": "0",
@@ -4646,7 +5042,7 @@
         "type": {
           "name": "number"
         },
-        "required": true,
+        "required": false,
         "description": "Maxium value, which combined with \"min,\"\" define the scale of the axis.",
         "defaultValue": {
           "value": "1",
