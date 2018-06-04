@@ -3,6 +3,7 @@ examples/
 screenshots/
 docs/
 bin/
+node_modules/
 build/global
 index.html
 .eslintrc
