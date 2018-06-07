@@ -272,7 +272,7 @@ export default class EventMarker extends React.Component {
                 </g>
             );
         } else {
-            if (posx + 10 + w < this.props.width * 3 / 4) {
+            if (posx + 10 + w < this.props.width * 99/100) {
                 if (info) {
                     verticalStem = (
                         <line
