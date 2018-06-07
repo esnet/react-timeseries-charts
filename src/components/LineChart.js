@@ -336,8 +336,8 @@ LineChart.propTypes = {
     /**
      * The determines how to handle bad/missing values in the supplied
      * TimeSeries. A missing value can be null or NaN. If breakLine
-     * is set to true then the line will be broken on either side of
-     * the bad value(s). If breakLine is false (the default) bad values
+     * is set to true (the default) then the line will be broken on either
+     * side of the bad value(s). If breakLine is false bad values
      * are simply removed and the adjoining points are connected.
      */
     breakLine: PropTypes.bool,
