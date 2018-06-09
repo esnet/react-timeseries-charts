@@ -24,7 +24,7 @@ export type ResizableState = {
  * current width of the this container. This is handy if you want to surround
  * a chart or other svg diagram and have this drive the chart width.
  */
-export class Resizable extends React.Component<{}, ResizableState> {
+export class Resizable extends React.Component<ResizableProps, ResizableState> {
     container: HTMLElement;
 
     constructor(props: ResizableProps) {

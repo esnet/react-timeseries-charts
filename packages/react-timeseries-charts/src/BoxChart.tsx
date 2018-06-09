@@ -16,7 +16,6 @@ import {
     Key,
     index,
     Index,
-    indexedEvent,
     max,
     median,
     min,
@@ -190,7 +189,7 @@ function getAggregatedSeries(
 
 export type BoxChartProps = ChartProps & {
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries)
      * data to visualize. See general notes on the BoxChart.
      */
     series?: TimeSeries<Index> | TimeSeries<Time>;
@@ -208,6 +207,7 @@ export type BoxChartProps = ChartProps & {
      *   - outerMax
      *   - outerMin
      *   - center
+     * 
      * Though each of the pairs, and center, is optional.
      * For each of these keys you should supply the function you
      * want to use to calculate these. You can import common functions
@@ -215,14 +215,14 @@ export type BoxChartProps = ChartProps & {
      *
      * For example:
      * ```
-     *     {
-     *       size: this.state.rollup,
-     *       reducers: {
-     *         outer: [min(), max()],
-     *         inner: [percentile(25), percentile(75)],
-     *         center: median(),
-     *       },
-     *     }
+     * {
+     *      size: this.state.rollup,
+     *      reducers: {
+     *          outer: [min(), max()],
+     *          inner: [percentile(25), percentile(75)],
+     *          center: median(),
+     *      },
+     * }
      * ```
      */
     aggregation?: AggregationSpec;
@@ -231,18 +231,56 @@ export type BoxChartProps = ChartProps & {
      * The style of the box chart drawing (using SVG CSS properties) or
      * a styler object. It is recommended to user the styler unless you need
      * detailed customization.
+     * 
+     * For example :
+     * ```
+     * style = {[
+     *      {
+     *          normal: {},
+     *          highlighted: {},
+     *          selected: {},
+     *          muted: {}
+     *      }
+     * ]};
+     * ```
+     * 
+     * Using the styler is much easier
+     * ```
+     * const style = styler([{ key: "temp", color: "steelblue", width: 1, opacity: 0.5 }]);
+     * ```
      */
     style?: BoxChartStyle | ((channel: string) => ChannelStyle) | Styler;
 
     /**
-     * The values to show in the info box. This is an array of
+     * The values to show in the info box. This is either an array of
      * objects, with each object specifying the label and value
-     * to be shown in the info box.
+     * to be shown in the info box, or it can also be a string.
+     * 
+     * For example:
+     * ```
+     * infoValues = [{ 
+     *      label: "Traffic", 
+     *      value: trafficText 
+     * }];
+     * ```
      */
     info?: LabelValueList | string;
 
     /**
-     * The style of the info box and connecting lines
+     * The style of the info box itself and the connecting lines. 
+     * Typically, this is an object where the key can describe 
+     * the stying of the stem, marker, box  and the text of the infoBox. 
+     * The style for each of them is in the form of CSS properties
+     * 
+     * For example:
+     * ```
+     * infoStyle = {
+     *      box: {
+     *          fill: "black",
+     *          color: "#DDD"
+     *      }
+     * }
+     * ```
      */
     infoStyle?: EventMarkerStyle;
 
@@ -251,7 +289,7 @@ export type BoxChartProps = ChartProps & {
      * This may be either a function or a string. If you provide a function
      * that will be passed an Index and should return a string. For example:
      * ```
-     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * index => moment(index.begin()).format("Do MMM 'YY")
      * ```
      * Alternatively you can pass in a d3 format string. That will be applied
      * to the begin time of the Index range.
@@ -291,18 +329,18 @@ export type BoxChartProps = ChartProps & {
 
     /**
      * If size is specified, then the innerBox will be this number of pixels wide. This
-     * prop takes priority over "spacing".
+     * prop takes priority over `spacing`.
      */
     innerSize?: number;
 
     /**
      * If size is specified, then the outer box will be this number of pixels wide. This
-     * prop takes priority over "spacing".
+     * prop takes priority over `spacing`.
      */
     outerSize?: number;
 
     /**
-     * The selected item, which will be rendered in the "selected" style.
+     * The selected item, which will be rendered in the `selected` style.
      * If a bar is selected, all other bars will be rendered in the "muted" style.
      *
      * See also `onSelectionChange`
@@ -310,7 +348,7 @@ export type BoxChartProps = ChartProps & {
     selected?: Event<Index>;
 
     /**
-     * The highlighted item, which will be rendered in the "highlighted" style.
+     * The highlighted item, which will be rendered in the `highlighted` style.
      *
      * See also `onHighlightChange`
      */
@@ -368,11 +406,12 @@ export type BoxChartProps = ChartProps & {
  * box plot ranges:
  *
  * ```
- *     <BoxChart
- *       axis="temperatureAxis"
- *       style={style}
- *       column="temp"
- *       series={series} />
+ * <BoxChart
+ *     axis="temperatureAxis"
+ *     style={style}
+ *     column="temp"
+ *     series={series} 
+ * />
  * ```
  *
  * While here is an example with a dense TimeSeries of Events supplied,
@@ -381,20 +420,20 @@ export type BoxChartProps = ChartProps & {
  * range for the interquantile, and a center marker at the median:
  *
  * ```
- *    <BoxChart
+ * <BoxChart
  *      axis="speedaxis"
  *      series={speed}
  *      column="speed"
  *      style={style}
  *      aggregation={{
- *        size: this.state.rollup,
- *        reducers: {
- *          outer: [percentile(5), percentile(95)],
- *          inner: [percentile(25), percentile(75)],
- *          center: median(),
- *        },
+ *          size: this.state.rollup,
+ *          reducers: {
+ *              outer: [percentile(5), percentile(95)],
+ *              inner: [percentile(25), percentile(75)],
+ *              center: median(),
+ *          },
  *      }}
- *    />
+ * />
  * ```
  *
  * The BoxChart supports Info boxes, highlighting and selection.

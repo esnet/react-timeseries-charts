@@ -11,7 +11,7 @@
 import React, { Component } from "react";
 import Markdown from "react-markdown";
 
-import { codeRenderer } from "./renderers";
+import { codeRenderer, codeBlockRenderer } from "./renderers";
 import { codeStyle, headingStyle, textStyle, sigStyle } from "./styles";
 
 export default class TsType extends Component {
@@ -144,10 +144,12 @@ export default class TsType extends Component {
                 if (type.declaration) {
                     const { children } = type.declaration;
                     const props = children.map(child => {
-                        const comment = child.comment ? child.comment.shortText : null;
+                        const shortComment = child.comment ? child.comment.shortText : null;
+                        const comment = child.comment ? child.comment.text : null;
                         const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
                         const { type } = child.type;
 
+                        console.log("child is ", child);
                         let returnType;
                         if (type === "intrinsic") {
                             returnType = child.type.name;
@@ -165,7 +167,12 @@ export default class TsType extends Component {
                             <div style={textStyle}>
                                 <h3>{child.name}</h3>
                                 <Markdown
+                                    source={shortComment}
+                                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                                />
+                                <Markdown
                                     source={comment}
+                                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
                                 />
                                 <pre style={sigStyle}>
                                     <code className="language-typescript">{`${child.name}${isOptional ? '?' : ''}: ${returnType}`}</code>

@@ -58,7 +58,7 @@ export type AreaChartProps = ChartProps & {
      * The series columns mapped to stacking up and down.
      * Has the format:
      * ```
-     *  "columns": {
+     *  columns: {
      *      up: ["in", ...],
      *      down: ["out", ...]
      *  }
@@ -73,6 +73,7 @@ export type AreaChartProps = ChartProps & {
 
     /**
      * Any of D3's interpolation modes.
+     * For reference - [d3-curves](https://github.com/d3/d3-shape#curves)
      */
     interpolation: CurveInterpolation;
 
@@ -82,7 +83,7 @@ export type AreaChartProps = ChartProps & {
     selection?: string;
 
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries) data to visualize
      */
     series: TimeSeries<Key>;
 

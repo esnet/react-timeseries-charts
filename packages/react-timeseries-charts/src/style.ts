@@ -230,6 +230,7 @@ const defaultMutedBoxFillStyle: React.CSSProperties = {
     fill: mutedColor,
     stroke: "none"
 };
+
 export const defaultBoxChartStyle: BoxChartChannelStyle = [
     {
         normal: { ...defaultBoxFillStyle, opacity: 0.2 },

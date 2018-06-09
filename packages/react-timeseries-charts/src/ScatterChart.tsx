@@ -21,7 +21,6 @@ import {
     defaultScatterChartChannelStyle as defaultStyle,
     ScatterChartChannelStyle,
     EventMarkerStyle,
-    defaultEventMarkerStyle
 } from "./style";
 
 import { LabelValueList } from "./types";
@@ -34,7 +33,7 @@ export type EventColumnPair = {
 
 export type ScatterChartProps = ChartProps & {
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries) data to visualize
      */
     series: TimeSeries<Key>;
 
@@ -45,7 +44,7 @@ export type ScatterChartProps = ChartProps & {
 
     /**
      * Reference to the axis which provides the vertical scale for drawing. e.g.
-     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     * specifying `axis="trafficRate"` would refer the y-scale to the YAxis of `id="trafficRate"`.
      */
     axis: string;
 
@@ -106,16 +105,35 @@ export type ScatterChartProps = ChartProps & {
     style?: ScatterChartStyle | ((channel: string, event?: Event<Key>) => ScatterChartChannelStyle) | Styler;
 
     /**
-     * The values to show in the info box. This is an array of
+     * The values to show in the info box. This is either an array of
      * objects, with each object specifying the label and value
-     * to be shown in the info box.
+     * to be shown in the info box, or it can also be a string.
+     * 
+     * For example:
+     * ```
+     * infoValues = [{ 
+     *      label: "Traffic", 
+     *      value: trafficText 
+     * }];
+     * ```
      */
     info?: LabelValueList | string;
 
     /**
-     * The style of the info box and connecting lines. The style should
-     * be an object of the form { line, box }. Line and box are both objects
-     * containing the inline CSS for those elements of the info tracker.
+     * The style of the info box itself and the connecting lines. 
+     * Typically, this is an object where the key can describe 
+     * the stying of the stem, marker, box  and the text of the infoBox. 
+     * The style for each of them is in the form of CSS properties
+     * 
+     * For example:
+     * ```
+     * infoStyle = {
+     *      box: {
+     *          fill: "black",
+     *          color: "#DDD"
+     *      }
+     * }
+     * ```
      */
     infoStyle?: EventMarkerStyle;
 
@@ -139,7 +157,7 @@ export type ScatterChartProps = ChartProps & {
      * This may be either a function or a string. If you provide a function
      * that will be passed an Index and should return a string. For example:
      * ```
-     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * index => moment(index.begin()).format("Do MMM 'YY")
      * ```
      * Alternatively you can pass in a d3 format string. That will be applied
      * to the begin time of the Index range.
@@ -147,8 +165,8 @@ export type ScatterChartProps = ChartProps & {
     infoTimeFormat?: ((date: Date) => string) | string;
 
     /**
-     * The selected dot, which will be rendered in the "selected" style.
-     * If a dot is selected, all other dots will be rendered in the "muted" style.
+     * The selected dot, which will be rendered in the `selected` style.
+     * If a dot is selected, all other dots will be rendered in the `muted` style.
      *
      * See also `onSelectionChange`
      */
@@ -162,7 +180,7 @@ export type ScatterChartProps = ChartProps & {
 
     /**
      * The highlighted dot, as an object containing the { event, column },
-     * which will be rendered in the "highlighted" style.
+     * which will be rendered in the `highlighted` style.
      *
      * See also the prop `onMouseNear`.
      */

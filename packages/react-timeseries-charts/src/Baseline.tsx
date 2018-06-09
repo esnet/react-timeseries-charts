@@ -26,8 +26,22 @@ export type BaselineProps = ChartProps & {
 
     /**
      * An object describing the style of the baseline of the form
-     * { label, line }. "label" and "line" are both objects containing
+     * { label, line }, where "label" and "line" are both objects containing
      * the inline CSS for that part of the baseline.
+     * 
+     * For example:
+     * ```
+     * const baselineStyleLite = {
+     *      line: {
+     *          stroke: "steelblue",
+     *          strokeWidth: 1,
+     *          opacity: 0.5
+     *      },
+     *      label: {
+     *          fill: "steelblue"
+     *      }
+     * };
+     * ```
      */
     style?: BaselineStyle;
 
@@ -42,7 +56,7 @@ export type BaselineProps = ChartProps & {
     visible?: boolean;
 
     /**
-     * Whether to display the label above or below the line. The default is "auto",
+     * Whether to display the label above or below the line. The default is `auto`,
      * which will show it above the line unless the position is near to the top
      * of the chart.
      */
@@ -54,7 +68,7 @@ export type BaselineProps = ChartProps & {
     label?: string;
 
     /**
-     * Whether to display the label on the "left" or "right".
+     * Whether to display the label on the `left` or `right`.
      */
     position?: "left" | "right";
 };

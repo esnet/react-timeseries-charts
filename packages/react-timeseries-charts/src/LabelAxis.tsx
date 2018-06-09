@@ -28,7 +28,10 @@ export type LabelAxisProps = {
     /**
      * Supply a list of label value pairs to render within the LabelAxis.
      * This expects an array of objects. Each object is of the form:
-     *     {label: "Speed", value: "26.2 mph"}.
+     *     
+     * ```js
+     * {label: "Speed", value: "26.2 mph"}
+     * ```
      */
     values: {
         label?: string;

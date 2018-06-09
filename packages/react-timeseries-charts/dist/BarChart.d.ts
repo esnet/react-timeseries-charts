@@ -17,8 +17,6 @@ export declare type BarChartProps = ChartProps & {
     infoHeight?: number;
     infoTimeFormat?: string | ((...args: any[]) => any);
     markerRadius?: number;
-    markerStyle?: EventMarkerStyle;
-    stemStyle?: EventMarkerStyle;
     size?: number;
     visible?: boolean;
     minBarHeight?: number;

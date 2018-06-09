@@ -65,14 +65,20 @@ export type ChartProps = {
      */
     yScale?: ScalerFunction;
 
+    /**
+     * The format to display the time of the marker in
+     */
     timeFormat?: string | ((...args: any[]) => any);
+
+    /**
+     * Time in milliseconds to transition from one transition to the next
+     */
     transition?: number;
 };
 
 //
 // The <Charts> container
 //
-
 export type ChartsProps = {
     children?: any;
 };

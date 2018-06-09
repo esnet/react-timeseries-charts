@@ -24,7 +24,7 @@ export type MultiBrushProps = ChartProps & {
      * also `onTimeRangeChanged()` for receiving notification of the
      * brush range being changed by the user.
      *
-     * Takes an array of Pond TimeRange object.
+     * Takes an array of [Pond TimeRange](http://software.es.net/pond/#/class/timerange) object.
      */
     timeRanges?: TimeRange[];
 
@@ -33,6 +33,8 @@ export type MultiBrushProps = ChartProps & {
      * of this rect using this prop. The brush style is a function that you
      * provide. It will be called with the index of the TimeRange, corresponding
      * to those in the `timeRanges` prop.
+     * 
+     * For more information, please see the [Traffic example](http://software.es.net/react-timeseries-charts/#/example/traffic)
      */
     style?: any;
 
@@ -86,7 +88,7 @@ export class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState
 
     overlay: SVGRectElement;
 
-    constructor(props) {
+    constructor(props: MultiBrushProps) {
         super(props);
         this.state = {
             isBrushing: false

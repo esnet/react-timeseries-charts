@@ -26,10 +26,7 @@ import {
     curveNatural,
     curveStep,
     curveStepAfter,
-    curveStepBefore,
-    CurveFactory,
-    CurveGeneratorLineOnly,
-    CurveBundleFactory
+    curveStepBefore
 } from "d3-shape";
 
 export type CurveLookup = { [name: string]: any };

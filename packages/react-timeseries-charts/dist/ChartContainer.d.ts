@@ -61,7 +61,7 @@ export declare class ChartContainer extends React.Component<ChartContainerProps>
     rightWidth: number;
     timeScale: ScaleTime<number, number>;
     svg: SVGElement;
-    constructor(props: any);
+    constructor(props: ChartContainerProps);
     handleTrackerChanged(t: Date): void;
     handleTimeRangeChanged(timerange: TimeRange): void;
     handleMouseMove(x: any, y: any): void;

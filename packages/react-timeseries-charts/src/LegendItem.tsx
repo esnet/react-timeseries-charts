@@ -8,11 +8,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as _ from "lodash";
 import * as React from "react";
 import Flexbox from "flexbox-react";
-import { ElementStyle } from "./style";
-import { LegendProps } from "./Legend";
 
 export enum LegendItemType {
     Swatch = "SWATCH",

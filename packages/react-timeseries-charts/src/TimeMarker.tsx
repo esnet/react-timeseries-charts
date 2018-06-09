@@ -33,12 +33,37 @@ export type TimeMarkerProps = ChartProps & {
     time: Date;
 
     /**
-     * The style of the info box and connecting lines
+     * The style of the info box and connecting lines. 
+     * It is an object that specifies the stying for the line, along with that
+     * of the infoBox i.e. text and box where each of these have CSS Properties
+     * 
+     * For example:
+     * ```
+     * const style = {
+     *      line: {
+     *          stroke: "#999",
+     *          cursor: "crosshair",
+     *          pointerEvents: "none"
+     *      },
+     *      text: {
+     *          fontSize: 11,
+     *          fill: "#bdbdbd",
+     *          stroke: "none",
+     *          pointerEvents: "none"
+     *      },
+     *      box: {
+     *          fill: "#FEFEFE",
+     *          stroke: "#DDD",
+     *          opacity: 0.8
+     *      }
+     * }
+     * ```
      */
     style?: Partial<TimeMarkerStyle>;
 
     /**
-     * The format to display the time of the marker in
+     * The format to display the time of the marker.
+     * It can either be a string or a function that takes a Date and returns a string
      */
     timeFormat?: string | TimeFormatCallback;
 

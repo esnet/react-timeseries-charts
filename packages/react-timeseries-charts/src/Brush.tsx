@@ -11,8 +11,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-import { timerange, TimeRange } from "pondjs";
-import { ScaleTime } from "d3-scale";
+import { TimeRange } from "pondjs";
 
 import { ChartProps } from "./Charts";
 import { getElementOffset } from "./util";
@@ -31,7 +30,7 @@ export type BrushProps = ChartProps & {
      * also `onTimeRangeChanged()` for receiving notification of the
      * brush range being changed by the user.
      *
-     * Takes a Pond TimeRange object.
+     * Takes a [Pond TimeRange](http://software.es.net/pond/#/class/timerange) object.
      */
     timeRange?: TimeRange;
 

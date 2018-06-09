@@ -15,9 +15,7 @@ import {
     scaleLinear,
     scaleLog,
     scalePow,
-    ScaleTime,
-    ScaleLogarithmic,
-    ScaleLinear
+    ScaleTime
 } from "d3-scale";
 import { TimeRange } from "pondjs";
 import { areComponentsEqual } from "react-hot-loader";
@@ -28,7 +26,7 @@ import ScaleInterpolator, { ScalerFunction } from "./interpolators";
 import { MultiBrush } from "./MultiBrush";
 import { TimeMarker, TimeMarkerProps } from "./TimeMarker";
 import { LabelValueList } from "./types";
-import { YAxis, YAxisProps } from "./YAxis";
+import { YAxis } from "./YAxis";
 
 const AXIS_MARGIN = 5;
 
@@ -129,7 +127,7 @@ export type ChartRowProps = {
     paddingRight?: number;
 
     /**
-     * Time in milliseconds to transition from one Y-scale to the next
+     * Time in milliseconds to transition from one transition to the next
      */
     transition: number;
 

@@ -33,13 +33,13 @@ export type LegendCategory = {
 
 export type LegendProps = {
     /**
-     * The overall style of the legend items, either a color "swatch", a
-     * colored "line", or a "dot".
+     * The overall style of the legend items, either a color `swatch`, a
+     * colored `line`, or a `dot`.
      */
     type?: LegendItemType;
 
     /**
-     * Alignment of the legend within the available space. Either left or right.
+     * Alignment of the legend within the available space. Either `left` or `right`.
      */
     align?: "left" | "right";
 

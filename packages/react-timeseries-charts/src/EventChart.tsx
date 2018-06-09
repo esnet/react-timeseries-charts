@@ -17,7 +17,7 @@ import { EventChartStyle } from "./style";
 
 export type EventChartProps = ChartProps & {
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries) data to visualize
      */
     series: TimeSeries<Key>;
 
@@ -58,7 +58,9 @@ export type EventChartProps = ChartProps & {
     visible?: boolean;
 
     /**
-     * A function that should return the style of the event box
+     * A function that should return the style of the event box.
+     * See the [outages example](http://software.es.net/react-timeseries-charts/#/example/outages)
+     * for more detail on the styling
      */
     style?: EventChartStyle;
 

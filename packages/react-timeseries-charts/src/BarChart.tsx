@@ -27,7 +27,7 @@ import { LabelValueList } from "./types";
 
 export type BarChartProps = ChartProps & {
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries)
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries)
      * data to visualize
      */
     series: TimeSeries<Key>;
@@ -90,15 +90,35 @@ export type BarChartProps = ChartProps & {
     style?: BarChartStyle | ((column: string) => BarChartChannelStyle) | Styler;
 
     /**
-     * The values to show in the info box. This is an array of
+     * The values to show in the info box. This is either an array of
      * objects, with each object specifying the label and value
-     * to be shown in the info box.
+     * to be shown in the info box, or it can also be a string.
+     * 
+     * For example:
+     * ```
+     * infoValues = [{ 
+     *      label: "Traffic", 
+     *      value: trafficText 
+     * }];
+     * ```
      */
     info?: LabelValueList | string;
 
     /**
-     * The style of the info box itself. Typically you'd want to
-     * specify a fill color, and stroke color / width here.
+     * The style of the info box itself and the connecting lines. 
+     * Typically, this is an object where the key can describe 
+     * the stying of the stem, marker, box  and the text of the infoBox. 
+     * The style for each of them is in the form of CSS properties
+     * 
+     * For example:
+     * ```
+     * infoStyle = {
+     *      box: {
+     *          fill: "black",
+     *          color: "#DDD"
+     *      }
+     * }
+     * ```
      */
     infoStyle?: EventMarkerStyle;
 
@@ -117,7 +137,7 @@ export type BarChartProps = ChartProps & {
      * This may be either a function or a string. If you provide a function
      * that will be passed an Index and should return a string. For example:
      * ```
-     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * index => moment(index.begin()).format("Do MMM 'YY")
      * ```
      * Alternatively you can pass in a d3 format string. That will be applied
      * to the begin time of the Index range.
@@ -128,16 +148,6 @@ export type BarChartProps = ChartProps & {
      * The radius of the infoBox dot at the end of the marker
      */
     markerRadius?: number;
-
-    /**
-     * The style of the infoBox dot at the end of the marker
-     */
-    markerStyle?: EventMarkerStyle;
-
-    /**
-     * The style of the infoBox connecting lines
-     */
-    stemStyle?: EventMarkerStyle;
 
     /**
      * If size is specified, then the bar will be this number of pixels wide. This
@@ -157,8 +167,8 @@ export type BarChartProps = ChartProps & {
     minBarHeight?: number;
 
     /**
-     * The selected item, which will be rendered in the "selected" style.
-     * If a bar is selected, all other bars will be rendered in the "muted" style.
+     * The selected item, which will be rendered in the `selected` style.
+     * If a bar is selected, all other bars will be rendered in the `muted` style.
      *
      * See also `onSelectionChange`
      */
@@ -174,7 +184,7 @@ export type BarChartProps = ChartProps & {
     onSelectionChange?: (...args: any[]) => any;
 
     /**
-     * The highlighted item, which will be rendered in the "highlighted" style.
+     * The highlighted item, which will be rendered in the `highlighted` style.
      *
      * See also `onHighlightChange`
      */

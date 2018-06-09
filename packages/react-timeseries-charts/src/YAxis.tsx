@@ -10,14 +10,10 @@
 
 import * as React from "react";
 
-import { format } from "d3-format";
 import { Axis } from "react-axis";
 
 import { ChartRowProps } from "./ChartRow";
-import { AxisProps, ScaleType } from "./Charts";
-import { scaleAsString } from "./util";
-
-type CSSProperties = { [key: string]: any };
+import { ScaleType } from "./Charts";
 
 export type YAxisStyle = {
     label: React.CSSProperties;
@@ -59,17 +55,28 @@ export type YAxisProps = ChartRowProps & {
     width: number;
 
     /**
-     * The scale type: linear, power, or log.
+     * The scale type: `linear`, `power`, or `log`.
      */
     type: ScaleType;
 
     /**
      * Object specifying the CSS by which the axis can be styled. The object can contain:
-     * "labels" and "axis". Each of these is an inline CSS style applied
+     * `label`, `axis`, `values` and `ticks`. Each of these is an inline CSS style applied
      * to the axis label, axis values, axis line and ticks respectively.
-     *
-     * Note that these are passed into d3's styling, so are regular CSS property names
-     * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray).
+     * 
+     * For example:
+     * ```
+     * const style = {
+     *      label: {
+     *          fontSize: 12,
+     *          fontColor: "red"
+     *      }, 
+     *      ticks: {
+     *          fill: "black",
+     *          stroke: "none"
+     *      },
+     * }
+     * ```
      */
     style?: YAxisStyle;
 
@@ -134,12 +141,12 @@ export type YAxisProps = ChartRowProps & {
  *
  * ```js
  * <YAxis
- *   id="price-axis"
- *   label="Price (USD)"
- *   min={0} max={100}
- *   width="60"
- *   type="linear"
- *   format="$,.2f"
+ *      id="price-axis"
+ *      label="Price (USD)"
+ *      min={0} max={100}
+ *      width="60"
+ *      type="linear"
+ *      format="$,.2f"
  * />
  * ```
  *

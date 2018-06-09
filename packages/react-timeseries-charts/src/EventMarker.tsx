@@ -11,14 +11,14 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
+import { ScaleTime } from "d3-scale";
 import { timeFormat } from "d3-time-format";
 
-import { Event, Index, TimeRange, Time, Key, index } from "pondjs";
+import { Event, Index, TimeRange, Key, index } from "pondjs";
 
 import { ChartProps } from "./Charts";
 import { ScalerFunction } from "./interpolators";
-import { InfoBox, InfoBoxProps } from "./Info";
+import { InfoBox } from "./Info";
 import { 
     EventMarkerStyle, 
     defaultEventMarkerStyle as defaultStyle 
@@ -113,7 +113,7 @@ const EventIndex: React.SFC<EventIndexProps> = ({ index, format = "%m/%d/%y %X" 
 
 export type EventMarkerProps = ChartProps & {
     /**
-     * What [Pond Event](https://esnet-pondjs.appspot.com/#/event) to mark
+     * What [Pond Event](http://software.es.net/pond/#/class/event) to mark
      */
     event: Event<Key>;
 
@@ -132,12 +132,32 @@ export type EventMarkerProps = ChartProps & {
      * objects, with each object specifying the label and value
      * to be shown in the info box, or a simple string label. If this
      * prop is not supplied, no infoBox will be displayed.
+     * 
+     * For example:
+     * ```
+     * infoValues = [{ 
+     *      label: "Traffic", 
+     *      value: trafficText 
+     * }];
+     * ```
      */
     info?: LabelValueList | string;
 
     /**
-     * The style of the info box itself. Typically you'd want to
-     * specify a fill color, and stroke color/width here.
+     * The style of the info box itself and the connecting lines. 
+     * Typically, this is an object where the key can describe 
+     * the stying of the stem, marker, box  and the text of the infoBox. 
+     * The style for each of them is in the form of CSS properties
+     * 
+     * For example:
+     * ```
+     * infoStyle = {
+     *      box: {
+     *          fill: "black",
+     *          color: "#DDD"
+     *      }
+     * }
+     * ```
      */
     style?: EventMarkerStyle;
 
@@ -156,7 +176,7 @@ export type EventMarkerProps = ChartProps & {
      * This may be either a function or a string. If you provide a function
      * that will be passed an Index and should return a string. For example:
      * ```
-     *     index => moment(index.begin()).format("Do MMM 'YY")
+     * index => moment(index.begin()).format("Do MMM 'YY")
      * ```
      * Alternatively you can pass in a d3 format string. That will be applied
      * to the begin time of the Index range.

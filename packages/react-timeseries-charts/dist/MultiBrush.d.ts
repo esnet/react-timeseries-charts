@@ -22,7 +22,7 @@ export declare type MultiBrushState = {
 export declare class MultiBrush extends React.Component<MultiBrushProps, MultiBrushState> {
     static defaultProps: Partial<MultiBrushProps>;
     overlay: SVGRectElement;
-    constructor(props: any);
+    constructor(props: MultiBrushProps);
     viewport(): TimeRange;
     handleBrushMouseDown(e: React.MouseEvent<SVGRectElement>, brushIndex: number): void;
     handleOverlayMouseDown(e: React.MouseEvent<SVGRectElement>): void;

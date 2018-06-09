@@ -19,13 +19,27 @@ import {
 
 export type BoxProps = {
     /**
-     * Where to position the label, either "left" or "center" within the box
+     * Where to position the label, either `left` or `center` within the box
      */
     align?: "center" | "left";
 
     /**
      * The style of the label. This is the inline CSS applied directly
-     * to the label box
+     * to the label box. It is an object containing the styling for the 
+     * text and the box
+     * 
+     * For example:
+     * ```
+     * const style = {
+     *      text: {
+     *          fontSize: 11,
+     *          fill: "#bdbdbd",
+     *      },
+     *      box: {
+     *          fill: "#FEFEFE",
+     *          stroke: "#DDD",
+     *      }
+     * }
      */
     style?: InfoBoxStyle;
 

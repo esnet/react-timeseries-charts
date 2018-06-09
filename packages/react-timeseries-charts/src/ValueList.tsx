@@ -15,17 +15,32 @@ import { InfoBoxStyle, defaultInfoBoxStyle as defaultStyle } from "./style";
 
 export type ValueListProps = {
     /**
-     * Where to position the label, either "left" or "center" within the box
+     * Where to position the label, either `left` or `center` within the box
      */
     align?: "center" | "left";
 
     /**
-     * An array of label value pairs to render
+     * An array of label value pairs to render where each pair is of the type
+     * {label: "", value: "15.7mph"}
      */
     values: LabelValueList;
 
     /**
-     * CSS object to be applied to the ValueList surrounding box
+     * The style of the info box. It is an object containing the styling for the 
+     * text and the box
+     * 
+     * For example:
+     * ```
+     * const style = {
+     *      text: {
+     *          fontSize: 11,
+     *          fill: "#bdbdbd",
+     *      },
+     *      box: {
+     *          fill: "#FEFEFE",
+     *          stroke: "#DDD",
+     *      }
+     * }
      */
     style?: InfoBoxStyle;
 

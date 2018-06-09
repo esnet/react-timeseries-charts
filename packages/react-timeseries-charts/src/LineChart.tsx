@@ -20,7 +20,6 @@ import { Styler } from "./styler";
 import {
     LineChartChannelStyle,
     LineChartStyle,
-    ElementStyle,
     defaultLineChartChannelStyle as defaultStyle
 } from "./style";
 
@@ -29,14 +28,14 @@ import { scaleAsString } from "./util";
 
 export type LineChartProps = ChartProps & {
     /**
-     * What [Pond TimeSeries](https://esnet-pondjs.appspot.com/#/timeseries) data to visualize
+     * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries) data to visualize
      */
     series: TimeSeries<Key>;
 
     /**
      * Reference to the axis which provides the vertical scale for drawing.
      * e.g. specifying `axis="trafficRate"` would refer the y-scale of the YAxis
-     * with id="trafficRate".
+     * with `id="trafficRate"`.
      */
     axis: string;
 
@@ -82,21 +81,22 @@ export type LineChartProps = ChartProps & {
 
     /**
      * Any of D3's interpolation modes.
+     * For reference - [d3-curves](https://github.com/d3/d3-shape#curves)
      */
     interpolation?: CurveInterpolation;
 
     /**
      * The determines how to handle bad/missing values in the supplied
      * TimeSeries. A missing value can be null or NaN. If breakLine
-     * is set to true then the line will be broken on either side of
-     * the bad value(s). If breakLine is false (the default) bad values
+     * is set to true (the default) then the line will be broken on 
+     * either side of the bad value(s). If breakLine is false bad values
      * are simply removed and the adjoining points are connected.
      */
     breakLine?: boolean;
 
     /**
-     * The selected item, which will be rendered in the "selected" style.
-     * If a line is selected, all other lines will be rendered in the "muted" style.
+     * The selected item, which will be rendered in the `selected` style.
+     * If a line is selected, all other lines will be rendered in the `muted` style.
      *
      * See also `onSelectionChange`
      */
@@ -109,7 +109,7 @@ export type LineChartProps = ChartProps & {
     onSelectionChange?: (...args: any[]) => any;
 
     /**
-     * The highlighted column, which will be rendered in the "highlighted" style.
+     * The highlighted column, which will be rendered in the `highlighted` style.
      *
      * See also `onHighlightChange`
      */

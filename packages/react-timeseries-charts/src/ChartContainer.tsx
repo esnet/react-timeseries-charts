@@ -12,7 +12,7 @@ import * as _ from "lodash";
 import * as moment from "moment-timezone";
 import * as React from "react";
 
-import { ReactElement, ReactNode } from "react";
+import { ReactElement } from "react";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeAxis } from "react-axis"; // ts-ignore-line
 import { TimeRange } from "pondjs";
@@ -28,12 +28,10 @@ import { TimeMarker } from "./TimeMarker";
 import { Label } from "./Info";
 import {
     TimeAxisStyle,
-    TimeAxisChannelStyle,
     defaultTimeAxisStyle as defaultStyle
 } from "./style";
 
-import { ScaleTime, ScaleLinear, ScaleLogarithmic } from "d3-scale";
-import { ScalerFunction } from "./interpolators";
+import { ScaleTime } from "d3-scale";
 
 const defaultChartAxisStyle: React.CSSProperties = {
     fill: "none",
@@ -68,19 +66,19 @@ export type ChartContainerProps = ChartProps & {
     children: any;
 
     /**
-     * A [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange) representing the
+     * A [Pond TimeRange](http://software.es.net/pond/#/class/timerange) representing the
      * begin and end time of the chart.
      */
     timeRange: TimeRange;
 
     /**
-     * Should the time axis use a UTC scale or local
+     * Should the time axis use a UTC scale, local or any other
      */
     timezone?: string;
 
     /**
      * The width of the chart. This library also includes a <Resizable> component
-     * that can be wrapped around a \<ChartContainer\>. The purpose of this is to
+     * that can be wrapped around a `<ChartContainer>`. The purpose of this is to
      * inject a width prop into the ChartContainer so that it will fit the
      * surrounding element. This is very handy when you need the chart to resize
      * based on a responsive layout.
@@ -129,25 +127,36 @@ export type ChartContainerProps = ChartProps & {
      * the resulting tick. For example:
      *
      * ```js
-     *     format = (d) => ({
-     *         label: moment(d).format(h:mm a),
-     *         size: 15,
-     *         labelAlign: "adjacent"
-     *     });
+     * format = (d) => ({
+     *      label: moment(d).format(h:mm a),
+     *      size: 15,
+     *      labelAlign: "adjacent"
+     * });
      * ```
      */
     timeFormat?: string | ((d: Date) => string);
     
     /**
      * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
-     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
-     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
-     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * `values` (the time values), `axis` (the main horizontal line), `label` and `ticks` 
+     * (which may optionally extend the height of all chart rows using the `showGrid` prop). 
+     * Each of these is an inline CSS style applied to the axis label, axis values, axis line and ticks
      * respectively.
      *
-     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
-     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
-     * regular React rendered SVG line, so it uses camel case.
+     * For example:
+     * ```
+     * const timeAxisStyle = {
+     *  ticks: {
+     *      stroke: "#AAA",
+     *      opacity: 0.25,
+     *      strokeDasharray: "1,1"
+     *   },
+     *   values: {
+     *      fill: "#AAA",
+     *      fontSize: 12
+     *   }
+     * }
+     * ```
      */
     timeAxisStyle?: TimeAxisStyle;
     
@@ -201,7 +210,7 @@ export type ChartContainerProps = ChartProps & {
     showGrid?: boolean;
 
     /**
-     * Defines whether grid is overlayed ("over"( or underlayed ("under")
+     * Defines whether grid is overlayed (`over`) or underlayed (`under`)
      * with respect to the charts
      */
     showGridPosition?: ShowGridPosition;
@@ -218,7 +227,7 @@ export type ChartContainerProps = ChartProps & {
      * Info box value or values to place next to the tracker line.
      * This is either an array of objects, with each object
      * specifying the label and value to be shown in the info box,
-     * or a simple string label.
+     * or a simple string.
      */
     trackerInfo?: LabelValueList | string;
 
@@ -332,7 +341,7 @@ export class ChartContainer extends React.Component<ChartContainerProps> {
     timeScale: ScaleTime<number, number>;
     svg: SVGElement;
 
-    constructor(props) {
+    constructor(props: ChartContainerProps) {
         super(props);
         this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);

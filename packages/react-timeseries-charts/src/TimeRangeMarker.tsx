@@ -15,7 +15,7 @@ import { ChartProps } from "./Charts";
 export type TimeRangeMarkerProps = ChartProps & {
     /**
      * The timerange to mark. This is in the form of a
-     * [Pond TimeRange](https://esnet-pondjs.appspot.com/#/timerange)
+     * [Pond TimeRange](http://software.es.net/pond/#/class/timerange)
      */
     timerange: TimeRange;
 
