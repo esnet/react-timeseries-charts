@@ -14,7 +14,7 @@ import Markdown from "react-markdown";
 import Guides from "../guides/guides";
 
 import Prism from "prismjs";
-import { codeRenderer, codeBlockRenderer } from "../renderers";
+import { codeRenderer, codeBlockRenderer } from "../api/renderers";
 
 export default class extends Component {
     constructor(props) {
@@ -28,7 +28,6 @@ export default class extends Component {
         window.scrollTo(0, 0);
         Prism.highlightAll();
         const guideName = this.props.match.params.doc || "intro";
-        console.log(guideName);
         const markdownFile = Guides[guideName];
         fetch(markdownFile)
             .then(response => {

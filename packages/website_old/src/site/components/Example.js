@@ -15,7 +15,7 @@ import Examples from "../examples/examples.js";
 import Meta from "../examples/examples.json";
 
 import Prism from "prismjs";
-import { codeRenderer, codeBlockRenderer } from "../renderers";
+import { codeRenderer, codeBlockRenderer } from "../api/renderers";
 
 export default class extends Component {
     constructor(props) {

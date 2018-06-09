@@ -1,4 +1,4 @@
-import App from "./App";
+import App from "./site/App";
 import React from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";

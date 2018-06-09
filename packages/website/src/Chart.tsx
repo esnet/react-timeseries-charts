@@ -36,8 +36,6 @@ const series = timeSeries({
     ]
 });
 
-// console.log(series.toJSON());
-
 export default class Chart extends React.Component {
     render() {
         const timeAxisStyle: TimeAxisStyleType = {

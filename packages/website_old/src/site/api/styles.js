@@ -8,14 +8,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-export const sidebarStyle = {
-    flex: "0 0 12em",
-    background: "#FEFEFE",
-    color: "#4183C4",
-    textDecoration: "none",
-    borderLeftStyle: "solid",
-    borderLeftColor: "#64b2c5",
-    marginLeft: 40
+export const sigStyle = {
+    padding: 5,
+    borderWidth: 3,
+    borderRadius: 0,
+    borderTopStyle: "none",
+    borderBottomStyle: "none",
+    borderRightStyle: "none",
+    background: "#fafafa"
 };
 
 export const sidebarTitleStyle = {
@@ -38,44 +38,9 @@ export const sidebarItemStyle = {
     color: "#5c666f"
 };
 
-export const activeStyle = {
-    color: "black",
-    textDecoration: "none"
-};
-
 export const activeLinkStyle = {
     color: "#626466",
     fontWeight: "bold"
-};
-
-export const bodyStyle = {
-    marginTop: 100,
-    display: "flex",
-    minHeight: "100vh",
-    flexDirection: "column"
-};
-
-export const mainStyle = {
-    display: "flex",
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 40
-};
-
-export const footerStyle = {
-    flex: "none",
-    height: 10,
-    background: "#DDD"
-};
-
-export const contentStyle = {
-    flex: 1
-};
-
-export const githubLogoStyle = {
-    width: 24,
-    paddingRight: 5,
-    marginTop: -4
 };
 
 export const linkStyle = {

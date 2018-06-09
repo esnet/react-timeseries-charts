@@ -9,7 +9,7 @@
  */
 
 import React, { Component } from "react";
-import logo from "./logo.png";
+import logo from "./img/logo.png";
 import githubLogo from "./img/github.png";
 
 /* eslint-disable  jsx-a11y/href-no-hash */
@@ -42,7 +42,7 @@ export default class Header extends Component {
                     <div>
                         <ul className="nav navbar-nav navbar-right tools-links">
                             <li>
-                                <a href="https://github.com/esnet/pond" style={{ paddingTop: 8 }}>
+                                <a href="https://github.com/esnet/react-timeseries-charts" style={{ paddingTop: 8 }}>
                                     <img src={githubLogo} style={githubLogoStyle} alt="github" />
                                     Github
                                 </a>

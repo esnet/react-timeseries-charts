@@ -55,7 +55,7 @@ export type AreaChartProps = ChartProps & {
     breakArea?: boolean;
 
     /**
-     * The series series columns mapped to stacking up and down.
+     * The series columns mapped to stacking up and down.
      * Has the format:
      * ```
      *  "columns": {
