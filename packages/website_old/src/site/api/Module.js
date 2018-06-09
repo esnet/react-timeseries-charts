@@ -32,7 +32,9 @@ export default class TsModule extends Component {
             // case "Object literal":
             //     return <TsObject key={i} object={child} />;
             case "Type alias":
-                if (child.name.includes("Props")) {
+                const moduleProps = child.name.toLowerCase().includes(this.props.name);
+                const props = child.name.includes("Props");
+                if (props && moduleProps ) {
                     return <TsType key={i} type={child} />;
                 }
             default:

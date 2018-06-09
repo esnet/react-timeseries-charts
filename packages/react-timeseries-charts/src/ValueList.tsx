@@ -21,7 +21,9 @@ export type ValueListProps = {
 
     /**
      * An array of label value pairs to render where each pair is of the type
+     * ```
      * {label: "", value: "15.7mph"}
+     * ```
      */
     values: LabelValueList;
 

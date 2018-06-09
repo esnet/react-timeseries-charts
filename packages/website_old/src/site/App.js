@@ -135,7 +135,7 @@ export default class extends Component {
                                     path={`/module/:name`}
                                     render={props => (
                                         <ScrollToTop key={props.match.params.name}>
-                                            <TsModule module={docs.modules[props.match.params.name]} />
+                                            <TsModule module={docs.modules[props.match.params.name]} name={props.match.params.name} />
                                         </ScrollToTop>
                                     )}
                                 />
@@ -148,24 +148,6 @@ export default class extends Component {
                                                 lookups={docs}
                                             />
                                         </ScrollToTop>
-                                    )}
-                                />
-                                <Route
-                                    path={`/type/:name`}
-                                    render={props => (
-                                        <TsObject object={docs.types[props.match.params.name]} />
-                                    )}
-                                />
-                                <Route
-                                    path={`/object/:name`}
-                                    render={props => (
-                                        <TsObject object={docs.objects[props.match.params.name]} />
-                                    )}
-                                />
-                                <Route
-                                    path={`/type/:name`}
-                                    render={props => (
-                                        <TsType type={docs.types[props.match.params.name]} />
                                     )}
                                 />
                             </Switch>

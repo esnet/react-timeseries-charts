@@ -47,9 +47,9 @@ export type Column = string | KeyedStyle;
  * The overall style is implemented with methods specific to
  * each chart type or entity:
  *
- *   - lineChartStyle()
- *   - areaChartStyle()
- *   - legendStyle()
+ *   - `lineChartStyle()`
+ *   - `areaChartStyle()`
+ *   - `legendStyle()`
  *   - etc
  *
  * These will render out an object that can be passed into the

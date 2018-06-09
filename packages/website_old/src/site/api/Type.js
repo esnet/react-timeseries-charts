@@ -67,7 +67,7 @@ export default class TsType extends Component {
             } else if (type.declaration) {
                 return this.buildDeclarations(type);
             } else if (type.name) {
-                return type.name;
+                return `${type.name}`;
             } else {
                 return `"${type.value}"`;
             }
@@ -96,11 +96,12 @@ export default class TsType extends Component {
                     returnType = child.type.name;
                 } else if (child.type.type === "reference") {
                     returnType = this.buildReference(child.type)
-                } else if (type === "reflection") {
+                } else if (child.type.type === "reflection") {
                     returnType = this.buildDeclarations(child.type);
-                } else if (type === "union") {
+                } else if (child.type.type === "union") {
+                    console.log("here 3");
                     returnType = this.buildUnion(child.type);
-                } else if (type === "array") {
+                } else if (child.type.type === "array") {
                     returnType = `${child.type.elementType.name}[]`;
                 }
 
@@ -149,7 +150,6 @@ export default class TsType extends Component {
                         const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
                         const { type } = child.type;
 
-                        console.log("child is ", child);
                         let returnType;
                         if (type === "intrinsic") {
                             returnType = child.type.name;
@@ -160,7 +160,11 @@ export default class TsType extends Component {
                         } else if (type === "union") {
                             returnType = this.buildUnion(child.type);
                         } else if (type === "array") {
-                            returnType = `${child.type.elementType.name}[]`;
+                            if (child.type.elementType.declaration) {
+                                returnType = this.buildDeclarations(child.type.elementType);
+                            } else {
+                                returnType = `${child.type.elementType.name}[]`;
+                            }    
                         }
 
                         return (
@@ -196,7 +200,8 @@ export default class TsType extends Component {
             if (type.declaration) {
                 const { children } = type.declaration;
                 const props = children.map(child => {
-                    const comment = child.comment ? child.comment.shortText : null;
+                    const shortComment = child.comment ? child.comment.shortText : null;
+                    const comment = child.comment ? child.comment.text : null;
                     const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
                     const { type } = child.type;
 
@@ -210,18 +215,27 @@ export default class TsType extends Component {
                     } else if (type === "union") {
                         returnType = this.buildUnion(child.type);
                     } else if (type === "array") {
-                        returnType = `${child.type.elementType.name}[]`;
+                        if (child.type.elementType.declaration) {
+                            returnType = this.buildDeclarations(child.type.elementType);
+                        } else {
+                            returnType = `${child.type.elementType.name}[]`;
+                        }
                     }
 
                     return (
                         <div style={textStyle}>
                             <h3>{child.name}</h3>
+                            <Markdown
+                                source={shortComment}
+                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                            />
+                            <Markdown
+                                source={comment}
+                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
+                            />
                             <pre style={sigStyle}>
                                 <code className="language-typescript">{`${child.name}${isOptional ? '?' : ''}: ${returnType}`}</code>
                             </pre>
-                            <Markdown
-                                source={comment}
-                            />
                         </div>
                     );
                 });
@@ -265,9 +279,9 @@ export default class TsType extends Component {
 
     render() {
         const { name, type } = this.props.type;
-        const props = this.props.type.name.includes("Props");
+        const props = name.includes("Props");
 
-        return (props ? 
+        return (props ?
             <div style={{ marginBottom: 20 }}>
                 <h2 style={headingStyle}>
                     {name}

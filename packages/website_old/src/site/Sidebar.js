@@ -30,13 +30,14 @@ export default class extends Component {
             textDecoration: "none"
         };
 
+        const excluded = ["Resizable", "ScaleInterpolator"];
         const filter = this.props.filter || "";
         const classes = _.sortBy(
-            _.filter(this.props.docs.classes, c => !c.flags.isPrivate && c.name.includes(filter)),
+            _.filter(this.props.docs.classes, c => !c.flags.isPrivate && c.name.includes(filter) && !excluded.includes(c.name)),
             c => c.name
         );
 
-        const others = ["infobox", "label", "scaleinterpolator"];
+        const others = ["infobox", "label"];
 
         // const objects = _.sortBy(
         //     _.filter(this.props.docs.objects, c => !c.flags.isPrivate && c.name.includes(filter)),

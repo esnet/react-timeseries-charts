@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import Prism from "prismjs";
 
+import TsType from "./Type";
 import Meta from "../examples/examples.json";
 import Examples from "../examples/examples.js";
 
