@@ -150,20 +150,20 @@ export type PointData = Point[];
  * Here is an example of two columns of a TimeSeries being plotted with the `<LineChart>`:
  *
  * ```
-  <ChartContainer timeRange={this.state.timerange} >
-    <ChartRow height="200">
-      <YAxis id="y" label="Price ($)" min={0.5} max={1.5} format="$,.2f" />
-      <Charts>
-        <LineChart
-          axis="y"
-          breakLine={false}
-          series={currencySeries}
-          columns={["aud", "euro"]}
-          style={style}
-          interpolation="curveBasis" />
-      </Charts>
-    </ChartRow>
-  </ChartContainer>
+ *  <ChartContainer timeRange={this.state.timerange} >
+ *      <ChartRow height="200">
+ *          <YAxis id="y" label="Price ($)" min={0.5} max={1.5} format="$,.2f" />
+ *          <Charts>
+ *              <LineChart
+ *                  axis="y"
+ *                  breakLine={false}
+ *                  series={currencySeries}
+ *                  columns={["aud", "euro"]}
+ *                  style={style}
+ *                  interpolation="curveBasis" />
+ *          </Charts>
+ *      </ChartRow>
+ *  </ChartContainer>
  * ```
  */
 export class LineChart extends React.Component<LineChartProps, {}> {

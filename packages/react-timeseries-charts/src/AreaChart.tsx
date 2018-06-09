@@ -209,7 +209,7 @@ export class AreaChart extends React.Component<AreaChartProps> {
         stack: true,
         visible: true
     };
-
+    
     shouldComponentUpdate(nextProps: AreaChartProps) {
         const newSeries = nextProps.series;
         const oldSeries = this.props.series;

@@ -20,7 +20,7 @@
         "url": "https://github.com/esnet/react-timeseries-charts/issues"
     },
     "scripts": {
-        "docs": "typedoc --json ../website_old/src/api/doc.json --mode modules ./src/*.tsx --ignoreCompilerErrors",
+        "docs": "typedoc --json ../website_old/src/doc.json --mode modules ./src/*.tsx --ignoreCompilerErrors",
         "lint": "eslint src/components/*.js",
         "test": "npm run lint",
         "clean": "rimraf dist",
