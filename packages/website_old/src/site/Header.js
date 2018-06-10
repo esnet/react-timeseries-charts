@@ -12,8 +12,6 @@ import React, { Component } from "react";
 import logo from "./img/logo.png";
 import githubLogo from "./img/github.png";
 
-/* eslint-disable  jsx-a11y/href-no-hash */
-
 export default class Header extends Component {
     render() {
         const githubLogoStyle = {

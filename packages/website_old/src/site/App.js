@@ -26,13 +26,6 @@ import ScrollToTop from "./ScrollToTop";
 
 import TsModule from "./api/Module";
 import TsClass from "./api/Class";
-import TsType from "./api/Type";
-import TsObject from "./api/Object";
-// import TsEnum from "./api/Enum";
-// import TsFunction from "./api/Function";
-// import TsFunctionList from "./api/FunctionList";
-// import TsInterface from "./api/Interface";
-// import TsMethod from "./api/Method";
 
 // Generated pond.js code and documentation as a JSON file. This is what we are
 // parsing here to generate the API documentation
@@ -93,11 +86,8 @@ function buildTypes(root) {
 
 buildTypes(docsJSON.children);
 
-console.log("docs are ", docs);
-
 export default class extends Component {
     render() {
-        const { name } = docs;
         const bodyStyle = {
             marginTop: 100,
             display: "flex",
@@ -135,7 +125,10 @@ export default class extends Component {
                                     path={`/module/:name`}
                                     render={props => (
                                         <ScrollToTop key={props.match.params.name}>
-                                            <TsModule module={docs.modules[props.match.params.name]} name={props.match.params.name} />
+                                            <TsModule 
+                                                module={docs.modules[props.match.params.name]} 
+                                                name={props.match.params.name} 
+                                            />
                                         </ScrollToTop>
                                     )}
                                 />

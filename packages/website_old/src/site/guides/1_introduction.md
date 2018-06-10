@@ -1,4 +1,8 @@
+**This is the documentation for the next version (1.0 alpha) of the Charts Library, written in Typescript.**
 
+Version 0.15.x ([Documentation](https://esnet-pondjs.appspot.com/#/)) is the last released version of the old Charts code.
+
+---
 ## 1. Introduction
 
 ---
