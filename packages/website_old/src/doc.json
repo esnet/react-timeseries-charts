@@ -62858,7 +62858,7 @@
 							"sources": [
 								{
 									"fileName": "ValueList.tsx",
-									"line": 78,
+									"line": 80,
 									"character": 10
 								}
 							],
@@ -64013,7 +64013,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 72,
+											"line": 74,
 											"character": 13
 										}
 									],
@@ -64034,7 +64034,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 74,
+											"line": 76,
 											"character": 14
 										}
 									],
@@ -64055,7 +64055,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 75,
+											"line": 77,
 											"character": 13
 										}
 									],
@@ -64130,7 +64130,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 73,
+											"line": 75,
 											"character": 13
 										}
 									],
@@ -64156,7 +64156,7 @@
 							"sources": [
 								{
 									"fileName": "ValueList.tsx",
-									"line": 71,
+									"line": 73,
 									"character": 23
 								}
 							],
@@ -64216,7 +64216,7 @@
 					"sources": [
 						{
 							"fileName": "ValueList.tsx",
-							"line": 70,
+							"line": 72,
 							"character": 22
 						}
 					],
@@ -64304,7 +64304,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 55,
+											"line": 57,
 											"character": 10
 										}
 									],
@@ -64328,7 +64328,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 45,
+											"line": 47,
 											"character": 9
 										}
 									],
@@ -64345,12 +64345,12 @@
 									"kindString": "Variable",
 									"flags": {},
 									"comment": {
-										"shortText": "An array of label value pairs to render where each pair is of the type\n{label: \"\", value: \"15.7mph\"}"
+										"shortText": "An array of label value pairs to render where each pair is of the type\n```\n{label: \"\", value: \"15.7mph\"}\n```"
 									},
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 26,
+											"line": 28,
 											"character": 10
 										}
 									],
@@ -64374,7 +64374,7 @@
 									"sources": [
 										{
 											"fileName": "ValueList.tsx",
-											"line": 50,
+											"line": 52,
 											"character": 9
 										}
 									],
@@ -75551,7 +75551,7 @@
 					},
 					"comment": {
 						"shortText": "For our Style we want to represent two things:",
-						"text": "  1. The overall style of an AreaChart should be consistent across a site\n  2. The specific style of a columnName (e.g. \"pressure\") should be consistent\n\nThe overall style is implemented with methods specific to\neach chart type or entity:\n\n  - lineChartStyle()\n  - areaChartStyle()\n  - legendStyle()\n  - etc\n\nThese will render out an object that can be passed into the\ncharts themselves and will control the visual appearance,\nkeyed by columnName. This abstracts away the SVG details of the\nunderlying DOM elements.\n\nFor the specific style we define here three out of the box parameters\nby which one column can be different from another when rendered:\n  - color\n  - width (of a line)\n  - dashed or not\n\n"
+						"text": "  1. The overall style of an AreaChart should be consistent across a site\n  2. The specific style of a columnName (e.g. \"pressure\") should be consistent\n\nThe overall style is implemented with methods specific to\neach chart type or entity:\n\n  - `lineChartStyle()`\n  - `areaChartStyle()`\n  - `legendStyle()`\n  - etc\n\nThese will render out an object that can be passed into the\ncharts themselves and will control the visual appearance,\nkeyed by columnName. This abstracts away the SVG details of the\nunderlying DOM elements.\n\nFor the specific style we define here three out of the box parameters\nby which one column can be different from another when rendered:\n  - color\n  - width (of a line)\n  - dashed or not\n\n"
 					},
 					"children": [
 						{
