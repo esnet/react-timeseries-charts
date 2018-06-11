@@ -41,7 +41,7 @@ export default class extends Component {
         return (
             <div style={sidebarStyle}>
                 <a style={sidebarTitleStyle} data-toggle="collapse" href="#guide" aria-expanded="true">GUIDE</a>
-                <div id="guide" class="collapse">
+                <div id="guide" className="collapse in">
                     <div key="intro" style={sidebarItemStyle}>
                         <NavLink to="/guide/intro" activeStyle={activeStyle}>
                             1. Introduction
@@ -66,7 +66,7 @@ export default class extends Component {
 
                 <hr />
                 <a style={sidebarTitleStyle} data-toggle="collapse" href="#examples" aria-expanded="true">EXAMPLES</a>
-                <div id="examples" class="collapse">
+                <div id="examples" className="collapse in">
                     <div key="realtime" style={sidebarItemStyle}>
                         <NavLink to="/example/realtime" activeStyle={activeStyle}>
                             Realtime example
@@ -141,7 +141,7 @@ export default class extends Component {
                 
                 <hr />
                 <a style={sidebarTitleStyle} data-toggle="collapse" href="#api" aria-expanded="true">API</a>
-                <div id="api" class="collapse">
+                <div id="api" className="collapse in">
                     {_.map(classes, c => (
                         <div key={c.name} style={sidebarItemStyle}>
                             <NavLink
