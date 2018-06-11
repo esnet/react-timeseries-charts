@@ -19,5 +19,6 @@ export * from "./TimeRangeMarker";
 export * from "./ValueAxis";
 export * from "./ValueList";
 export * from "./YAxis";
+export * from "./style";
 export * from "./styler";
 export * from "./types";

@@ -6,6 +6,7 @@ import { Styler } from "./styler";
 import { BarChartStyle, BarChartChannelStyle, EventMarkerStyle } from "./style";
 import { LabelValueList } from "./types";
 export declare type BarChartProps = ChartProps & {
+    axis: string;
     series: TimeSeries<Key>;
     spacing?: number;
     offset?: number;

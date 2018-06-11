@@ -129,7 +129,7 @@ export type ChartRowProps = {
     /**
      * Time in milliseconds to transition from one transition to the next
      */
-    transition: number;
+    transition?: number;
 
     /**
      * Show or hide this row
@@ -171,7 +171,7 @@ export type ChartRowProps = {
      * prop as well as used elsewhere on the greater page.
      * 
      */
-    onTimeRangeChanged: (timeRange: TimeRange) => any;
+    onTimeRangeChanged?: (timeRange: TimeRange) => any;
 
     /**
      * Will be called when the user hovers over a chart. The callback will
@@ -183,7 +183,7 @@ export type ChartRowProps = {
      * can then be used to position arbitrary components in sync with the
      * current tracker position.
      */
-    onTrackerChanged: (time: Date, number: (t: any) => number) => any;
+    onTrackerChanged?: (time: Date, number: (t: any) => number) => any;
 };
 
 /**

@@ -22,6 +22,7 @@ tslib_1.__exportStar(require("./TimeRangeMarker"), exports);
 tslib_1.__exportStar(require("./ValueAxis"), exports);
 tslib_1.__exportStar(require("./ValueList"), exports);
 tslib_1.__exportStar(require("./YAxis"), exports);
+tslib_1.__exportStar(require("./style"), exports);
 tslib_1.__exportStar(require("./styler"), exports);
 tslib_1.__exportStar(require("./types"), exports);
 //# sourceMappingURL=entry.js.map

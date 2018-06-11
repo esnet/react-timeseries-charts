@@ -10,7 +10,7 @@ export declare type YAxisStyle = {
 };
 export declare type YAxisProps = ChartRowProps & {
     id: string;
-    chartExtent: number;
+    chartExtent?: number;
     label?: string;
     min: number;
     max: number;

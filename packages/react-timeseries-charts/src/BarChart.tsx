@@ -27,6 +27,12 @@ import { LabelValueList } from "./types";
 
 export type BarChartProps = ChartProps & {
     /**
+     * Reference to the axis which provides the vertical scale for ## drawing. e.g.
+     * specifying axis="trafficRate" would refer the y-scale to the YAxis of id="trafficRate".
+     */
+    axis: string;
+    
+    /**
      * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries)
      * data to visualize
      */

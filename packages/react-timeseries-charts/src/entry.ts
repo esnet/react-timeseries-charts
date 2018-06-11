@@ -32,5 +32,6 @@ export * from "./ValueList";
 export * from "./YAxis";
 
 // Src
+export * from "./style";
 export * from "./styler";
 export * from "./types";

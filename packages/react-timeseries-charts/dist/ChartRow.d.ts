@@ -20,15 +20,15 @@ export declare type ChartRowProps = {
     rightAxisWidths?: number[];
     paddingLeft?: number;
     paddingRight?: number;
-    transition: number;
+    transition?: number;
     visible?: boolean;
     enablePanZoom?: boolean;
     minTime?: Date;
     maxTime?: Date;
     minDuration?: number;
     showGrid?: boolean;
-    onTimeRangeChanged: (timeRange: TimeRange) => any;
-    onTrackerChanged: (time: Date, number: (t: any) => number) => any;
+    onTimeRangeChanged?: (timeRange: TimeRange) => any;
+    onTrackerChanged?: (time: Date, number: (t: any) => number) => any;
 };
 export declare type ChartRowState = {
     yAxisScalerMap?: {

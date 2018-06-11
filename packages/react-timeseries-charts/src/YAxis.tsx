@@ -32,7 +32,7 @@ export type YAxisProps = ChartRowProps & {
     /**
      * Width of the chart
      */
-    chartExtent: number;
+    chartExtent?: number;
 
     /**
      * The label to be displayed alongside the axis.
