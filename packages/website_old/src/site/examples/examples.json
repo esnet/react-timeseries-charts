@@ -50,6 +50,11 @@
         "description": "Example showing the experimental EventChart.",
         "tags": ["LabelAxis", "EventChart", "panzoom"]
     },
+    "stockchart": {
+        "title": "Stockchart",
+        "description": "Example in progress to build a stock chart. Demonstrates log to linear scale transitions.",
+        "tags": ["LineChart", "BarChart", "panzoom"]
+    },
     "traffic": {
         "title": "Network Traffic example",
         "description": "Example of how ESnet uses the charts library to display network traffic.",

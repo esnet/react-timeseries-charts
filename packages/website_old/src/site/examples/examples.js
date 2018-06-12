@@ -20,6 +20,7 @@ import currency from "./currency/Index";
 import cycling from "./cycling/Index";
 import ddos from "./ddos/Index";
 import outages from "./outages/Index";
+import stockchart from "./stockchart/Index";
 import traffic from "./traffic/Index";
 import weather from "./weather/Index";
 import wind from "./wind/Index";
@@ -36,6 +37,7 @@ export default {
     ...cycling,
     ...ddos,
     ...outages,
+    ...stockchart,
     ...traffic,
     ...weather,
     ...wind,

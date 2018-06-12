@@ -107,6 +107,11 @@ export default class extends Component {
                             Outage events
                         </NavLink> 
                     </div>
+                    <div key="stockchart" style={sidebarItemStyle}>
+                        <NavLink to="/example/stockchart" activeStyle={activeStyle}>
+                            Stock Chart example
+                        </NavLink> 
+                    </div>
                     <div key="traffic" style={sidebarItemStyle}>
                         <NavLink to="/example/traffic" activeStyle={activeStyle}>
                             Network traffic
