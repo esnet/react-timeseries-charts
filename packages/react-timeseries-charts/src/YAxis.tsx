@@ -57,7 +57,7 @@ export type YAxisProps = ChartRowProps & {
     /**
      * The scale type: `linear`, `power`, or `log`.
      */
-    type: ScaleType;
+    type?: ScaleType;
 
     /**
      * Object specifying the CSS by which the axis can be styled. The object can contain:
@@ -128,7 +128,13 @@ export type YAxisProps = ChartRowProps & {
      * this can't be used on the outer axes. Also, if you have an axis on either side of the chart
      * then you can use this, but the UX not be ideal.
      */
-    showGrid?: boolean
+    showGrid?: boolean;
+
+    /**
+     * [Internal] Determines whether the axis is an innerAxis or not. This is helpful when we have
+     * to display a grid but there are multiple YAxis on the same side.
+     */
+    isInnerAxis?: boolean;
 };
 
 /**
@@ -210,8 +216,7 @@ export class YAxis extends React.Component<YAxisProps> {
                 absolute={this.props.absolute}
                 style={this.props.style}
                 hideAxisLine={this.props.hideAxisLine}
-                showGrid={this.props.showGrid}
-                tickExtend={this.props.showGrid ? this.props.chartExtent : 0}
+                tickExtend={this.props.showGrid && this.props.isInnerAxis ? this.props.chartExtent : 0}
             />
         );
     }

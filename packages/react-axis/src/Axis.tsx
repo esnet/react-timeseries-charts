@@ -72,7 +72,6 @@ export type AxisProps = {
     absolute: boolean;
     angled?: boolean;
     hideAxisLine?: boolean;
-    showGrid?: boolean;
     style?: AxisStyle;
 };
 
@@ -108,7 +107,6 @@ export class Axis extends React.Component<AxisProps> {
         absolute: false,
         angled: false,
         hideAxisLine: false,
-        showGrid: false,
         style: defaultAxisStyle
     };
 
@@ -117,7 +115,7 @@ export class Axis extends React.Component<AxisProps> {
     }
 
     renderAxisLabel() {
-        const { width, height, position, labelPosition, style } = this.props;
+        const { width, height, position, labelPosition } = this.props;
         const labelStyle = _.merge(
             true,
             defaultAxisStyle.label,
