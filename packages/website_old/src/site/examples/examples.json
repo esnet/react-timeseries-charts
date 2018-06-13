@@ -60,6 +60,11 @@
         "description": "Example of how ESnet uses the charts library to display network traffic.",
         "tags": ["AreaChart", "panzoom"]
     },
+    "trend": {
+        "title": "D3's trend example",
+        "description": "Example of displaying percentile ranges in different ways.",
+        "tags": ["AreaChart", "BoxChart", "BandChart"]
+    },
     "weather": {
         "title": "Weather example",
         "description": "Storm visualized as a multi-row chart.",

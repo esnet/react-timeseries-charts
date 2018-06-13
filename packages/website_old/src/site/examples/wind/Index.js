@@ -14,8 +14,8 @@ import React from "react";
 import _ from "underscore";
 import Moment from "moment";
 import { format } from "d3-format";
-import { timeSeries } from "pondjs";
-import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable } from "react-timeseries-charts";
+import { timeSeries, percentile, window, duration } from "pondjs";
+import { BandChart, ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable, ScaleType } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";
@@ -103,7 +103,8 @@ class wind extends React.Component {
         ];
 
         const perEventStyle = (column, event) => {
-            const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
+            const color = "steelblue";
+            // const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
             return {
                 normal: {
                     fill: color,
@@ -173,10 +174,23 @@ class wind extends React.Component {
                                         format=",.1f"
                                     />
                                     <Charts>
+                                        <BandChart
+                                            axis="wind-gust"
+                                            series={series}
+                                            column="station1"
+                                            aggregation={{
+                                                size: window(duration("30m")),
+                                                reducers: {
+                                                    outer: [percentile(5), percentile(95)],
+                                                    inner: [percentile(25), percentile(75)]
+                                                }
+                                            }}
+                                            interpolation="curveBasis"
+                                        />
                                         <ScatterChart
                                             axis="wind-gust"
                                             series={series}
-                                            columns={["station1", "station2"]}
+                                            columns={["station1"]}
                                             style={perEventStyle}
                                             info={infoValues}
                                             infoHeight={28}

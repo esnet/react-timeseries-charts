@@ -117,6 +117,11 @@ export default class extends Component {
                             Network traffic
                         </NavLink>
                     </div>
+                    <div key="trend" style={sidebarItemStyle}>
+                        <NavLink to="/example/trend" activeStyle={activeStyle}>
+                            Trend example
+                        </NavLink>
+                    </div>
                     <div key="weather" style={sidebarItemStyle}>
                         <NavLink to="/example/weather" activeStyle={activeStyle}>
                             Weather example

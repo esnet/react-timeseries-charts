@@ -22,6 +22,7 @@ import ddos from "./ddos/Index";
 import outages from "./outages/Index";
 import stockchart from "./stockchart/Index";
 import traffic from "./traffic/Index";
+import trend from "./trend/Index";
 import weather from "./weather/Index";
 import wind from "./wind/Index";
 import volume from "./volume/Index";
@@ -39,6 +40,7 @@ export default {
     ...outages,
     ...stockchart,
     ...traffic,
+    ...trend,
     ...weather,
     ...wind,
     ...volume,
