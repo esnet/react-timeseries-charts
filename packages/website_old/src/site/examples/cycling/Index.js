@@ -17,7 +17,7 @@ import _ from "underscore";
 import React from "react";
 import { format } from "d3-format";
 import { avg, percentile, median, timeSeries, window, duration, TimeRange } from "pondjs";
-import styler, { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, ValueAxis, YAxis, Legend } from "react-timeseries-charts";
+import { AreaChart, Baseline, BoxChart, Brush, ChartContainer, ChartRow, Charts, LabelAxis, LineChart, Resizable, ValueAxis, YAxis, Legend, styler } from "react-timeseries-charts";
 
 import cycling_docs from "./cycling_docs.md";
 import cycling_thumbnail from "./cycling_thumbnail.png";

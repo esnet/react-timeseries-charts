@@ -15,7 +15,7 @@ import _ from "underscore";
 import { format } from "d3-format";
 import moment from "moment";
 import { indexedSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable } from "react-timeseries-charts";
+import { ChartContainer, ChartRow, Charts, YAxis, BarChart, Resizable, styler } from "react-timeseries-charts";
 
 // Test data
 import monthlyJSON from "./total_traffic_6mo.json";

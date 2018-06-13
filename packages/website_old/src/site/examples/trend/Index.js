@@ -12,14 +12,15 @@
 
 import React from "react";
 import { indexedSeries } from "pondjs";
-import styler, {
+import {
     ChartContainer,
     ChartRow,
     Charts,
     YAxis,
     BandChart,
     LineChart,
-    Resizable
+    Resizable,
+    styler
 } from "react-timeseries-charts";
 
 import data from "./data.json";

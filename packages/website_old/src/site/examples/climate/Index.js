@@ -13,7 +13,7 @@
 import React from "react";
 import _ from "underscore";
 import { indexedSeries } from "pondjs";
-import styler, { Baseline, ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, ScatterChart, EventMarker } from "react-timeseries-charts";
+import { Baseline, ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, ScatterChart, EventMarker, styler} from "react-timeseries-charts";
 
 import climate_docs from "./climate_docs.md";
 import climate_thumbnail from "./climate_thumbnail.png";

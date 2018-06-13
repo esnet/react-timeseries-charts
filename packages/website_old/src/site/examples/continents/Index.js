@@ -15,7 +15,7 @@ import _ from "underscore";
 import Select from "react-select";
 import colorbrewer from "colorbrewer";
 import { timeSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable } from "react-timeseries-charts";
+import { ChartContainer, ChartRow, Charts, YAxis, AreaChart, Legend, Resizable, styler } from "react-timeseries-charts";
 
 import 'react-select/dist/react-select.css';
 

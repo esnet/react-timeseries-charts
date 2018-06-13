@@ -254,6 +254,45 @@ export const defaultBoxChartStyle: BoxChartChannelStyle = [
 
 //
 // --------------------------------------------------------------------------------------------------------------
+// BandChart
+// --------------------------------------------------------------------------------------------------------------
+//
+
+export type BandChartChannelStyle = LevelStyle[];
+export type BandChartStyle = { [channel: string]: BandChartChannelStyle };
+
+const defaultBandFillStyle: React.CSSProperties = {
+    fill: primaryColor,
+    stroke: "none"
+};
+const defaultMutedBandFillStyle: React.CSSProperties = {
+    fill: mutedColor,
+    stroke: "none"
+};
+
+export const defaultBandChartStyle: BandChartChannelStyle = [
+    {
+        normal: { ...defaultBandFillStyle, opacity: 0.2 },
+        highlighted: { ...defaultBandFillStyle, opacity: 0.3 },
+        selected: { ...defaultBandFillStyle, opacity: 0.3 },
+        muted: { ...defaultMutedBandFillStyle, opacity: 0.1 }
+    },
+    {
+        normal: { ...defaultBandFillStyle, opacity: 0.5 },
+        highlighted: { ...defaultBandFillStyle, opacity: 0.6 },
+        selected: { ...defaultBandFillStyle, opacity: 0.6 },
+        muted: { ...defaultMutedBandFillStyle, opacity: 0.2 }
+    },
+    {
+        normal: { ...defaultBandFillStyle, opacity: 0.9 },
+        highlighted: { ...defaultBandFillStyle, opacity: 1.0 },
+        selected: { ...defaultBandFillStyle, opacity: 1.0 },
+        muted: { ...defaultMutedBandFillStyle, opacity: 0.2 }
+    }
+];
+
+//
+// --------------------------------------------------------------------------------------------------------------
 // ScatterChart
 // --------------------------------------------------------------------------------------------------------------
 //

@@ -10,6 +10,7 @@
 
 // Components
 export * from "./AreaChart";
+export * from "./BandChart";
 export * from "./BarChart";
 export * from "./BoxChart";
 export * from "./Baseline";

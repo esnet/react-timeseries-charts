@@ -16,10 +16,10 @@ import { LegendItemType } from "./LegendItem";
 import {
     AreaChartStyle,
     BarChartStyle,
-    LegendStyle,
     CategoryStyle,
     ScatterChartStyle,
     BoxChartStyle,
+    BandChartStyle,
     LineChartStyle
 } from "./style";
 
@@ -389,8 +389,50 @@ export class Styler {
         });
         return style;
     }
+
+    bandChartStyle(): BandChartStyle {
+        const style: BandChartStyle = {};
+
+        const numColumns = this.numColumns();
+        const colorLookup = this.colorLookup(numColumns);
+
+        let i = 0;
+        _.forEach(this.columnStyles, ({ color, selected }, column) => {
+            const c = color || colorLookup[i % colorLookup.length];
+            const styleArea: React.CSSProperties = {
+                fill: c,
+                stroke: "none"
+            };
+            const styleSelectedArea: React.CSSProperties = {
+                fill: selected || color,
+                stroke: "none"
+            };
+            style[column] = [
+                {
+                    normal: { ...styleArea, opacity: 0.2 },
+                    highlighted: { ...styleArea, opacity: 0.3 },
+                    selected: { ...styleSelectedArea, opacity: 0.3 },
+                    muted: { ...styleArea, opacity: 0.1 }
+                },
+                {
+                    normal: { ...styleArea, opacity: 0.5 },
+                    highlighted: { ...styleArea, opacity: 0.6 },
+                    selected: { ...styleSelectedArea, opacity: 0.6 },
+                    muted: { ...styleArea, opacity: 0.2 }
+                },
+                {
+                    normal: { ...styleArea, opacity: 0.9 },
+                    highlighted: { ...styleArea, opacity: 1.0 },
+                    selected: { ...styleSelectedArea, opacity: 1.0 },
+                    muted: { ...styleArea, opacity: 0.2 }
+                }
+            ];
+            i += 1;
+        });
+        return style;
+    }
 }
 
-export default function styler(columns: Column[], scheme?: string) {
+export function styler(columns: Column[], scheme?: string) {
     return new Styler(columns, scheme);
 }

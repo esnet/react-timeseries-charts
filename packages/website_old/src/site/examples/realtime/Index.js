@@ -22,7 +22,7 @@ import {
     duration,
     window
 } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend } from "react-timeseries-charts";
+import { ChartContainer, ChartRow, Charts, YAxis, ScatterChart, BarChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import realtime_docs from "./realtime_docs.md";
 import realtime_thumbnail from "./realtime_thumbnail.png";

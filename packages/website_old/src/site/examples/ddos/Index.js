@@ -14,7 +14,7 @@ import React from "react";
 import _ from "underscore";
 import moment from "moment";
 import { timeSeries } from "pondjs";
-import styler, { ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, Legend } from "react-timeseries-charts";
+import { ChartContainer, ChartRow, Charts, YAxis, LineChart, Resizable, Legend, styler } from "react-timeseries-charts";
 
 import ddos_docs from "./ddos_docs.md";
 import ddos_thumbnail from "./ddos_thumbnail.png";
