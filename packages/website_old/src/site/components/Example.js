@@ -78,7 +78,7 @@ export default class extends Component {
         const exampleName = this.props.match.params.example;
         const ExampleMetaData = Meta[exampleName];
         const Component = Examples[exampleName];
-        const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/master/src/website/packages/charts/examples/${exampleName}/Index.js`;
+        const sourceCode = `https://github.com/esnet/react-timeseries-charts/tree/updates-typescript/packages/website_old/src/site/examples/${exampleName}/Index.js`;
 
         return (
             <div>

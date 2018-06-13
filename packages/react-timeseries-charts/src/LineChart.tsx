@@ -52,10 +52,12 @@ export type LineChartProps = ChartProps & {
      * ```
      * const style = {
      *     in: {
-     *         normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
-     *         highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
-     *         selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
-     *         muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+     *         line: {
+     *             normal: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *             highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+     *             selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+     *             muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+     *          }
      *     },
      *     out: {
      *         ...
@@ -77,7 +79,7 @@ export type LineChartProps = ChartProps & {
      *
      * ```
      */
-    style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
+    style?: Partial<LineChartStyle> | ((column: string) => LineChartChannelStyle) | Styler;
 
     /**
      * Any of D3's interpolation modes.

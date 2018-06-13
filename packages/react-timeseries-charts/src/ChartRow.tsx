@@ -403,6 +403,7 @@ export class ChartRow extends React.Component<ChartRowProps, ChartRowState> {
                 id = leftAxisList[leftColumnIndex];
                 if (_.has(yAxisMap, id)) {
                     transform = `translate(${posx + paddingLeft},0)`;
+                    
                     // Additional props for left aligned axes
                     props = {
                         width: colWidth,

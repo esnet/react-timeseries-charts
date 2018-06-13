@@ -43,7 +43,7 @@ export type BaselineProps = ChartProps & {
      * };
      * ```
      */
-    style?: BaselineStyle;
+    style?: Partial<BaselineStyle>;
 
     /**
      * The y-value to display the line at.

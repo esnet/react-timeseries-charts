@@ -15,7 +15,7 @@ import _ from "underscore";
 import Moment from "moment";
 import { format } from "d3-format";
 import { timeSeries, percentile, window, duration } from "pondjs";
-import { BandChart, ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable, ScaleType } from "react-timeseries-charts";
+import { BandChart, ChartContainer, ChartRow, Charts, YAxis, ScatterChart, Resizable } from "react-timeseries-charts";
 
 // Weather data
 import weatherJSON from "./weather.json";
@@ -103,8 +103,7 @@ class wind extends React.Component {
         ];
 
         const perEventStyle = (column, event) => {
-            const color = "steelblue";
-            // const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)];
+            const color = heat[Math.floor((1 - event.get("station1") / 40) * 9)]; // "steelblue"
             return {
                 normal: {
                     fill: color,

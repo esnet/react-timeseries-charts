@@ -12,23 +12,22 @@ import React, { Component } from "react";
 import Markdown from "react-markdown";
 
 import { codeRenderer, codeBlockRenderer } from "./renderers";
-import { codeStyle, headingStyle, textStyle, sigStyle } from "./styles";
+import { headingStyle, textStyle, sigStyle } from "./styles";
 
 export default class TsType extends Component {
     buildParamList(parameters) {
-        return parameters
-            ? parameters.map((param, i) => {
-                  const paramType = param.type;
-                  const paramName = param.name;
-                  const paramTypeName = paramType.name;
-                  const isArray = paramType.isArray;
-                  const isOptional = param.flags.isOptional;
-                  const typeArgs = this.buildTypeArguments(paramType.typeArguments);
-                  return `${paramName}${isOptional ? "?" : ""}: ${paramTypeName
-                      ? paramTypeName
-                      : ""}${typeArgs}${isArray ? "[]" : ""}`;
-              })
-            : [];
+        return parameters ? 
+            parameters.map((param, i) => {
+                const paramType = param.type;
+                const paramName = param.name;
+                const paramTypeName = paramType.name || paramType.elementType.name;
+                const isArray = paramType.isArray || paramType.type === "array";
+                const isOptional = param.flags.isOptional;
+                const typeArgs = this.buildTypeArguments(paramType.typeArguments);
+                return (
+                   `${paramName}${isOptional ? "?" : ""}: ${paramTypeName ? paramTypeName : ""}${typeArgs}${isArray ? "[]" : ""}`
+                );
+            }) : [];
     }
 
     buildReturnType(signature) {
@@ -90,21 +89,8 @@ export default class TsType extends Component {
             const map = children.map(child => {
                 const name = child.name;
                 const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
-
-                let returnType;
-                if (child.type.type === "intrinsic") {
-                    returnType = child.type.name;
-                } else if (child.type.type === "reference") {
-                    returnType = this.buildReference(child.type)
-                } else if (child.type.type === "reflection") {
-                    returnType = this.buildDeclarations(child.type);
-                } else if (child.type.type === "union") {
-                    console.log("here 3");
-                    returnType = this.buildUnion(child.type);
-                } else if (child.type.type === "array") {
-                    returnType = `${child.type.elementType.name}[]`;
-                }
-
+                const returnType = this.returnType(child.type);
+ 
                 return `${name}${isOptional ? '?' : ''}: ${returnType};`;
             });
             return `{${map}}`
@@ -148,36 +134,13 @@ export default class TsType extends Component {
                         const shortComment = child.comment ? child.comment.shortText : null;
                         const comment = child.comment ? child.comment.text : null;
                         const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
-                        const { type } = child.type;
-
-                        let returnType;
-                        if (type === "intrinsic") {
-                            returnType = child.type.name;
-                        } else if (type === "reference") {
-                            returnType = this.buildReference(child.type);
-                        } else if (type === "reflection") {
-                            returnType = this.buildDeclarations(child.type);
-                        } else if (type === "union") {
-                            returnType = this.buildUnion(child.type);
-                        } else if (type === "array") {
-                            if (child.type.elementType.declaration) {
-                                returnType = this.buildDeclarations(child.type.elementType);
-                            } else {
-                                returnType = `${child.type.elementType.name}[]`;
-                            }    
-                        }
+                        const returnType = this.returnType(child.type);
 
                         return (
-                            <div style={textStyle}>
+                            <div style={textStyle} key={child.name}>
                                 <h3>{child.name}</h3>
-                                <Markdown
-                                    source={shortComment}
-                                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
-                                />
-                                <Markdown
-                                    source={comment}
-                                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
-                                />
+                                {this.renderComment(shortComment)}
+                                {this.renderComment(comment)}
                                 <pre style={sigStyle}>
                                     <code className="language-typescript">{`${child.name}${isOptional ? '?' : ''}: ${returnType}`}</code>
                                 </pre>
@@ -189,6 +152,8 @@ export default class TsType extends Component {
                             {props}
                         </div>
                     );
+                } else {
+                    return <div key={i} />;
                 }
             });
             return (
@@ -203,36 +168,13 @@ export default class TsType extends Component {
                     const shortComment = child.comment ? child.comment.shortText : null;
                     const comment = child.comment ? child.comment.text : null;
                     const isOptional = child.flags.isOptional ? child.flags.isOptional : false;
-                    const { type } = child.type;
-
-                    let returnType;
-                    if (type === "intrinsic") {
-                        returnType = child.type.name;
-                    } else if (type === "reference") {
-                        returnType = this.buildReference(child.type);
-                    } else if (type === "reflection") {
-                        returnType = this.buildDeclarations(child.type);
-                    } else if (type === "union") {
-                        returnType = this.buildUnion(child.type);
-                    } else if (type === "array") {
-                        if (child.type.elementType.declaration) {
-                            returnType = this.buildDeclarations(child.type.elementType);
-                        } else {
-                            returnType = `${child.type.elementType.name}[]`;
-                        }
-                    }
-
+                    const returnType = this.returnType(child.type);
+    
                     return (
-                        <div style={textStyle}>
+                        <div style={textStyle} key={child.name}>
                             <h3>{child.name}</h3>
-                            <Markdown
-                                source={shortComment}
-                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
-                            />
-                            <Markdown
-                                source={comment}
-                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
-                            />
+                            {this.renderComment(shortComment)}
+                            {this.renderComment(comment)}
                             <pre style={sigStyle}>
                                 <code className="language-typescript">{`${child.name}${isOptional ? '?' : ''}: ${returnType}`}</code>
                             </pre>
@@ -240,37 +182,49 @@ export default class TsType extends Component {
                     );
                 });
                 return (
-                    <div>
+                    <div key={children.name}>
                         {props}
                     </div>
                 );
+            } else {
+                return <div />;
             }
         }
     }
 
-    buildSignature() {
-        const { type } = this.props.type;
-        switch (type.type) {
+    returnType(t) {
+        const { type } = t;
+        switch (type) {
             case "union":
-                return this.buildUnion(type);
+                return this.buildUnion(t);
             case "reflection":
-                return this.buildDeclarations(type);
+                return this.buildDeclarations(t);
             case "tuple":
-                return this.buildTuple(type);
+                return this.buildTuple(t);
             case "reference":
-                return this.buildReference(type);
+                return this.buildReference(t);
             case "intersection":
-                return this.buildProps(type);
+                return this.buildProps(t);
+            case "intrinsic":
+                return t.name;
+            case "array":
+                if (t.elementType.declaration) {
+                    return this.buildDeclarations(t.elementType);
+                } else {
+                    return `${t.elementType.name}[]`;
+                }
             default:
                 return <div />;
         }
     }
 
-    renderComment() {
-        const { comment } = this.props.type;
+    renderComment(comment) {
         return comment ? (
             <div style={textStyle}>
-                <Markdown source={comment.shortText} renderers={{ Code: codeRenderer }} />
+                <Markdown 
+                    source={comment} 
+                    renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }} 
+                />
             </div>
         ) : (
             <div style={textStyle} />
@@ -279,22 +233,12 @@ export default class TsType extends Component {
 
     render() {
         const { name, type } = this.props.type;
-        const props = name.includes("Props");
-
-        return (props ?
+        return (
             <div style={{ marginBottom: 20 }}>
                 <h2 style={headingStyle}>
                     {name}
                 </h2>
                 {this.buildProps(type)}
-            </div>
-            :
-            <div style={{ marginBottom: 20 }}>
-                <h2 style={headingStyle}>
-                    {name}
-                </h2>
-                {this.renderComment()}
-                <code style={codeStyle}>{`type ${name} = ${this.buildSignature(this.props)}`};</code>
             </div>
         );
     }

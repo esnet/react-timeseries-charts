@@ -10,10 +10,9 @@
 
 import React, {Component} from "react";
 import Markdown from "react-markdown";
+import Prism from "prismjs";
 
 import Guides from "../guides/guides";
-
-import Prism from "prismjs";
 import { codeRenderer, codeBlockRenderer } from "../api/renderers";
 
 export default class extends Component {

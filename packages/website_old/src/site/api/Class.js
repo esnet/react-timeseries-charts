@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import Prism from "prismjs";
 
-import TsType from "./Type";
 import Meta from "../examples/examples.json";
 import Examples from "../examples/examples.js";
 
@@ -35,11 +34,13 @@ class Example extends React.Component {
             width: 160,
             height: 160
         };
+
         const { example } = this.props;
         const name = example.key;
         const imgName = `${name}_thumbnail`;
         const img = Examples[imgName];
         const link = <Link to={`/example/${name}`}>{example.value.title}</Link>;
+
         return (
             <Flexbox flexDirection="column" minWidth="220px">
                 <div style={style}>
@@ -97,7 +98,7 @@ export default class TsClass extends Component {
         let extendedName;
         let typeArgument;
         if (typeParameter && typeParameter.length) {
-            const typeParameters = typeParameter.map(t => {
+            typeParameter.map(t => {
                 if (t.type) {
                     const type = t.type.name;
                     return `${t.name} extends ${type}`;
@@ -105,6 +106,7 @@ export default class TsClass extends Component {
                     return `${t.name}`;
                 }
             });
+
             if (extendedTypes) {
                 const { typeArguments } = extendedTypes[0];
                 extendedName = extendedTypes[0].name;
@@ -114,6 +116,7 @@ export default class TsClass extends Component {
                     });
                 }
             }
+            
             return typeArgument ? (
                 <code style={codeStyle}>
                     {`class ${name} extends React.${extendedName}<${typeArgument.join(", ")}>`}
@@ -183,6 +186,8 @@ export default class TsClass extends Component {
                             </pre>
                         </div>
                     );
+                } else {
+                    return <div key={i} />;
                 }
             });
             return <div style={textStyle}>{groups}<hr /></div>;

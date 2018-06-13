@@ -25,6 +25,7 @@ export default class extends Component {
             borderLeftColor: "#64b2c5",
             marginLeft: 40
         };
+
         const activeStyle = {
             color: "black",
             textDecoration: "none"

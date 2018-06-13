@@ -192,7 +192,7 @@ export type BoxChartProps = ChartProps & {
      * What [Pond TimeSeries](http://software.es.net/pond/#/class/timeseries)
      * data to visualize. See general notes on the BoxChart.
      */
-    series?: TimeSeries<Index> | TimeSeries<Time>;
+    series: TimeSeries<Index> | TimeSeries<Time>;
 
     /**
      * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
