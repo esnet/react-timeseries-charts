@@ -178,8 +178,10 @@ export default class BarChart extends React.Component {
 
         const isHighlighted =
             this.props.highlighted &&
-            column === this.props.highlighted.column &&
-            Event.is(this.props.highlighted.event, event);
+            ((column === this.props.highlighted.column &&
+                Event.is(this.props.highlighted.event, event)) ||
+            (this.props.highlightEntireEvent &&
+                Event.is(this.props.highlighted.event, event)))
 
         const isSelected =
             this.props.selected &&
@@ -355,6 +357,12 @@ BarChart.propTypes = {
     columns: PropTypes.arrayOf(PropTypes.string),
 
     /**
+     * When true, the entire `highlighted` event will be highlighted, instead of
+     * only the column bar that's currently being hovered
+     */
+    highlightEntireEvent: PropTypes.bool,
+
+    /**
      * The style of the bar chart drawing (using SVG CSS properties).
      * This is an object with a key for each column which is being drawn,
      * per the `columns` prop. For each column a style is defined for
@@ -500,6 +508,7 @@ BarChart.propTypes = {
 BarChart.defaultProps = {
     visible: true,
     columns: ["value"],
+    highlightEntireEvent: false,
     spacing: 1.0,
     offset: 0,
     minBarHeight: 1,
