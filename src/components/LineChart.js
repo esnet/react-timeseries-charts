@@ -117,10 +117,10 @@ export default class LineChart extends React.Component {
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.lineChartStyle()[column];
-            } else if (_.isObject(this.props.style)) {
-                style = this.props.style[column];
             } else if (_.isFunction(this.props.style)) {
                 style = this.props.style(column);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
             }
         }
         return style;

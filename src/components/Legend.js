@@ -281,10 +281,10 @@ export default class Legend extends React.Component {
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.legendStyle(category.key, type);
-            } else if (_.isObject(this.props.style)) {
-                style = this.props.style[category.key];
             } else if (_.isFunction(this.props.style)) {
                 style = this.props.style(category.key);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[category.key] : defaultStyle;
             }
         }
         return style;

@@ -146,14 +146,14 @@ export default class AreaChart extends React.Component {
     }
 
     providedAreaStyleMap(column) {
-        let style = defaultStyle;
+        let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.areaChartStyle()[column];
-            } else if (_.isObject(this.props.style)) {
-                style = this.props.style[column];
             } else if (_.isFunction(this.props.style)) {
                 style = this.props.style(column);
+            } else if (_.isObject(this.props.style)) {
+                style = this.props.style ? this.props.style[column] : defaultStyle;
             }
         }
         return style;

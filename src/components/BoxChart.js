@@ -323,7 +323,7 @@ export default class BoxChart extends React.Component {
     }
 
     providedStyleArray(column) {
-        let style = defaultStyle;
+        let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.boxChartStyle()[column];
