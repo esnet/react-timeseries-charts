@@ -1,0 +1,902 @@
+[
+    {
+        "time PST": "06:00",
+        "connections": 14,
+        "http requests": 6
+    },
+    {
+        "time PST": "06:01",
+        "connections": 12,
+        "http requests": 9
+    },
+    {
+        "time PST": "06:02",
+        "connections": 8,
+        "http requests": 9
+    },
+    {
+        "time PST": "06:03",
+        "connections": 30,
+        "http requests": 14
+    },
+    {
+        "time PST": "06:04",
+        "connections": 66,
+        "http requests": 30
+    },
+    {
+        "time PST": "06:05",
+        "connections": 42,
+        "http requests": 6
+    },
+    {
+        "time PST": "06:06",
+        "connections": 37,
+        "http requests": 8
+    },
+    {
+        "time PST": "06:07",
+        "connections": 33,
+        "http requests": 16
+    },
+    {
+        "time PST": "06:08",
+        "connections": 73,
+        "http requests": 99
+    },
+    {
+        "time PST": "06:09",
+        "connections": 27,
+        "http requests": 9
+    },
+    {
+        "time PST": "06:10",
+        "connections": 17,
+        "http requests": 7
+    },
+    {
+        "time PST": "06:11",
+        "connections": 13,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:12",
+        "connections": 13,
+        "http requests": 14
+    },
+    {
+        "time PST": "06:13",
+        "connections": 38,
+        "http requests": 9
+    },
+    {
+        "time PST": "06:14",
+        "connections": 30,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:15",
+        "connections": 23,
+        "http requests": 45
+    },
+    {
+        "time PST": "06:16",
+        "connections": 23,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:17",
+        "connections": 25,
+        "http requests": 89
+    },
+    {
+        "time PST": "06:18",
+        "connections": 72,
+        "http requests": 165
+    },
+    {
+        "time PST": "06:19",
+        "connections": 30,
+        "http requests": 11
+    },
+    {
+        "time PST": "06:20",
+        "connections": 12,
+        "http requests": 6
+    },
+    {
+        "time PST": "06:21",
+        "connections": 19,
+        "http requests": 10
+    },
+    {
+        "time PST": "06:22",
+        "connections": 32,
+        "http requests": 87
+    },
+    {
+        "time PST": "06:23",
+        "connections": 13,
+        "http requests": 5
+    },
+    {
+        "time PST": "06:24",
+        "connections": 33,
+        "http requests": 10
+    },
+    {
+        "time PST": "06:25",
+        "connections": 19,
+        "http requests": 4
+    },
+    {
+        "time PST": "06:26",
+        "connections": 16,
+        "http requests": 11
+    },
+    {
+        "time PST": "06:27",
+        "connections": 24,
+        "http requests": 10
+    },
+    {
+        "time PST": "06:28",
+        "connections": 18,
+        "http requests": 5
+    },
+    {
+        "time PST": "06:29",
+        "connections": 55,
+        "http requests": 13
+    },
+    {
+        "time PST": "06:30",
+        "connections": 23,
+        "http requests": 4
+    },
+    {
+        "time PST": "06:31",
+        "connections": 28,
+        "http requests": 80
+    },
+    {
+        "time PST": "06:32",
+        "connections": 16,
+        "http requests": 13
+    },
+    {
+        "time PST": "06:33",
+        "connections": 41,
+        "http requests": 31
+    },
+    {
+        "time PST": "06:34",
+        "connections": 57,
+        "http requests": 57
+    },
+    {
+        "time PST": "06:35",
+        "connections": 21,
+        "http requests": 6
+    },
+    {
+        "time PST": "06:36",
+        "connections": 21,
+        "http requests": 11
+    },
+    {
+        "time PST": "06:37",
+        "connections": 19,
+        "http requests": 21
+    },
+    {
+        "time PST": "06:38",
+        "connections": 15,
+        "http requests": 43
+    },
+    {
+        "time PST": "06:39",
+        "connections": 26,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:40",
+        "connections": 18,
+        "http requests": 52
+    },
+    {
+        "time PST": "06:41",
+        "connections": 32,
+        "http requests": 60
+    },
+    {
+        "time PST": "06:42",
+        "connections": 28,
+        "http requests": 20
+    },
+    {
+        "time PST": "06:43",
+        "connections": 24,
+        "http requests": 68
+    },
+    {
+        "time PST": "06:44",
+        "connections": 51,
+        "http requests": 57
+    },
+    {
+        "time PST": "06:45",
+        "connections": 25,
+        "http requests": 8
+    },
+    {
+        "time PST": "06:46",
+        "connections": 30,
+        "http requests": 52
+    },
+    {
+        "time PST": "06:47",
+        "connections": 15,
+        "http requests": 15
+    },
+    {
+        "time PST": "06:48",
+        "connections": 45,
+        "http requests": 11
+    },
+    {
+        "time PST": "06:49",
+        "connections": 31,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:50",
+        "connections": 19,
+        "http requests": 5
+    },
+    {
+        "time PST": "06:51",
+        "connections": 16,
+        "http requests": 11
+    },
+    {
+        "time PST": "06:52",
+        "connections": 16,
+        "http requests": 15
+    },
+    {
+        "time PST": "06:53",
+        "connections": 18,
+        "http requests": 4
+    },
+    {
+        "time PST": "06:54",
+        "connections": 27,
+        "http requests": 12
+    },
+    {
+        "time PST": "06:55",
+        "connections": 9,
+        "http requests": 5
+    },
+    {
+        "time PST": "06:56",
+        "connections": 17,
+        "http requests": 9
+    },
+    {
+        "time PST": "06:57",
+        "connections": 20,
+        "http requests": 16
+    },
+    {
+        "time PST": "06:58",
+        "connections": 26,
+        "http requests": 28
+    },
+    {
+        "time PST": "06:59",
+        "connections": 25,
+        "http requests": 9
+    },
+    {
+        "time PST": "07:00",
+        "connections": 42,
+        "http requests": 27
+    },
+    {
+        "time PST": "07:01",
+        "connections": 21,
+        "http requests": 14
+    },
+    {
+        "time PST": "07:02",
+        "connections": 13,
+        "http requests": 13
+    },
+    {
+        "time PST": "07:03",
+        "connections": 13,
+        "http requests": 17
+    },
+    {
+        "time PST": "07:04",
+        "connections": 1914,
+        "http requests": 358
+    },
+    {
+        "time PST": "07:05",
+        "connections": 4936,
+        "http requests": 825
+    },
+    {
+        "time PST": "07:06",
+        "connections": 4158,
+        "http requests": 468
+    },
+    {
+        "time PST": "07:07",
+        "connections": 2800,
+        "http requests": 525
+    },
+    {
+        "time PST": "07:08",
+        "connections": 2863,
+        "http requests": 444
+    },
+    {
+        "time PST": "07:09",
+        "connections": 3828,
+        "http requests": 510
+    },
+    {
+        "time PST": "07:10",
+        "connections": 4637,
+        "http requests": 663
+    },
+    {
+        "time PST": "07:11",
+        "connections": 4778,
+        "http requests": 453
+    },
+    {
+        "time PST": "07:12",
+        "connections": 4798,
+        "http requests": 614
+    },
+    {
+        "time PST": "07:13",
+        "connections": 5024,
+        "http requests": 699
+    },
+    {
+        "time PST": "07:14",
+        "connections": 4991,
+        "http requests": 641
+    },
+    {
+        "time PST": "07:15",
+        "connections": 4579,
+        "http requests": 521
+    },
+    {
+        "time PST": "07:16",
+        "connections": 5030,
+        "http requests": 538
+    },
+    {
+        "time PST": "07:17",
+        "connections": 3733,
+        "http requests": 880
+    },
+    {
+        "time PST": "07:18",
+        "connections": 4124,
+        "http requests": 715
+    },
+    {
+        "time PST": "07:19",
+        "connections": 3940,
+        "http requests": 797
+    },
+    {
+        "time PST": "07:20",
+        "connections": 3657,
+        "http requests": 859
+    },
+    {
+        "time PST": "07:21",
+        "connections": 2814,
+        "http requests": 936
+    },
+    {
+        "time PST": "07:22",
+        "connections": 1858,
+        "http requests": 964
+    },
+    {
+        "time PST": "07:23",
+        "connections": 1988,
+        "http requests": 964
+    },
+    {
+        "time PST": "07:24",
+        "connections": 2905,
+        "http requests": 922
+    },
+    {
+        "time PST": "07:25",
+        "connections": 4969,
+        "http requests": 595
+    },
+    {
+        "time PST": "07:26",
+        "connections": 5793,
+        "http requests": 717
+    },
+    {
+        "time PST": "07:27",
+        "connections": 5261,
+        "http requests": 606
+    },
+    {
+        "time PST": "07:28",
+        "connections": 5568,
+        "http requests": 644
+    },
+    {
+        "time PST": "07:29",
+        "connections": 4505,
+        "http requests": 619
+    },
+    {
+        "time PST": "07:30",
+        "connections": 5135,
+        "http requests": 862
+    },
+    {
+        "time PST": "07:31",
+        "connections": 5710,
+        "http requests": 699
+    },
+    {
+        "time PST": "07:32",
+        "connections": 5235,
+        "http requests": 666
+    },
+    {
+        "time PST": "07:33",
+        "connections": 5092,
+        "http requests": 754
+    },
+    {
+        "time PST": "07:34",
+        "connections": 5558,
+        "http requests": 588
+    },
+    {
+        "time PST": "07:35",
+        "connections": 5915,
+        "http requests": 728
+    },
+    {
+        "time PST": "07:36",
+        "connections": 5873,
+        "http requests": 750
+    },
+    {
+        "time PST": "07:37",
+        "connections": 4631,
+        "http requests": 766
+    },
+    {
+        "time PST": "07:38",
+        "connections": 5690,
+        "http requests": 819
+    },
+    {
+        "time PST": "07:39",
+        "connections": 4719,
+        "http requests": 691
+    },
+    {
+        "time PST": "07:40",
+        "connections": 3466,
+        "http requests": 713
+    },
+    {
+        "time PST": "07:41",
+        "connections": 3153,
+        "http requests": 832
+    },
+    {
+        "time PST": "07:42",
+        "connections": 3073,
+        "http requests": 550
+    },
+    {
+        "time PST": "07:43",
+        "connections": 2687,
+        "http requests": 302
+    },
+    {
+        "time PST": "07:44",
+        "connections": 2747,
+        "http requests": 82
+    },
+    {
+        "time PST": "07:45",
+        "connections": 2756,
+        "http requests": 42
+    },
+    {
+        "time PST": "07:46",
+        "connections": 2766,
+        "http requests": 44
+    },
+    {
+        "time PST": "07:47",
+        "connections": 2722,
+        "http requests": 22
+    },
+    {
+        "time PST": "07:48",
+        "connections": 2728,
+        "http requests": 19
+    },
+    {
+        "time PST": "07:49",
+        "connections": 2265,
+        "http requests": 303
+    },
+    {
+        "time PST": "07:50",
+        "connections": 449,
+        "http requests": 204
+    },
+    {
+        "time PST": "07:51",
+        "connections": 535,
+        "http requests": 249
+    },
+    {
+        "time PST": "07:52",
+        "connections": 461,
+        "http requests": 197
+    },
+    {
+        "time PST": "07:53",
+        "connections": 651,
+        "http requests": 233
+    },
+    {
+        "time PST": "07:54",
+        "connections": 626,
+        "http requests": 183
+    },
+    {
+        "time PST": "07:55",
+        "connections": 556,
+        "http requests": 158
+    },
+    {
+        "time PST": "07:56",
+        "connections": 774,
+        "http requests": 19
+    },
+    {
+        "time PST": "07:57",
+        "connections": 768,
+        "http requests": 140
+    },
+    {
+        "time PST": "07:58",
+        "connections": 744,
+        "http requests": 17
+    },
+    {
+        "time PST": "07:59",
+        "connections": 715,
+        "http requests": 30
+    },
+    {
+        "time PST": "08:00",
+        "connections": 709,
+        "http requests": 62
+    },
+    {
+        "time PST": "08:01",
+        "connections": 699,
+        "http requests": 19
+    },
+    {
+        "time PST": "08:02",
+        "connections": 668,
+        "http requests": 24
+    },
+    {
+        "time PST": "08:03",
+        "connections": 700,
+        "http requests": 16
+    },
+    {
+        "time PST": "08:04",
+        "connections": 719,
+        "http requests": 161
+    },
+    {
+        "time PST": "08:05",
+        "connections": 593,
+        "http requests": 73
+    },
+    {
+        "time PST": "08:06",
+        "connections": 1336,
+        "http requests": 354
+    },
+    {
+        "time PST": "08:07",
+        "connections": 1272,
+        "http requests": 360
+    },
+    {
+        "time PST": "08:08",
+        "connections": 1202,
+        "http requests": 250
+    },
+    {
+        "time PST": "08:09",
+        "connections": 1043,
+        "http requests": 240
+    },
+    {
+        "time PST": "08:10",
+        "connections": 1226,
+        "http requests": 285
+    },
+    {
+        "time PST": "08:11",
+        "connections": 946,
+        "http requests": 249
+    },
+    {
+        "time PST": "08:12",
+        "connections": 995,
+        "http requests": 251
+    },
+    {
+        "time PST": "08:13",
+        "connections": 950,
+        "http requests": 262
+    },
+    {
+        "time PST": "08:14",
+        "connections": 890,
+        "http requests": 256
+    },
+    {
+        "time PST": "08:15",
+        "connections": 822,
+        "http requests": 252
+    },
+    {
+        "time PST": "08:16",
+        "connections": 863,
+        "http requests": 218
+    },
+    {
+        "time PST": "08:17",
+        "connections": 754,
+        "http requests": 177
+    },
+    {
+        "time PST": "08:18",
+        "connections": 851,
+        "http requests": 320
+    },
+    {
+        "time PST": "08:19",
+        "connections": 777,
+        "http requests": 255
+    },
+    {
+        "time PST": "08:20",
+        "connections": 608,
+        "http requests": 57
+    },
+    {
+        "time PST": "08:21",
+        "connections": 569,
+        "http requests": 26
+    },
+    {
+        "time PST": "08:22",
+        "connections": 602,
+        "http requests": 109
+    },
+    {
+        "time PST": "08:23",
+        "connections": 565,
+        "http requests": 44
+    },
+    {
+        "time PST": "08:24",
+        "connections": 564,
+        "http requests": 19
+    },
+    {
+        "time PST": "08:25",
+        "connections": 566,
+        "http requests": 25
+    },
+    {
+        "time PST": "08:26",
+        "connections": 542,
+        "http requests": 9
+    },
+    {
+        "time PST": "08:27",
+        "connections": 549,
+        "http requests": 90
+    },
+    {
+        "time PST": "08:28",
+        "connections": 266,
+        "http requests": 267
+    },
+    {
+        "time PST": "08:29",
+        "connections": 175,
+        "http requests": 162
+    },
+    {
+        "time PST": "08:30",
+        "connections": 186,
+        "http requests": 167
+    },
+    {
+        "time PST": "08:31",
+        "connections": 149,
+        "http requests": 133
+    },
+    {
+        "time PST": "08:32",
+        "connections": 38,
+        "http requests": 59
+    },
+    {
+        "time PST": "08:33",
+        "connections": 24,
+        "http requests": 45
+    },
+    {
+        "time PST": "08:34",
+        "connections": 24,
+        "http requests": 45
+    },
+    {
+        "time PST": "08:35",
+        "connections": 56,
+        "http requests": 66
+    },
+    {
+        "time PST": "08:36",
+        "connections": 399,
+        "http requests": 12
+    },
+    {
+        "time PST": "08:37",
+        "connections": 474,
+        "http requests": 14
+    },
+    {
+        "time PST": "08:38",
+        "connections": 309,
+        "http requests": 169
+    },
+    {
+        "time PST": "08:39",
+        "connections": 202,
+        "http requests": 194
+    },
+    {
+        "time PST": "08:40",
+        "connections": 177,
+        "http requests": 167
+    },
+    {
+        "time PST": "08:41",
+        "connections": 170,
+        "http requests": 149
+    },
+    {
+        "time PST": "08:42",
+        "connections": 172,
+        "http requests": 143
+    },
+    {
+        "time PST": "08:43",
+        "connections": 58,
+        "http requests": 31
+    },
+    {
+        "time PST": "08:44",
+        "connections": 29,
+        "http requests": 51
+    },
+    {
+        "time PST": "08:45",
+        "connections": 24,
+        "http requests": 8
+    },
+    {
+        "time PST": "08:46",
+        "connections": 25,
+        "http requests": 47
+    },
+    {
+        "time PST": "08:47",
+        "connections": 16,
+        "http requests": 12
+    },
+    {
+        "time PST": "08:48",
+        "connections": 16,
+        "http requests": 10
+    },
+    {
+        "time PST": "08:49",
+        "connections": 21,
+        "http requests": 14
+    },
+    {
+        "time PST": "08:50",
+        "connections": 21,
+        "http requests": 8
+    },
+    {
+        "time PST": "08:51",
+        "connections": 28,
+        "http requests": 54
+    },
+    {
+        "time PST": "08:52",
+        "connections": 26,
+        "http requests": 9
+    },
+    {
+        "time PST": "08:53",
+        "connections": 20,
+        "http requests": 8
+    },
+    {
+        "time PST": "08:54",
+        "connections": 24,
+        "http requests": 39
+    },
+    {
+        "time PST": "08:55",
+        "connections": 30,
+        "http requests": 48
+    },
+    {
+        "time PST": "08:56",
+        "connections": 16,
+        "http requests": 7
+    },
+    {
+        "time PST": "08:57",
+        "connections": 18,
+        "http requests": 15
+    },
+    {
+        "time PST": "08:58",
+        "connections": 25,
+        "http requests": 14
+    },
+    {
+        "time PST": "08:59",
+        "connections": 16,
+        "http requests": 8
+    }
+]

@@ -9,7 +9,7 @@ export declare type LineChartProps = ChartProps & {
     series: TimeSeries<Key>;
     axis: string;
     columns?: string[];
-    style?: LineChartStyle | ((column: string) => LineChartChannelStyle) | Styler;
+    style?: Partial<LineChartStyle> | ((column: string) => LineChartChannelStyle) | Styler;
     interpolation?: CurveInterpolation;
     breakLine?: boolean;
     selection?: string;

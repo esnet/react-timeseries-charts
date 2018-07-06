@@ -36,7 +36,7 @@ export type StylerStyle = {
     dashed?: boolean;
 };
 
-export type Column = string | KeyedStyle;
+export type Column = string | StylerStyle;
 
 /**
  * For our Style we want to represent two things:
@@ -95,7 +95,7 @@ export class Styler {
                     const c = column as string;
                     this.columnStyles[c] = { key: c };
                 } else if (_.isObject(column)) {
-                    const c = column as KeyedStyle;
+                    const c = column as StylerStyle;
                     const { key, ...style } = c;
                     this.columnStyles[key] = style as StylerStyle;
                 }

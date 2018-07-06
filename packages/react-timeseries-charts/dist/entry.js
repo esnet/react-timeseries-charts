@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 tslib_1.__exportStar(require("./AreaChart"), exports);
+tslib_1.__exportStar(require("./BandChart"), exports);
 tslib_1.__exportStar(require("./BarChart"), exports);
 tslib_1.__exportStar(require("./BoxChart"), exports);
 tslib_1.__exportStar(require("./Baseline"), exports);

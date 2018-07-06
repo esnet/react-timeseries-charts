@@ -43,6 +43,11 @@ export declare type BoxChartStyle = {
     [channel: string]: BoxChartChannelStyle;
 };
 export declare const defaultBoxChartStyle: BoxChartChannelStyle;
+export declare type BandChartChannelStyle = LevelStyle[];
+export declare type BandChartStyle = {
+    [channel: string]: BandChartChannelStyle;
+};
+export declare const defaultBandChartStyle: BandChartChannelStyle;
 export declare type ScatterChartChannelStyle = {
     point: ElementStyle;
     [elem: string]: ElementStyle;

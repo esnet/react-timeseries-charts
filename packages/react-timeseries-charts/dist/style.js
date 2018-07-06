@@ -66,6 +66,34 @@ exports.defaultBoxChartStyle = [
         muted: tslib_1.__assign({}, defaultMutedBoxFillStyle, { opacity: 0.2 })
     }
 ];
+var defaultBandFillStyle = {
+    fill: primaryColor,
+    stroke: "none"
+};
+var defaultMutedBandFillStyle = {
+    fill: mutedColor,
+    stroke: "none"
+};
+exports.defaultBandChartStyle = [
+    {
+        normal: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.2 }),
+        highlighted: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.3 }),
+        selected: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.3 }),
+        muted: tslib_1.__assign({}, defaultMutedBandFillStyle, { opacity: 0.1 })
+    },
+    {
+        normal: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.5 }),
+        highlighted: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.6 }),
+        selected: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.6 }),
+        muted: tslib_1.__assign({}, defaultMutedBandFillStyle, { opacity: 0.2 })
+    },
+    {
+        normal: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 0.9 }),
+        highlighted: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 1.0 }),
+        selected: tslib_1.__assign({}, defaultBandFillStyle, { opacity: 1.0 }),
+        muted: tslib_1.__assign({}, defaultMutedBandFillStyle, { opacity: 0.2 })
+    }
+];
 exports.defaultScatterChartChannelStyle = {
     point: {
         normal: { fill: "steelblue", opacity: 0.8, stroke: "none" },

@@ -49,7 +49,7 @@ var Axis = (function (_super) {
         return _super.call(this, props) || this;
     }
     Axis.prototype.renderAxisLabel = function () {
-        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition, style = _a.style;
+        var _a = this.props, width = _a.width, height = _a.height, position = _a.position, labelPosition = _a.labelPosition;
         var labelStyle = _.merge(true, defaultAxisStyle.label, this.props.style.label ? this.props.style.label : {});
         var translate;
         var rotate = "rotate(0)";
@@ -161,7 +161,6 @@ var Axis = (function (_super) {
         absolute: false,
         angled: false,
         hideAxisLine: false,
-        showGrid: false,
         style: defaultAxisStyle
     };
     return Axis;

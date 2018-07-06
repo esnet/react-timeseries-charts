@@ -27,7 +27,7 @@ export declare type ChartContainerProps = ChartProps & {
     timeFormat?: string | ((d: Date) => string);
     timeAxisStyle?: TimeAxisStyle;
     timeAxisAngledLabels?: boolean;
-    chartAxisStyle?: any;
+    chartAxisStyle?: React.CSSProperties;
     enablePanZoom?: boolean;
     enableDragZoom?: boolean;
     minDuration?: number;

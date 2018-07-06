@@ -1,5 +1,5 @@
 import { LegendItemType } from "./LegendItem";
-import { AreaChartStyle, BarChartStyle, CategoryStyle, ScatterChartStyle, BoxChartStyle, LineChartStyle } from "./style";
+import { AreaChartStyle, BarChartStyle, CategoryStyle, ScatterChartStyle, BoxChartStyle, BandChartStyle, LineChartStyle } from "./style";
 export declare type KeyedStyle = {
     key: string;
 };
@@ -11,7 +11,7 @@ export declare type StylerStyle = {
     width?: number;
     dashed?: boolean;
 };
-export declare type Column = string | KeyedStyle;
+export declare type Column = string | StylerStyle;
 export declare class Styler {
     colorScheme: string;
     columnNames: any[];
@@ -30,5 +30,6 @@ export declare class Styler {
         fill: string;
     };
     boxChartStyle(): BoxChartStyle;
+    bandChartStyle(): BandChartStyle;
 }
-export default function styler(columns: Column[], scheme?: string): Styler;
+export declare function styler(columns: Column[], scheme?: string): Styler;

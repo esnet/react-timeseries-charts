@@ -22,7 +22,7 @@ export declare type BoxChartRanges = {
     outerMax: number;
 };
 export declare type BoxChartProps = ChartProps & {
-    series?: TimeSeries<Index> | TimeSeries<Time>;
+    series: TimeSeries<Index> | TimeSeries<Time>;
     column?: string;
     aggregation?: AggregationSpec;
     style?: BoxChartStyle | ((channel: string) => ChannelStyle) | Styler;

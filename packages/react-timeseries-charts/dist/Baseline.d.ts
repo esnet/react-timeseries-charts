@@ -4,7 +4,7 @@ import { ChartProps } from "./Charts";
 import { BaselineStyle } from "./style";
 export declare type BaselineProps = ChartProps & {
     axis: string;
-    style?: BaselineStyle;
+    style?: Partial<BaselineStyle>;
     value?: number;
     visible?: boolean;
     vposition?: "above" | "below" | "auto";

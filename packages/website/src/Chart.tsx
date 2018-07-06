@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2017, The Regents of the University of California,
+ *  Copyright (c) 2015, The Regents of the University of California,
  *  through Lawrence Berkeley National Laboratory (subject to receipt
  *  of any required approvals from the U.S. Dept. of Energy).
  *  All rights reserved.
@@ -8,101 +8,133 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-/* eslint max-len:0 */
-
 import * as React from "react";
-import { indexedSeries, window, duration, time } from "pondjs";
-import {
-    ChartContainer,
-    ChartRow,
-    Charts,
-    YAxis,
-    BarChart,
-    Resizable,
-    ScaleType
+import { timeSeries } from "pondjs";
+import { 
+    ChartContainer, 
+    ChartRow, 
+    Charts, 
+    YAxis, 
+    LineChart, 
+    // Baseline, 
+    Resizable, 
+    LineChartStyle, 
+    // BaselineStyle
 } from "react-timeseries-charts";
 
-const data = [
-    ["2017-01-24T00:00", 0.01],
-    ["2017-01-24T01:00", 0.13],
-    ["2017-01-24T02:00", 0.07],
-    ["2017-01-24T03:00", 0.04],
-    ["2017-01-24T04:00", 0.33],
-    ["2017-01-24T05:00", 0],
-    ["2017-01-24T06:00", 0],
-    ["2017-01-24T07:00", 0],
-    ["2017-01-24T08:00", 0.95],
-    ["2017-01-24T09:00", 1.12],
-    ["2017-01-24T10:00", 0.66],
-    ["2017-01-24T11:00", 0.06],
-    ["2017-01-24T12:00", 0.3],
-    ["2017-01-24T13:00", 0.05],
-    ["2017-01-24T14:00", 0.5],
-    ["2017-01-24T15:00", 0.24],
-    ["2017-01-24T16:00", 0.02],
-    ["2017-01-24T17:00", 0.98],
-    ["2017-01-24T18:00", 0.46],
-    ["2017-01-24T19:00", 0.8],
-    ["2017-01-24T20:00", 0.39],
-    ["2017-01-24T21:00", 0.4],
-    ["2017-01-24T22:00", 0.39],
-    ["2017-01-24T23:00", 0.28]
-];
-
-const hourly = window(duration("1h"));
-
-const series = indexedSeries({
-    name: "hilo_rainfall",
-    columns: ["index", "precip"],
-    points: data.map(([d, value]) => [
-        hourly
-            .getIndexSet(time(new Date(d)))
-            .first()
-            .asString(),
-        value
-    ])
+// Data
+const data = require("./usd_vs_euro.json");
+const points = data.widget[0].data.reverse();
+const series = timeSeries({
+    name: "USD_vs_EURO",
+    columns: ["time", "value"],
+    points
 });
 
-export default class Chart extends React.Component {
-    render() {
-        // const style = styler([{ key: "precip", color: "#A5C8E1", selected: "#2CB1CF" }]);
+const style: LineChartStyle = {
+    value: {
+        line: {
+            normal: { stroke: "steelblue", opacity: 1 },
+            highlighted: {stroke: "#5a98cb", fill: "none", strokeWidth: 1},
+            selected: {stroke: "steelblue", fill: "none", strokeWidth: 1},
+            muted: {stroke: "steelblue", fill: "none", opacity: 0.4, strokeWidth: 1}
+        }
+    }
+};
 
+// const baselineStyle: BaselineStyle = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.4,
+//         strokeDasharray: "none"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
+
+// const baselineStyleLite: BaselineStyle = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.5
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
+
+// const baselineStyleExtraLite: BaselineStyle = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.2,
+//         strokeDasharray: "1,1"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
+
+type ChartProps = {};
+
+export default class Chart extends React.Component<ChartProps> {
+    render() {
         return (
-            <div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <b>BarChart</b>
-                    </div>
-                </div>
-                <hr />
-                <div className="row">
-                    <div className="col-md-12">
-                        <Resizable>
-                            <ChartContainer timeRange={series.range()}>
-                                <ChartRow height={150}>
-                                    <YAxis
-                                        id="rain"
-                                        label="Rainfall (inches/hr)"
-                                        min={0}
-                                        max={1.5}
-                                        format=".2f"
-                                        width={70}
-                                        type={ScaleType.Linear}
-                                    />
-                                    <Charts>
-                                        <BarChart
-                                            axis="rain"
-                                            spacing={1}
-                                            columns={["precip"]}
-                                            series={series}
-                                        /> 
-                                    </Charts>
-                                </ChartRow>
-                            </ChartContainer>
-                        </Resizable>
-                    </div>
-                </div>
-            </div>
+            <Resizable>
+                <ChartContainer
+                    title="Euro price (USD)"
+                    titleStyle={{ fill: "#555", fontWeight: 500 }}
+                    timeRange={series.range()}
+                    timeFormat="%b '%y"
+                >
+                    <ChartRow height={150}>
+                        <YAxis
+                            id="price"
+                            label="Price ($)"
+                            min={series.min()}
+                            max={series.max()}
+                            width={60}
+                            format="$,.2f"
+                        />
+                        <Charts>
+                            <LineChart axis="price" series={series} style={style} />
+                            {/* <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.max()}
+                                label="Max"
+                                position="right"
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleLite}
+                                value={series.min()}
+                                label="Min"
+                                position="right"
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleExtraLite}
+                                value={series.avg() - series.stdev()}
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyleExtraLite}
+                                value={series.avg() + series.stdev()}
+                            />
+                            <Baseline
+                                axis="price"
+                                style={baselineStyle}
+                                value={series.avg()}
+                                label="Avg"
+                                position="right"
+                            /> */}
+                        </Charts>
+                    </ChartRow>
+                </ChartContainer>
+            </Resizable>
         );
     }
 }

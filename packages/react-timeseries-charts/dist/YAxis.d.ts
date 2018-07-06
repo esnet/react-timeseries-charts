@@ -15,7 +15,7 @@ export declare type YAxisProps = ChartRowProps & {
     min: number;
     max: number;
     width: number;
-    type: ScaleType;
+    type?: ScaleType;
     style?: YAxisStyle;
     absolute?: boolean;
     labelOffset?: number;
@@ -25,6 +25,7 @@ export declare type YAxisProps = ChartRowProps & {
     tickCount?: number;
     hideAxisLine?: boolean;
     showGrid?: boolean;
+    isInnerAxis?: boolean;
 };
 export declare class YAxis extends React.Component<YAxisProps> {
     static defaultProps: Partial<YAxisProps>;

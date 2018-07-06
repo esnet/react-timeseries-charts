@@ -27,7 +27,6 @@ export declare type AxisProps = {
     absolute: boolean;
     angled?: boolean;
     hideAxisLine?: boolean;
-    showGrid?: boolean;
     style?: AxisStyle;
 };
 export declare class Axis extends React.Component<AxisProps> {

@@ -285,11 +285,51 @@ var Styler = (function () {
         });
         return style;
     };
+    Styler.prototype.bandChartStyle = function () {
+        var style = {};
+        var numColumns = this.numColumns();
+        var colorLookup = this.colorLookup(numColumns);
+        var i = 0;
+        _.forEach(this.columnStyles, function (_a, column) {
+            var color = _a.color, selected = _a.selected;
+            var c = color || colorLookup[i % colorLookup.length];
+            var styleArea = {
+                fill: c,
+                stroke: "none"
+            };
+            var styleSelectedArea = {
+                fill: selected || color,
+                stroke: "none"
+            };
+            style[column] = [
+                {
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.2 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 0.3 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 0.3 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.1 })
+                },
+                {
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.5 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 0.6 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 0.6 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.2 })
+                },
+                {
+                    normal: tslib_1.__assign({}, styleArea, { opacity: 0.9 }),
+                    highlighted: tslib_1.__assign({}, styleArea, { opacity: 1.0 }),
+                    selected: tslib_1.__assign({}, styleSelectedArea, { opacity: 1.0 }),
+                    muted: tslib_1.__assign({}, styleArea, { opacity: 0.2 })
+                }
+            ];
+            i += 1;
+        });
+        return style;
+    };
     return Styler;
 }());
 exports.Styler = Styler;
 function styler(columns, scheme) {
     return new Styler(columns, scheme);
 }
-exports.default = styler;
+exports.styler = styler;
 //# sourceMappingURL=styler.js.map
