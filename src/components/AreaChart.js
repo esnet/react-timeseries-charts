@@ -298,15 +298,15 @@ export default class AreaChart extends React.Component {
                                 y0: this.props.yScale(offsets[j]),
                                 y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
                             });
+                            if (this.props.stack) {
+                                offsets[j] += dir * seriesPoint.get(column);
+                            }
                         } else {
                             currentPoints.push({
                                 x0: this.props.timeScale(seriesPoint.timestamp()),
                                 y0: this.props.yScale(offsets[j]),
                                 y1: this.props.yScale(offsets[j])
                             });
-                        }
-                        if (this.props.stack) {
-                            offsets[j] += dir * seriesPoint.get(column);
                         }
                     }
                     // Case Two
