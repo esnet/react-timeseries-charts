@@ -13,7 +13,8 @@ import * as React from "react";
 const logo = require("./img/logo.png");
 const githubLogo = require("./img/github.png");
 
-export default class Header extends React.Component {
+// tslint:disable-next-line:no-any
+export default class Header extends React.Component<any, any> {
     render() {
         const githubLogoStyle = {
             width: 24,

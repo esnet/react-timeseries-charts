@@ -1,17 +1,14 @@
 import * as React from "react";
 import { withRouter } from "react-router-dom";
+import { RouteComponentProps } from 'react-router';
 
-type props = {
-    location: string;
-};
-
-// tslint:disable-next-line:no-any
-class ScrollToTop extends React.Component<props, any> {
+// tslint:disable:no-any
+class ScrollToTop extends React.Component<any, any> {
     componentDidMount() {
         window.scrollTo(0, 0);
     }
     
-    componentWillReceiveProps(prevProps: props) {
+    componentWillReceiveProps(prevProps: RouteComponentProps<any>) {
         if (this.props.location !== prevProps.location) {
             window.scrollTo(0, 0);
         }

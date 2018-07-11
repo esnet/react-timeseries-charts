@@ -8,15 +8,22 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {Component} from "react";
+import * as React from "react";
 import Markdown from "react-markdown";
+import { RouteComponentProps } from 'react-router';
+
 import Prism from "prismjs";
 
 import Guides from "../guides/guides";
 import { codeRenderer, codeBlockRenderer } from "../api/renderers";
 
-export default class extends Component {
-    constructor(props) {
+// tslint:disable:no-any
+interface GuideState {
+    markdown: any;
+}
+
+export default class extends React.Component<any, GuideState> {
+    constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = {
             markdown: null
@@ -38,7 +45,7 @@ export default class extends Component {
         this.setState({ markdown: null });
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: RouteComponentProps<any>) {
         window.scrollTo(0, 0);
         const guideName = nextProps.match.params.doc || "intro";
         const markdownFile = Guides[guideName];
@@ -64,7 +71,7 @@ export default class extends Component {
                         <div className="col-md-12">
                             <Markdown 
                                 source={this.state.markdown}
-                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }} 
+                                renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
                             />
                         </div>
                     </div>

@@ -14,7 +14,8 @@ import { NavLink } from "react-router-dom";
 
 import { sidebarTitleStyle, sidebarItemStyle } from "./api/styles";
 
-export default class extends React.Component {
+// tslint:disable-next-line:no-any
+export default class extends React.Component<any> {
     render() {
         const sidebarStyle: React.CSSProperties = {
             flex: "0 0 13em",
@@ -26,7 +27,7 @@ export default class extends React.Component {
             marginLeft: 40
         };
 
-        const activeStyle = {
+        const activeStyle: React.CSSProperties = {
             color: "black",
             textDecoration: "none"
         };
@@ -161,7 +162,10 @@ export default class extends React.Component {
                         <div key={c.name} style={sidebarItemStyle}>
                             <NavLink
                                 exact={true}
-                                to={otherClasses.includes(c.name.toLowerCase()) ? `/class/${c.name.toLowerCase()}` : `/module/${c.name.toLowerCase()}`}
+                                to={otherClasses.includes(c.name.toLowerCase()) 
+                                        ? `/class/${c.name.toLowerCase()}` 
+                                        : `/module/${c.name.toLowerCase()}`
+                                    }
                                 activeStyle={activeStyle}
                             >
                                 {c.name}

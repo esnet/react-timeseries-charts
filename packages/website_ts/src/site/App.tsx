@@ -11,22 +11,15 @@
 import "./App.css";
 import * as _ from "lodash";
 import * as React from "react";
-import HashRouter from "react-router-dom/es/HashRouter";
-import Route from "react-router-dom/es/Route";
-import Switch from "react-router-dom/es/Switch";
-
-import Prism from "prismjs"; // eslint-disable-line
-import "prismjs/components/prism-typescript";
-import "prismjs/themes/prism.css";
+import { Switch, Route, HashRouter as Router } from "react-router-dom";
 
 import Guide from "./components/Guide";
-// import Example from "./components/Example";
 
 import Header from "./Header";
-// import Sidebar from "./Sidebar";
-// import ScrollToTop from "./ScrollToTop";
+import Sidebar from "./Sidebar";
+import ScrollToTop from "./ScrollToTop";
 
-// import TsModule from "./api/Module";
+import TsModule from "./api/Module";
 // import TsClass from "./api/Class";
 
 // Generated pond.js code and documentation as a JSON file. This is what we are
@@ -95,6 +88,7 @@ const bodyStyle: React.CSSProperties = {
     minHeight: "100vh",
     flexDirection: "column"
 };
+
 const mainStyle: React.CSSProperties = {
     display: "flex",
     flex: 1,
@@ -112,46 +106,41 @@ const contentStyle: React.CSSProperties = {
     flex: 1
 };
 
-export const App: React.SFC = () => (    
-    <HashRouter>
-        <div style={bodyStyle}>
-            <Header />
-            <div style={mainStyle}>
-                <div style={contentStyle}>
-                    {" "}
-                    <Switch>
-                        <Route exact={true} path="/" component={Guide} />
-                        <Route path="/guide/:doc" component={Guide} />
-                        {/* <Route path="/example/:example" component={Example} /> */}
-                        {/* <Route
-                            path={`/module/:name`}
-                            // tslint:disable-next-line:no-any
-                            render={(props: any) => (
-                                <ScrollToTop key={props.match.params.name}>
-                                    <TsModule 
-                                        module={docs.modules[props.match.params.name]} 
-                                        name={props.match.params.name} 
-                                    />
-                                </ScrollToTop>
-                            )}
-                        /> */}
-                        {/* <Route
-                            path={`/class/:name`}
-                            // tslint:disable-next-line:no-any
-                            render={(props: any) => (
-                                <ScrollToTop key={props.match.params.name}>
-                                    <TsClass
-                                        class={docs.classes[props.match.params.name]}
-                                        lookups={docs}
-                                    />
-                                </ScrollToTop>
-                            )}
-                        /> */}
-                    </Switch>
+export default class App extends React.Component {
+    render() {
+        return (
+            <Router>
+                <div style={bodyStyle}>
+                    <Header />
+                    <div style={mainStyle}>
+                        <div style={contentStyle}>
+                            {" "}
+                            <Switch>
+                                <Route exact={true} path="/" component={Guide} />
+                            </Switch>
+                        </div>
+                    </div>
+                    <div style={footerStyle}>…</div>
                 </div>
-                {/* <Sidebar docs={docs} /> */}
-            </div>
-            <div style={footerStyle}>…</div>
-        </div>
-    </HashRouter>
-);
+            </Router>
+        )
+    }
+}
+
+// export const App: React.SFC = () => (    
+//     <Router>
+//         <div style={bodyStyle}>
+//             <Header />
+//             <div style={mainStyle}>
+//                 <div style={contentStyle}>
+//                     {" "}
+//                     <Switch>
+//                         <Route exact={true} path="/" component={Guide} />
+//                         <Route path="/guide/:doc" component={Guide} />
+//                     </Switch>
+//                 </div>
+//             </div>
+//             <div style={footerStyle}>…</div>
+//         </div>
+//     </Router>
+// );

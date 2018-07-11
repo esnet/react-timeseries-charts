@@ -8,22 +8,22 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as _ from "lodash";
+import * as _ from "underscore";
 import * as React from "react";
 import Markdown from "react-markdown";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import Flexbox from "flexbox-react";
 import Prism from "prismjs";
 
-import Examples from "../examples/examples.js";
+const Meta = require("../examples/examples.json");
+const Examples = require("../examples/examples.js");
 
 import { codeRenderer, codeBlockRenderer } from "./renderers";
 import { codeStyle, headingStyle, textStyle, sigStyle } from "./styles";
 
-const Meta = require("../examples/examples.json");
-
-class Example extends React.Component {
+// tslint:disable:no-any
+class Example extends React.Component<any> {
     render() {
         const style = {
             display: "inline-block",
@@ -40,20 +40,23 @@ class Example extends React.Component {
         const name = example.key;
         const imgName = `${name}_thumbnail`;
         const img = Examples[imgName];
-        const link = <Link to={`/example/${name}`}>{example.value.title}</Link>;
 
         return (
             <Flexbox flexDirection="column" minWidth="220px">
                 <div style={style}>
                     <img src={img} alt={`${name}`} />
                 </div>
-                <div style={{ paddingLeft: 5, fontSize: "smaller" }}>{link}</div>
+                <div style={{ paddingLeft: 5, fontSize: "smaller" }}>
+                    <NavLink to={`/example/${name}`}>
+                        {example.value.title}
+                    </NavLink>
+                </div>
             </Flexbox>
         );
     }
 }
 
-class TaggedExamples extends React.Component {
+class TaggedExamples extends React.Component<any> {
     render() {
         const exampleList = [];
         _.forEach(Meta, (value, key) => {
@@ -81,7 +84,7 @@ class TaggedExamples extends React.Component {
     }
 }
 
-export default class TsClass extends React.Component {
+export default class TsClass extends React.Component<any> {
     static defaultProps = {
         showExtends: false
     };

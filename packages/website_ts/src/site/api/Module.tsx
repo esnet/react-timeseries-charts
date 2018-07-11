@@ -8,22 +8,26 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from "react";
-import _ from "lodash";
+import * as _ from "lodash";
+import * as React from "react";
 
 import TsClass from "./Class";
 import TsType from "./Type";
 
-export default class TsModule extends Component {
-    renderChild(child, i) {
+// tslint:disable:no-any
+export default class TsModule extends React.Component<any> {
+    renderChild(child: any, i: number) {
         switch (child.kindString) {
             case "Class":
                 return <TsClass key={i} class={child} />;
             case "Type alias":
                 const moduleProps = child.name.toLowerCase().includes(this.props.name);
                 const props = child.name.includes("Props");
-                if (props && moduleProps ) { return <TsType key={i} type={child} />; }
-                else { break; }
+                if (props && moduleProps ) { 
+                    return <TsType key={i} type={child} />; 
+                } else { 
+                    return;
+                }
             default:
                 return <div key={i} />;
         }
@@ -31,7 +35,9 @@ export default class TsModule extends Component {
 
     render() {
         const { children } = this.props.module;
-        const sortedChildren = children.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} ); 
+        const sortedChildren = children.sort(function(a: any, b: any) {
+            return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);
+        } ); 
         return (
             <div>
                 {sortedChildren ? _.map(sortedChildren, (child, i) => this.renderChild(child, i)) : <div />}

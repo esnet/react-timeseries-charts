@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@types/react-router": "^4.0.28",
         "bootstrap": "^3.3.7",
         "colorbrewer": "^1.1.0",
         "d3-format": "^1.2.0",

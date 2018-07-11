@@ -8,12 +8,16 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import _ from "lodash";
-import React from "react";
-
+import * as _ from "lodash";
+import * as React from "react";
 import { codeStyle } from "./styles";
 
-export function codeRenderer(props) {
+// tslint:disable:no-any
+interface CodeRendererProps {
+    literal: any;
+}
+
+export function codeRenderer(props: CodeRendererProps) {
     const availableLinks = [];
     return _.includes(availableLinks, props.literal) ? (
         <a href={props.literal}>
@@ -24,7 +28,7 @@ export function codeRenderer(props) {
     );
 }
 
-export function codeBlockRenderer(props) {
+export function codeBlockRenderer(props: CodeRendererProps) {
     return (
         <pre style={{ marginTop: 10, padding: 5, background: "#fafafa", borderStyle: "none" }}>
             <code className="language-typescript">{props.literal}</code>
