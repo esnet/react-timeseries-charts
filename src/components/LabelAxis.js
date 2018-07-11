@@ -11,6 +11,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { format } from "d3-format";
+import merge from "merge";
 
 import ValueList from "./ValueList";
 
@@ -31,16 +32,49 @@ import ValueList from "./ValueList";
  * do that. See the Cycling example for exactly how to arrange that.
  *
  */
+
+const defaultStyle = {
+    label: {
+        fontSize: 12,
+        textAnchor: "middle",
+        fill: "#838383"
+    },
+    valueList: {
+        fill: "none",
+        stroke: "none"
+    },
+    axisLabel: {
+         fontSize: 11,
+         textAnchor: "left",
+         fill: "#bdbdbd"
+    }
+};
+
 export default class LabelAxis extends React.Component {
-    renderAxis() {
+
+    mergeStyles(style) {
+        return {
+            labelStyle: merge(
+                true,
+                defaultStyle.label,
+                this.props.style.label ? this.props.style.label : {}
+            ),
+            valueListStyle: merge(
+                true,
+                defaultStyle.valueList,
+                this.props.style.valueList ? this.props.style.valueList : {}
+            ),
+            axisLabelStyle: merge(
+                true,
+                defaultStyle.ticks,
+                this.props.style.axisLabel ? this.props.style.axisLabel : {}
+            )
+        };
+    }
+    
+    renderAxis(axisLabelStyle) {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
-
-        const style = {
-            fontSize: 11,
-            textAnchor: "left",
-            fill: "#bdbdbd"
-        };
 
         if (this.props.hideScale) {
             return <g />;
@@ -52,10 +86,10 @@ export default class LabelAxis extends React.Component {
 
         return (
             <g>
-                <text x={valXPos} y={0} dy="1.2em" style={style}>
+                <text x={valXPos} y={0} dy="1.2em" style={axisLabelStyle}>
                     {maxStr}
                 </text>
-                <text x={valXPos} y={this.props.height} style={style}>
+                <text x={valXPos} y={this.props.height} style={axisLabelStyle}>
                     {minStr}
                 </text>
             </g>
@@ -65,12 +99,9 @@ export default class LabelAxis extends React.Component {
     render() {
         const valueWidth = this.props.valWidth;
         const rectWidth = this.props.width - valueWidth;
-
-        const labelStyle = {
-            fontSize: 12,
-            textAnchor: "middle",
-            fill: "#838383"
-        };
+        const style = this.mergeStyles(this.props.style);
+        
+        const { valueListStyle, labelStyle, axisLabelStyle } = style;
 
         let valueList = null;
         let labelYPos;
@@ -78,7 +109,7 @@ export default class LabelAxis extends React.Component {
             labelYPos = Math.max(parseInt(this.props.height / 4, 10), 10);
             valueList = (
                 <ValueList
-                    style={{ fill: "none", stroke: "none" }}
+                    style={valueListStyle}
                     values={this.props.values}
                     width={rectWidth}
                 />
@@ -101,7 +132,7 @@ export default class LabelAxis extends React.Component {
                 </text>
                 <g transform={`translate(0,${labelYPos + 2})`}>{valueList}</g>
 
-                {this.renderAxis()}
+                {this.renderAxis(axisLabelStyle)}
             </g>
         );
     }
@@ -162,7 +193,21 @@ LabelAxis.propTypes = {
     /**
      * The height of the axis
      */
-    height: PropTypes.number
+    height: PropTypes.number,
+
+    /**
+     * Object specifying the CSS by which the axis can be styled. The object can contain:
+     * "label", "values", "axis" and "ticks". Each of these is an inline CSS style applied
+     * to the axis label, axis values, axis line and ticks respectively.
+     *
+     * Note that these are passed into d3's styling, so are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not strokeDasharray).
+     */
+    style: PropTypes.shape({
+        axisLabel: PropTypes.object, // eslint-disable-line
+        valueListStyle: PropTypes.object, // eslint-disable-line
+        labelStyle: PropTypes.object // esline-disable-line
+    }),
 };
 
 LabelAxis.defaultProps = {
