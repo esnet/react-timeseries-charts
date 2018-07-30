@@ -138,7 +138,8 @@ class currency extends React.Component {
                                 timeAxisHeight={65}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 onBackgroundClick={() => this.setState({ selection: null })}
-                                enablePanZoom={true}
+                                enableWheelZoom={true}
+                                enableDragPan={true}
                                 onTimeRangeChanged={this.handleTimeRangeChange}
                                 onMouseMove={(x, y) => this.handleMouseMove(x, y)}
                                 minDuration={1000 * 60 * 60 * 24 * 30}
