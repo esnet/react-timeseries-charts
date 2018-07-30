@@ -111,9 +111,13 @@ export default class ChartContainer extends React.Component {
         this.handleTrackerChanged(null);
     }
 
-    handleBackgroundClick(e) {
+    handleBackgroundClick(x, y) {
         if (this.props.onBackgroundClick) {
-            this.props.onBackgroundClick();
+            this.props.onBackgroundClick({
+                x: x,
+                y: y,
+                date: this.props.scale.invert(x)
+            });
         }
     }
 
