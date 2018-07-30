@@ -63,6 +63,17 @@ const defaultTitleStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+        this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
+        this.handleZoom = this.handleZoom.bind(this);
+        this.saveSvgRef = this.saveSvgRef.bind(this);
+    }
+
     //
     // Event handlers
     //
@@ -96,11 +107,11 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleMouseOut() {
+    handleMouseOut(e) {
         this.handleTrackerChanged(null);
     }
 
-    handleBackgroundClick() {
+    handleBackgroundClick(e) {
         if (this.props.onBackgroundClick) {
             this.props.onBackgroundClick();
         }
@@ -110,6 +121,10 @@ export default class ChartContainer extends React.Component {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
         }
+    }
+
+    saveSvgRef(c) {
+        this.svg = c;
     }
 
     //
@@ -380,10 +395,10 @@ export default class ChartContainer extends React.Component {
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
-                    onMouseOut={e => this.handleMouseOut(e)}
-                    onMouseMove={(x, y) => this.handleMouseMove(x, y)}
-                    onMouseClick={e => this.handleBackgroundClick(e)}
-                    onZoom={tr => this.handleZoom(tr)}
+                    onMouseOut={this.handleMouseOut}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseClick={this.handleBackgroundClick}
+                    onZoom={this.handleZoom}
                 >
                     {chartRows}
                 </EventHandler>
@@ -409,9 +424,7 @@ export default class ChartContainer extends React.Component {
                   width={svgWidth}
                   height={svgHeight}
                   style={svgStyle}
-                  ref={c => {
-                      this.svg = c;
-                  }}
+                  ref={this.saveSvgRef}
               >
                   {title}
                   {rows}
@@ -422,9 +435,7 @@ export default class ChartContainer extends React.Component {
                   width={svgWidth}
                   height={svgHeight}
                   style={{ display: "block" }}
-                  ref={c => {
-                      this.svg = c;
-                  }}
+                  ref={this.saveSvgRef}
               >
                   {title}
                   {timeAxis}
