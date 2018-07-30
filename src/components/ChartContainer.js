@@ -420,12 +420,7 @@ export default class ChartContainer extends React.Component {
         );
 
         return this.props.showGridPosition === "over"
-            ? <svg
-                  width={svgWidth}
-                  height={svgHeight}
-                  style={svgStyle}
-                  ref={this.saveSvgRef}
-              >
+            ? <svg width={svgWidth} height={svgHeight} style={svgStyle} ref={this.saveSvgRef}>
                   {title}
                   {rows}
                   {tracker}
