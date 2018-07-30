@@ -63,6 +63,35 @@ const defaultTitleStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = this.getStateFromProps(props);
+    }
+
+    getStateFromProps(props) {
+        const state = {};
+        if (props.enablePanZoom) {
+            state.enablePanZoom = true;
+            state.enableDragPan =
+                typeof props.enableDragPan === "undefined" ? true : props.enableDragPan;
+            state.enableWheelZoom =
+                typeof props.enableWheelZoom === "undefined" ? true : props.enableWheelZoom;
+        } else if (props.enableDragZoom) {
+            state.enableDragZoom = true;
+            state.enableWheelZoom =
+                typeof props.enableWheelZoom === "undefined" ? true : props.enableWheelZoom;
+        } else {
+            state.enableDragPan = props.enableDragPan;
+            state.enableWheelZoom = props.enableWheelZoom;
+        }
+        return state;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState(this.getStateFromProps(nextProps));
+    }
+
     //
     // Event handlers
     //
@@ -279,7 +308,7 @@ export default class ChartContainer extends React.Component {
                     minTime: this.props.minTime,
                     maxTime: this.props.maxTime,
                     transition: this.props.transition,
-                    enablePanZoom: this.props.enablePanZoom,
+                    enablePanZoom: this.state.enablePanZoom,
                     minDuration: this.props.minDuration,
                     showGrid: this.props.showGrid,
                     timeFormat: this.props.format,
@@ -379,8 +408,10 @@ export default class ChartContainer extends React.Component {
                     width={chartsWidth}
                     height={chartsHeight + timeAxisHeight}
                     scale={timeScale}
-                    enablePanZoom={this.props.enablePanZoom}
-                    enableDragZoom={this.props.enableDragZoom}
+                    enableDragPan={this.state.enableDragPan}
+                    enableDragZoom={this.state.enableDragZoom}
+                    enablePanZoom={this.state.enablePanZoom}
+                    enableWheelZoom={this.state.enableWheelZoom}
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
@@ -480,14 +511,24 @@ ChartContainer.propTypes = {
     maxTime: PropTypes.instanceOf(Date),
 
     /**
-     * Boolean to turn on interactive pan and zoom behavior for the chart.
+     * Boolean to turn on interactive drag to pan behavior for the chart.
      */
-    enablePanZoom: PropTypes.bool,
+    enableDragPan: PropTypes.bool,
 
     /**
      * Boolean to turn on interactive drag to zoom behavior for the chart.
      */
     enableDragZoom: PropTypes.bool,
+
+    /**
+     * Boolean to turn on interactive pan and mousewheel zoom behavior for the chart.
+     */
+    enablePanZoom: PropTypes.bool,
+
+    /**
+     * Boolean to turn on interactive mousewheel zoom behavior for the chart.
+     */
+    enableWheelZoom: PropTypes.bool,
 
     /**
      * If this is set the timerange of the chart cannot be zoomed in further
@@ -647,8 +688,10 @@ ChartContainer.propTypes = {
 ChartContainer.defaultProps = {
     width: 800,
     padding: 0,
-    enablePanZoom: false,
+    enableDragPan: false,
     enableDragZoom: false,
+    enablePanZoom: false,
+    enableWheelZoom: false,
     utc: false,
     showGrid: false,
     showGridPosition: "over",

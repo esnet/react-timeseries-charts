@@ -55,7 +55,7 @@ export default class EventHandler extends React.Component {
     //
 
     handleScrollWheel(e) {
-        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+        if (!this.props.enableWheelZoom) {
             return;
         }
 
@@ -119,7 +119,7 @@ export default class EventHandler extends React.Component {
     }
 
     handleMouseDown(e) {
-        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+        if (!this.props.enableDragPan && !this.props.enableDragZoom) {
             return;
         }
 
@@ -137,7 +137,7 @@ export default class EventHandler extends React.Component {
             });
         }
 
-        if (this.props.enablePanZoom) {
+        if (this.props.enableDragPan) {
             const x = e.pageX;
             const y = e.pageY;
             const xy0 = [Math.round(x), Math.round(y)];
@@ -157,7 +157,7 @@ export default class EventHandler extends React.Component {
     }
 
     handleMouseUp(e) {
-        if (!this.props.onMouseClick && !this.props.enablePanZoom && !this.props.enableDragZoom) {
+        if (!this.props.onMouseClick && !this.props.enableDragPan && !this.props.enableDragZoom) {
             return;
         }
 
@@ -208,7 +208,7 @@ export default class EventHandler extends React.Component {
             });
         }
 
-        if (this.props.enablePanZoom) {
+        if (this.props.enableDragPan) {
             this.setState({
                 isPanning: false,
                 initialPanBegin: null,
@@ -312,8 +312,10 @@ export default class EventHandler extends React.Component {
 
 EventHandler.propTypes = {
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-    enablePanZoom: PropTypes.bool,
+    enableDragPan: PropTypes.bool,
     enableDragZoom: PropTypes.bool,
+    enableWheelZoom: PropTypes.bool,
+    enablePanZoom: PropTypes.bool,
     scale: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
@@ -327,6 +329,8 @@ EventHandler.propTypes = {
 };
 
 EventHandler.defaultProps = {
-    enablePanZoom: false,
-    enableDragZoom: false
+    enableDragPan: false,
+    enableDragZoom: false,
+    enableWheelZoom: false,
+    enablePanZoom: false
 };
