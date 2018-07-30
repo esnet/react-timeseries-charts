@@ -220,20 +220,19 @@ export default class ChartContainer extends React.Component {
 
         const { timeAxisHeight = 35 } = this.props;
 
-        const timeAxisWidth =
-            this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
+        const timeAxisWidth = this.props.width -
+            leftWidth -
+            rightWidth -
+            paddingLeft -
+            paddingRight;
 
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
         const timeScale = (this.timeScale = this.props.utc
-            ? scaleUtc()
-                  .domain(this.props.timeRange.toJSON())
-                  .range([0, timeAxisWidth])
-            : scaleTime()
-                  .domain(this.props.timeRange.toJSON())
-                  .range([0, timeAxisWidth]));
+            ? scaleUtc().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth])
+            : scaleTime().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth]));
 
         const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
@@ -247,19 +246,17 @@ export default class ChartContainer extends React.Component {
             defaultTitleStyle,
             this.props.titleStyle ? this.props.titleStyle : {}
         );
-        const title = this.props.title ? (
-            <g transform={transform}>
-                <Label
-                    align="center"
-                    label={this.props.title}
-                    style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
-                    width={chartsWidth}
-                    height={titleHeight}
-                />
-            </g>
-        ) : (
-            <g />
-        );
+        const title = this.props.title
+            ? <g transform={transform}>
+                  <Label
+                      align="center"
+                      label={this.props.title}
+                      style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
+                      width={chartsWidth}
+                      height={titleHeight}
+                  />
+              </g>
+            : <g />;
 
         //yPosition += titleHeight;
         let chartsHeight = 0;
@@ -286,8 +283,8 @@ export default class ChartContainer extends React.Component {
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
-                    onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
-                    onTrackerChanged: t => this.handleTrackerChanged(t)
+                    onTimeRangeChanged: this.handleTimeRangeChanged,
+                    onTrackerChanged: this.handleTrackerChanged
                 };
                 const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
                 if (isVisible) {
@@ -308,8 +305,7 @@ export default class ChartContainer extends React.Component {
         // Hover tracker line
         let tracker;
         if (
-            this.props.trackerPosition &&
-            this.props.timeRange.contains(this.props.trackerPosition)
+            this.props.trackerPosition && this.props.timeRange.contains(this.props.trackerPosition)
         ) {
             tracker = (
                 <g
@@ -344,9 +340,9 @@ export default class ChartContainer extends React.Component {
 
         const timeAxis = (
             <g
-                transform={`translate(${leftWidth + paddingLeft},${paddingTop +
-                    titleHeight +
-                    chartsHeight})`}
+                transform={
+                    `translate(${leftWidth + paddingLeft},${paddingTop + titleHeight + chartsHeight})`
+                }
             >
                 <line
                     x1={-leftWidth}
@@ -408,35 +404,33 @@ export default class ChartContainer extends React.Component {
             this.props.style ? this.props.style : {}
         );
 
-        return this.props.showGridPosition === "over" ? (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={svgStyle}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
-                {title}
-                {rows}
-                {tracker}
-                {timeAxis}
-            </svg>
-        ) : (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={{ display: "block" }}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
-                {title}
-                {timeAxis}
-                {rows}
-                {tracker}
-            </svg>
-        );
+        return this.props.showGridPosition === "over"
+            ? <svg
+                  width={svgWidth}
+                  height={svgHeight}
+                  style={svgStyle}
+                  ref={c => {
+                      this.svg = c;
+                  }}
+              >
+                  {title}
+                  {rows}
+                  {tracker}
+                  {timeAxis}
+              </svg>
+            : <svg
+                  width={svgWidth}
+                  height={svgHeight}
+                  style={{ display: "block" }}
+                  ref={c => {
+                      this.svg = c;
+                  }}
+              >
+                  {title}
+                  {timeAxis}
+                  {rows}
+                  {tracker}
+              </svg>;
     }
 }
 
@@ -455,8 +449,10 @@ ChartContainer.propTypes = {
     /**
      * Children of the ChartContainer should be ChartRows.
      */
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
-        .isRequired,
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.element),
+        PropTypes.element
+    ]).isRequired,
 
     /**
      * The width of the chart. This library also includes a <Resizable> component
