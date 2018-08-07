@@ -218,7 +218,10 @@ export default class ChartContainer extends React.Component {
         // Time scale
         //
 
-        const { timeAxisHeight = 35 } = this.props;
+        let { timeAxisHeight = 35 } = this.props;
+        if (this.props.hideTimeAxis) {
+            timeAxisHeight = 0;
+        }
 
         const timeAxisWidth =
             this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
@@ -336,11 +339,20 @@ export default class ChartContainer extends React.Component {
         // TimeAxis
         //
 
-        const timeAxisStyle = merge(
-            true,
-            defaultTimeAxisStyle.axis,
-            this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
-        );
+        let timeAxisStyle;
+        if (this.props.hideTimeAxis) {
+            timeAxisStyle = {
+                axis: {
+                    display: "none"
+                }
+            };
+        } else {
+            timeAxisStyle = merge(
+                true,
+                defaultTimeAxisStyle.axis,
+                this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
+            );
+        }
 
         const timeAxis = (
             <g
@@ -537,33 +549,9 @@ ChartContainer.propTypes = {
     showGridPosition: PropTypes.oneOf(["over", "under"]),
 
     /**
-     * Specify the number of ticks
-     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
-     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     * Defines how to style the SVG
      */
-    timeAxisTickCount: PropTypes.number,
-
-    /**
-     * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
-     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
-     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
-     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
-     * respectively.
-     *
-     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
-     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
-     * regular React rendered SVG line, so it uses camel case.
-     */
-    style: PropTypes.shape({
-        axis: PropTypes.object,
-        values: PropTypes.object,
-        ticks: PropTypes.object
-    }),
-
-    /**
-     * Angle the time axis labels
-     */
-    timeAxisAngledLabels: PropTypes.bool,
+    style: PropTypes.object,
 
     /**
      * The width of the tracker info box
@@ -641,7 +629,72 @@ ChartContainer.propTypes = {
      * Called when the user clicks the background plane of the chart. This is
      * useful when deselecting elements.
      */
-    onBackgroundClick: PropTypes.func
+    onBackgroundClick: PropTypes.func,
+
+    /**
+     * Props for handling the padding
+     */
+    padding: PropTypes.number,
+    paddingLeft: PropTypes.number,
+    paddingRight: PropTypes.number,
+    paddingTop: PropTypes.number,
+    paddingBottom: PropTypes.number,
+
+    /**
+     * Specify the title for the chart
+     */
+    title: PropTypes.string,
+
+    /**
+     * Specify the height of the title
+     * Default value is 28 pixels
+     */
+    titleHeight: PropTypes.number,
+
+    /**
+     * Specify the styling of the chart's title
+     */
+    titleStyle: PropTypes.object,
+
+    /**
+     * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
+     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
+     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
+     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * respectively.
+     *
+     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
+     * regular React rendered SVG line, so it uses camel case.
+     */
+    timeAxisStyle: PropTypes.shape({
+        axis: PropTypes.object,
+        values: PropTypes.object,
+        ticks: PropTypes.object
+    }),
+
+    /**
+     * Height of the time axis
+     * Default value is 35 pixels
+     */
+    timeAxisHeight: PropTypes.number,
+
+    /**
+     * Specify the number of ticks
+     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
+     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     */
+    timeAxisTickCount: PropTypes.number,
+
+    /**
+     * Angle the time axis labels
+     */
+    timeAxisAngledLabels: PropTypes.bool,
+
+    /**
+     * Prop to hide time axis if required
+     */
+    hideTimeAxis: PropTypes.bool
 };
 
 ChartContainer.defaultProps = {
@@ -652,5 +705,7 @@ ChartContainer.defaultProps = {
     utc: false,
     showGrid: false,
     showGridPosition: "over",
-    timeAxisStyle: defaultTimeAxisStyle
+    timeAxisStyle: defaultTimeAxisStyle,
+    titleStyle: defaultTitleStyle,
+    hideTimeAxis: false
 };
