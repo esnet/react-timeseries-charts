@@ -155,13 +155,13 @@ export default class BarChart extends React.Component {
         e.stopPropagation();
     }
 
-    providedStyleMap(column) {
+    providedStyleMap(column, event) {
         let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
             } else if (_.isFunction(this.props.style)) {
-                style = this.props.style(column);
+                style = this.props.style(column, event);
             } else if (_.isObject(this.props.style)) {
                 style = this.props.style ? this.props.style[column] : defaultStyle;
             }
@@ -174,14 +174,13 @@ export default class BarChart extends React.Component {
      */
     style(column, event) {
         let style;
-        const styleMap = this.providedStyleMap(column);
+        const styleMap = this.providedStyleMap(column, event);
 
         const isHighlighted =
             this.props.highlighted &&
             ((column === this.props.highlighted.column &&
                 Event.is(this.props.highlighted.event, event)) ||
-            (this.props.highlightEntireEvent &&
-                Event.is(this.props.highlighted.event, event)))
+                (this.props.highlightEntireEvent && Event.is(this.props.highlighted.event, event)));
 
         const isSelected =
             this.props.selected &&
