@@ -285,28 +285,21 @@ export default class AreaChart extends React.Component {
                 let currentPoints = null;
                 for (let j = 0; j < this.props.series.size(); j += 1) {
                     const seriesPoint = this.props.series.at(j);
-                    const value = seriesPoint.get(column);
+                    let value = seriesPoint.get(column);
                     const badPoint = _.isNull(value) || _.isNaN(value) || !_.isFinite(value);
+                    if (badPoint) value = 0;
 
                     // Case 1:
                     // When stacking is present with multiple area charts, then mark bad points as 0
                     if (len > 1) {
                         if (!currentPoints) currentPoints = [];
-                        if (!badPoint) {
-                            currentPoints.push({
-                                x0: this.props.timeScale(seriesPoint.timestamp()),
-                                y0: this.props.yScale(offsets[j]),
-                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
-                            });
-                            if (this.props.stack) {
-                                offsets[j] += dir * seriesPoint.get(column);
-                            }
-                        } else {
-                            currentPoints.push({
-                                x0: this.props.timeScale(seriesPoint.timestamp()),
-                                y0: this.props.yScale(offsets[j]),
-                                y1: this.props.yScale(offsets[j])
-                            });
+                        currentPoints.push({
+                            x0: this.props.timeScale(seriesPoint.timestamp()),
+                            y0: this.props.yScale(offsets[j]),
+                            y1: this.props.yScale(offsets[j] + dir * value)
+                        });
+                        if (this.props.stack) {
+                            offsets[j] += dir * value;
                         }
                     }
                     // Case Two
@@ -317,10 +310,10 @@ export default class AreaChart extends React.Component {
                             currentPoints.push({
                                 x0: this.props.timeScale(seriesPoint.timestamp()),
                                 y0: this.props.yScale(offsets[j]),
-                                y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                                y1: this.props.yScale(offsets[j] + dir * value)
                             });
                             if (this.props.stack) {
-                                offsets[j] += dir * seriesPoint.get(column);
+                                offsets[j] += dir * value;
                             }
                         } else if (currentPoints) {
                             if (currentPoints.length > 1) {
@@ -346,10 +339,10 @@ export default class AreaChart extends React.Component {
                         cleanedPoints.push({
                             x0: this.props.timeScale(seriesPoint.timestamp()),
                             y0: this.props.yScale(offsets[j]),
-                            y1: this.props.yScale(offsets[j] + dir * seriesPoint.get(column))
+                            y1: this.props.yScale(offsets[j] + dir * value)
                         });
                         if (this.props.stack) {
-                            offsets[j] += dir * seriesPoint.get(column);
+                            offsets[j] += dir * value;
                         }
                     }
                 }
