@@ -378,13 +378,21 @@ export default class Legend extends React.Component {
 
         if (this.props.stack) {
             return (
-                <Flexbox justifyContent={align} flexDirection={"column"} marginBottom={"20px"}>
+                <Flexbox
+                    justifyContent={align}
+                    flexDirection={"column"}
+                    marginBottom={this.props.marginBottom}
+                >
                     {items}
                 </Flexbox>
             );
         } else {
             return (
-                <Flexbox justifyContent={align} flexWrap={"wrap"} marginBottom={"20px"}>
+                <Flexbox
+                    justifyContent={align}
+                    flexWrap={"wrap"}
+                    marginBottom={this.props.marginBottom}
+                >
                     {items}
                 </Flexbox>
             );
@@ -403,6 +411,7 @@ Legend.propTypes = {
      * Alignment of the legend within the available space. Either left or right.
      */
     align: PropTypes.oneOf(["left", "right"]),
+
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)])
         .isRequired,
 
@@ -469,7 +478,13 @@ Legend.propTypes = {
     /**
      * Defines whether to stack legend items vertically or not
      */
-    stack: PropTypes.bool
+    stack: PropTypes.bool,
+
+    /**
+     * The margin at the bottom passed to the FlexBox component
+     * Default value is 20px
+     */
+    marginBottom: PropTypes.string
 };
 
 Legend.defaultProps = {
@@ -479,5 +494,6 @@ Legend.defaultProps = {
     align: "left",
     symbolWidth: 16,
     symbolHeight: 16,
-    stack: false
+    stack: false,
+    marginBottom: "20px"
 };
