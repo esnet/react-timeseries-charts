@@ -64,6 +64,10 @@ const style = styler([
     { key: "five_year", color: "black", width: 2 }
 ]);
 
+const NullMarker = props => {
+    return <g />;
+};
+
 class climate extends React.Component {
     state = {
         tracker: null,
@@ -88,7 +92,7 @@ class climate extends React.Component {
 
     renderMarker = () => {
         if (!this.state.tracker) {
-            return <g />;
+            return <NullMarker />;
         }
         if (this.state.markerMode === "flag") {
             return (
