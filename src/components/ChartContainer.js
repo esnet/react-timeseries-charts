@@ -63,6 +63,17 @@ const defaultTitleStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+        this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
+        this.handleZoom = this.handleZoom.bind(this);
+        this.saveSvgRef = this.saveSvgRef.bind(this);
+    }
+
     //
     // Event handlers
     //
@@ -96,13 +107,14 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleMouseOut() {
+    handleMouseOut(e) {
         this.handleTrackerChanged(null);
     }
 
-    handleBackgroundClick() {
+    handleBackgroundClick(x, y) {
         if (this.props.onBackgroundClick) {
-            this.props.onBackgroundClick();
+            const t = this.props.scale.invert(x);
+            this.props.onBackgroundClick(x, y, t);
         }
     }
 
@@ -110,6 +122,10 @@ export default class ChartContainer extends React.Component {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
         }
+    }
+
+    saveSvgRef(c) {
+        this.svg = c;
     }
 
     //
@@ -289,8 +305,8 @@ export default class ChartContainer extends React.Component {
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
-                    onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
-                    onTrackerChanged: t => this.handleTrackerChanged(t)
+                    onTimeRangeChanged: this.handleTimeRangeChanged,
+                    onTrackerChanged: this.handleTrackerChanged
                 };
                 const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
                 if (isVisible) {
@@ -396,10 +412,10 @@ export default class ChartContainer extends React.Component {
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
-                    onMouseOut={e => this.handleMouseOut(e)}
-                    onMouseMove={(x, y) => this.handleMouseMove(x, y)}
-                    onMouseClick={e => this.handleBackgroundClick(e)}
-                    onZoom={tr => this.handleZoom(tr)}
+                    onMouseOut={this.handleMouseOut}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseClick={this.handleBackgroundClick}
+                    onZoom={this.handleZoom}
                 >
                     {chartRows}
                 </EventHandler>
@@ -421,14 +437,7 @@ export default class ChartContainer extends React.Component {
         );
 
         return this.props.showGridPosition === "over" ? (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={svgStyle}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
+            <svg width={svgWidth} height={svgHeight} style={svgStyle} ref={this.saveSvgRef}>
                 {title}
                 {rows}
                 {tracker}
@@ -439,9 +448,7 @@ export default class ChartContainer extends React.Component {
                 width={svgWidth}
                 height={svgHeight}
                 style={{ display: "block" }}
-                ref={c => {
-                    this.svg = c;
-                }}
+                ref={this.saveSvgRef}
             >
                 {title}
                 {timeAxis}
