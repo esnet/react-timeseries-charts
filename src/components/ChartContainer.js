@@ -63,6 +63,17 @@ const defaultTitleStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+        this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
+        this.handleZoom = this.handleZoom.bind(this);
+        this.saveSvgRef = this.saveSvgRef.bind(this);
+    }
+
     //
     // Event handlers
     //
@@ -96,13 +107,17 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleMouseOut() {
+    handleMouseOut(e) {
         this.handleTrackerChanged(null);
     }
 
-    handleBackgroundClick() {
+    handleBackgroundClick(x, y) {
         if (this.props.onBackgroundClick) {
-            this.props.onBackgroundClick();
+            this.props.onBackgroundClick({
+                x: x,
+                y: y,
+                date: this.props.scale.invert(x)
+            });
         }
     }
 
@@ -110,6 +125,10 @@ export default class ChartContainer extends React.Component {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
         }
+    }
+
+    saveSvgRef(c) {
+        this.svg = c;
     }
 
     //
@@ -223,20 +242,19 @@ export default class ChartContainer extends React.Component {
             timeAxisHeight = 0;
         }
 
-        const timeAxisWidth =
-            this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
+        const timeAxisWidth = this.props.width -
+            leftWidth -
+            rightWidth -
+            paddingLeft -
+            paddingRight;
 
         if (!this.props.timeRange) {
             throw Error("Invalid timerange passed to ChartContainer");
         }
 
         const timeScale = (this.timeScale = this.props.utc
-            ? scaleUtc()
-                  .domain(this.props.timeRange.toJSON())
-                  .range([0, timeAxisWidth])
-            : scaleTime()
-                  .domain(this.props.timeRange.toJSON())
-                  .range([0, timeAxisWidth]));
+            ? scaleUtc().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth])
+            : scaleTime().domain(this.props.timeRange.toJSON()).range([0, timeAxisWidth]));
 
         const chartsWidth = this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
 
@@ -250,19 +268,17 @@ export default class ChartContainer extends React.Component {
             defaultTitleStyle,
             this.props.titleStyle ? this.props.titleStyle : {}
         );
-        const title = this.props.title ? (
-            <g transform={transform}>
-                <Label
-                    align="center"
-                    label={this.props.title}
-                    style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
-                    width={chartsWidth}
-                    height={titleHeight}
-                />
-            </g>
-        ) : (
-            <g />
-        );
+        const title = this.props.title
+            ? <g transform={transform}>
+                  <Label
+                      align="center"
+                      label={this.props.title}
+                      style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
+                      width={chartsWidth}
+                      height={titleHeight}
+                  />
+              </g>
+            : <g />;
 
         //yPosition += titleHeight;
         let chartsHeight = 0;
@@ -289,8 +305,8 @@ export default class ChartContainer extends React.Component {
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
-                    onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
-                    onTrackerChanged: t => this.handleTrackerChanged(t)
+                    onTimeRangeChanged: this.handleTimeRangeChanged,
+                    onTrackerChanged: this.handleTrackerChanged
                 };
                 const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
                 if (isVisible) {
@@ -311,8 +327,7 @@ export default class ChartContainer extends React.Component {
         // Hover tracker line
         let tracker;
         if (
-            this.props.trackerPosition &&
-            this.props.timeRange.contains(this.props.trackerPosition)
+            this.props.trackerPosition && this.props.timeRange.contains(this.props.trackerPosition)
         ) {
             tracker = (
                 <g
@@ -356,9 +371,9 @@ export default class ChartContainer extends React.Component {
 
         const timeAxis = (
             <g
-                transform={`translate(${leftWidth + paddingLeft},${paddingTop +
-                    titleHeight +
-                    chartsHeight})`}
+                transform={
+                    `translate(${leftWidth + paddingLeft},${paddingTop + titleHeight + chartsHeight})`
+                }
             >
                 <line
                     x1={-leftWidth}
@@ -396,10 +411,10 @@ export default class ChartContainer extends React.Component {
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
-                    onMouseOut={e => this.handleMouseOut(e)}
-                    onMouseMove={(x, y) => this.handleMouseMove(x, y)}
-                    onMouseClick={e => this.handleBackgroundClick(e)}
-                    onZoom={tr => this.handleZoom(tr)}
+                    onMouseOut={this.handleMouseOut}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseClick={this.handleBackgroundClick}
+                    onZoom={this.handleZoom}
                 >
                     {chartRows}
                 </EventHandler>
@@ -420,35 +435,24 @@ export default class ChartContainer extends React.Component {
             this.props.style ? this.props.style : {}
         );
 
-        return this.props.showGridPosition === "over" ? (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={svgStyle}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
-                {title}
-                {rows}
-                {tracker}
-                {timeAxis}
-            </svg>
-        ) : (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={{ display: "block" }}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
-                {title}
-                {timeAxis}
-                {rows}
-                {tracker}
-            </svg>
-        );
+        return this.props.showGridPosition === "over"
+            ? <svg width={svgWidth} height={svgHeight} style={svgStyle} ref={this.saveSvgRef}>
+                  {title}
+                  {rows}
+                  {tracker}
+                  {timeAxis}
+              </svg>
+            : <svg
+                  width={svgWidth}
+                  height={svgHeight}
+                  style={{ display: "block" }}
+                  ref={this.saveSvgRef}
+              >
+                  {title}
+                  {timeAxis}
+                  {rows}
+                  {tracker}
+              </svg>;
     }
 }
 
@@ -467,8 +471,10 @@ ChartContainer.propTypes = {
     /**
      * Children of the ChartContainer should be ChartRows.
      */
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
-        .isRequired,
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.element),
+        PropTypes.element
+    ]).isRequired,
 
     /**
      * The width of the chart. This library also includes a <Resizable> component

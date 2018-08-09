@@ -169,13 +169,13 @@ export default class EventHandler extends React.Component {
         const offsetxy = this.getOffsetMousePosition(e);
 
         const x = e.pageX;
-        const isPanning =
-            this.state.initialPanPosition && Math.abs(x - this.state.initialPanPosition[0]) > 2;
-        const isDragging =
-            this.state.initialDragZoom && Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
+        const isPanning = this.state.initialPanPosition &&
+            Math.abs(x - this.state.initialPanPosition[0]) > 2;
+        const isDragging = this.state.initialDragZoom &&
+            Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
 
         if (this.props.onMouseClick && !isPanning && !isDragging) {
-            this.props.onMouseClick();
+            this.props.onMouseClick(offsetxy[0], offsetxy[1]);
         }
 
         if (this.props.enableDragZoom) {
@@ -239,8 +239,7 @@ export default class EventHandler extends React.Component {
         }
         if (this.state.isPanning) {
             const xy0 = this.state.initialPanPosition;
-            const timeOffset =
-                this.props.scale.invert(xy[0]).getTime() -
+            const timeOffset = this.props.scale.invert(xy[0]).getTime() -
                 this.props.scale.invert(xy0[0]).getTime();
 
             let newBegin = parseInt(this.state.initialPanBegin - timeOffset, 10);
@@ -296,15 +295,14 @@ export default class EventHandler extends React.Component {
                     height={this.props.height}
                 />
                 {this.props.children}
-                {this.state.isDragging && (
+                {this.state.isDragging &&
                     <rect
                         style={{ opacity: 0.3, fill: "grey" }}
                         x={Math.min(this.state.currentDragZoom, this.state.initialDragZoom)}
                         y={0}
                         width={Math.abs(this.state.currentDragZoom - this.state.initialDragZoom)}
                         height={this.props.height}
-                    />
-                )}
+                    />}
             </g>
         );
     }
