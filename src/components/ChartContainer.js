@@ -41,6 +41,23 @@ const defaultTitleStyle = {
     fill: "#C0C0C0"
 };
 
+const defaultTrackerStyle = {
+    line: {
+        stroke: "#999",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    },
+    box: {
+        fill: "white",
+        opacity: 0.9,
+        stroke: "#999",
+        pointerEvents: "none"
+    },
+    dot: {
+        fill: "#999"
+    }
+};
+
 /**
  * The `<ChartContainer>` is the outer most element of a chart and is
  * responsible for generating and arranging its sub-elements. Specifically,
@@ -280,6 +297,12 @@ export default class ChartContainer extends React.Component {
             <g />
         );
 
+        const trackerStyle = merge(
+            true,
+            defaultTrackerStyle,
+            this.props.trackerStyle ? this.props.trackerStyle : {}
+        );
+
         //yPosition += titleHeight;
         let chartsHeight = 0;
         React.Children.forEach(this.props.children, child => {
@@ -305,6 +328,7 @@ export default class ChartContainer extends React.Component {
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
+                    trackerStyle: trackerStyle,
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
@@ -346,6 +370,7 @@ export default class ChartContainer extends React.Component {
                         infoWidth={this.props.trackerHintWidth}
                         infoHeight={this.props.trackerHintHeight}
                         info={this.props.trackerValues}
+                        infoStyle={trackerStyle}
                     />
                 </g>
             );
@@ -595,6 +620,19 @@ ChartContainer.propTypes = {
     trackerPosition: PropTypes.instanceOf(Date),
 
     /**
+     * The style of the time marker. This is an object of the form { line, box, dot }.
+     * Line, box and dot are themselves objects representing inline CSS for each of
+     * the pieces of the info marker.
+     *
+     * When we use the TimeMarker as a tracker, we can style the box and dot as well.
+     */
+    trackerStyle: PropTypes.shape({
+        line: PropTypes.object, // eslint-disable-line
+        box: PropTypes.object, // eslint-disable-line
+        dot: PropTypes.object // eslint-disable-line
+    }),
+
+    /**
      * Will be called when the user hovers over a chart. The callback will
      * be called with the timestamp (a Date object) of the position hovered
      * over as well as the current time axis' time scale. The timestamp may
@@ -714,5 +752,6 @@ ChartContainer.defaultProps = {
     showGridPosition: "over",
     timeAxisStyle: defaultTimeAxisStyle,
     titleStyle: defaultTitleStyle,
+    trackerStyle: defaultTrackerStyle,
     hideTimeAxis: false
 };

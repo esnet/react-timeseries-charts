@@ -432,7 +432,8 @@ export default class ChartRow extends React.Component {
                 showTime: this.props.trackerShowTime,
                 time: this.props.trackerTime,
                 timeScale: this.props.timeScale,
-                width: chartWidth
+                width: chartWidth,
+                infoStyle: this.props.trackerStyle
             };
             if (this.props.trackerInfoValues) {
                 timeMarkerProps.infoWidth = this.props.trackerInfoWidth;

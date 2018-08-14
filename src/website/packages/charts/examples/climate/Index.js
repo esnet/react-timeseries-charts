@@ -32,7 +32,7 @@ import climate_docs from "./climate_docs.md";
 import climate_thumbnail from "./climate_thumbnail.png";
 
 // Data
-const temperatures = require("./climate_data");
+const temperatures = require("./climate_data.json");
 
 const points = [];
 _.each(temperatures, val => {
