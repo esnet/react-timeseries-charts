@@ -324,7 +324,7 @@ export default class Legend extends React.Component {
         return merge(
             true,
             defaultStyle[styleMode],
-            styleMap.symbol[styleMode] ? styleMap.symbol[styleMode] : {}
+            styleMap.symbol ? styleMap.symbol[styleMode] : {}
         );
     }
 
@@ -334,7 +334,7 @@ export default class Legend extends React.Component {
         return merge(
             true,
             defaultStyle[styleMode],
-            styleMap.label[styleMode] ? styleMap.label[styleMode] : {}
+            styleMap.label ? styleMap.label[styleMode] : {}
         );
     }
 
@@ -344,7 +344,7 @@ export default class Legend extends React.Component {
         return merge(
             true,
             defaultStyle[styleMode],
-            styleMap.value[styleMode] ? styleMap.value[styleMode] : {}
+            styleMap.value ? styleMap.value[styleMode] : {}
         );
     }
 
@@ -412,8 +412,7 @@ Legend.propTypes = {
      */
     align: PropTypes.oneOf(["left", "right"]),
 
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)])
-        .isRequired,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.instanceOf(Styler)]),
 
     /**
      * The categories array specifies details and style for each item in the legend. For each item:
