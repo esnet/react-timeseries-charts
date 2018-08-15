@@ -735,6 +735,10 @@
           {
             "name": "column",
             "type": null
+          },
+          {
+            "name": "event",
+            "type": null
           }
         ],
         "returns": null
@@ -826,6 +830,17 @@
         "description": "A list of columns within the series that will be stacked on top of each other",
         "defaultValue": {
           "value": "[\"value\"]",
+          "computed": false
+        }
+      },
+      "highlightEntireEvent": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "When true, the entire `highlighted` event will be highlighted, instead of\nonly the column bar that's currently being hovered",
+        "defaultValue": {
+          "value": "false",
           "computed": false
         }
       },
@@ -1698,14 +1713,28 @@
         "name": "handleMouseOut",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
         "name": "handleBackgroundClick",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "x",
+            "type": null
+          },
+          {
+            "name": "y",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -1715,6 +1744,18 @@
         "params": [
           {
             "name": "timerange",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "saveSvgRef",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "c",
             "type": null
           }
         ],
@@ -1869,40 +1910,12 @@
           "computed": false
         }
       },
-      "timeAxisTickCount": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "Specify the number of ticks\nThe default ticks for quantitative scales are multiples of 2, 5 and 10.\nSo, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10."
-      },
       "style": {
         "type": {
-          "name": "shape",
-          "value": {
-            "axis": {
-              "name": "object",
-              "required": false
-            },
-            "values": {
-              "name": "object",
-              "required": false
-            },
-            "ticks": {
-              "name": "object",
-              "required": false
-            }
-          }
+          "name": "object"
         },
         "required": false,
-        "description": "Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:\n\"values\" (the time labels), \"axis\" (the main horizontal line) and \"ticks\" (which may\noptionally extend the height of all chart rows using the `showGrid` prop. Each of these\nis an inline CSS style applied to the axis label, axis values, axis line and ticks\nrespectively.\n\nNote that \"ticks\" and \"values\" are passed into d3's styles, so they are regular CSS property names\nand not React's camel case names (e.g. \"stroke-dasharray\" not \"strokeDasharray\"). \"axis\" is a\nregular React rendered SVG line, so it uses camel case."
-      },
-      "timeAxisAngledLabels": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": "Angle the time axis labels"
+        "description": "Defines how to style the SVG"
       },
       "trackerHintWidth": {
         "type": {
@@ -1954,6 +1967,31 @@
         "required": false,
         "description": "A Date specifying the position of the tracker line on the chart. It is\ncommon to take this from the onTrackerChanged callback so that the tracker\nfollowers the user's cursor, but it could be modified to snap to a point or\nto the nearest minute, for example."
       },
+      "trackerStyle": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "line": {
+              "name": "object",
+              "required": false
+            },
+            "box": {
+              "name": "object",
+              "required": false
+            },
+            "dot": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "The style of the time marker. This is an object of the form { line, box, dot }.\nLine, box and dot are themselves objects representing inline CSS for each of\nthe pieces of the info marker.\n\nWhen we use the TimeMarker as a tracker, we can style the box and dot as well.",
+        "defaultValue": {
+          "value": "{\n    line: {\n        stroke: \"#999\",\n        cursor: \"crosshair\",\n        pointerEvents: \"none\"\n    },\n    box: {\n        fill: \"white\",\n        opacity: 0.9,\n        stroke: \"#999\",\n        pointerEvents: \"none\"\n    },\n    dot: {\n        fill: \"#999\"\n    }\n}",
+          "computed": false
+        }
+      },
       "onTrackerChanged": {
         "type": {
           "name": "func"
@@ -1983,18 +2021,125 @@
         "description": "Called when the user clicks the background plane of the chart. This is\nuseful when deselecting elements."
       },
       "padding": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Props for handling the padding",
         "defaultValue": {
           "value": "0",
           "computed": false
+        }
+      },
+      "paddingLeft": {
+        "type": {
+          "name": "number"
         },
-        "required": false
+        "required": false,
+        "description": ""
+      },
+      "paddingRight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "paddingTop": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "paddingBottom": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "title": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Specify the title for the chart"
+      },
+      "titleHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Specify the height of the title\nDefault value is 28 pixels"
+      },
+      "titleStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Specify the styling of the chart's title",
+        "defaultValue": {
+          "value": "{\n    fontWeight: 100,\n    fontSize: 14,\n    font: '\"Goudy Bookletter 1911\", sans-serif\"',\n    fill: \"#C0C0C0\"\n}",
+          "computed": false
+        }
       },
       "timeAxisStyle": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "axis": {
+              "name": "object",
+              "required": false
+            },
+            "values": {
+              "name": "object",
+              "required": false
+            },
+            "ticks": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:\n\"values\" (the time labels), \"axis\" (the main horizontal line) and \"ticks\" (which may\noptionally extend the height of all chart rows using the `showGrid` prop. Each of these\nis an inline CSS style applied to the axis label, axis values, axis line and ticks\nrespectively.\n\nNote that \"ticks\" and \"values\" are passed into d3's styles, so they are regular CSS property names\nand not React's camel case names (e.g. \"stroke-dasharray\" not \"strokeDasharray\"). \"axis\" is a\nregular React rendered SVG line, so it uses camel case.",
         "defaultValue": {
           "value": "{\n    axis: {\n        fill: \"none\",\n        stroke: \"#C0C0C0\",\n        pointerEvents: \"none\"\n    }\n}",
           "computed": false
+        }
+      },
+      "timeAxisHeight": {
+        "type": {
+          "name": "number"
         },
-        "required": false
+        "required": false,
+        "description": "Height of the time axis\nDefault value is 35 pixels"
+      },
+      "timeAxisTickCount": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Specify the number of ticks\nThe default ticks for quantitative scales are multiples of 2, 5 and 10.\nSo, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10."
+      },
+      "timeAxisAngledLabels": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Angle the time axis labels"
+      },
+      "hideTimeAxis": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Prop to hide time axis if required",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       }
     }
   },
@@ -2944,10 +3089,27 @@
     "displayName": "LabelAxis",
     "methods": [
       {
+        "name": "mergeStyles",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "style",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderAxis",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "axisStyle",
+            "type": null
+          }
+        ],
         "returns": null
       }
     ],
@@ -3051,6 +3213,31 @@
         },
         "required": false,
         "description": "The height of the axis"
+      },
+      "style": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "axis": {
+              "name": "object",
+              "required": false
+            },
+            "label": {
+              "name": "object",
+              "required": false
+            },
+            "values": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Object specifying the CSS by which the label axis can be styled. The object can contain:\n\"label\", \"values\" and \"axis\". Each of these is an inline CSS style applied\nto the axis label, axis values and axis line respectively.",
+        "defaultValue": {
+          "value": "{\n    axis: {\n        fontSize: 11,\n        textAnchor: \"left\",\n        fill: \"#bdbdbd\"\n    },\n    label: {\n        fontSize: 12,\n        textAnchor: \"middle\",\n        fill: \"#838383\"\n    },\n    values: {\n        fill: \"none\",\n        stroke: \"none\"\n    }\n}",
+          "computed": false
+        }
       }
     }
   },
@@ -3328,6 +3515,17 @@
           "computed": false
         }
       },
+      "marginBottom": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The margin at the bottom passed to the FlexBox component\nDefault value is 20px",
+        "defaultValue": {
+          "value": "\"20px\"",
+          "computed": false
+        }
+      },
       "labelStyle": {
         "defaultValue": {
           "value": "{}",
@@ -3582,7 +3780,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "The determines how to handle bad/missing values in the supplied\nTimeSeries. A missing value can be null or NaN. If breakLine\nis set to true then the line will be broken on either side of\nthe bad value(s). If breakLine is false (the default) bad values\nare simply removed and the adjoining points are connected.",
+        "description": "The determines how to handle bad/missing values in the supplied\nTimeSeries. A missing value can be null or NaN. If breakLine\nis set to true (the default) then the line will be broken on either\nside of the bad value(s). If breakLine is false bad values\nare simply removed and the adjoining points are connected.",
         "defaultValue": {
           "value": "true",
           "computed": false

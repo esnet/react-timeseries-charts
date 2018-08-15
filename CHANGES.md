@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.15.3
+
+> Aug 15, 2018
+
+* Add feature to add style prop to `LabelAxis` component
+* Refactor `AreaChart` code
+
+Bug fixes:
+
+* Corrects the wrong order for testing style type (Fixes [#277](https://github.com/esnet/react-timeseries-charts/issues/277))
+* Correctly stacking in area charts when some points are bad (Fixes [#284](https://github.com/esnet/react-timeseries-charts/issues/284))  
+* Adds prop to hide TimeAxis (Fixes [#295](https://github.com/esnet/react-timeseries-charts/issues/295))
+* Adds function argument while styling barcharts (Fixes [#291](https://github.com/esnet/react-timeseries-charts/issues/291))
+* Adds a prop `marginBottom` to the `Legend` component (Fixes [#243](https://github.com/esnet/react-timeseries-charts/issues/243))
+* Doesn't draw a `BarChart` when the height of the rectangle is 0 (Fixes [#294](https://github.com/esnet/react-timeseries-charts/issues/294))
+* Removes warnings on climate example (Fixes [#257](https://github.com/esnet/react-timeseries-charts/issues/257))
+* Exposes x, y and time value to onBackgroundClick method in `ChartContainer` (Fixes [#296](https://github.com/esnet/react-timeseries-charts/issues/296))
+* TimeMarker can be custom styled (Fixes [#304](https://github.com/esnet/react-timeseries-charts/issues/304))
+* Ability to style legend (Fixes [#112](https://github.com/esnet/react-timeseries-charts/issues/112))
+
 ## v0.15.0
 
 > May 22, 2018

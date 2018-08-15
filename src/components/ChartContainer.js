@@ -41,6 +41,23 @@ const defaultTitleStyle = {
     fill: "#C0C0C0"
 };
 
+const defaultTrackerStyle = {
+    line: {
+        stroke: "#999",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    },
+    box: {
+        fill: "white",
+        opacity: 0.9,
+        stroke: "#999",
+        pointerEvents: "none"
+    },
+    dot: {
+        fill: "#999"
+    }
+};
+
 /**
  * The `<ChartContainer>` is the outer most element of a chart and is
  * responsible for generating and arranging its sub-elements. Specifically,
@@ -63,6 +80,17 @@ const defaultTitleStyle = {
  * ```
  */
 export default class ChartContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTrackerChanged = this.handleTrackerChanged.bind(this);
+        this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
+        this.handleZoom = this.handleZoom.bind(this);
+        this.saveSvgRef = this.saveSvgRef.bind(this);
+    }
+
     //
     // Event handlers
     //
@@ -96,13 +124,14 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleMouseOut() {
+    handleMouseOut(e) {
         this.handleTrackerChanged(null);
     }
 
-    handleBackgroundClick() {
+    handleBackgroundClick(x, y) {
         if (this.props.onBackgroundClick) {
-            this.props.onBackgroundClick();
+            const t = this.props.scale ? this.props.scale.invert(x) : this.timeScale.invert(x);
+            this.props.onBackgroundClick(x, y, t);
         }
     }
 
@@ -110,6 +139,10 @@ export default class ChartContainer extends React.Component {
         if (this.props.onTimeRangeChanged) {
             this.props.onTimeRangeChanged(timerange);
         }
+    }
+
+    saveSvgRef(c) {
+        this.svg = c;
     }
 
     //
@@ -218,7 +251,10 @@ export default class ChartContainer extends React.Component {
         // Time scale
         //
 
-        const { timeAxisHeight = 35 } = this.props;
+        let { timeAxisHeight = 35 } = this.props;
+        if (this.props.hideTimeAxis) {
+            timeAxisHeight = 0;
+        }
 
         const timeAxisWidth =
             this.props.width - leftWidth - rightWidth - paddingLeft - paddingRight;
@@ -261,6 +297,12 @@ export default class ChartContainer extends React.Component {
             <g />
         );
 
+        const trackerStyle = merge(
+            true,
+            defaultTrackerStyle,
+            this.props.trackerStyle ? this.props.trackerStyle : {}
+        );
+
         //yPosition += titleHeight;
         let chartsHeight = 0;
         React.Children.forEach(this.props.children, child => {
@@ -286,8 +328,9 @@ export default class ChartContainer extends React.Component {
                     trackerShowTime: firstRow,
                     trackerTime: this.props.trackerPosition,
                     trackerTimeFormat: this.props.format,
-                    onTimeRangeChanged: tr => this.handleTimeRangeChanged(tr),
-                    onTrackerChanged: t => this.handleTrackerChanged(t)
+                    trackerStyle: trackerStyle,
+                    onTimeRangeChanged: this.handleTimeRangeChanged,
+                    onTrackerChanged: this.handleTrackerChanged
                 };
                 const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
                 if (isVisible) {
@@ -327,6 +370,7 @@ export default class ChartContainer extends React.Component {
                         infoWidth={this.props.trackerHintWidth}
                         infoHeight={this.props.trackerHintHeight}
                         info={this.props.trackerValues}
+                        infoStyle={trackerStyle}
                     />
                 </g>
             );
@@ -336,11 +380,20 @@ export default class ChartContainer extends React.Component {
         // TimeAxis
         //
 
-        const timeAxisStyle = merge(
-            true,
-            defaultTimeAxisStyle.axis,
-            this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
-        );
+        let timeAxisStyle;
+        if (this.props.hideTimeAxis) {
+            timeAxisStyle = {
+                axis: {
+                    display: "none"
+                }
+            };
+        } else {
+            timeAxisStyle = merge(
+                true,
+                defaultTimeAxisStyle.axis,
+                this.props.timeAxisStyle.axis ? this.props.timeAxisStyle.axis : {}
+            );
+        }
 
         const timeAxis = (
             <g
@@ -384,10 +437,10 @@ export default class ChartContainer extends React.Component {
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
-                    onMouseOut={e => this.handleMouseOut(e)}
-                    onMouseMove={(x, y) => this.handleMouseMove(x, y)}
-                    onMouseClick={e => this.handleBackgroundClick(e)}
-                    onZoom={tr => this.handleZoom(tr)}
+                    onMouseOut={this.handleMouseOut}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseClick={this.handleBackgroundClick}
+                    onZoom={this.handleZoom}
                 >
                     {chartRows}
                 </EventHandler>
@@ -409,14 +462,7 @@ export default class ChartContainer extends React.Component {
         );
 
         return this.props.showGridPosition === "over" ? (
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                style={svgStyle}
-                ref={c => {
-                    this.svg = c;
-                }}
-            >
+            <svg width={svgWidth} height={svgHeight} style={svgStyle} ref={this.saveSvgRef}>
                 {title}
                 {rows}
                 {tracker}
@@ -427,9 +473,7 @@ export default class ChartContainer extends React.Component {
                 width={svgWidth}
                 height={svgHeight}
                 style={{ display: "block" }}
-                ref={c => {
-                    this.svg = c;
-                }}
+                ref={this.saveSvgRef}
             >
                 {title}
                 {timeAxis}
@@ -537,33 +581,9 @@ ChartContainer.propTypes = {
     showGridPosition: PropTypes.oneOf(["over", "under"]),
 
     /**
-     * Specify the number of ticks
-     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
-     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     * Defines how to style the SVG
      */
-    timeAxisTickCount: PropTypes.number,
-
-    /**
-     * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
-     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
-     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
-     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
-     * respectively.
-     *
-     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
-     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
-     * regular React rendered SVG line, so it uses camel case.
-     */
-    style: PropTypes.shape({
-        axis: PropTypes.object,
-        values: PropTypes.object,
-        ticks: PropTypes.object
-    }),
-
-    /**
-     * Angle the time axis labels
-     */
-    timeAxisAngledLabels: PropTypes.bool,
+    style: PropTypes.object,
 
     /**
      * The width of the tracker info box
@@ -598,6 +618,19 @@ ChartContainer.propTypes = {
      * to the nearest minute, for example.
      */
     trackerPosition: PropTypes.instanceOf(Date),
+
+    /**
+     * The style of the time marker. This is an object of the form { line, box, dot }.
+     * Line, box and dot are themselves objects representing inline CSS for each of
+     * the pieces of the info marker.
+     *
+     * When we use the TimeMarker as a tracker, we can style the box and dot as well.
+     */
+    trackerStyle: PropTypes.shape({
+        line: PropTypes.object, // eslint-disable-line
+        box: PropTypes.object, // eslint-disable-line
+        dot: PropTypes.object // eslint-disable-line
+    }),
 
     /**
      * Will be called when the user hovers over a chart. The callback will
@@ -641,7 +674,72 @@ ChartContainer.propTypes = {
      * Called when the user clicks the background plane of the chart. This is
      * useful when deselecting elements.
      */
-    onBackgroundClick: PropTypes.func
+    onBackgroundClick: PropTypes.func,
+
+    /**
+     * Props for handling the padding
+     */
+    padding: PropTypes.number,
+    paddingLeft: PropTypes.number,
+    paddingRight: PropTypes.number,
+    paddingTop: PropTypes.number,
+    paddingBottom: PropTypes.number,
+
+    /**
+     * Specify the title for the chart
+     */
+    title: PropTypes.string,
+
+    /**
+     * Specify the height of the title
+     * Default value is 28 pixels
+     */
+    titleHeight: PropTypes.number,
+
+    /**
+     * Specify the styling of the chart's title
+     */
+    titleStyle: PropTypes.object,
+
+    /**
+     * Object specifying the CSS by which the `TimeAxis` can be styled. The object can contain:
+     * "values" (the time labels), "axis" (the main horizontal line) and "ticks" (which may
+     * optionally extend the height of all chart rows using the `showGrid` prop. Each of these
+     * is an inline CSS style applied to the axis label, axis values, axis line and ticks
+     * respectively.
+     *
+     * Note that "ticks" and "values" are passed into d3's styles, so they are regular CSS property names
+     * and not React's camel case names (e.g. "stroke-dasharray" not "strokeDasharray"). "axis" is a
+     * regular React rendered SVG line, so it uses camel case.
+     */
+    timeAxisStyle: PropTypes.shape({
+        axis: PropTypes.object,
+        values: PropTypes.object,
+        ticks: PropTypes.object
+    }),
+
+    /**
+     * Height of the time axis
+     * Default value is 35 pixels
+     */
+    timeAxisHeight: PropTypes.number,
+
+    /**
+     * Specify the number of ticks
+     * The default ticks for quantitative scales are multiples of 2, 5 and 10.
+     * So, while you can use this prop to increase or decrease the tick count, it will always return multiples of 2, 5 and 10.
+     */
+    timeAxisTickCount: PropTypes.number,
+
+    /**
+     * Angle the time axis labels
+     */
+    timeAxisAngledLabels: PropTypes.bool,
+
+    /**
+     * Prop to hide time axis if required
+     */
+    hideTimeAxis: PropTypes.bool
 };
 
 ChartContainer.defaultProps = {
@@ -652,5 +750,8 @@ ChartContainer.defaultProps = {
     utc: false,
     showGrid: false,
     showGridPosition: "over",
-    timeAxisStyle: defaultTimeAxisStyle
+    timeAxisStyle: defaultTimeAxisStyle,
+    titleStyle: defaultTitleStyle,
+    trackerStyle: defaultTrackerStyle,
+    hideTimeAxis: false
 };

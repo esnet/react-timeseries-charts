@@ -53,6 +53,14 @@ const trafficSeries = TimeSeries.timeSeriesListMerge({
 
 const upDownStyle = styler([{ key: "in", color: "#C8D5B8" }, { key: "out", color: "#9BB8D7" }]);
 
+const trackerStyle = {
+    line: {
+        stroke: "#a62011",
+        cursor: "crosshair",
+        pointerEvents: "none"
+    }
+};
+
 class traffic extends React.Component {
     state = {
         tracker: null,
@@ -149,6 +157,7 @@ class traffic extends React.Component {
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 trackerPosition={this.state.tracker}
+                                trackerStyle={trackerStyle}
                                 onTrackerChanged={this.handleTrackerChanged}
                                 enablePanZoom={false}
                                 maxTime={trafficSeries.range().end()}

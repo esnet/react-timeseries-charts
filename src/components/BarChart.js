@@ -155,13 +155,13 @@ export default class BarChart extends React.Component {
         e.stopPropagation();
     }
 
-    providedStyleMap(column) {
+    providedStyleMap(column, event) {
         let style = {};
         if (this.props.style) {
             if (this.props.style instanceof Styler) {
                 style = this.props.style.barChartStyle()[column];
             } else if (_.isFunction(this.props.style)) {
-                style = this.props.style(column);
+                style = this.props.style(column, event);
             } else if (_.isObject(this.props.style)) {
                 style = this.props.style ? this.props.style[column] : defaultStyle;
             }
@@ -174,14 +174,13 @@ export default class BarChart extends React.Component {
      */
     style(column, event) {
         let style;
-        const styleMap = this.providedStyleMap(column);
+        const styleMap = this.providedStyleMap(column, event);
 
         const isHighlighted =
             this.props.highlighted &&
             ((column === this.props.highlighted.column &&
                 Event.is(this.props.highlighted.event, event)) ||
-            (this.props.highlightEntireEvent &&
-                Event.is(this.props.highlighted.event, event)))
+                (this.props.highlightEntireEvent && Event.is(this.props.highlighted.event, event)));
 
         const isSelected =
             this.props.selected &&
@@ -267,9 +266,12 @@ export default class BarChart extends React.Component {
                     let height = yScale(0) - yScale(value);
                     // Allow negative values. Minimum bar height = 1 pixel.
                     // Stack negative bars below X-axis and positive above X-Axis
-                    const positiveBar = height >= 0;
+                    let positiveBar = height >= 0;
                     height = Math.max(Math.abs(height), minBarHeight);
                     const y = positiveBar ? yposPositive - height : yposNegative;
+
+                    // Don't draw a rect when height and minBarHeight are both 0
+                    if (height === 0) break;
 
                     // Event marker if info provided and hovering
                     const isHighlighted =

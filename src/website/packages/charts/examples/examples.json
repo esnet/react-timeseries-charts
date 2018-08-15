@@ -30,7 +30,7 @@
         "title": "Stacked AreaCharts",
         "description": "This example demonstrates stacking of AreaCharts along with use of the Styler.",
         "tags": [
-            "Areachart",
+            "AreaChart",
             "Legend",
             "styler"
         ]
@@ -103,7 +103,6 @@
         "title": "D3's trend example",
         "description": "Example of displaying percentile ranges in different ways.",
         "tags": [
-            "AreaChart",
             "BoxChart",
             "BandChart"
         ]

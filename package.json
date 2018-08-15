@@ -22,8 +22,7 @@
         "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
         "start-website": "react-scripts start",
         "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs",
-        "precommit": "lint-staged",
-        "prettier": "prettier --print-width 100 --tab-width 4 --write \"./src/**/*.js\""
+        "precommit": "lint-staged"
     },
     "lint-staged": {
         "*.js": [
@@ -31,10 +30,6 @@
             "git add"
         ]
     },
-    "pre-commit": [
-        "lint",
-        "build"
-    ],
     "license": "BSD-3-Clause-LBNL",
     "dependencies": {
         "array.prototype.fill": "^1.0.1",
