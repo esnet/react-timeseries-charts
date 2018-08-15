@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.15.3
+
+> Aug 15, 2018
+
+* Add feature to add style prop to `LabelAxis` component
+* Refactor `AreaChart` code
+
+Bug fixes:
+
+* Corrects the wrong order for testing style type (Fixes #277)
+* Correctly stacking in area charts when some points are bad (Fixes #284)  
+* Adds prop to hide TimeAxis (Fixes #295)
+* Adds function argument while styling barcharts (Fixes #291)
+* Adds a prop `marginBottom` to the `Legend` component (Fixes #243)
+* Doesn't draw a `BarChart` when the height of the rectangle is 0 (Fixes #294)
+* Removes warnings on climate example (Fixes #257)
+* Exposes x, y and time value to onBackgroundClick method in `ChartContainer` (Fixes #296)
+* TimeMarker can be custom styled (Fixes #304)
+
 ## v0.15.0
 
 > May 22, 2018
