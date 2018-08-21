@@ -107,7 +107,7 @@ export default class AreaChart extends React.Component {
         const selectionChanged = this.props.selection !== selection;
 
         let seriesChanged = false;
-        if (oldSeries.length !== newSeries.length) {
+        if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);

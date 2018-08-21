@@ -268,7 +268,7 @@ export default class BoxChart extends React.Component {
         }
 
         let seriesChanged = false;
-        if (oldSeries.length !== newSeries.length) {
+        if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);

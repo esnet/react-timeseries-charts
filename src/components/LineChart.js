@@ -75,7 +75,7 @@ export default class LineChart extends React.Component {
         const columnsChanged = this.props.columns !== columns;
 
         let seriesChanged = false;
-        if (oldSeries.length !== newSeries.length) {
+        if (oldSeries.size() !== newSeries.size()) {
             seriesChanged = true;
         } else {
             seriesChanged = !TimeSeries.is(oldSeries, newSeries);
