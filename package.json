@@ -48,7 +48,6 @@
         "d3-time-format": "^2.0.5",
         "d3-transition": "^1.1.0",
         "dom-resize": "^1.0.3",
-        "flexbox-react": "^4.3.3",
         "invariant": "^2.1.1",
         "merge": "^1.2.0",
         "moment": "^2.18.1",
