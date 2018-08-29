@@ -387,23 +387,28 @@ export default class Legend extends React.Component {
 
         if (this.props.stack) {
             return (
-                <Flexbox
-                    justifyContent={align}
-                    flexDirection={"column"}
-                    marginBottom={this.props.marginBottom}
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: align,
+                        flexDirection: "column",
+                        marginBottom: this.props.marginBottom
+                    }}
                 >
                     {items}
-                </Flexbox>
+                </div>
             );
         } else {
             return (
-                <Flexbox
-                    justifyContent={align}
-                    flexWrap={"wrap"}
-                    marginBottom={this.props.marginBottom}
+                <div
+                    style={{
+                        justifyContent: align,
+                        flexWrap: "wrap",
+                        marginBottom: this.props.marginBottom
+                    }}
                 >
                     {items}
-                </Flexbox>
+                </div>
             );
         }
     }
@@ -489,8 +494,7 @@ Legend.propTypes = {
     stack: PropTypes.bool,
 
     /**
-     * The margin at the bottom passed to the FlexBox component
-     * Default value is 20px
+     * The margin at the bottom. Default value is 20px
      */
     marginBottom: PropTypes.string
 };
