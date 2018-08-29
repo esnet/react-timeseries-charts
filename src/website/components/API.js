@@ -14,7 +14,6 @@ import React from "react";
 import createReactClass from "create-react-class";
 import { Link } from "react-router";
 import _ from "underscore";
-import Flexbox from "flexbox-react";
 
 import Highlighter from "./highlighter";
 import APIDoc from "./APIDoc";
@@ -41,12 +40,18 @@ class Example extends React.Component {
         const img = Examples[imgName];
         const link = <Link to={`example/${name}`}>{example.value.title}</Link>;
         return (
-            <Flexbox flexDirection="column" minWidth="220px">
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    minWidth: "220px"
+                }}
+            >
                 <div style={style}>
                     <img src={img} alt={`${name}`} />
                 </div>
                 <div style={{ paddingLeft: 5, fontSize: "smaller" }}>{link}</div>
-            </Flexbox>
+            </div>
         );
     }
 }
@@ -68,9 +73,15 @@ class TaggedExamples extends React.Component {
             return (
                 <div>
                     <h3>Examples</h3>
-                    <Flexbox flexDirection="row" flexWrap="wrap">
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flexWrap: "wrap"
+                        }}
+                    >
                         {examples}
-                    </Flexbox>
+                    </div>
                 </div>
             );
         } else {
