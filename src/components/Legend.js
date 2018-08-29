@@ -402,6 +402,7 @@ export default class Legend extends React.Component {
             return (
                 <div
                     style={{
+                        display: "flex",
                         justifyContent: align,
                         flexWrap: "wrap",
                         marginBottom: this.props.marginBottom
