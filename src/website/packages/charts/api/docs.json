@@ -3520,7 +3520,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "The margin at the bottom passed to the FlexBox component\nDefault value is 20px",
+        "description": "The margin at the bottom. Default value is 20px",
         "defaultValue": {
           "value": "\"20px\"",
           "computed": false

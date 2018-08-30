@@ -12,7 +12,6 @@ import _ from "underscore";
 import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
-import Flexbox from "flexbox-react";
 
 import { Styler } from "../js/styler";
 
@@ -225,25 +224,35 @@ class LegendItem extends React.Component {
         //       The alternative it to put it on a <a> or something?
 
         return (
-            <Flexbox flexDirection="column" key={itemKey}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column"
+                }}
+                key={itemKey}
+                onClick={e => this.handleClick(e, itemKey)}
+                onMouseMove={e => this.handleHover(e, itemKey)}
+                onMouseLeave={() => this.handleHoverLeave()}
+            >
                 <div
-                    onClick={e => this.handleClick(e, itemKey)}
-                    onMouseMove={e => this.handleHover(e, itemKey)}
-                    onMouseLeave={() => this.handleHoverLeave()}
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center"
+                    }}
                 >
-                    <Flexbox flexDirection="row">
-                        <Flexbox width="20px">{symbol}</Flexbox>
-                        <Flexbox flexDirection="column">
-                            <Flexbox>
-                                <div style={labelStyle}>{this.props.label}</div>
-                            </Flexbox>
-                            <Flexbox>
-                                <div style={valueStyle}>{this.props.value}</div>
-                            </Flexbox>
-                        </Flexbox>
-                    </Flexbox>
+                    <div style={{ width: "20px" }}>{symbol}</div>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column"
+                        }}
+                    >
+                        <div style={labelStyle}>{this.props.label}</div>
+                        <div style={valueStyle}>{this.props.value}</div>
+                    </div>
                 </div>
-            </Flexbox>
+            </div>
         );
     }
 }
@@ -378,23 +387,29 @@ export default class Legend extends React.Component {
 
         if (this.props.stack) {
             return (
-                <Flexbox
-                    justifyContent={align}
-                    flexDirection={"column"}
-                    marginBottom={this.props.marginBottom}
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: align,
+                        flexDirection: "column",
+                        marginBottom: this.props.marginBottom
+                    }}
                 >
                     {items}
-                </Flexbox>
+                </div>
             );
         } else {
             return (
-                <Flexbox
-                    justifyContent={align}
-                    flexWrap={"wrap"}
-                    marginBottom={this.props.marginBottom}
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: align,
+                        flexWrap: "wrap",
+                        marginBottom: this.props.marginBottom
+                    }}
                 >
                     {items}
-                </Flexbox>
+                </div>
             );
         }
     }
@@ -480,8 +495,7 @@ Legend.propTypes = {
     stack: PropTypes.bool,
 
     /**
-     * The margin at the bottom passed to the FlexBox component
-     * Default value is 20px
+     * The margin at the bottom. Default value is 20px
      */
     marginBottom: PropTypes.string
 };
