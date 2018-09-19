@@ -409,12 +409,12 @@ YAxis.propTypes = {
     type: PropTypes.oneOf(["linear", "power", "log"]),
 
     /**
-     * Minium value, which combined with "max", define the scale of the axis.
+     * Minimum value, which combined with "max", define the scale of the axis.
      */
     min: PropTypes.number.isRequired, // eslint-disable-line
 
     /**
-     * Maxium value, which combined with "min,"" define the scale of the axis.
+     * Maximum value, which combined with "min", define the scale of the axis.
      */
     max: PropTypes.number.isRequired, // eslint-disable-line
 
