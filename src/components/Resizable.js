@@ -20,6 +20,7 @@ export default class Resizable extends React.Component {
     constructor(props) {
         super(props);
         this.state = { width: 0 };
+        this.handleResize = this.handleResize.bind(this);
     }
 
     componentDidMount() {
