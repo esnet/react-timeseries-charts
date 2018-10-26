@@ -1,21 +1,9 @@
 "use strict";
-function setOfCachedUrls(e) {
-    return e
-        .keys()
-        .then(function(e) {
-            return e.map(function(e) {
-                return e.url;
-            });
-        })
-        .then(function(e) {
-            return new Set(e);
-        });
-}
 var precacheConfig = [
-        ["/react-timeseries-charts/index.html", "00472f546f4e6c9021dfb88a9835b24c"],
+        ["/react-timeseries-charts/index.html", "63c4b2cda7064112135aad3da7e0574a"],
         [
-            "/react-timeseries-charts/static/css/main.5b40b607.css",
-            "c24998f8f3b29502d68af2f5aef08ce4"
+            "/react-timeseries-charts/static/css/main.06e0404f.css",
+            "8b26bb4a12d115baada9d26d9f909be5"
         ],
         [
             "/react-timeseries-charts/static/media/1_introduction.4b96f9a1.md",
@@ -114,12 +102,24 @@ var precacheConfig = [
             "033c51eed22b0283906e65f3e28772cf"
         ],
         [
+            "/react-timeseries-charts/static/media/stockchart_docs.d41d8cd9.md",
+            "d41d8cd98f00b204e9800998ecf8427e"
+        ],
+        [
+            "/react-timeseries-charts/static/media/stockchart_thumbnail.2974a0cb.png",
+            "2974a0cb3481a4605ca66c4407a463a5"
+        ],
+        [
             "/react-timeseries-charts/static/media/traffic_docs.eef1502a.md",
             "eef1502a5349aee1dfc4297db68bcd4d"
         ],
         [
             "/react-timeseries-charts/static/media/traffic_thumbnail.3a9ee161.png",
             "3a9ee161a67b5bdd61d422b05313763b"
+        ],
+        [
+            "/react-timeseries-charts/static/media/trend_docs.7ece7c4f.md",
+            "7ece7c4ffdb70b8048f1ed365f5dc5d0"
         ],
         [
             "/react-timeseries-charts/static/media/volume_docs.0abb4165.md",
@@ -138,8 +138,8 @@ var precacheConfig = [
             "f8d6f6222a50f91b78c9e72db1403112"
         ],
         [
-            "/react-timeseries-charts/static/media/wind_docs.68aa9567.md",
-            "68aa956768312730b31b921d65e42f7b"
+            "/react-timeseries-charts/static/media/wind_docs.08734cfe.md",
+            "08734cfe1e7524468c2df1f720c3cea4"
         ],
         [
             "/react-timeseries-charts/static/media/wind_thumbnail.1936c918.png",
@@ -154,16 +154,16 @@ var precacheConfig = [
         var a = new URL(e);
         return "/" === a.pathname.slice(-1) && (a.pathname += t), a.toString();
     },
-    cleanResponse = function(e) {
-        return e.redirected
-            ? ("body" in e ? Promise.resolve(e.body) : e.blob()).then(function(t) {
-                  return new Response(t, {
-                      headers: e.headers,
-                      status: e.status,
-                      statusText: e.statusText
+    cleanResponse = function(t) {
+        return t.redirected
+            ? ("body" in t ? Promise.resolve(t.body) : t.blob()).then(function(e) {
+                  return new Response(e, {
+                      headers: t.headers,
+                      status: t.status,
+                      statusText: t.statusText
                   });
               })
-            : Promise.resolve(e);
+            : Promise.resolve(t);
     },
     createCacheKey = function(e, t, a, c) {
         var s = new URL(e);
@@ -181,26 +181,26 @@ var precacheConfig = [
             return a.match(e);
         });
     },
-    stripIgnoredUrlParameters = function(e, t) {
-        var a = new URL(e);
+    stripIgnoredUrlParameters = function(e, a) {
+        var t = new URL(e);
         return (
-            (a.hash = ""),
-            (a.search = a.search
+            (t.hash = ""),
+            (t.search = t.search
                 .slice(1)
                 .split("&")
                 .map(function(e) {
                     return e.split("=");
                 })
-                .filter(function(e) {
-                    return t.every(function(t) {
-                        return !t.test(e[0]);
+                .filter(function(t) {
+                    return a.every(function(e) {
+                        return !e.test(t[0]);
                     });
                 })
                 .map(function(e) {
                     return e.join("=");
                 })
                 .join("&")),
-            a.toString()
+            t.toString()
         );
     },
     hashParamName = "_sw-precache",
@@ -213,26 +213,38 @@ var precacheConfig = [
             return [c.toString(), s];
         })
     );
+function setOfCachedUrls(e) {
+    return e
+        .keys()
+        .then(function(e) {
+            return e.map(function(e) {
+                return e.url;
+            });
+        })
+        .then(function(e) {
+            return new Set(e);
+        });
+}
 self.addEventListener("install", function(e) {
     e.waitUntil(
         caches
             .open(cacheName)
-            .then(function(e) {
-                return setOfCachedUrls(e).then(function(t) {
+            .then(function(c) {
+                return setOfCachedUrls(c).then(function(a) {
                     return Promise.all(
-                        Array.from(urlsToCacheKeys.values()).map(function(a) {
-                            if (!t.has(a)) {
-                                var c = new Request(a, { credentials: "same-origin" });
-                                return fetch(c).then(function(t) {
-                                    if (!t.ok)
+                        Array.from(urlsToCacheKeys.values()).map(function(t) {
+                            if (!a.has(t)) {
+                                var e = new Request(t, { credentials: "same-origin" });
+                                return fetch(e).then(function(e) {
+                                    if (!e.ok)
                                         throw new Error(
                                             "Request for " +
-                                                a +
+                                                t +
                                                 " returned a response with status " +
-                                                t.status
+                                                e.status
                                         );
-                                    return cleanResponse(t).then(function(t) {
-                                        return e.put(a, t);
+                                    return cleanResponse(e).then(function(e) {
+                                        return c.put(t, e);
                                     });
                                 });
                             }
@@ -246,15 +258,15 @@ self.addEventListener("install", function(e) {
     );
 }),
     self.addEventListener("activate", function(e) {
-        var t = new Set(urlsToCacheKeys.values());
+        var a = new Set(urlsToCacheKeys.values());
         e.waitUntil(
             caches
                 .open(cacheName)
-                .then(function(e) {
-                    return e.keys().then(function(a) {
+                .then(function(t) {
+                    return t.keys().then(function(e) {
                         return Promise.all(
-                            a.map(function(a) {
-                                if (!t.has(a.url)) return e.delete(a);
+                            e.map(function(e) {
+                                if (!a.has(e.url)) return t.delete(e);
                             })
                         );
                     });
@@ -264,19 +276,20 @@ self.addEventListener("install", function(e) {
                 })
         );
     }),
-    self.addEventListener("fetch", function(e) {
-        if ("GET" === e.request.method) {
-            var t,
-                a = stripIgnoredUrlParameters(e.request.url, ignoreUrlParametersMatching);
-            (t = urlsToCacheKeys.has(a)) ||
-                ((a = addDirectoryIndex(a, "index.html")), (t = urlsToCacheKeys.has(a)));
-            !t &&
-                "navigate" === e.request.mode &&
-                isPathWhitelisted(["^(?!\\/__).*"], e.request.url) &&
-                ((a = new URL("/react-timeseries-charts/index.html", self.location).toString()),
-                (t = urlsToCacheKeys.has(a))),
-                t &&
-                    e.respondWith(
+    self.addEventListener("fetch", function(t) {
+        if ("GET" === t.request.method) {
+            var e,
+                a = stripIgnoredUrlParameters(t.request.url, ignoreUrlParametersMatching),
+                c = "index.html";
+            (e = urlsToCacheKeys.has(a)) ||
+                ((a = addDirectoryIndex(a, c)), (e = urlsToCacheKeys.has(a)));
+            var s = "/react-timeseries-charts/index.html";
+            !e &&
+                "navigate" === t.request.mode &&
+                isPathWhitelisted(["^(?!\\/__).*"], t.request.url) &&
+                ((a = new URL(s, self.location).toString()), (e = urlsToCacheKeys.has(a))),
+                e &&
+                    t.respondWith(
                         caches
                             .open(cacheName)
                             .then(function(e) {
@@ -287,14 +300,14 @@ self.addEventListener("install", function(e) {
                                     );
                                 });
                             })
-                            .catch(function(t) {
+                            .catch(function(e) {
                                 return (
                                     console.warn(
                                         'Couldn\'t serve response for "%s" from cache: %O',
-                                        e.request.url,
-                                        t
+                                        t.request.url,
+                                        e
                                     ),
-                                    fetch(e.request)
+                                    fetch(t.request)
                                 );
                             })
                     );
