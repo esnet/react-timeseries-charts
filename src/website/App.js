@@ -138,6 +138,9 @@ class App extends Component {
                                 <Link to="/api/charts/AreaChart">AreaChart</Link>
                             </li>
                             <li>
+                                <Link to="/api/charts/BandChart">BandChart</Link>
+                            </li>
+                            <li>
                                 <Link to="/api/charts/BarChart">BarChart</Link>
                             </li>
                             <li>
@@ -172,6 +175,9 @@ class App extends Component {
                             </li>
                             <li>
                                 <Link to="/api/charts/LineChart">LineChart</Link>
+                            </li>
+                            <li>
+                                <Link to="/api/charts/MultiBrush">MultiBrush</Link>
                             </li>
                             <li>
                                 <Link to="/api/charts/Resizable">Resizable</Link>

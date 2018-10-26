@@ -5230,7 +5230,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "Minium value, which combined with \"max\", define the scale of the axis.",
+        "description": "Minimum value, which combined with \"max\", define the scale of the axis.",
         "defaultValue": {
           "value": "0",
           "computed": false
@@ -5241,7 +5241,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "Maxium value, which combined with \"min,\"\" define the scale of the axis.",
+        "description": "Maximum value, which combined with \"min\", define the scale of the axis.",
         "defaultValue": {
           "value": "1",
           "computed": false
