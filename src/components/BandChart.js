@@ -434,7 +434,6 @@ export default class BandChart extends React.Component {
         // How many areas are we drawing
         let hasInner = true;
         let hasOuter = true;
-        let hasCenter = true;
         if (_.has(columns, "innerMin") || _.has(columns, "innerMax")) {
             hasInner = false;
         }

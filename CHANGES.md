@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.15.4
+
+> Oct 26, 2018
+
+* Removes flexbox-react dependency [#310](https://github.com/esnet/react-timeseries-charts/issues/310)
+* Fixes Resizable component binding to `this` [#329](https://github.com/esnet/react-timeseries-charts/issues/329)
+
 ## v0.15.3
 
 > Aug 15, 2018

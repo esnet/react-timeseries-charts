@@ -133,7 +133,7 @@ class ddos extends React.Component {
             );
         }
 
-        const axisStyle = {
+        /* const axisStyle = {
             values: {
                 labelColor: "grey",
                 labelWeight: 100,
@@ -143,7 +143,7 @@ class ddos extends React.Component {
                 axisColor: "grey",
                 axisWidth: 1
             }
-        };
+        }; */
 
         const darkAxis = {
             label: {

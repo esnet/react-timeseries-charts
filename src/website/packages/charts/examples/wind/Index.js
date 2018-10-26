@@ -98,7 +98,7 @@ class wind extends React.Component {
             infoValues = [{ label: "Speed", value: speedText }];
         }
 
-        const heat = [
+        /* const heat = [
             "#023858",
             "#045a8d",
             "#0570b0",
@@ -108,7 +108,7 @@ class wind extends React.Component {
             "#d0d1e6",
             "#ece7f2",
             "#fff7fb"
-        ];
+        ]; */
 
         const perEventStyle = (column, event) => {
             const color = "steelblue"; // heat[Math.floor((1 - event.get("station1") / 40) * 9)];
