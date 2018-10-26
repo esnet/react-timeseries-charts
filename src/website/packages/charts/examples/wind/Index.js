@@ -26,6 +26,7 @@ import YAxis from "../../../../../components/YAxis";
 import ScatterChart from "../../../../../components/ScatterChart";
 import BandChart from "../../../../../components/BandChart";
 import Resizable from "../../../../../components/Resizable";
+import styler from "../../../../../js/styler";
 
 // Weather data
 import weatherJSON from "./weather.json";
@@ -97,6 +98,8 @@ class wind extends React.Component {
             `;
             infoValues = [{ label: "Speed", value: speedText }];
         }
+
+        const bandStyle = styler([{ key: "station1", color: "blue", width: 1, opacity: 0.5 }]);
 
         /* const heat = [
             "#023858",
@@ -182,6 +185,7 @@ class wind extends React.Component {
                                         <BandChart
                                             axis="wind-gust"
                                             series={series}
+                                            style={bandStyle}
                                             column="station1"
                                             aggregation={{
                                                 size: "30m",
