@@ -80,13 +80,13 @@ Here is the render code:
                     axis="wind-gust"
                     series={series}
                     column="station1"
-                    aggregation={{
+                    aggregation={ {
                         size: "30m",
                         reducers: {
                             outer: [percentile(5), percentile(95)],
                             inner: [percentile(25), percentile(75)]
                         }
-                    }}
+                    } }
                     interpolation="curveBasis"
                 />
                 <ScatterChart

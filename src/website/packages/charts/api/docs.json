@@ -3085,7 +3085,7 @@
     }
   },
   "src/components/LabelAxis.js": {
-    "description": "Renders a 'axis' that display a label for a data channel and a\nmax and average value:\n```\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n```\n\nThis can be used for data channel style displays where the user will see many\nrows of data stacked on top of each other and will need to interact with the\ndata to see actual values. You can combine this with the `ValueAxis` to help\ndo that. See the Cycling example for exactly how to arrange that.",
+    "description": "Renders an 'axis' that displays a label for a data channel along with a\nmax and average value:\n```\n     +----------------+-----+------- ...\n     | Traffic        | 120 |\n     | Max 100 Gbps   |     | Chart  ...\n     | Avg 26 Gbps    | 0   |\n     +----------------+-----+------- ...\n```\n\nThis can be used for data channel style displays where the user will see many\nrows of data stacked on top of each other and will need to interact with the\ndata to see actual values. You can combine this with the `ValueAxis` to help\ndo that. See the Cycling example for exactly how to arrange that.",
     "displayName": "LabelAxis",
     "methods": [
       {
