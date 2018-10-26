@@ -1,6 +1,6 @@
 "use strict";
 var precacheConfig = [
-        ["/react-timeseries-charts/index.html", "63c4b2cda7064112135aad3da7e0574a"],
+        ["/react-timeseries-charts/index.html", "5b85033451d2504ed493734e7e032d9c"],
         [
             "/react-timeseries-charts/static/css/main.06e0404f.css",
             "8b26bb4a12d115baada9d26d9f909be5"
@@ -138,8 +138,8 @@ var precacheConfig = [
             "f8d6f6222a50f91b78c9e72db1403112"
         ],
         [
-            "/react-timeseries-charts/static/media/wind_docs.08734cfe.md",
-            "08734cfe1e7524468c2df1f720c3cea4"
+            "/react-timeseries-charts/static/media/wind_docs.71db1cf6.md",
+            "71db1cf639b7615dcf5f4ff0a1b7baac"
         ],
         [
             "/react-timeseries-charts/static/media/wind_thumbnail.1936c918.png",

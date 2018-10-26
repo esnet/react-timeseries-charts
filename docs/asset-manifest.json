@@ -1,8 +1,8 @@
 {
   "main.css": "static/css/main.06e0404f.css",
   "main.css.map": "static/css/main.06e0404f.css.map",
-  "main.js": "static/js/main.f77cd781.js",
-  "main.js.map": "static/js/main.f77cd781.js.map",
+  "main.js": "static/js/main.efed063c.js",
+  "main.js.map": "static/js/main.efed063c.js.map",
   "static/media/1_introduction.md": "static/media/1_introduction.4b96f9a1.md",
   "static/media/2_getting_started.md": "static/media/2_getting_started.906a806a.md",
   "static/media/3_styling.md": "static/media/3_styling.22c4a365.md",
@@ -35,6 +35,6 @@
   "static/media/volume_thumbnail.png": "static/media/volume_thumbnail.2104f5f8.png",
   "static/media/weather_docs.md": "static/media/weather_docs.1ee86e74.md",
   "static/media/weather_thumbnail.png": "static/media/weather_thumbnail.f8d6f622.png",
-  "static/media/wind_docs.md": "static/media/wind_docs.08734cfe.md",
+  "static/media/wind_docs.md": "static/media/wind_docs.71db1cf6.md",
   "static/media/wind_thumbnail.png": "static/media/wind_thumbnail.1936c918.png"
 }
