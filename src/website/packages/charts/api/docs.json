@@ -1,6 +1,6 @@
 {
   "src/components/AreaChart.js": {
-    "description": "The `<AreaChart>` component is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe `<AreaChart>` should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an `<AreaChart>` with an up and down\nnetwork traffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}\n                      />\n                 </Charts>\n                 <YAxis\n                     id=\"traffic\"\n                     label=\"Traffic (bps)\"\n                     min={-max} max={max}\n                     absolute={true}\n                     width=\"60\"\n                     type=\"linear\"\n                 />\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.",
+    "description": "The `<AreaChart>` component is able to display single or multiple stacked\nareas above or below the axis. It used throughout the\n[My ESnet Portal](http://my.es.net).\n\nThe `<AreaChart>` should be used within a `<ChartContainer>` structure,\nas this will construct the horizontal and vertical axis, and manage\nother elements. Here is an example of an `<AreaChart>` with an up and down\nnetwork traffic visualization:\n\n ```\n  render() {\n     return (\n         ...\n         <ChartContainer timeRange={trafficSeries.timerange()} width=\"1080\">\n             <ChartRow height=\"150\">\n                 <Charts>\n                     <AreaChart\n                         axis=\"traffic\"\n                         series={trafficSeries}\n                         columns={{up: [\"in\"], down: [\"out\"]}}\n                      />\n                 </Charts>\n                 <YAxis\n                     id=\"traffic\"\n                     label=\"Traffic (bps)\"\n                     min={-max} max={max}\n                     absolute={true}\n                     width=\"60\"\n                     type=\"linear\"\n                 />\n             </ChartRow>\n         </ChartContainer>\n         ...\n     );\n }\n ```\nThe `<AreaChart>` takes a single `TimeSeries` object into its `series` prop. This\nseries can contain multiple columns and those columns can be referenced using the `columns`\nprop. The `columns` props allows you to map columns in the series to the chart,\nletting you specify the stacking and orientation of the data. In the above example\nwe map the \"in\" column in `trafficSeries` to the up direction and the \"out\" column to\nthe down direction. Each direction is specified as an array, so adding multiple\ncolumns into a direction will stack the areas in that direction.\n\nNote: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,\nrather than hard coding the width as in the above example.\n\nNote 2 : Columns can't have periods because periods represent a path to deep data \nin the underlying events (i.e. reference into nested data structures)",
     "displayName": "AreaChart",
     "methods": [
       {
@@ -185,7 +185,7 @@
           }
         },
         "required": false,
-        "description": "The series series columns mapped to stacking up and down.\nHas the format:\n```\n \"columns\": {\n     up: [\"in\", ...],\n     down: [\"out\", ...]\n }\n ```",
+        "description": "The series series columns mapped to stacking up and down.\nHas the format:\n```\n \"columns\": {\n     up: [\"in\", ...],\n     down: [\"out\", ...]\n }\n ```\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "{\n    up: [\"value\"],\n    down: []\n}",
           "computed": false
@@ -451,7 +451,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "The column within the TimeSeries to plot. Unlike other charts, the BandChart\nworks on just a single column.",
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BandChart\nworks on just a single column.\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -827,7 +827,7 @@
           }
         },
         "required": false,
-        "description": "A list of columns within the series that will be stacked on top of each other",
+        "description": "A list of columns within the series that will be stacked on top of each other\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
@@ -1267,7 +1267,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.",
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -2814,7 +2814,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Which column in the Event to use",
+        "description": "Which column in the Event to use\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -3677,7 +3677,7 @@
           }
         },
         "required": false,
-        "description": "Which columns from the series to draw.",
+        "description": "Which columns from the series to draw.\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
@@ -4219,7 +4219,7 @@
           }
         },
         "required": false,
-        "description": "Which columns of the series to render",
+        "description": "Which columns of the series to render\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
