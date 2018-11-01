@@ -9,11 +9,11 @@
  */
 
 export AreaChart from "./components/AreaChart";
+export BandChart from "./components/BandChart";
 export BarChart from "./components/BarChart";
-export BoxChart from "./components/BoxChart";
 export Baseline from "./components/Baseline";
+export BoxChart from "./components/BoxChart";
 export Brush from "./components/Brush";
-export MultiBrush from "./components/MultiBrush";
 export ChartContainer from "./components/ChartContainer";
 export ChartRow from "./components/ChartRow";
 export Charts from "./components/Charts";
@@ -22,6 +22,7 @@ export EventMarker from "./components/EventMarker";
 export LabelAxis from "./components/LabelAxis";
 export Legend from "./components/Legend";
 export LineChart from "./components/LineChart";
+export MultiBrush from "./components/MultiBrush";
 export Resizable from "./components/Resizable";
 export ScatterChart from "./components/ScatterChart";
 export styler from "./js/styler";
