@@ -109,7 +109,7 @@ Developing
 
 The repo contains the examples website. This is very helpful in developing new functionality. Within a cloned repo, you first need to run:
 
-    npm install
+    yarn install
 
 This will install the development dependencies into your node_modules directory.
 
@@ -142,7 +142,7 @@ This code is distributed under a BSD style license, see the LICENSE file for com
 Copyright
 ---------
 
-ESnet's React Timeseries Charts, Copyright (c) 2015-2016, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ESnet's React Timeseries Charts, Copyright (c) 2015 - present, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights reserved.
 
 If you have questions about your rights to use or distribute this software, please contact Berkeley Lab's Technology Transfer Department at TTD@lbl.gov.
 
