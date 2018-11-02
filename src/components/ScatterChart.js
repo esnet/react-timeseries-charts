@@ -210,7 +210,7 @@ export default class ScatterChart extends React.Component {
                     event.begin().getTime() + (event.end().getTime() - event.begin().getTime()) / 2
                 );
                 const value = event.get(column);
-                const badPoint = _.isNull(value) || _.isNaN(value);
+                const badPoint = _.isNull(value) || _.isNaN(value) || _.isUndefined(value);
                 const style = this.style(column, event);
 
                 if (!badPoint) {
@@ -304,6 +304,10 @@ ScatterChart.propTypes = {
 
     /**
      * Which columns of the series to render
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
+     * (i.e. reference into nested data structures)
      */
     columns: PropTypes.arrayOf(PropTypes.string),
 

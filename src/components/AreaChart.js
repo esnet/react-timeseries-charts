@@ -83,6 +83,10 @@ const defaultStyle = {
  *
  * Note: It is recommended that `<ChartContainer>`s be placed within a <Resizable> tag,
  * rather than hard coding the width as in the above example.
+ * 
+ * Note 2 : Columns can't have periods because periods represent a path to deep data 
+ * in the underlying events (i.e. reference into nested data structures)
+ * 
  */
 export default class AreaChart extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -397,6 +401,10 @@ AreaChart.propTypes = {
      *      down: ["out", ...]
      *  }
      *  ```
+     * 
+     * NOTE : Columns can't have periods because periods 
+     * represent a path to deep data in the underlying events 
+     * (i.e. reference into nested data structures)
      */
     columns: PropTypes.shape({
         up: PropTypes.arrayOf(PropTypes.string),

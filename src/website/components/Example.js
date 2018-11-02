@@ -82,6 +82,7 @@ export default createReactClass({
                                         style={{ fontSize: "small" }}
                                         href={sourceCode}
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                     >
                                         Source Code »
                                     </a>

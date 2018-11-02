@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.15.5
+
+> Nov 1, 2018
+
+Bug Fixes:
+
+* Update to create-react-app V2.0
+* Add note to documentation that columns can't have periods
+* Export BandChart component
+* Add an example to style BandChart component
+* Add a check for undefined value in the ScatterChart component
+
 ## v0.15.4
 
 > Oct 26, 2018

@@ -355,6 +355,10 @@ BarChart.propTypes = {
 
     /**
      * A list of columns within the series that will be stacked on top of each other
+     * 
+     * NOTE : Columns can't have periods because periods 
+     * represent a path to deep data in the underlying events 
+     * (i.e. reference into nested data structures)
      */
     columns: PropTypes.arrayOf(PropTypes.string),
 
