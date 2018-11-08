@@ -480,7 +480,9 @@ ChartRow.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
-     * The axis margin.
+     * The vertical margin between the top and bottom of the chart
+     * height and the top and bottom of the range of the chart.
+     * The default is 5px.
      */
     axisMargin: PropTypes.number,
 

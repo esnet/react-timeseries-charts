@@ -459,7 +459,8 @@ EventMarker.propTypes = {
     offsetY: PropTypes.number,
 
     /**
-     * Offset the info box position in the y direction.  Default 20.
+     * The vertical offset in pixels of the EventMarker info box from the
+     * top of the chart.  The default is 20.
      */
     infoOffsetY: PropTypes.number,
 
