@@ -179,6 +179,7 @@ export default class EventMarker extends React.Component {
         // order to display them side by side.
         const posx = this.props.timeScale(t) + this.props.offsetX;
         const posy = this.props.yScale(value) - this.props.offsetY;
+        const infoOffsetY = this.props.infoOffsetY;
 
         const infoBoxProps = {
             align: "left",
@@ -272,7 +273,7 @@ export default class EventMarker extends React.Component {
                 </g>
             );
         } else {
-            if (posx + 10 + w < this.props.width * 3 / 4) {
+            if (posx + 10 + w < (this.props.width * 3) / 4) {
                 if (info) {
                     verticalStem = (
                         <line
@@ -281,7 +282,7 @@ export default class EventMarker extends React.Component {
                             x1={-10}
                             y1={lineBottom}
                             x2={-10}
-                            y2={20}
+                            y2={infoOffsetY}
                         />
                     );
                     horizontalStem = (
@@ -289,9 +290,9 @@ export default class EventMarker extends React.Component {
                             pointerEvents="none"
                             style={this.props.stemStyle}
                             x1={-10}
-                            y1={20}
+                            y1={infoOffsetY}
                             x2={-2}
-                            y2={20}
+                            y2={infoOffsetY}
                         />
                     );
                 }
@@ -314,7 +315,7 @@ export default class EventMarker extends React.Component {
                             x1={w + 10}
                             y1={lineBottom}
                             x2={w + 10}
-                            y2={20}
+                            y2={infoOffsetY}
                         />
                     );
                     horizontalStem = (
@@ -322,9 +323,9 @@ export default class EventMarker extends React.Component {
                             pointerEvents="none"
                             style={this.props.stemStyle}
                             x1={w + 10}
-                            y1={20}
+                            y1={infoOffsetY}
                             x2={w + 2}
-                            y2={20}
+                            y2={infoOffsetY}
                         />
                     );
                 }
@@ -346,7 +347,7 @@ export default class EventMarker extends React.Component {
                     {horizontalStem}
                     {dot}
                     {this.renderTime(event)}
-                    <g transform={`translate(0,${20})`}>{infoBox}</g>
+                    <g transform={`translate(0,${infoOffsetY - 10})`}>{infoBox}</g>
                 </g>
             );
         }
@@ -375,9 +376,9 @@ EventMarker.propTypes = {
 
     /**
      * Which column in the Event to use
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     column: PropTypes.string,
@@ -458,6 +459,11 @@ EventMarker.propTypes = {
     offsetY: PropTypes.number,
 
     /**
+     * Offset the info box position in the y direction.  Default 20.
+     */
+    infoOffsetY: PropTypes.number,
+
+    /**
      * [Internal] The timeScale supplied by the surrounding ChartContainer
      */
     timeScale: PropTypes.func,
@@ -498,5 +504,6 @@ EventMarker.defaultProps = {
         fill: "#999"
     },
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0,
+    infoOffsetY: 20
 };
