@@ -916,6 +916,17 @@
           "computed": false
         }
       },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
+          "computed": false
+        }
+      },
       "infoTimeFormat": {
         "type": {
           "name": "union",
@@ -1359,6 +1370,17 @@
         "description": "The height of the hover info box",
         "defaultValue": {
           "value": "30",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -2192,6 +2214,17 @@
           "computed": false
         }
       },
+      "axisMargin": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical margin between the top and bottom of the row\nheight and the top and bottom of the range of the chart.",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
       "visible": {
         "type": {
           "name": "bool"
@@ -2250,7 +2283,7 @@
           ]
         },
         "required": false,
-        "description": "Info box value or values to place next to the tracker line\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
+        "description": "Info box value or values to place next to the tracker line.\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
       },
       "children": {
         "type": {
@@ -2814,7 +2847,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Which column in the Event to use\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "Which column in the Event to use\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -2973,6 +3006,17 @@
         "description": "Offset the marker position in the y direction",
         "defaultValue": {
           "value": "0",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.  The default is 20.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -4219,7 +4263,7 @@
           }
         },
         "required": false,
-        "description": "Which columns of the series to render\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "Which columns of the series to render\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
@@ -4310,6 +4354,17 @@
         "description": "The height of the hover info box",
         "defaultValue": {
           "value": "30",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },

@@ -346,8 +346,8 @@ export default class EventMarker extends React.Component {
                     {verticalStem}
                     {horizontalStem}
                     {dot}
-                    {this.renderTime(event)}
-                    <g transform={`translate(0,${infoOffsetY - 10})`}>{infoBox}</g>
+                    <g transform={`translate(0,${infoOffsetY - 20})`}>{this.renderTime(event)}</g>
+                    <g transform={`translate(0,${infoOffsetY})`}>{infoBox}</g>
                 </g>
             );
         }

@@ -480,9 +480,8 @@ ChartRow.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
-     * The vertical margin between the top and bottom of the chart
+     * The vertical margin between the top and bottom of the row
      * height and the top and bottom of the range of the chart.
-     * The default is 5px.
      */
     axisMargin: PropTypes.number,
 
@@ -504,7 +503,7 @@ ChartRow.propTypes = {
      */
     trackerInfoHeight: PropTypes.number,
     /**
-     * Info box value or values to place next to the tracker line
+     * Info box value or values to place next to the tracker line.
      * This is either an array of objects, with each object
      * specifying the label (a string) and value (also a string)
      * to be shown in the info box, or a simple string label.
