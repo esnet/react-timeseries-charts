@@ -169,8 +169,10 @@ export default class YAxis extends React.Component {
         }
     }
 
-    shouldComponentUpdate() {
-        return false;
+    shouldComponentUpdate(nextProps) {
+        const minUpdated = this.props.min !== nextProps.min;
+        const maxUpdated = this.props.max !== nextProps.max;
+        return minUpdated || maxUpdated;
     }
 
     yformat(fmt) {
