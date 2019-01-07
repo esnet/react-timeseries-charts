@@ -112,7 +112,8 @@ export default class YAxis extends React.Component {
             this.props.hideAxisLine,
             this.props.absolute,
             this.props.type,
-            this.props.format
+            this.props.format,
+            this.props.label
         );
     }
 
@@ -127,7 +128,8 @@ export default class YAxis extends React.Component {
             format,
             type,
             showGrid,
-            hideAxisLine
+            hideAxisLine,
+            label
         } = nextProps;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
@@ -141,7 +143,8 @@ export default class YAxis extends React.Component {
                 hideAxisLine,
                 absolute,
                 type,
-                format
+                format,
+                label
             );
         } else if (
             this.props.format !== format ||
@@ -164,8 +167,11 @@ export default class YAxis extends React.Component {
                 hideAxisLine,
                 absolute,
                 type,
-                format
+                format,
+                label
             );
+        } else if (this.props.label !== label) {
+            this.updateLabel(label);
         }
     }
 
@@ -298,7 +304,8 @@ export default class YAxis extends React.Component {
         hideAxisLine,
         absolute,
         type,
-        fmt
+        fmt,
+        label
     ) {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
@@ -325,9 +332,10 @@ export default class YAxis extends React.Component {
             .styles(valueStyle)
             .call(axisGenerator.tickSize(tickSize))
             .append("text")
-            .text(this.props.label)
+            .text(label || this.props.label)
             .styles(labelStyle)
             .attr("transform", "rotate(-90)")
+            .attr("class", "yaxislabel")
             .attr("y", labelOffset)
             .attr("dy", ".71em")
             .attr("text-anchor", "end");
@@ -345,7 +353,8 @@ export default class YAxis extends React.Component {
         hideAxisLine,
         absolute,
         type,
-        fmt
+        fmt,
+        label
     ) {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
@@ -362,7 +371,15 @@ export default class YAxis extends React.Component {
             .ease(easeSinOut)
             .call(axisGenerator.tickSize(tickSize));
 
+        this.updateLabel(label);
+
         this.postSelect(style, hideAxisLine, height);
+    }
+
+    updateLabel(label) {
+        select(ReactDOM.findDOMNode(this))
+            .select(".yaxislabel")
+            .text(label);
     }
 
     render() {
