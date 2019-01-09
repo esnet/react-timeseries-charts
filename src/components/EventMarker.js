@@ -345,13 +345,15 @@ export default class EventMarker extends React.Component {
                 transform = `translate(${posx - w - 10},${10})`;
             }
 
+            console.log("this.props.offsetInfoBox ", this.props.offsetInfoBox);
+
             return (
                 <g transform={transform}>
                     {verticalStem}
                     {horizontalStem}
                     {dot}
                     {this.renderTime(event)}
-                    <g transform={`translate(0,${20})`}>{infoBox}</g>
+                    <g transform={`translate(0,${this.props.offsetInfoBox})`}>{infoBox}</g>
                 </g>
             );
         }
@@ -463,6 +465,11 @@ EventMarker.propTypes = {
     offsetY: PropTypes.number,
 
     /**
+     * Offset the infobox position in the y direction
+     */
+    offsetInfoBox: PropTypes.number,
+
+    /**
      * [Internal] The timeScale supplied by the surrounding ChartContainer
      */
     timeScale: PropTypes.func,
@@ -503,5 +510,6 @@ EventMarker.defaultProps = {
         fill: "#999"
     },
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0,
+    offsetInfoBox: 20
 };
