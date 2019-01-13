@@ -98,7 +98,7 @@ export default class ChartRow extends React.Component {
         (_.has(child.props, "min") && _.has(child.props, "max"));
 
     updateScales(props) {
-        const innerHeight = +props.height - AXIS_MARGIN * 2;
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(props.children, child => {
@@ -511,6 +511,26 @@ ChartRow.propTypes = {
             })
         )
     ]),
+
+    /**
+     * Specify the title for the chart row
+     */
+    title: PropTypes.string,
+
+    /**
+     * Specify the height of the title
+     * Default value is 28 pixels
+     */
+    titleHeight: PropTypes.number,
+
+    /**
+     * Specify the styling of the chart row's title
+     */
+    titleStyle: PropTypes.object,
+    /**
+     * Specify the styling of the box behind chart row's title
+     */
+    titleBoxStyle: PropTypes.object,
 
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     leftAxisWidths: PropTypes.arrayOf(PropTypes.number),
