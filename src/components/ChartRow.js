@@ -317,7 +317,7 @@ export default class ChartRow extends React.Component {
         // current value is stored in the component state.
         //
 
-        const chartTransform = `translate(${leftWidth + paddingLeft},0)`;
+        const chartTransform = `translate(${leftWidth + paddingLeft},${titleHeight})`;
 
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
@@ -405,7 +405,7 @@ export default class ChartRow extends React.Component {
             <defs>
                 <clipPath id={this.state.clipId}>
                     <rect
-                        x="0"
+                        x={titleHeight}
                         y="0"
                         style={{ strokeOpacity: 0.0 }}
                         width={chartWidth}
