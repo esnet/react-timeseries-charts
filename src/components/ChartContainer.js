@@ -340,7 +340,12 @@ export default class ChartContainer extends React.Component {
                         </g>
                     );
 
-                    const height = parseInt(child.props.height, 10);
+                    let { titleHeight = 28 } = child.props;
+                    if (_.isUndefined(child.props.title)) {
+                        titleHeight = 0;
+                    }
+
+                    const height = parseInt(child.props.height, 10) + titleHeight;
                     yPosition += height;
                     chartsHeight += height;
                 }
