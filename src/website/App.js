@@ -121,7 +121,7 @@ class App extends Component {
                                 <Link to="/example/wind">Scatter example</Link>
                             </li>
                             <li>
-                                <Link to="/example/volume">Barchart example</Link>
+                                <Link to="/example/volume">Volume example</Link>
                             </li>
                             <li>
                                 <Link to="/example/nyc">Boxplot example</Link>
