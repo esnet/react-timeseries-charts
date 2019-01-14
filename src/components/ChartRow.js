@@ -91,6 +91,7 @@ export default class ChartRow extends React.Component {
             clipId,
             clipPathURL
         };
+        this.mounted = true;
     }
 
     isChildYAxis = child =>
@@ -111,7 +112,7 @@ export default class ChartRow extends React.Component {
                     this.scaleMap[id] = new ScaleInterpolator(transition, easeSinOut, s => {
                         const yAxisScalerMap = this.state.yAxisScalerMap;
                         yAxisScalerMap[id] = s;
-                        this.setState(yAxisScalerMap);
+                        if (this.mounted) this.setState(yAxisScalerMap);
                     });
                 }
                 // Get the vertical scale for this y-axis.
@@ -136,7 +137,7 @@ export default class ChartRow extends React.Component {
             scalerMap[id] = interpolator.scaler();
         });
 
-        this.setState({ yAxisScalerMap: scalerMap });
+        if (this.mounted) this.setState({ yAxisScalerMap: scalerMap });
     }
 
     componentWillMount() {
@@ -156,7 +157,9 @@ export default class ChartRow extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.updateScales(nextProps);
     }
-
+    componentWillUnmount() {
+        this.mounted = false;
+    }
     render() {
         const { paddingLeft, paddingRight } = this.props;
 
