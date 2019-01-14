@@ -345,8 +345,6 @@ export default class EventMarker extends React.Component {
                 transform = `translate(${posx - w - 10},${10})`;
             }
 
-            console.log("this.props.offsetInfoBox ", this.props.offsetInfoBox);
-
             return (
                 <g transform={transform}>
                     {verticalStem}
