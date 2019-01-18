@@ -80,7 +80,7 @@ class barchart extends React.Component {
                     <div className="col-md-12">
                         <Resizable>
                             <ChartContainer timeRange={series.range()}>
-                                <ChartRow height="150">
+                                <ChartRow height="150" title="Rainfall sample">
                                     <YAxis
                                         id="rain"
                                         label="Rainfall (inches/hr)"
