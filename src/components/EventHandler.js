@@ -40,6 +40,7 @@ export default class EventHandler extends React.Component {
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleContextMenu = this.handleContextMenu.bind(this);
     }
 
     // get the event mouse position relative to the event rect
@@ -120,6 +121,10 @@ export default class EventHandler extends React.Component {
 
     handleMouseDown(e) {
         if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+            return;
+        }
+
+        if (e.button === 2) {
             return;
         }
 
@@ -269,6 +274,14 @@ export default class EventHandler extends React.Component {
         }
     }
 
+    handleContextMenu(e) {
+        var x = e.pageX;
+        var y = e.pageY;
+        if (this.props.onContextMenu) {
+            this.props.onContextMenu(x, y);
+        }
+    }
+
     //
     // Render
     //
@@ -280,7 +293,8 @@ export default class EventHandler extends React.Component {
             onMouseDown: this.handleMouseDown,
             onMouseMove: this.handleMouseMove,
             onMouseOut: this.handleMouseOut,
-            onMouseUp: this.handleMouseUp
+            onMouseUp: this.handleMouseUp,
+            onContextMenu: this.handleContextMenu
         };
         return (
             <g pointerEvents="all" {...handlers}>
@@ -323,7 +337,8 @@ EventHandler.propTypes = {
     onZoom: PropTypes.func,
     onMouseMove: PropTypes.func,
     onMouseOut: PropTypes.func,
-    onMouseClick: PropTypes.func
+    onMouseClick: PropTypes.func,
+    onContextMenu: PropTypes.func
 };
 
 EventHandler.defaultProps = {

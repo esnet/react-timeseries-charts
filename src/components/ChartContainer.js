@@ -98,6 +98,7 @@ export default class ChartContainer extends React.Component {
         this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
         this.handleZoom = this.handleZoom.bind(this);
         this.saveSvgRef = this.saveSvgRef.bind(this);
@@ -138,6 +139,13 @@ export default class ChartContainer extends React.Component {
 
     handleMouseOut(e) {
         this.handleTrackerChanged(null);
+    }
+
+    handleContextMenu(x, y) {
+        if (this.props.onContextMenu) {
+            const t = this.props.scale ? this.props.scale.invert(x) : this.timeScale.invert(x);
+            this.props.onContextMenu(x, y, t);
+        }
     }
 
     handleBackgroundClick(x, y) {
@@ -493,6 +501,7 @@ export default class ChartContainer extends React.Component {
                     onMouseOut={this.handleMouseOut}
                     onMouseMove={this.handleMouseMove}
                     onMouseClick={this.handleBackgroundClick}
+                    onContextMenu={this.handleContextMenu}
                     onZoom={this.handleZoom}
                 >
                     {chartRows}
@@ -736,6 +745,11 @@ ChartContainer.propTypes = {
      * useful when deselecting elements.
      */
     onBackgroundClick: PropTypes.func,
+
+    /**
+     * Called when the user context-clicks the chart
+     */
+    onContextMenu: PropTypes.func,
 
     /**
      * Props for handling the padding
