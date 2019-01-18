@@ -40,10 +40,12 @@ const EventTime = ({ time, format = "%m/%d/%y %X" }) => {
         </text>
     );
 };
+
 EventTime.propTypes = {
     time: PropTypes.instanceOf(Date),
     format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
+
 EventTime.defaultProps = {
     infoTimeFormat: "%m/%d/%y %X"
 };
@@ -76,10 +78,12 @@ const EventTimeRange = ({ timerange, format = "%m/%d/%y %X" }) => {
         </text>
     );
 };
+
 EventTimeRange.propTypes = {
     timerange: PropTypes.instanceOf(TimeRange),
     format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
+
 EventTimeRange.defaultProps = {
     infoTimeFormat: "%m/%d/%y %X"
 };
@@ -108,6 +112,7 @@ const EventIndex = ({ index, format }) => {
         </text>
     );
 };
+
 EventIndex.propTypes = {
     index: PropTypes.instanceOf(Index),
     format: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
@@ -272,7 +277,7 @@ export default class EventMarker extends React.Component {
                 </g>
             );
         } else {
-            if (posx + 10 + w < this.props.width * 3 / 4) {
+            if (posx + 10 + w < (this.props.width * 3) / 4) {
                 if (info) {
                     verticalStem = (
                         <line
@@ -346,7 +351,7 @@ export default class EventMarker extends React.Component {
                     {horizontalStem}
                     {dot}
                     {this.renderTime(event)}
-                    <g transform={`translate(0,${20})`}>{infoBox}</g>
+                    <g transform={`translate(0,${this.props.offsetInfoBox})`}>{infoBox}</g>
                 </g>
             );
         }
@@ -375,9 +380,9 @@ EventMarker.propTypes = {
 
     /**
      * Which column in the Event to use
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     column: PropTypes.string,
@@ -458,6 +463,11 @@ EventMarker.propTypes = {
     offsetY: PropTypes.number,
 
     /**
+     * Offset the infobox position in the y direction
+     */
+    offsetInfoBox: PropTypes.number,
+
+    /**
      * [Internal] The timeScale supplied by the surrounding ChartContainer
      */
     timeScale: PropTypes.func,
@@ -498,5 +508,6 @@ EventMarker.defaultProps = {
         fill: "#999"
     },
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0,
+    offsetInfoBox: 20
 };
