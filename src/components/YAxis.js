@@ -113,7 +113,10 @@ export default class YAxis extends React.Component {
             this.props.absolute,
             this.props.type,
             this.props.format,
-            this.props.label
+            this.props.label,
+            this.props.tickCount,
+            this.props.min,
+            this.props.max
         );
     }
 
@@ -129,7 +132,10 @@ export default class YAxis extends React.Component {
             type,
             showGrid,
             hideAxisLine,
-            label
+            label,
+            tickCount,
+            min,
+            max
         } = nextProps;
 
         if (scaleAsString(this.props.scale) !== scaleAsString(scale)) {
@@ -144,7 +150,10 @@ export default class YAxis extends React.Component {
                 absolute,
                 type,
                 format,
-                label
+                label,
+                tickCount,
+                min,
+                max
             );
         } else if (
             this.props.format !== format ||
@@ -168,7 +177,10 @@ export default class YAxis extends React.Component {
                 absolute,
                 type,
                 format,
-                label
+                label,
+                tickCount,
+                min,
+                max
             );
         } else if (this.props.label !== label) {
             this.updateLabel(label);
@@ -245,15 +257,13 @@ export default class YAxis extends React.Component {
         }
     }
 
-    generator(type, absolute, yformat, axis, scale) {
+    generator(type, absolute, yformat, axis, scale, height, tickCount, min, max) {
         let axisGenerator;
         if (type === "linear" || type === "power") {
-            if (this.props.tickCount > 0) {
-                const stepSize = (this.props.max - this.props.min) / (this.props.tickCount - 1);
+            if (tickCount > 0) {
+                const stepSize = (max - min) / (tickCount - 1);
                 axisGenerator = axis(scale)
-                    .tickValues(
-                        range(this.props.min, this.props.max + this.props.max / 10000, stepSize)
-                    )
+                    .tickValues(range(min, max + max / 10000, stepSize))
                     .tickFormat(d => {
                         if (absolute) {
                             return yformat(Math.abs(d));
@@ -262,7 +272,7 @@ export default class YAxis extends React.Component {
                     })
                     .tickSizeOuter(0);
             } else {
-                if (this.props.height <= 200) {
+                if (height <= 200) {
                     axisGenerator = axis(scale)
                         .ticks(4)
                         .tickFormat(d => {
@@ -284,7 +294,7 @@ export default class YAxis extends React.Component {
                 }
             }
         } else if (type === "log") {
-            if (this.props.min === 0) {
+            if (min === 0) {
                 throw Error("In a log scale, minimum value can't be 0");
             }
             axisGenerator = axis(scale)
@@ -305,7 +315,10 @@ export default class YAxis extends React.Component {
         absolute,
         type,
         fmt,
-        label
+        label,
+        tickCount,
+        min,
+        max
     ) {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
@@ -317,7 +330,17 @@ export default class YAxis extends React.Component {
             align === "left" ? this.props.labelOffset - 50 : 40 + this.props.labelOffset;
 
         // Axis generator
-        const axisGenerator = this.generator(type, absolute, yformat, axis, scale);
+        const axisGenerator = this.generator(
+            type,
+            absolute,
+            yformat,
+            axis,
+            scale,
+            height,
+            tickCount,
+            min,
+            max
+        );
 
         // Remove the old axis from under this DOM node
         select(ReactDOM.findDOMNode(this))
@@ -354,14 +377,27 @@ export default class YAxis extends React.Component {
         absolute,
         type,
         fmt,
-        label
+        label,
+        tickCount,
+        min,
+        max
     ) {
         const yformat = this.yformat(fmt);
         const axis = align === "left" ? axisLeft : axisRight;
         const style = this.mergeStyles(this.props.style);
         const tickSize = showGrid && this.props.isInnerAxis ? -chartExtent : 5;
 
-        const axisGenerator = this.generator(type, absolute, yformat, axis, scale, tickSize);
+        const axisGenerator = this.generator(
+            type,
+            absolute,
+            yformat,
+            axis,
+            scale,
+            height,
+            tickCount,
+            min,
+            max
+        );
 
         // Transition the existing axis
         select(ReactDOM.findDOMNode(this))
