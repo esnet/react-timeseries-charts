@@ -102,8 +102,8 @@ export default class EventHandler extends React.Component {
         if (this.props.minDuration) {
             const minDuration = parseInt(this.props.minDuration, 10);
             if (duration < this.props.minDuration) {
-                beginScaled = center - (center - begin) / (end - begin) * minDuration;
-                endScaled = center + (end - center) / (end - begin) * minDuration;
+                beginScaled = center - ((center - begin) / (end - begin)) * minDuration;
+                endScaled = center + ((end - center) / (end - begin)) * minDuration;
             }
         }
 
@@ -331,6 +331,7 @@ export default class EventHandler extends React.Component {
                         y={0}
                         width={Math.abs(this.state.currentDragZoom - this.state.initialDragZoom)}
                         height={this.props.height}
+                        pointerEvents="none"
                     />
                 )}
             </g>
