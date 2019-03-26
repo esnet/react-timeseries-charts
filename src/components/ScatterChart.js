@@ -394,6 +394,12 @@ ScatterChart.propTypes = {
     infoHeight: PropTypes.number, // eslint-disable-line
 
     /**
+     * The vertical offset in pixels of the EventMarker info box from the
+     * top of the chart.
+     */
+    infoOffsetY: PropTypes.number,
+
+    /**
      * The values to show in the info box. This is an array of
      * objects, with each object specifying the label and value
      * to be shown in the info box.
@@ -481,5 +487,6 @@ ScatterChart.defaultProps = {
         fill: "#999"
     },
     infoWidth: 90,
-    infoHeight: 30
+    infoHeight: 30,
+    infoOffsetY: 20
 };

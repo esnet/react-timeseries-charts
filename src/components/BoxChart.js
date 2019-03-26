@@ -647,9 +647,9 @@ BoxChart.propTypes = {
     /**
      * The column within the TimeSeries to plot. Unlike other charts, the BoxChart
      * works on just a single column.
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     column: PropTypes.string,
@@ -708,6 +708,12 @@ BoxChart.propTypes = {
      * The height of the hover info box
      */
     infoHeight: PropTypes.number, //eslint-disable-line
+
+    /**
+     * The vertical offset in pixels of the EventMarker info box from the
+     * top of the chart.
+     */
+    infoOffsetY: PropTypes.number,
 
     /**
      * The values to show in the info box. This is an array of
@@ -814,5 +820,6 @@ BoxChart.defaultProps = {
     },
     markerRadius: 2,
     infoWidth: 90,
-    infoHeight: 30
+    infoHeight: 30,
+    infoOffsetY: 20
 };

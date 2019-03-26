@@ -99,6 +99,7 @@ class stockchart extends React.Component {
                 hideWeekends={true}
                 enablePanZoom={true}
                 onTimeRangeChanged={this.handleTimeRangeChange}
+                timeAxisStyle={{ axis: { fill: "none", stroke: "none" } }}
             >
                 <ChartRow height="300">
                     <Charts>
@@ -120,7 +121,7 @@ class stockchart extends React.Component {
                         type={this.state.mode}
                     />
                 </ChartRow>
-                <ChartRow height="200">
+                <ChartRow height="200" axisMargin={0}>
                     <Charts>
                         <BarChart
                             axis="y"

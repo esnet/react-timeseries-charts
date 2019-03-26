@@ -204,6 +204,7 @@ class wind extends React.Component {
                                             info={infoValues}
                                             infoHeight={28}
                                             infoWidth={110}
+                                            infoOffsetY={10}
                                             infoStyle={{
                                                 fill: "black",
                                                 color: "#DDD"
