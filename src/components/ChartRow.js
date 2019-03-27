@@ -22,8 +22,6 @@ import MultiBrush from "./MultiBrush";
 import TimeMarker from "./TimeMarker";
 import ScaleInterpolator from "../js/interpolators";
 
-const AXIS_MARGIN = 5;
-
 function createScale(yaxis, type, min, max, y0, y1) {
     let scale;
     if (_.isUndefined(min) || _.isUndefined(max)) {
