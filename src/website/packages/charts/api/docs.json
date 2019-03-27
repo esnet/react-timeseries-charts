@@ -827,7 +827,7 @@
           }
         },
         "required": false,
-        "description": "A list of columns within the series that will be stacked on top of each other\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "A list of columns within the series that will be stacked on top of each other\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
@@ -913,6 +913,17 @@
         "description": "The height of the info box",
         "defaultValue": {
           "value": "30",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -1267,7 +1278,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "The column within the TimeSeries to plot. Unlike other charts, the BoxChart\nworks on just a single column.\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -1359,6 +1370,17 @@
         "description": "The height of the hover info box",
         "defaultValue": {
           "value": "30",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -1722,6 +1744,22 @@
         "returns": null
       },
       {
+        "name": "handleContextMenu",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "x",
+            "type": null
+          },
+          {
+            "name": "y",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "handleBackgroundClick",
         "docblock": null,
         "modifiers": [],
@@ -2020,6 +2058,13 @@
         "required": false,
         "description": "Called when the user clicks the background plane of the chart. This is\nuseful when deselecting elements."
       },
+      "onContextMenu": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Called when the user context-clicks the chart"
+      },
       "padding": {
         "type": {
           "name": "number"
@@ -2192,6 +2237,17 @@
           "computed": false
         }
       },
+      "axisMargin": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical margin between the top and bottom of the row\nheight and the top and bottom of the range of the chart.",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
       "visible": {
         "type": {
           "name": "bool"
@@ -2250,7 +2306,35 @@
           ]
         },
         "required": false,
-        "description": "Info box value or values to place next to the tracker line\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
+        "description": "Info box value or values to place next to the tracker line.\nThis is either an array of objects, with each object\nspecifying the label (a string) and value (also a string)\nto be shown in the info box, or a simple string label."
+      },
+      "title": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Specify the title for the chart row"
+      },
+      "titleHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Specify the height of the title\nDefault value is 28 pixels"
+      },
+      "titleStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Specify the styling of the chart row's title"
+      },
+      "titleBoxStyle": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Specify the styling of the box behind chart row's title"
       },
       "children": {
         "type": {
@@ -2612,6 +2696,18 @@
           }
         ],
         "returns": null
+      },
+      {
+        "name": "handleContextMenu",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
       }
     ],
     "props": {
@@ -2726,6 +2822,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "onContextMenu": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -2814,7 +2917,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Which column in the Event to use\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "Which column in the Event to use\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "\"value\"",
           "computed": false
@@ -2973,6 +3076,17 @@
         "description": "Offset the marker position in the y direction",
         "defaultValue": {
           "value": "0",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart. The default is 20.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -4219,7 +4333,7 @@
           }
         },
         "required": false,
-        "description": "Which columns of the series to render\n\nNOTE : Columns can't have periods because periods \nrepresent a path to deep data in the underlying events \n(i.e. reference into nested data structures)",
+        "description": "Which columns of the series to render\n\nNOTE : Columns can't have periods because periods\nrepresent a path to deep data in the underlying events\n(i.e. reference into nested data structures)",
         "defaultValue": {
           "value": "[\"value\"]",
           "computed": false
@@ -4310,6 +4424,17 @@
         "description": "The height of the hover info box",
         "defaultValue": {
           "value": "30",
+          "computed": false
+        }
+      },
+      "infoOffsetY": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The vertical offset in pixels of the EventMarker info box from the\ntop of the chart.",
+        "defaultValue": {
+          "value": "20",
           "computed": false
         }
       },
@@ -4925,7 +5050,7 @@
           ]
         },
         "required": false,
-        "description": "",
+        "description": "Where to position the label, either \"left\" or \"center\" within the box",
         "defaultValue": {
           "value": "\"center\"",
           "computed": false
@@ -4964,7 +5089,7 @@
           "name": "object"
         },
         "required": false,
-        "description": "CSS object to be applied to the ValueList surrounding box",
+        "description": "CSS object to be applied to the ValueList surrounding box and the label (text).",
         "defaultValue": {
           "value": "{ fill: \"#FEFEFE\", stroke: \"#DDD\", opacity: 0.8 }",
           "computed": false
@@ -5073,6 +5198,22 @@
           {
             "name": "scale",
             "type": null
+          },
+          {
+            "name": "height",
+            "type": null
+          },
+          {
+            "name": "tickCount",
+            "type": null
+          },
+          {
+            "name": "min",
+            "type": null
+          },
+          {
+            "name": "max",
+            "type": null
           }
         ],
         "returns": null
@@ -5121,6 +5262,22 @@
           {
             "name": "fmt",
             "type": null
+          },
+          {
+            "name": "label",
+            "type": null
+          },
+          {
+            "name": "tickCount",
+            "type": null
+          },
+          {
+            "name": "min",
+            "type": null
+          },
+          {
+            "name": "max",
+            "type": null
           }
         ],
         "returns": null
@@ -5168,6 +5325,34 @@
           },
           {
             "name": "fmt",
+            "type": null
+          },
+          {
+            "name": "label",
+            "type": null
+          },
+          {
+            "name": "tickCount",
+            "type": null
+          },
+          {
+            "name": "min",
+            "type": null
+          },
+          {
+            "name": "max",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "updateLabel",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "label",
             "type": null
           }
         ],

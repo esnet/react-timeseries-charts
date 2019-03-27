@@ -355,9 +355,9 @@ BarChart.propTypes = {
 
     /**
      * A list of columns within the series that will be stacked on top of each other
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     columns: PropTypes.arrayOf(PropTypes.string),
@@ -434,6 +434,12 @@ BarChart.propTypes = {
      * The height of the info box
      */
     infoHeight: PropTypes.number, //eslint-disable-line
+
+    /**
+     * The vertical offset in pixels of the EventMarker info box from the
+     * top of the chart.
+     */
+    infoOffsetY: PropTypes.number,
 
     /**
      * Alter the format of the timestamp shown on the info box.
@@ -534,5 +540,6 @@ BarChart.defaultProps = {
     },
     markerRadius: 2,
     infoWidth: 90,
-    infoHeight: 30
+    infoHeight: 30,
+    infoOffsetY: 20
 };

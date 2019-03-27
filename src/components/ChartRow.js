@@ -22,8 +22,6 @@ import MultiBrush from "./MultiBrush";
 import TimeMarker from "./TimeMarker";
 import ScaleInterpolator from "../js/interpolators";
 
-const AXIS_MARGIN = 5;
-
 function createScale(yaxis, type, min, max, y0, y1) {
     let scale;
     if (_.isUndefined(min) || _.isUndefined(max)) {
@@ -99,9 +97,10 @@ export default class ChartRow extends React.Component {
         (_.has(child.props, "min") && _.has(child.props, "max"));
 
     updateScales(props) {
-        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
-        const rangeTop = AXIS_MARGIN;
-        const rangeBottom = innerHeight - AXIS_MARGIN;
+        const axisMargin = props.axisMargin;
+        const innerHeight = +props.height - axisMargin * 2;
+        const rangeTop = axisMargin;
+        const rangeBottom = innerHeight - axisMargin;
         React.Children.forEach(props.children, child => {
             if (child === null) return;
             if (this.isChildYAxis(child)) {
@@ -166,7 +165,7 @@ export default class ChartRow extends React.Component {
         const axes = []; // Contains all the yAxis elements used in the render
         const chartList = []; // Contains all the Chart elements used in the render
         // Dimensions
-        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
+        const innerHeight = +this.props.height - this.props.axisMargin * 2;
 
         //
         // Build a map of elements that occupy left or right slots next to the
@@ -473,6 +472,7 @@ ChartRow.defaultProps = {
     trackerTimeFormat: "%b %d %Y %X",
     enablePanZoom: false,
     height: 100,
+    axisMargin: 5,
     visible: true
 };
 
@@ -483,6 +483,12 @@ ChartRow.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
+     * The vertical margin between the top and bottom of the row
+     * height and the top and bottom of the range of the chart.
+     */
+    axisMargin: PropTypes.number,
+
+    /**
      * Show or hide this row
      */
     visible: PropTypes.bool,
@@ -491,16 +497,19 @@ ChartRow.propTypes = {
      * Should the time be shown on top of the tracker info box
      */
     trackerShowTime: PropTypes.bool,
+
     /**
      * The width of the tracker info box
      */
     trackerInfoWidth: PropTypes.number,
+
     /**
      * The height of the tracker info box
      */
     trackerInfoHeight: PropTypes.number,
+
     /**
-     * Info box value or values to place next to the tracker line
+     * Info box value or values to place next to the tracker line.
      * This is either an array of objects, with each object
      * specifying the label (a string) and value (also a string)
      * to be shown in the info box, or a simple string label.
@@ -530,6 +539,7 @@ ChartRow.propTypes = {
      * Specify the styling of the chart row's title
      */
     titleStyle: PropTypes.object,
+
     /**
      * Specify the styling of the box behind chart row's title
      */
