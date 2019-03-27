@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.15.6
+
+* Allow YAxis component label to be updated after initial render [PR #351](https://github.com/esnet/react-timeseries-charts/pull/351)
+* Update ChartRow to not call setState when unmounted [#246](https://github.com/esnet/react-timeseries-charts/issues/246)
+* Create a template for new issues
+* Add ability to specify the title of ChartRow [PR #359](https://github.com/esnet/react-timeseries-charts/pull/359)
+* Add customized text styling in ValueList.js [#355](https://github.com/esnet/react-timeseries-charts/issues/355)
+* Fix issue where the context menu triggers drag as well [#307](https://github.com/esnet/react-timeseries-charts/issues/307)
+* Fix for Chrome 73 default passive event listeners / Fix scrolling to zoom in a ChartContainer that also scrolls the entire page [#375](https://github.com/esnet/react-timeseries-charts/issues/375)
+* Fix for intermittently click event not working on EventChart [PR #369](https://github.com/esnet/react-timeseries-charts/pull/369)
+* Fix YAxis rerender on tickCount/min/max change [#371](https://github.com/esnet/react-timeseries-charts/issues/371)
+* Add options modify the vertical axis margin and vertical EventMarker infobox offset [PR #377](https://github.com/esnet/react-timeseries-charts/pull/377)
+
 ## v0.15.5
 
 > Nov 1, 2018
