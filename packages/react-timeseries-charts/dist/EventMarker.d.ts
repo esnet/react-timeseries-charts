@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { ScaleTime } from "d3-scale";
 import { Event, Key } from "pondjs";

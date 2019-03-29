@@ -14,7 +14,7 @@ var moment = require("moment");
 require("moment-timezone");
 var _ = require("lodash");
 var React = require("react");
-var ReactCSSTransitionGroup = require("react-addons-css-transition-group");
+var react_transition_group_1 = require("react-transition-group");
 var d3_scale_1 = require("d3-scale");
 var Tick_1 = require("./Tick");
 var duration_format_1 = require("./util/duration-format");
@@ -197,7 +197,7 @@ var TimeAxis = (function (_super) {
         if (this.props.transition === true) {
             return (React.createElement("g", null,
                 this.renderAxisLine(),
-                React.createElement(ReactCSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
+                React.createElement(react_transition_group_1.CSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
                 this.renderAxisLabel()));
         }
         else {

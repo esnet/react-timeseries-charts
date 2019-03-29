@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import 'moment-timezone';
 import * as React from "react";
 import "./Axis.css";

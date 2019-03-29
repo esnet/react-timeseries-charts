@@ -15,7 +15,7 @@ import 'moment-timezone';
 import * as _ from "lodash";
 import * as React from "react";
 
-import ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+import { CSSTransitionGroup } from 'react-transition-group'
 import { scaleTime } from "d3-scale";
 
 import { Tick } from "./Tick";
@@ -349,14 +349,14 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
             return (
                 <g>
                     {this.renderAxisLine()}
-                    <ReactCSSTransitionGroup
+                    <CSSTransitionGroup
                         component="g"
                         transitionName="ticks"
                         transitionEnterTimeout={500}
                         transitionLeaveTimeout={500}
                     >
                         {this.renderAxisTicks()}
-                    </ReactCSSTransitionGroup>
+                    </CSSTransitionGroup>
                     {this.renderAxisLabel()}
                 </g>
             );

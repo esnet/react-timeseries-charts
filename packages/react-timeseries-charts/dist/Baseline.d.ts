@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { ChartProps } from "./Charts";
 import { BaselineStyle } from "./style";

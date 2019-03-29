@@ -1,9 +1,8 @@
-/// <reference types="react" />
 import * as React from "react";
 export declare enum LegendItemType {
     Swatch = "SWATCH",
     Line = "LINE",
-    Dot = "DOT",
+    Dot = "DOT"
 }
 export declare type LegendItemProps = {
     itemKey: string;

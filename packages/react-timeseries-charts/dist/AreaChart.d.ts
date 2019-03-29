@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import "array.prototype.fill";
 import * as React from "react";
 import { TimeSeries, Key } from "pondjs";
@@ -13,7 +12,7 @@ export declare type AreaData = {
 };
 export declare enum StyleType {
     Line = "line",
-    Area = "area",
+    Area = "area"
 }
 export declare type AreaChartProps = ChartProps & {
     axis: string;

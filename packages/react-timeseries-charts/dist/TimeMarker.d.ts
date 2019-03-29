@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import "moment-duration-format";
 import { ChartProps } from "./Charts";

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { TimeRange } from "pondjs";
 import { ChartProps } from "./Charts";
@@ -15,7 +14,7 @@ export declare type TimeAxisStyleType = {
 };
 export declare enum ShowGridPosition {
     Over = "OVER",
-    Under = "UNDER",
+    Under = "UNDER"
 }
 export declare type ChartContainerProps = ChartProps & {
     children: any;

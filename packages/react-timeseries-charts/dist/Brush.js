@@ -89,6 +89,7 @@ var Brush = (function (_super) {
         }
     };
     Brush.prototype.handleMouseMove = function (e) {
+        var _a;
         e.preventDefault();
         var x = e.pageX;
         var y = e.pageY;
@@ -142,7 +143,6 @@ var Brush = (function (_super) {
                 this.props.onTimeRangeChanged(new pondjs_1.TimeRange(newBegin, newEnd));
             }
         }
-        var _a;
     };
     Brush.prototype.renderOverlay = function () {
         var _this = this;

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { LegendItemType } from "./LegendItem";
 import { Styler } from "./styler";

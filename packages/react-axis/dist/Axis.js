@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var React = require("react");
-var ReactCSSTransitionGroup = require("react-addons-css-transition-group");
+var react_transition_group_1 = require("react-transition-group");
 var d3_format_1 = require("d3-format");
 var d3_scale_1 = require("d3-scale");
 var Tick_1 = require("./Tick");
@@ -136,7 +136,7 @@ var Axis = (function (_super) {
     Axis.prototype.renderAxis = function () {
         return (React.createElement("g", null,
             this.renderAxisLine(),
-            React.createElement(ReactCSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
+            React.createElement(react_transition_group_1.CSSTransitionGroup, { component: "g", transitionName: "ticks", transitionEnterTimeout: 500, transitionLeaveTimeout: 500 }, this.renderAxisTicks()),
             this.renderAxisLabel()));
     };
     Axis.prototype.render = function () {

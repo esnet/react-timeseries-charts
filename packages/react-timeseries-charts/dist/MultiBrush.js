@@ -109,6 +109,7 @@ var MultiBrush = (function (_super) {
         });
     };
     MultiBrush.prototype.handleMouseMove = function (e) {
+        var _a;
         e.preventDefault();
         var x = e.pageX;
         var y = e.pageY;
@@ -162,7 +163,6 @@ var MultiBrush = (function (_super) {
                 this.props.onTimeRangeChanged(new pondjs_1.TimeRange(newBegin, newEnd), this.state.brushIndex);
             }
         }
-        var _a;
     };
     MultiBrush.prototype.renderOverlay = function () {
         var _this = this;

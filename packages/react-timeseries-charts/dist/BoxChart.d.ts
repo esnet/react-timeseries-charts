@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { Event, Index, Time, TimeSeries, Window } from "pondjs";
 import { ReducerFunction } from "pondjs/lib/types";

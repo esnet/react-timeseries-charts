@@ -25,5 +25,5 @@ export declare enum CurveInterpolation {
     curveRadial = "curveRadial",
     curveStep = "curveStep",
     curveStepAfter = "curveStepAfter",
-    curveStepBefore = "curveStepBefore",
+    curveStepBefore = "curveStepBefore"
 }

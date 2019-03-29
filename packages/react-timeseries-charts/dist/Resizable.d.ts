@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 export declare type ResizableProps = {};
 export declare type ResizableState = {

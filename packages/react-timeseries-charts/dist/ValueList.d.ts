@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from "react";
 import { LabelValueList } from "./types";
 import { InfoBoxStyle } from "./style";

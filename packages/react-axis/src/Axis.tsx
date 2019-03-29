@@ -11,7 +11,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-import ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+import { CSSTransitionGroup } from 'react-transition-group'
 import { format } from "d3-format";
 import { scaleLinear, scaleLog, scalePow, ScaleLinear } from "d3-scale";
 
@@ -279,14 +279,14 @@ export class Axis extends React.Component<AxisProps> {
         return (
             <g>
                 {this.renderAxisLine()}
-                <ReactCSSTransitionGroup
+                <CSSTransitionGroup
                     component="g"
                     transitionName="ticks"
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={500}
                 >
                     {this.renderAxisTicks()}
-                </ReactCSSTransitionGroup>
+                </CSSTransitionGroup>
                 {this.renderAxisLabel()}
             </g>
         );
