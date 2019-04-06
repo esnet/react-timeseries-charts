@@ -44,19 +44,7 @@ export default class EventHandler extends React.Component {
     }
 
     componentDidMount() {
-        const handlers = {
-            wheel: this.handleScrollWheel,
-            mousedown: this.handleMouseDown,
-            mousemove: this.handleMouseMove,
-            mouseout: this.handleMouseOut,
-            mouseup: this.handleMouseUp,
-            contextmenu: this.handleContextMenu
-        };
-
-        Object.keys(handlers).forEach(type => {
-            const handlerFunc = handlers[type];
-            this.eventHandlerRef.addEventListener(type, handlerFunc, { passive: false });
-        });
+        this.eventHandlerRef.addEventListener("wheel", this.handleScrollWheel, { passive: false });
     }
 
     // get the event mouse position relative to the event rect
@@ -304,13 +292,20 @@ export default class EventHandler extends React.Component {
 
     render() {
         const cursor = this.state.isPanning ? "-webkit-grabbing" : "default";
-
+        const handlers = {
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
+            onMouseOut: this.handleMouseOut,
+            onMouseUp: this.handleMouseUp,
+            onContextMenu: this.handleContextMenu
+        };
         return (
             <g
                 pointerEvents="all"
                 ref={c => {
                     this.eventHandlerRef = c;
                 }}
+                {...handlers}
             >
                 <rect
                     key="handler-hit-rect"
