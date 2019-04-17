@@ -66,7 +66,8 @@ export default class EventHandler extends React.Component {
 
         e.preventDefault();
 
-        const SCALE_FACTOR = 0.001;
+        // check (and scroll faster) for Firefox, ref.: https://stackoverflow.com/a/9851769
+        const SCALE_FACTOR = typeof InstallTrigger !== 'undefined' ? 0.04 : 0.002;
         let scale = 1 + e.deltaY * SCALE_FACTOR;
         if (scale > 3) {
             scale = 3;
