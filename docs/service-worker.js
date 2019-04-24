@@ -13,7 +13,9 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
-importScripts("/react-timeseries-charts/precache-manifest.62ee97b8e1197efc22270d2b7e0c1033.js");
+importScripts(
+  "/react-timeseries-charts/precache-manifest.62ee97b8e1197efc22270d2b7e0c1033.js"
+);
 
 workbox.clientsClaim();
 
@@ -27,5 +29,6 @@ workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
 workbox.routing.registerNavigationRoute("/react-timeseries-charts/index.html", {
-    blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/]
+  
+  blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
