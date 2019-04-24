@@ -52,7 +52,8 @@ At the outer most layer, we add a `<ChartContainer>` which contains our time ran
 For the next layer of the layout we make a `<ChartRow>`. We can have multiple charts stacked on top of each other by using more than one row. In this case we just have one row. Each row has a specific height in the layout, so we specify that as 200px high here.
 
 Next up we want to put something in our row. Rows contain two parts:
-1. a central flexible sized area in which charts can be added and 2. axes on either the left or right of the central area.
+1. a central flexible sized area in which charts can be added and  
+2. axes on either the left or right of the central area.
 
 This central area is surrounded in the JSX by the `<Charts>` tag. Each chart in this area is composited on top of each other. In this case we are adding two `<LineChart>`s, one for each of our timeseries. As a result they will be drawn on top of each other. (Note that as of v0.9, it is also possible to draw multiple channels of a TimeSeries as multiple line charts). For scaling each chart will reference an axis that will define the scale as well as display that scale visually as the y-axis.
 
