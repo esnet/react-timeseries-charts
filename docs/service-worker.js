@@ -13,7 +13,7 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
-importScripts("/react-timeseries-charts/precache-manifest.2cb1e75e8efb227266126794b6e335b5.js");
+importScripts("/react-timeseries-charts/precache-manifest.62ee97b8e1197efc22270d2b7e0c1033.js");
 
 workbox.clientsClaim();
 
