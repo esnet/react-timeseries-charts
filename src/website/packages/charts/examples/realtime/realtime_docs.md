@@ -10,7 +10,7 @@ import { Event } from "pondjs";
 
 const value = getRandomValue();
 const time = getNextTime();
-const event = new Event(t, value);
+const event = new Event(time, value);
 ```
 
 Now we want to do some things with that Event:
