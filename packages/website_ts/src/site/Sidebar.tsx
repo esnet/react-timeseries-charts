@@ -8,14 +8,18 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as _ from "lodash";
+import * as _ from "underscore";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 
 import { sidebarTitleStyle, sidebarItemStyle } from "./api/styles";
+import { DocNode, Docs } from "./App";
 
-// tslint:disable-next-line:no-any
-export default class extends React.Component<any> {
+type SidebarProps = {
+    filter: string,
+    docs: Docs
+}
+export default class Sidebar extends React.Component<SidebarProps> {
     render() {
         const sidebarStyle: React.CSSProperties = {
             flex: "0 0 13em",
@@ -36,14 +40,14 @@ export default class extends React.Component<any> {
         const excluded = ["Resizable", "ScaleInterpolator"];
         const filter = this.props.filter || "";
         const classes = _.sortBy(
-            _.filter(this.props.docs.classes, c => 
-                !c.flags.isPrivate && 
-                c.name.includes(filter) && 
+            this.props.docs.classes.filter((c: DocNode) =>
+                !c.flags.isPrivate &&
+                c.name.includes(filter) &&
                 !excluded.includes(c.name)
             ),
             c => c.name
         );
-        
+
         return (
             <div style={sidebarStyle}>
                 <a style={sidebarTitleStyle} data-toggle="collapse" href="#guide" aria-expanded="true">GUIDE</a>
@@ -86,7 +90,7 @@ export default class extends React.Component<any> {
                     <div key="barchart" style={sidebarItemStyle}>
                         <NavLink to="/example/barchart" activeStyle={activeStyle}>
                             Simple BarChart example
-                        </NavLink> 
+                        </NavLink>
                     </div>
                     <div key="continents" style={sidebarItemStyle}>
                         <NavLink to="/example/continents" activeStyle={activeStyle}>
@@ -101,7 +105,7 @@ export default class extends React.Component<any> {
                     <div key="cycling" style={sidebarItemStyle}>
                         <NavLink to="/example/cycling" activeStyle={activeStyle}>
                             Cycling example
-                        </NavLink> 
+                        </NavLink>
                     </div>
                     <div key="ddos" style={sidebarItemStyle}>
                         <NavLink to="/example/ddos" activeStyle={activeStyle}>
@@ -111,12 +115,12 @@ export default class extends React.Component<any> {
                     <div key="outages" style={sidebarItemStyle}>
                         <NavLink to="/example/outages" activeStyle={activeStyle}>
                             Outage events
-                        </NavLink> 
+                        </NavLink>
                     </div>
                     <div key="stockchart" style={sidebarItemStyle}>
                         <NavLink to="/example/stockchart" activeStyle={activeStyle}>
                             Stock Chart example
-                        </NavLink> 
+                        </NavLink>
                     </div>
                     <div key="traffic" style={sidebarItemStyle}>
                         <NavLink to="/example/traffic" activeStyle={activeStyle}>
@@ -154,7 +158,7 @@ export default class extends React.Component<any> {
                         </NavLink>
                     </div>
                 </div>
-                
+
                 <hr />
                 <a style={sidebarTitleStyle} data-toggle="collapse" href="#api" aria-expanded="true">API</a>
                 <div id="api" className="collapse in">
@@ -162,8 +166,8 @@ export default class extends React.Component<any> {
                         <div key={c.name} style={sidebarItemStyle}>
                             <NavLink
                                 exact={true}
-                                to={otherClasses.includes(c.name.toLowerCase()) 
-                                        ? `/class/${c.name.toLowerCase()}` 
+                                to={otherClasses.includes(c.name.toLowerCase())
+                                        ? `/class/${c.name.toLowerCase()}`
                                         : `/module/${c.name.toLowerCase()}`
                                     }
                                 activeStyle={activeStyle}

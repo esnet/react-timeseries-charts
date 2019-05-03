@@ -9,24 +9,47 @@
  */
 
 import "./App.css";
-import * as _ from "lodash";
+import * as _ from "underscore";
 import * as React from "react";
-import { Switch, Route, HashRouter as Router } from "react-router-dom";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 
 import Guide from "./components/Guide";
 
 import Header from "./Header";
-import Sidebar from "./Sidebar";
-import ScrollToTop from "./ScrollToTop";
+// import Sidebar from "./Sidebar";
+// import ScrollToTop from "./ScrollToTop";
 
-import TsModule from "./api/Module";
+// import TsModule from "./api/Module";
 // import TsClass from "./api/Class";
 
 // Generated pond.js code and documentation as a JSON file. This is what we are
 // parsing here to generate the API documentation
-const docsJSON = require("../doc.json");
+const docsJSON: DocNode = require("../doc.json");
 
-const docs = {
+export type DocNode = {
+    id: number,
+    name: string,
+    kind: number,
+    kindString: string,
+    flags: { [_:string]: boolean },
+    children: DocNode[],
+    groups: { title: string, kind: number, children: number[] }
+    sources: { fileName: string, line: number, character: number }[]
+}
+
+export type Docs = {
+    modules: { [_:string]: DocNode },
+    classes: { [_:string]: DocNode },
+    functions: { [_:string]: DocNode },
+    methods: { [_:string]: DocNode },
+    interfaces: { [_:string]: DocNode },
+    enums: { [_:string]: DocNode },
+    objects: { [_:string]: DocNode },
+    types: { [_:string]: DocNode },
+    properties: { [_:string]: DocNode }
+}
+
+const docs: Docs = {
     modules: {},
     classes: {},
     functions: {},
@@ -38,9 +61,8 @@ const docs = {
     properties: {}
 };
 
-// tslint:disable-next-line:no-any
 function buildTypes(root: any) {
-    _.forEach(root, child => {
+    _.forEach(root, (child: DocNode) => {
         const { name, kindString } = child;
         const n = name.toLowerCase();
         switch (kindString) {
@@ -106,7 +128,7 @@ const contentStyle: React.CSSProperties = {
     flex: 1
 };
 
-export default class App extends React.Component {
+export class App extends React.Component {
     render() {
         return (
             <Router>
@@ -127,7 +149,7 @@ export default class App extends React.Component {
     }
 }
 
-// export const App: React.SFC = () => (    
+// export const App: React.SFC = () => (
 //     <Router>
 //         <div style={bodyStyle}>
 //             <Header />

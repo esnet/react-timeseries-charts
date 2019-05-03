@@ -34,7 +34,7 @@ export default class extends React.Component<any, GuideState> {
         window.scrollTo(0, 0);
         Prism.highlightAll();
         const guideName = this.props.match.params.doc || "intro";
-        const markdownFile = Guides[guideName];
+        const markdownFile = Guides[guideName as keyof typeof Guides];
         fetch(markdownFile)
             .then(response => {
                 return response.text();
@@ -48,7 +48,7 @@ export default class extends React.Component<any, GuideState> {
     componentWillReceiveProps(nextProps: RouteComponentProps<any>) {
         window.scrollTo(0, 0);
         const guideName = nextProps.match.params.doc || "intro";
-        const markdownFile = Guides[guideName];
+        const markdownFile = Guides[guideName as keyof typeof Guides];
         fetch(markdownFile)
             .then(response => {
                 return response.text();
@@ -69,7 +69,7 @@ export default class extends React.Component<any, GuideState> {
                 <div>
                     <div className="row">
                         <div className="col-md-12">
-                            <Markdown 
+                            <Markdown
                                 source={this.state.markdown}
                                 renderers={{ Code: codeRenderer, CodeBlock: codeBlockRenderer }}
                             />
