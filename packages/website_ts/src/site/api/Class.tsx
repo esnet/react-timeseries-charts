@@ -22,7 +22,7 @@ const Examples = require("../examples/examples.js");
 import { codeRenderer, codeBlockRenderer } from "./renderers";
 import { codeStyle, headingStyle, textStyle, sigStyle } from "./styles";
 
-// tslint:disable:no-any
+
 class Example extends React.Component<any> {
     render() {
         const style = {
@@ -120,7 +120,7 @@ export default class TsClass extends React.Component<any> {
                     });
                 }
             }
-            
+
             return typeArgument ? (
                 <code style={codeStyle}>
                     {`class ${name} extends React.${extendedName}<${typeArgument.join(", ")}>`}

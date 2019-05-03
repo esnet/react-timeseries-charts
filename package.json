@@ -8,7 +8,7 @@
         "@types/moment-timezone": "^0.5.3",
         "lerna": "^2.0.0",
         "prettier": "^1.7.0",
-        "typescript": "^2.7.1"
+        "typescript": "^3.4.5"
     },
     "dependencies": {
         "react-axis": "0.2.5"

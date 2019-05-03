@@ -1,25 +1,37 @@
 {
-    "name": "website",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "react-timeseries-charts": "1.0.0",
-        "pondjs": "1.0.0-alpha.4",
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
-        "react-scripts-ts": "2.13.0"
-    },
-    "scripts": {
-        "start": "react-scripts-ts start",
-        "build": "react-scripts-ts build",
-        "test": "react-scripts-ts test --env=jsdom",
-        "eject": "react-scripts-ts eject"
-    },
-    "devDependencies": {
-        "@types/jest": "^22.1.1",
-        "@types/node": "^9.4.2",
-        "@types/react": "^16.0.36",
-        "@types/react-dom": "^16.0.3",
-        "typescript": "^2.7.1"
-    }
+  "name": "website",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "pondjs": "1.0.0-alpha.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-timeseries-charts": "^1.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.1.1",
+    "@types/node": "^9.4.2",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "react-scripts": "^3.0.0",
+    "typescript": "^3.4.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
