@@ -677,7 +677,7 @@ export class BandChart extends React.Component<BandChartProps> {
         const areas: JSX.Element[] = [];
 
         const styles = [];
-        const event = this.series.eventList().first();
+        const event = this.series.atFirst();
         styles[0] = this.style(column, event, 0); // eslint-disable-line
         styles[1] = this.style(column, event, 1); // eslint-disable-line
         styles[2] = this.style(column, event, 2); // eslint-disable-line
