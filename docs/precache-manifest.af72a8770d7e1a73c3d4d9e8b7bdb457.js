@@ -1,19 +1,19 @@
 self.__precacheManifest = [
   {
-    "revision": "617360b7b46e565a8e91",
-    "url": "/react-timeseries-charts/static/css/main.c78b27a2.chunk.css"
+    "revision": "0abc2bf70755cd21fb7a94232e75c7cc",
+    "url": "/react-timeseries-charts/static/media/cycling_docs.0abc2bf7.md"
   },
   {
-    "revision": "617360b7b46e565a8e91",
-    "url": "/react-timeseries-charts/static/js/main.617360b7.chunk.js"
+    "revision": "f4675af6a2b640f5e3b4",
+    "url": "/react-timeseries-charts/static/css/main.dd59e73f.chunk.css"
   },
   {
-    "revision": "dcb8c10aa25242d47bd4",
-    "url": "/react-timeseries-charts/static/css/1.d5781b35.chunk.css"
+    "revision": "7ece7c4ffdb70b8048f1ed365f5dc5d0",
+    "url": "/react-timeseries-charts/static/media/trend_docs.7ece7c4f.md"
   },
   {
-    "revision": "dcb8c10aa25242d47bd4",
-    "url": "/react-timeseries-charts/static/js/1.dcb8c10a.chunk.js"
+    "revision": "adebdc21f3b208230d03",
+    "url": "/react-timeseries-charts/static/js/1.adebdc21.chunk.js"
   },
   {
     "revision": "171b61a2eed693283f27",
@@ -56,8 +56,8 @@ self.__precacheManifest = [
     "url": "/react-timeseries-charts/static/media/barchart_docs.c7b1c427.md"
   },
   {
-    "revision": "c33125e55285790967b7a7157460bbea",
-    "url": "/react-timeseries-charts/static/media/realtime_docs.c33125e5.md"
+    "revision": "e85adf2e0a1f86ba116800972e1325df",
+    "url": "/react-timeseries-charts/static/media/realtime_docs.e85adf2e.md"
   },
   {
     "revision": "033c51eed22b0283906e65f3e28772cf",
@@ -80,8 +80,8 @@ self.__precacheManifest = [
     "url": "/react-timeseries-charts/static/media/currency_thumbnail.b569b92b.png"
   },
   {
-    "revision": "0abc2bf70755cd21fb7a94232e75c7cc",
-    "url": "/react-timeseries-charts/static/media/cycling_docs.0abc2bf7.md"
+    "revision": "f4675af6a2b640f5e3b4",
+    "url": "/react-timeseries-charts/static/js/main.f4675af6.chunk.js"
   },
   {
     "revision": "7e08437fae558d497f0d83e103e3f85e",
@@ -156,11 +156,11 @@ self.__precacheManifest = [
     "url": "/react-timeseries-charts/static/media/climate_docs.c7298675.md"
   },
   {
-    "revision": "7ece7c4ffdb70b8048f1ed365f5dc5d0",
-    "url": "/react-timeseries-charts/static/media/trend_docs.7ece7c4f.md"
+    "revision": "adebdc21f3b208230d03",
+    "url": "/react-timeseries-charts/static/css/1.f8d9c008.chunk.css"
   },
   {
-    "revision": "67b548ee26e4a56de32c1f03f2bddcec",
+    "revision": "f85ff49d2920f94331f80a4b1b68607a",
     "url": "/react-timeseries-charts/index.html"
   }
 ];
