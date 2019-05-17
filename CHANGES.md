@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.16.0
+## v0.16.1
 
-> Mar 29, 2019
+> May 17, 2019
 
 -   Add ability to specify the title of ChartRow [PR #359](https://github.com/esnet/react-timeseries-charts/pull/359)
 -   Add customized text styling in ValueList.js [#355](https://github.com/esnet/react-timeseries-charts/issues/355)
