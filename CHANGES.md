@@ -13,6 +13,7 @@
 -   Fix for intermittently click event not working on EventChart [PR #369](https://github.com/esnet/react-timeseries-charts/pull/369)
 -   Fix YAxis rerender on tickCount/min/max change [#371](https://github.com/esnet/react-timeseries-charts/issues/371)
 -   Add options modify the vertical axis margin and vertical EventMarker infobox offset [PR #377](https://github.com/esnet/react-timeseries-charts/pull/377)
+-   Fixes the documentation page on Safari [PR #387](https://github.com/esnet/react-timeseries-charts/issues/387)
 -   Create a template for new issues
 
 ## v0.15.5
