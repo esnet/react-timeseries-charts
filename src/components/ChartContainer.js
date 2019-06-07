@@ -697,6 +697,7 @@ ChartContainer.propTypes = {
      * When we use the TimeMarker as a tracker, we can style the box and dot as well.
      */
     trackerStyle: PropTypes.shape({
+        label: PropTypes.object, // eslint-disable-line
         line: PropTypes.object, // eslint-disable-line
         box: PropTypes.object, // eslint-disable-line
         dot: PropTypes.object // eslint-disable-line
