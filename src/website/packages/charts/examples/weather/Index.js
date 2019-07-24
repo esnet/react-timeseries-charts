@@ -178,7 +178,7 @@ class weather extends React.Component {
                                 trackerTimeFormat="%X"
                                 onTrackerChanged={tracker => this.setState({ tracker })}
                             >
-                                <ChartRow height="150">
+                                <ChartRow height="150" fill="ghostwhite">
                                     <YAxis
                                         id="pressure"
                                         label="Pressure (in)"
