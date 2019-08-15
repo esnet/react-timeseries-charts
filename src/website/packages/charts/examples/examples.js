@@ -28,6 +28,7 @@ import volume from "./volume/Index";
 import nyc from "./nyc/Index";
 import climate from "./climate/Index";
 import trend from "./trend/Index";
+import playground from "./playground/Index";
 
 export default {
     ...realtime,
@@ -45,5 +46,6 @@ export default {
     ...volume,
     ...nyc,
     ...climate,
-    ...trend
+    ...trend,
+    ...playground
 };

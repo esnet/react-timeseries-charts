@@ -129,6 +129,9 @@ class App extends Component {
                             <li>
                                 <Link to="/example/climate">Climate example</Link>
                             </li>
+                            <li>
+                                <Link to="/example/playground">Playground</Link>
+                            </li>
                         </ul>
 
                         <div className="sidebar-heading">API</div>

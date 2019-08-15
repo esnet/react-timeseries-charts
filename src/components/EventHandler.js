@@ -184,7 +184,7 @@ export default class EventHandler extends React.Component {
             this.state.initialDragZoom && Math.abs(offsetxy[0] - this.state.initialDragZoom) > 2;
 
         if (this.props.onMouseClick && !isPanning && !isDragging) {
-            this.props.onMouseClick(offsetxy[0], offsetxy[1]);
+            this.props.onMouseClick(offsetxy[0], offsetxy[1], e);
         }
 
         if (this.props.enableDragZoom) {

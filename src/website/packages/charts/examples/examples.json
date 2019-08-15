@@ -147,5 +147,12 @@
             "ScatterChart",
             "EventMarker"
         ]
+    },
+    "playground": {
+        "title": "A playground example that can be modified in any way needed.",
+        "description": "Change all the things!!!",
+        "tags": [
+            "LineChart"
+        ]
     }
 }

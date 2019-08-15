@@ -19,12 +19,13 @@ import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import MultiBrush from "./MultiBrush";
-import ChartRow from "./ChartRow";
 import Charts from "./Charts";
 import EventHandler from "./EventHandler";
 import TimeAxis from "./TimeAxis";
 import TimeMarker from "./TimeMarker";
 import Label from "./Label";
+import ChartRow from "./ChartRow";
+import { ChartRowCssClass } from "./ChartRow";
 
 const defaultTimeAxisStyle = {
     axis: {
@@ -148,10 +149,49 @@ export default class ChartContainer extends React.Component {
         }
     }
 
-    handleBackgroundClick(x, y) {
+    /**
+     * Because we're allowing event bubbling from all Chart DOM elements, it will be necessary to scrutinize DOM
+     * ancestors from the source of the click event to the nearest known DOM parent (either a ChartRow or a
+     * ChartContainer).  If the parent is a ChartRow, we know that the click originated from a chart.  If the parent
+     * is a ChartContainer, we know that the click originated from a background layer and not a chart.
+     *
+     * @param x {Number} - The X coordinate on the page where the click event occurred.
+     * @param y {Number} - The Y coordinate on the page where the click event occurred.
+     * @param event {MouseEvent} - The triggering click event passed along from the EventHandler class.
+     */
+    handleBackgroundClick(x, y, event) {
         if (this.props.onBackgroundClick) {
-            const t = this.props.scale ? this.props.scale.invert(x) : this.timeScale.invert(x);
-            this.props.onBackgroundClick(x, y, t);
+            // Grab the parent DOM element.
+            let parent = event.target.parentNode;
+            let foundAcceptableParentNode = false;
+            // Start looping through ancestor DOM elements to learn where we are in the DOM.
+            do {
+                let parentTagName = parent.className;
+                let parentClassList = parent.classList;
+                if (parentClassList.contains(ChartRowCssClass)) {
+                    // If we run across the ChartRow first, the click originated from a Chart. Kill loop and do NOT
+                    // trigger the onBackgroundClick property.
+                    foundAcceptableParentNode = true;
+                } else if (parent === this.svg) {
+                    // If we run across the main DOM element for the ChartContainer, the click originated from the
+                    // background layer.  Kill loop and trigger the onBackgroundClick property.
+                    const t = this.props.scale
+                        ? this.props.scale.invert(x)
+                        : this.timeScale.invert(x);
+                    this.props.onBackgroundClick(x, y, t);
+                    foundAcceptableParentNode = true;
+                } else if (
+                    parentTagName === "body" ||
+                    parentTagName === "html" ||
+                    parentTagName === "iframe"
+                ) {
+                    // Safeguard.  If we run across the body tag or higher, something is wrong. Kill loop and do NOT
+                    // trigger the onBackgroundClick property.
+                    foundAcceptableParentNode = true;
+                } else {
+                    parent = parent.parentNode;
+                }
+            } while (!foundAcceptableParentNode);
         }
     }
 

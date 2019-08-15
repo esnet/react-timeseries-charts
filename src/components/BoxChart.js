@@ -319,7 +319,6 @@ export default class BoxChart extends React.Component {
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(event);
         }
-        e.stopPropagation();
     }
 
     providedStyleArray(column) {
