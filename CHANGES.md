@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.16.0
+## v0.16.1
 
-> Mar 29, 2019
+> May 17, 2019
 
 -   Add ability to specify the title of ChartRow [PR #359](https://github.com/esnet/react-timeseries-charts/pull/359)
 -   Add customized text styling in ValueList.js [#355](https://github.com/esnet/react-timeseries-charts/issues/355)
@@ -13,6 +13,7 @@
 -   Fix for intermittently click event not working on EventChart [PR #369](https://github.com/esnet/react-timeseries-charts/pull/369)
 -   Fix YAxis rerender on tickCount/min/max change [#371](https://github.com/esnet/react-timeseries-charts/issues/371)
 -   Add options modify the vertical axis margin and vertical EventMarker infobox offset [PR #377](https://github.com/esnet/react-timeseries-charts/pull/377)
+-   Fixes the documentation page on Safari [PR #387](https://github.com/esnet/react-timeseries-charts/issues/387)
 -   Create a template for new issues
 
 ## v0.15.5
