@@ -33,6 +33,12 @@ const defaultTextStyleCentered = {
 };
 
 function mergeStyles(style, isCentered) {
+    if (!style) {
+        return {
+            boxStyle: defaultBoxStyle,
+            labelStyle: isCentered ? defaultTextStyleCentered : defaultTextStyle
+        };
+    }
     return {
         boxStyle: merge(true, defaultBoxStyle, style.box ? style.box : {}),
         labelStyle: merge(
@@ -52,18 +58,18 @@ function mergeStyles(style, isCentered) {
  *      +----------------+
  */
 
-const Label = ({ label, style, align, width, height }) => {
+const Label = ({ label, style, align, width, height, rx }) => {
     const { boxStyle, labelStyle } = mergeStyles(style, align === "center");
 
     const posx = align === "center" ? parseInt(width / 2, 10) : 10;
-
+    console.log(posx, labelStyle);
     const text = (
         <text x={posx} y={5} dy="1.2em" style={labelStyle}>
             {label}
         </text>
     );
 
-    const box = <rect x={0} y={0} style={boxStyle} width={width} height={height} />;
+    const box = <rect x={0} y={0} style={boxStyle} width={width} height={height} rx={rx} />;
 
     return (
         <g>
@@ -77,6 +83,7 @@ Label.defaultProps = {
     align: "center",
     width: 100,
     height: 100,
+    rx: 0,
     pointerEvents: "none"
 };
 
@@ -105,7 +112,12 @@ Label.propTypes = {
     /**
      * The height of the rectangle to render into
      */
-    height: PropTypes.number
+    height: PropTypes.number,
+
+    /**
+     * Rect rounded corner radius
+     */
+    rx: PropTypes.number
 };
 
 export default Label;
