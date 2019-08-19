@@ -70,6 +70,7 @@ class wind extends React.Component {
         hover: null,
         highlight: null,
         selection: null,
+        tracker: null,
         timerange: series.range()
     };
 
@@ -163,13 +164,31 @@ class wind extends React.Component {
                             <ChartContainer
                                 timeRange={this.state.timerange}
                                 timeAxisStyle={timeAxisStyle}
+                                trackerPosition={this.state.tracker}
+                                trackerStyle={{
+                                    box: {
+                                        fill: "black",
+                                        color: "#DDD"
+                                    },
+                                    line: {
+                                        stroke: "red",
+                                        strokeDasharray: 2
+                                    }
+                                }}
                                 maxTime={series.range().end()}
                                 minTime={series.range().begin()}
                                 enablePanZoom={true}
                                 onBackgroundClick={() => this.setState({ selection: null })}
                                 onTimeRangeChanged={timerange => this.setState({ timerange })}
+                                onTrackerChanged={tracker => this.setState({ tracker })}
                             >
-                                <ChartRow height="150" debug={false}>
+                                <ChartRow
+                                    height="150"
+                                    debug={false}
+                                    trackerInfoWidth={125}
+                                    trackerInfoHeight={30}
+                                    trackerInfoValues={infoValues}
+                                >
                                     <YAxis
                                         id="wind-gust"
                                         label="Wind gust (mph)"
@@ -201,14 +220,14 @@ class wind extends React.Component {
                                             series={series}
                                             columns={["station1"]} // {["station1", "station2"]}
                                             style={perEventStyle}
-                                            info={infoValues}
-                                            infoHeight={28}
-                                            infoWidth={110}
-                                            infoOffsetY={10}
-                                            infoStyle={{
-                                                fill: "black",
-                                                color: "#DDD"
-                                            }}
+                                            // info={infoValues}
+                                            // infoHeight={28}
+                                            // infoWidth={110}
+                                            // infoOffsetY={10}
+                                            // infoStyle={{ box: {
+                                            //     fill: "black",
+                                            //     color: "#DDD"
+                                            // }}}
                                             format=".1f"
                                             selected={this.state.selection}
                                             onSelectionChange={p => this.handleSelectionChanged(p)}

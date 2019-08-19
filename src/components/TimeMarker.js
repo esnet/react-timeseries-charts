@@ -70,7 +70,7 @@ export default class TimeMarker extends React.Component {
 
         const infoBoxProps = {
             align: "left",
-            style: this.props.infoStyle.box,
+            style: this.props.infoStyle,
             width: this.props.infoWidth,
             height: this.props.infoHeight
         };
