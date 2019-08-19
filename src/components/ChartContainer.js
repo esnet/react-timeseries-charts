@@ -424,13 +424,13 @@ export default class ChartContainer extends React.Component {
                     <TimeMarker
                         width={chartsWidth}
                         height={chartsHeight}
-                        showInfoBox={false}
+                        showInfoBox={!!this.props.trackerValues}
                         time={this.props.trackerPosition}
                         timeScale={timeScale}
                         timeFormat={this.props.format}
                         infoWidth={this.props.trackerHintWidth}
                         infoHeight={this.props.trackerHintHeight}
-                        info={this.props.trackerValues}
+                        infoValues={this.props.trackerValues}
                         infoStyle={trackerStyle}
                     />
                 </g>
