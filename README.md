@@ -32,20 +32,24 @@ This charts library is intended to be installed with [npm](https://www.npmjs.com
 
 Once installed, you can import the necessary components from the library:
 
-    import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
+```js
+import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
+```
 
 Then we construct our chart in the `render()` function of our component. For a simple example we create a chart with two line charts on it, specified in JSX:
 
-    <ChartContainer timeRange={series1.timerange()} width={800}>
-        <ChartRow height="200">
-            <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
-            <Charts>
-                <LineChart axis="axis1" series={series1}/>
-                <LineChart axis="axis2" series={series2}/>
-            </Charts>
-            <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
-        </ChartRow>
-    </ChartContainer>
+```jsx
+<ChartContainer timeRange={series1.timerange()} width={800}>
+    <ChartRow height="200">
+        <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
+        <Charts>
+            <LineChart axis="axis1" series={series1}/>
+            <LineChart axis="axis2" series={series2}/>
+        </Charts>
+        <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
+    </ChartRow>
+</ChartContainer>
+```
 
 At the outer most layer, we add a `<ChartContainer>` which contains our time range for the x-axis. All charts within a ChartContainer share the same x-axis. In this case we get the TimeRange from the TimeSeries itself, but you could specify one yourself. You also need to provide a width for the chart, or wrap the chart in a `<Resizable>` component and that will inject a width for you.
 
@@ -70,22 +74,23 @@ For the purpose of using the charting library, you need to create a `TimeSeries`
 
 For example:
 
-    import { TimeSeries, TimeRange } from "pondjs";
+```jsx
+import { TimeSeries, TimeRange } from "pondjs";
 
-    const data = {
-        name: "traffic",
-        columns: ["time", "in", "out"],
-        points: [
-            [1400425947000, 52, 41],
-            [1400425948000, 18, 45],
-            [1400425949000, 26, 49],
-            [1400425950000, 93, 81],
-            ...
-        ]
-    };
+const data = {
+    name: "traffic",
+    columns: ["time", "in", "out"],
+    points: [
+        [1400425947000, 52, 41],
+        [1400425948000, 18, 45],
+        [1400425949000, 26, 49],
+        [1400425950000, 93, 81],
+        ...
+    ]
+};
 
-    const timeseries = new TimeSeries(data);
-
+const timeseries = new TimeSeries(data);
+```
 
 Generally `columns` must have 'time' as the first column (see the Pond.js docs for other options), and `points` is of the format:
 
@@ -95,11 +100,15 @@ Note that there are several ways to construct a TimeSeries. The above is what we
 
 To specify a ChartContainer you also need to provide the time range to plot on the x-axis. This is done with a pond.js `TimeRange`. You could either get the TimeRange from the TimeSeries directly:
 
-    var timerange = timeseries.timerange()
+```js
+var timerange = timeseries.timerange()
+```
 
 Or construct a new one:
 
-    var timerange = new TimeRange([begin, end]);
+```js
+var timerange = new TimeRange([begin, end]);
+```
 
 where `begin` and `end` are times (Javascript Dates, usually).
 
