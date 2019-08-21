@@ -348,6 +348,7 @@ export default class YAxis extends React.Component {
             .remove();
 
         // Add the new axis
+        console.log(valueStyle);
         this.axis = select(ReactDOM.findDOMNode(this))
             .append("g")
             .attr("transform", `translate(${x},0)`)

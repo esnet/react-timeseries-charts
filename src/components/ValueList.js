@@ -52,7 +52,7 @@ function mergeStyles(style, isCentered) {
  *      +----------------+
  */
 const ValueList = props => {
-    const { align, style, width, height } = props;
+    const { align, style, width, height, rx } = props;
     const { boxStyle, labelStyle } = mergeStyles(style, align === "center");
 
     if (!props.values.length) {
@@ -82,7 +82,7 @@ const ValueList = props => {
         );
     });
 
-    const box = <rect style={boxStyle} x={0} y={0} width={width} height={height} />;
+    const box = <rect style={boxStyle} x={0} y={0} width={width} height={height} rx={rx} />;
 
     return (
         <g>
@@ -97,7 +97,8 @@ ValueList.defaultProps = {
     width: 100,
     height: 100,
     pointerEvents: "none",
-    style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 }
+    style: { fill: "#FEFEFE", stroke: "#DDD", opacity: 0.8 },
+    rx: 0
 };
 
 ValueList.propTypes = {
@@ -122,6 +123,9 @@ ValueList.propTypes = {
 
     /**
      * CSS object to be applied to the ValueList surrounding box and the label (text).
+     * It should be an object containing two fields: `label` which is a CSS object
+     * that contains inline styling for the labels themselves, and `box` which is also
+     * a CSS object that contains inline styling for the box surrounding the value list
      */
     style: PropTypes.object, // eslint-disable-line
 
@@ -133,7 +137,12 @@ ValueList.propTypes = {
     /**
      * The height of the rectangle to render into
      */
-    height: PropTypes.number
+    height: PropTypes.number,
+
+    /**
+     * Rect rounded corner radius
+     */
+    rx: PropTypes.number
 };
 
 export default ValueList;

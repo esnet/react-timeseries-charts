@@ -38,7 +38,7 @@ export default class TimeMarker extends React.Component {
             textAnchor: "left",
             fill: "#bdbdbd"
         };
-
+        console.log("Format time:", this.props.timeFormat);
         let dateStr = `${d}`;
         if (this.props.timeFormat === "day") {
             const formatter = timeFormat("%d");
@@ -52,6 +52,7 @@ export default class TimeMarker extends React.Component {
         } else if (this.props.timeFormat === "relative") {
             dateStr = moment.duration(+d).format();
         } else if (_.isString(this.props.timeFormat)) {
+            console.log("Formatting with", this.props.timeFormat);
             const formatter = timeFormat(this.props.timeFormat);
             dateStr = formatter(d);
         } else if (_.isFunction(this.props.timeFormat)) {
@@ -228,5 +229,6 @@ TimeMarker.defaultProps = {
         }
     },
     infoWidth: 90,
-    infoHeight: 25
+    infoHeight: 25,
+    timeFormat: "%B %d, %Y %X"
 };
