@@ -11,7 +11,7 @@ Here we build an `EventChart`.
                 <EventChart
                     series={series}
                     style={(outageEventStyleCB)}
-                    label={e => e.get("title")} />
+                    label={(e, state) => state === 'hover' ? e.get("title") : ''} />
             </Charts>
         </ChartRow>
     </ChartContainer>

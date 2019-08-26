@@ -131,7 +131,9 @@ const outages = createReactClass({
                                             series={series}
                                             size={45}
                                             style={outageEventStyleFunc}
-                                            label={e => e.get("title")}
+                                            label={(e, state) =>
+                                                state === "hover" ? e.get("title") : ""
+                                            }
                                         />
                                     </Charts>
                                 </ChartRow>
