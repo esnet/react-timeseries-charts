@@ -94,7 +94,7 @@ export default class EventChart extends React.Component {
                 if (_.isString(this.props.label)) {
                     label = this.props.label;
                 } else if (_.isFunction(this.props.label)) {
-                    label = this.props.label(event);
+                    label = this.props.label(event, state);
                 }
             }
 
@@ -110,7 +110,7 @@ export default class EventChart extends React.Component {
             };
 
             let text = null;
-            if (isHover) {
+            if (isHover || _.isFunction(this.props.label)) {
                 text = (
                     <g>
                         <rect
