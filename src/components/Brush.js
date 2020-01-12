@@ -381,7 +381,6 @@ export default class Brush extends React.Component {
     }
 
     render() {
-        //onMouseMove={this.handleMouseMove}
         return (
             <g onMouseMove={this.handleMouseMove} onTouchMove={this.handleMouseMove}>
                 {this.renderOverlay()}
