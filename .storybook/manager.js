@@ -1,6 +1,6 @@
 import { addons } from "@storybook/addons";
-import yourTheme from "./yourTheme";
+import theme from "./esnet";
 
 addons.setConfig({
-    theme: yourTheme
+    theme
 });
