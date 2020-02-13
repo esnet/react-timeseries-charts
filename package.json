@@ -1,99 +1,77 @@
 {
-  "name": "react-timeseries-charts",
-  "version": "0.16.0",
-  "description": "Declarative timeseries charts",
-  "keywords": [
-    "d3",
-    "charts",
-    "react",
-    "timeseries"
-  ],
-  "homepage": "http://software.es.net/react-timeseries-charts",
-  "main": "lib/entry",
-  "author": "ESnet Tools Team <tools@es.net>",
-  "repository": "esnet/react-timeseries-charts",
-  "bugs": {
-    "url": "https://github.com/esnet/react-timeseries-charts/issues"
-  },
-  "scripts": {
-    "docs": "echo \"*** Building API docs\n\" && react-docgen src/components -x js -o src/website/packages/charts/api/docs.json --pretty",
-    "lint": "eslint src/components/*.js",
-    "test": "npm run lint",
-    "build": "echo \"*** Building lib\n\" && rm -rf lib/* && babel src/components --optional runtime --stage 0 --out-dir lib/components && babel src/js --optional runtime --stage 0 --out-dir lib/js && babel src/entry.js --optional runtime --stage 0 --out-file lib/entry.js",
-    "start-website": "react-scripts start",
-    "build-website": "echo \"*** Building website\n\" && rm -rf docs && react-scripts build && mv build docs",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "src/**/*.js": [
-      "prettier --print-width 100 --tab-width 4 --write 'src/**/*.js'",
-      "git add"
-    ]
-  },
-  "license": "BSD-3-Clause-LBNL",
-  "dependencies": {
-    "array.prototype.fill": "^1.0.1",
-    "babel-runtime": "^6.23.0",
-    "colorbrewer": "^1.0.0",
-    "d3-axis": "^1.0.8",
-    "d3-ease": "^1.0.3",
-    "d3-format": "^1.2.0",
-    "d3-interpolate": "^1.1.5",
-    "d3-scale": "^1.0.6",
-    "d3-scale-chromatic": "^1.1.1",
-    "d3-selection": "^1.1.0",
-    "d3-selection-multi": "^1.0.1",
-    "d3-shape": "^1.2.0",
-    "d3-time": "^1.0.7",
-    "d3-time-format": "^2.0.5",
-    "d3-transition": "^1.1.0",
-    "dom-resize": "^1.0.3",
-    "invariant": "^2.1.1",
-    "merge": "^1.2.0",
-    "moment": "^2.18.1",
-    "moment-duration-format": "^1.3.0",
-    "prop-types": "^15.5.10",
-    "react-hot-loader": "4.1.2",
-    "underscore": "^1.8.3"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.5.1",
-    "babel-core": "^6.25.0",
-    "babel-eslint": "9.0.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "create-react-class": "^15.6.2",
-    "dsv-loader": "^2.0.0",
-    "eslint": "5.6.0",
-    "eslint-config-react-app": "^1.0.5",
-    "eslint-plugin-flowtype": "^2.33.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react": "^7.0.1",
-    "husky": "^1.1.3",
-    "lint-staged": "^3.4.0",
-    "pondjs": "^0.8.8",
-    "prettier": "^1.9.2",
-    "raw-loader": "^0.5.1",
-    "react": "^16.2.0",
-    "react-docgen": "^4.1.0",
-    "react-dom": "^16.2.0",
-    "react-markdown": "^2.4.4",
-    "react-router": "^3.2.0",
-    "react-scripts": "^2.1.1",
-    "react-select": "^1.1.0",
-    "ringjs": "0.0.1"
-  },
-  "peerDependencies": {
-    "pondjs": "^0.8.0",
-    "react": "^15.3.1 || ^16.0"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+    "name": "react-timeseries-charts",
+    "version": "1.0.0",
+    "description": "",
+    "main": "build/index.js",
+    "module": "build/index.es.js",
+    "jsnext:main": "build/index.es.js",
+    "scripts": {
+        "build": "rollup -c",
+        "lint": "standard",
+        "format": "prettier-standard --format",
+        "test": "jest --coverage",
+        "storybook": "start-storybook"
+    },
+    "keywords": [
+        "react",
+        "forms"
+    ],
+    "author": "ESnet Software Engineering Group",
+    "license": "BSD",
+    "devDependencies": {
+        "@babel/core": "^7.8.4",
+        "@storybook/react": "^5.3.13",
+        "@testing-library/jest-dom": "^5.1.1",
+        "@testing-library/react": "^9.4.0",
+        "@types/classnames": "^2.2.9",
+        "@types/invariant": "^2.2.31",
+        "@types/jest": "^25.1.2",
+        "@types/lodash": "^4.14.149",
+        "awesome-typescript-loader": "^5.2.1",
+        "babel-loader": "^8.0.6",
+        "jest": "^25.1.0",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0",
+        "rollup": "^1.31.0",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-css-only": "^2.0.0",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-peer-deps-external": "^2.2.2",
+        "rollup-plugin-typescript2": "^0.26.0",
+        "standard": "^14.3.1",
+        "standard-prettier": "^1.0.1",
+        "ts-jest": "^25.2.0",
+        "typescript": "^3.7.5"
+    },
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "jsdom",
+        "testPathIgnorePatterns": [
+            "build/"
+        ]
+    },
+    "standard": {
+        "ignore": [
+            "node_modules/",
+            "build/"
+        ],
+        "globals": [
+            "describe",
+            "it",
+            "test",
+            "expect",
+            "afterAll",
+            "jest"
+        ]
+    },
+    "peerDependencies": {
+        "react": "^16",
+        "react-dom": "^16"
+    },
+    "dependencies": {
+        "@storybook/theming": "^5.3.13",
+        "classnames": "^2.2.6",
+        "invariant": "^2.2.4",
+        "lodash": "^4.17.15"
+    }
 }
