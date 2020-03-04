@@ -295,7 +295,7 @@ export default class AreaChart extends React.Component {
 
                     // Case 1:
                     // When stacking is present with multiple area charts, then mark bad points as 0
-                    if (len > 1) {
+                    if (len > 1 && this.props.stack) {
                         if (!currentPoints) currentPoints = [];
                         currentPoints.push({
                             x0: this.props.timeScale(seriesPoint.timestamp()),
