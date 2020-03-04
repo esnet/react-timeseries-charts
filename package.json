@@ -19,20 +19,23 @@
     "author": "ESnet Software Engineering Group",
     "license": "BSD",
     "devDependencies": {
-        "@babel/core": "^7.8.4",
-        "@storybook/react": "^5.3.13",
+        "@babel/core": "^7.8.6",
+        "@storybook/react": "^5.3.14",
         "@testing-library/jest-dom": "^5.1.1",
-        "@testing-library/react": "^9.4.0",
+        "@testing-library/react": "^9.5.0",
         "@types/classnames": "^2.2.9",
+        "@types/d3-scale": "^2.1.1",
         "@types/invariant": "^2.2.31",
         "@types/jest": "^25.1.2",
         "@types/lodash": "^4.14.149",
+        "@storybook/theming": "^5.3.14",
+        "@types/moment-timezone": "^0.5.12",
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.0.6",
         "jest": "^25.1.0",
-        "react": "^16.12.0",
-        "react-dom": "^16.12.0",
-        "rollup": "^1.31.0",
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0",
+        "rollup": "^1.32.0",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-css-only": "^2.0.0",
         "rollup-plugin-node-resolve": "^5.2.0",
@@ -40,8 +43,9 @@
         "rollup-plugin-typescript2": "^0.26.0",
         "standard": "^14.3.1",
         "standard-prettier": "^1.0.1",
-        "ts-jest": "^25.2.0",
-        "typescript": "^3.7.5"
+        "ts-jest": "^25.2.1",
+        "tslint": "^6.0.0",
+        "typescript": "^3.8.3"
     },
     "jest": {
         "preset": "ts-jest",
@@ -69,9 +73,10 @@
         "react-dom": "^16"
     },
     "dependencies": {
-        "@storybook/theming": "^5.3.13",
         "classnames": "^2.2.6",
+        "d3-scale": "^3.2.1",
         "invariant": "^2.2.4",
-        "lodash": "^4.17.15"
+        "lodash": "^4.17.15",
+        "pondjs": "1.0.0-alpha.10"
     }
 }
