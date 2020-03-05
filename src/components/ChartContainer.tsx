@@ -5,7 +5,7 @@ import React, { ReactElement, useRef } from "react";
 import { TimeAxisStyle } from "../style";
 import { LabelValueList, ShowGridPosition } from "../types";
 import ChartRow, { ChartRowProps } from "./ChartRow";
-import { Charts } from "./Charts";
+import { Charts } from "./charts/Charts";
 
 export type TimeFormat = "second" | "hour" | "day" | "month" | "year";
 
@@ -485,8 +485,11 @@ const ChartContainer: React.FunctionComponent<ChartContainerProps> = (
         >
             {/* {title} */}
             {rows}
-            {/* {tracker}
-            {timeAxis} */}
+
+            {/*
+            {tracker}
+            {timeAxis}
+            */}
         </svg>
     ) : (
         <svg
@@ -496,10 +499,11 @@ const ChartContainer: React.FunctionComponent<ChartContainerProps> = (
             ref={svg}
         >
             {rows}
+
             {/*             
             {title}
-            {timeAxis}
             {rows}
+            {timeAxis}
             {tracker} */}
         </svg>
     );

@@ -1,8 +1,9 @@
 import _ from "lodash";
+import { ScalerFunction } from "../components/ChartRow";
 import { Scale, ScaleFunction } from "../types";
-import { AnimationCallback } from "./ChartRow";
 
 export type Remapper = (v: number) => number;
+export type AnimationCallback = (f: ScalerFunction) => any;
 
 export default class ScaleInterpolator {
     private initialTimestamp: number | null;
@@ -22,6 +23,7 @@ export default class ScaleInterpolator {
         this.targetScale;
         this.cachedScaler;
         this.cacheKey;
+        console.log("ScaleInterpolator", this.transitionTime);
     }
 
     update() {
@@ -41,6 +43,7 @@ export default class ScaleInterpolator {
             ? Math.min(animationTime / this.transitionTime, 1.0)
             : 1.0;
 
+        console.log("...", animationPosition);
         // Call the callback with a new scaler function composed together
         // from the source and target scales, along with the interpolation position
         // driven by the easing function. The supplier of the callback can use the
@@ -72,7 +75,7 @@ export default class ScaleInterpolator {
     /**
      * A new (or initial) scale is set on the interpolator
      */
-    setScale(key: string, scale: Scale) {
+    setTargetScale(key: string, scale: Scale) {
         // Initial scale
         if (!this.sourceScale) {
             this.sourceScale = scale;
@@ -103,15 +106,26 @@ export default class ScaleInterpolator {
      * be used to scale data to the intermediate state.
      */
     scaler(): Remapper | undefined {
+        console.log(
+            "     called scaler on interpolation",
+            this.sourceScale?.range(),
+            " -->",
+            this.sourceScale?.domain()
+        );
+
         if (!this.sourceScale) {
             return;
         }
 
-        if (_.isNull(this.cachedScaler)) {
+        if (_.isUndefined(this.cachedScaler)) {
+            console.log("Cached scaler MISS");
             const scaled = this.sourceScale;
             const mapper = (v: number) => scaled(v);
             this.cachedScaler = mapper;
+        } else {
+            console.log("Cached scaler HIT", this.cachedScaler);
         }
+
         return this.cachedScaler;
     }
 

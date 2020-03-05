@@ -21,14 +21,15 @@
     "devDependencies": {
         "@babel/core": "^7.8.6",
         "@storybook/react": "^5.3.14",
+        "@storybook/theming": "^5.3.14",
         "@testing-library/jest-dom": "^5.1.1",
         "@testing-library/react": "^9.5.0",
         "@types/classnames": "^2.2.9",
+        "@types/d3-ease": "^1.0.9",
         "@types/d3-scale": "^2.1.1",
         "@types/invariant": "^2.2.31",
         "@types/jest": "^25.1.2",
         "@types/lodash": "^4.14.149",
-        "@storybook/theming": "^5.3.14",
         "@types/moment-timezone": "^0.5.12",
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.0.6",
@@ -73,7 +74,10 @@
         "react-dom": "^16"
     },
     "dependencies": {
+        "@vx/axis": "^0.0.195",
+        "@vx/scale": "^0.0.195",
         "classnames": "^2.2.6",
+        "d3-ease": "^1.0.6",
         "d3-scale": "^3.2.1",
         "invariant": "^2.2.4",
         "lodash": "^4.17.15",

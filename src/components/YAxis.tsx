@@ -117,6 +117,8 @@ export type YAxisProps = ChartRowProps & {
      * then you can use this, but the UX not be ideal.
      */
     showGrid?: boolean;
+
+    transition?: number;
 };
 
 /**

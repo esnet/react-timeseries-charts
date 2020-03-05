@@ -8,13 +8,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { ScaleTime } from "d3-scale";
+import { scaleLinear, scaleLog, scalePow, ScaleTime } from "d3-scale";
 import _ from "lodash";
 import { TimeRange } from "pondjs";
-import React, { useState } from "react";
-import { ElementMap, LabelValueList } from "../types";
-import { ChartProps, Charts, ChartsProps } from "./Charts";
-import ScaleInterpolator from "./scaleInterpolator";
+import React from "react";
+import { ElementMap, LabelValueList, Scale, ScaleType } from "../types";
+import ScaleInterpolator from "../util/scaleInterpolator";
+import { AxisProps, ChartProps, Charts, ChartsProps } from "./charts/Charts";
 import { YAxis } from "./YAxis";
 
 //
@@ -24,42 +24,41 @@ import { YAxis } from "./YAxis";
 /**
  * Given an axis props create a d3 scale
  */
-// function createScale(
-//     yaxis: React.ReactElement<any>,
-//     type: string,
-//     min: number,
-//     max: number,
-//     y0: number,
-//     y1: number
-// ): Scale | null {
-//     if (_.isUndefined(min) || _.isUndefined(max)) {
-//         return null;
-//     }
-//     switch (type.toUpperCase()) {
-//         case ScaleType.Linear:
-//             return scaleLinear()
-//                 .domain([min, max])
-//                 .range([y0, y1])
-//                 .nice();
-//         case ScaleType.Log:
-//             const base = yaxis.props.logBase || 10;
-//             return scaleLog()
-//                 .base(base)
-//                 .domain([min, max])
-//                 .range([y0, y1]);
-//         case ScaleType.Power:
-//             const power = yaxis.props.powerExponent || 2;
-//             return scalePow()
-//                 .exponent(power)
-//                 .domain([min, max])
-//                 .range([y0, y1]);
-//         default:
-//             throw new Error(`Unknown scale provided: ${type}`);
-//     }
-// }
+function createScale(
+    yaxis: React.ReactElement<any>,
+    type: string,
+    min: number,
+    max: number,
+    y0: number,
+    y1: number
+): Scale | null {
+    if (_.isUndefined(min) || _.isUndefined(max)) {
+        return null;
+    }
+    switch (type.toUpperCase()) {
+        case ScaleType.Linear:
+            return scaleLinear()
+                .domain([min, max])
+                .range([y0, y1])
+                .nice();
+        case ScaleType.Log:
+            const base = yaxis.props.logBase || 10;
+            return scaleLog()
+                .base(base)
+                .domain([min, max])
+                .range([y0, y1]);
+        case ScaleType.Power:
+            const power = yaxis.props.powerExponent || 2;
+            return scalePow()
+                .exponent(power)
+                .domain([min, max])
+                .range([y0, y1]);
+        default:
+            throw new Error(`Unknown scale provided: ${type}`);
+    }
+}
 
 export type ScalerFunction = (v: number) => number;
-export type AnimationCallback = (f: ScalerFunction) => any;
 
 export interface ChartRowProps {
     children?: any;
@@ -179,10 +178,7 @@ export interface ChartRowProps {
 }
 
 // XXX this was originally an instance variable
-const scaleInterpolatorMap: { [key: string]: ScaleInterpolator } = {};
-
-// XXX this was moved out of state to here
-const yAxisScalerMap: { [key: string]: ScalerFunction } = {};
+let scaleInterpolatorMap: { [key: string]: ScaleInterpolator } = {};
 
 /**
  * A ChartRow is a container for a set of YAxis and multiple charts
@@ -213,11 +209,16 @@ const yAxisScalerMap: { [key: string]: ScalerFunction } = {};
  * ```
  */
 const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) => {
+    // Component State
+    const clipId = _.uniqueId("clip_");
+    const clipPathURL = `url(#${clipId})`;
+
+    // Component Props
     const {
         //trackerTimeFormat = "%b %d %Y %X",
         //enablePanZoom = false,
-        height = 100,
         //visible = true,
+        height = 100,
         paddingLeft = 0,
         paddingRight = 0,
         axisMargin = 15,
@@ -228,18 +229,36 @@ const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) 
         timeFormat
     } = props;
 
-    console.log("Rendering ChartRow");
+    // Build a map of YAxis ids -> Scales
+    const scaleMap: { [key: string]: Scale } = {};
+    const innerHeight = +height - axisMargin * 2;
+    const rangeTop = axisMargin;
+    const rangeBottom = innerHeight - axisMargin;
+    React.Children.forEach(props.children, (child: React.ReactElement<any>) => {
+        if (child === null) return;
+        if (child.type === YAxis) {
+            const { id, max, min, type = ScaleType.Linear } = child.props as AxisProps;
 
+            // Get the scale for this YAxis.
+            let scale: Scale | null;
+            if (_.has(child.props, "yScale")) {
+                // If the yScale prop is passed explicitly, use that.
+                scale = child.props.yScale;
+            } else {
+                // Otherwise, compute the scale based on the max and min props.
+                scale = createScale(child, type, min, max, rangeBottom, rangeTop);
+            }
+
+            if (scale) {
+                scaleMap[id] = scale;
+            }
+        }
+    });
+
+    // Make sure we have some key props passed down from the ChartContainer
     if (!leftAxisWidths || !rightAxisWidths || !width) {
         return <g>`A ChartRow should be constructed inside a ChartContainer`</g>;
     }
-
-    // Store our clip path on the state
-    const [clipId] = useState(_.uniqueId("clip_"));
-    const [clipPathURL] = useState(`url(#${clipId})`);
-
-    // XXX
-    console.log(clipId, clipPathURL);
 
     // Utility to tell us if a given ReactElement is a YAxis
     const isChildYAxis = (child: React.ReactElement<any>) =>
@@ -250,22 +269,8 @@ const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) 
     // Contains all the yAxis elements used in the render
     const axes = [];
 
-    // Contains all the Chart elements used in the render
-    const chartList: JSX.Element[] = [];
-
-    // Dimensions
-    const innerHeight = +height - axisMargin * 2;
-
     //
-    // Build a map of elements that occupy left or right slots next to the
-    // chart.
-    //
-    // If an element has both and id and a min/max range, then we consider
-    // it to be a YAxis. For those we calculate a d3 scale that can be
-    // reference by a chart. That scale will also be available to the axis
-    // itself when it renders.
-    //
-    // For this row, we will need to know how many axis slots we are using.
+    // Build a map of elements that occupy left or right slots next to the chart.
     //
 
     const yAxisMap: ElementMap = {}; // Maps axis id -> axis element
@@ -383,16 +388,16 @@ const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) 
     // current value is stored in the component state.
     //
     const chartTransform = `translate(${leftWidth + paddingLeft},0)`;
-    console.log(chartTransform);
     let k = 0;
+    const chartList: JSX.Element[] = [];
     React.Children.forEach(props.children, (child: React.ReactElement<ChartsProps>) => {
         if (child === null) return;
         if (isChildCharts(child)) {
             const charts = child;
             React.Children.forEach(charts.props.children, (chart: React.ReactElement<any>) => {
                 let scale = null;
-                if (_.has(yAxisScalerMap, chart.props.axis)) {
-                    scale = yAxisScalerMap[chart.props.axis];
+                if (_.has(scaleMap, chart.props.axis)) {
+                    scale = scaleMap[chart.props.axis];
                 }
 
                 const chartProps: Partial<ChartProps> = {
@@ -407,17 +412,6 @@ const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) 
                     chartProps.yScale = scale;
                 }
 
-                // XXX transition was added to the chart, but types don't match so I don't think
-                //     it behaved as expected. So removed it for now...
-                // let ytransition = null;
-                // if (_.has(scaleInterpolatorMap, chart.props.axis)) {
-                //     ytransition = scaleInterpolatorMap[chart.props.axis];
-                // }
-
-                // if (ytransition) {
-                //     chartProps.transition = ytransition;
-                // }
-
                 chartList.push(React.cloneElement(chart, chartProps));
                 k += 1;
             });
@@ -425,7 +419,7 @@ const ChartRow: React.FunctionComponent<ChartRowProps> = (props: ChartRowProps) 
     });
 
     const charts = (
-        <g transform={chartTransform} key="event-rect-group">
+        <g transform={chartTransform} key="charts-group">
             <g key="charts" clipPath={clipPathURL}>
                 {chartList}
             </g>

@@ -10,7 +10,7 @@
 
 import { ScaleLinear, ScaleLogarithmic, ScaleTime } from "d3-scale";
 import * as React from "react";
-import { ScaleFunction } from "../types";
+import { ScaleFunction } from "../../types";
 
 //
 // Axis types
@@ -69,7 +69,6 @@ export type ChartProps = {
     yScale?: ScaleFunction;
 
     timeFormat?: string | ((...args: any[]) => any);
-    transition?: number;
 };
 
 //
