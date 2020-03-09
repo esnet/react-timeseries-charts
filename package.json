@@ -1,7 +1,8 @@
 {
     "name": "react-timeseries-charts",
     "version": "1.0.0",
-    "description": "",
+    "description": "Charts library concentrating of timeseries data for React",
+    "engine": "10.17.0",
     "main": "build/index.js",
     "module": "build/index.es.js",
     "jsnext:main": "build/index.es.js",
@@ -10,7 +11,9 @@
         "lint": "standard",
         "format": "prettier-standard --format",
         "test": "jest --coverage",
-        "storybook": "start-storybook"
+        "storybook": "start-storybook",
+        "build-storybook": "build-storybook",
+        "chromatic": "CHROMATIC_APP_CODE=by4fmk54fc9 chromatic"
     },
     "keywords": [
         "react",
@@ -24,11 +27,11 @@
         "@storybook/theming": "^5.3.14",
         "@testing-library/jest-dom": "^5.1.1",
         "@testing-library/react": "^9.5.0",
-        "@types/classnames": "^2.2.9",
+        "@types/classnames": "^2.2.10",
         "@types/d3-ease": "^1.0.9",
-        "@types/d3-scale": "^2.1.1",
+        "@types/d3-scale": "^2.2.0",
         "@types/invariant": "^2.2.31",
-        "@types/jest": "^25.1.2",
+        "@types/jest": "^25.1.4",
         "@types/lodash": "^4.14.149",
         "@types/moment-timezone": "^0.5.12",
         "awesome-typescript-loader": "^5.2.1",
@@ -44,6 +47,7 @@
         "rollup-plugin-typescript2": "^0.26.0",
         "standard": "^14.3.1",
         "standard-prettier": "^1.0.1",
+        "storybook-chromatic": "^3.5.2",
         "ts-jest": "^25.2.1",
         "tslint": "^6.0.0",
         "typescript": "^3.8.3"
