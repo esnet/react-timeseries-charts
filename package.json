@@ -9,8 +9,8 @@
     "scripts": {
         "build": "rollup -c",
         "lint": "standard",
+        "test": "./chromatic.sh",
         "format": "prettier-standard --format",
-        "test": "jest --coverage",
         "storybook": "start-storybook",
         "build-storybook": "build-storybook",
         "chromatic": "CHROMATIC_APP_CODE=by4fmk54fc9 chromatic"
