@@ -12,7 +12,7 @@ import { Tick } from "./Tick";
 import durationFormatter from "./util/duration-format";
 import timeFormatter from "./util/time-format";
 
-import "./Axis.css";
+// import "./Axis.css";
 
 const durationSecond = 1000;
 const durationMinute = durationSecond * 60;
@@ -170,7 +170,7 @@ export class TimeAxis extends React.Component<TimeAxisProps> {
         const labelStyle = _.merge(
             true,
             defaultTimeAxisStyle.label,
-            this.props.style.label ? this.props.style.label : {}
+            style && style.label ? style.label : {}
         );
         let translate;
         let rotate = `rotate(0)`;
