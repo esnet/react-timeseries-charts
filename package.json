@@ -20,7 +20,7 @@
         "forms"
     ],
     "author": "ESnet Software Engineering Group",
-    "license": "BSD",
+    "license": "BSD-3-Clause-LBNL",
     "devDependencies": {
         "@babel/core": "^7.8.6",
         "@storybook/react": "^5.3.14",
