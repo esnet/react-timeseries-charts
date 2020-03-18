@@ -6,6 +6,7 @@ import { TimeAxisStyle } from "../style";
 import { LabelValueList, ShowGridPosition } from "../types";
 import ChartRow, { ChartRowProps } from "./ChartRow";
 import { Charts } from "./charts/Charts";
+import { TimeAxis } from './Axis/TimeAxis'
 
 export type TimeFormat = "second" | "hour" | "day" | "month" | "year";
 
@@ -464,7 +465,30 @@ const ChartContainer: React.FunctionComponent<ChartContainerProps> = (
     //
     // TimeAxis
     //
-    console.log(chartsHeight);
+    const timeAxis = (
+            <g transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight + chartsHeight})`}>
+                 <line
+                    x1={-leftWidth}
+                    y1={0.5}
+                    x2={chartsWidth + rightWidth}
+                    y2={0.5}
+                    style={chartAxisStyle}
+                />
+                <TimeAxis
+                    timezone={timezone}
+                    position="bottom"
+                    beginTime={new Date(this.props.timeRange.begin().getTime())}
+                    endTime={new Date(this.props.timeRange.end().getTime())}
+                    width={timeAxisWidth}
+                    margin={0}
+                    height={50}
+                    tickExtend={tickSize}
+                    style={timeAxisStyle}
+                    format={this.props.timeFormat}
+                    angled={this.props.timeAxisAngledLabels}
+                />
+            </g>
+        );
 
     //
     // Event handler XXX Wrap in EventHandler
@@ -488,8 +512,8 @@ const ChartContainer: React.FunctionComponent<ChartContainerProps> = (
 
             {/*
             {tracker}
-            {timeAxis}
             */}
+            {timeAxis}
         </svg>
     ) : (
         <svg
@@ -500,11 +524,11 @@ const ChartContainer: React.FunctionComponent<ChartContainerProps> = (
         >
             {rows}
 
-            {/*             
+            {/*
             {title}
             {rows}
-            {timeAxis}
             {tracker} */}
+            {timeAxis}
         </svg>
     );
 };
