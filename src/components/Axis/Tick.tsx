@@ -144,8 +144,6 @@ export class Tick extends React.Component<TickProps> {
     renderVerticalTick(
         id: string,
         label: string,
-        // TODO:
-        labelPosition: number,
         size: number,
         tickExtend: number,
         isTop: boolean
@@ -182,8 +180,6 @@ export class Tick extends React.Component<TickProps> {
     renderHorizontalTick(
         id: string,
         label: string,
-        // TODO:
-        labelPosition: number,
         size: number,
         tickExtend: number,
         isLeft: boolean
@@ -236,28 +232,14 @@ export class Tick extends React.Component<TickProps> {
             const transform = `translate(${position}px, ${align === "top" ? height : 0}px)`;
             return (
                 <g style={smoothTransition ? { transform, transition } : { transform }}>
-                    {this.renderVerticalTick(
-                        id,
-                        label,
-                        position,
-                        size,
-                        tickExtend,
-                        align === "top"
-                    )}
+                    {this.renderVerticalTick(id, label, size, tickExtend, align === "top")}
                 </g>
             );
         } else {
             const transform = `translate(${align === "left" ? width : 0}px,${position}px)`;
             return (
                 <g style={smoothTransition ? { transform, transition } : { transform }}>
-                    {this.renderHorizontalTick(
-                        id,
-                        label,
-                        position,
-                        size,
-                        tickExtend,
-                        align === "left"
-                    )}
+                    {this.renderHorizontalTick(id, label, size, tickExtend, align === "left")}
                 </g>
             );
         }
