@@ -111,7 +111,7 @@ export class Axis extends React.Component<AxisProps> {
         const labelStyle = _.merge(
             true,
             defaultAxisStyle.label,
-            this.props.style.label ? this.props.style.label : {}
+            style && style.label ? style.label : {}
         );
         let translate;
         let rotate = `rotate(0)`;
@@ -145,23 +145,24 @@ export class Axis extends React.Component<AxisProps> {
     }
 
     renderAxisLine() {
+        const { style, width, height, margin, hideAxisLine } = this.props;
         const p = this.props.position;
         const axisStyle = _.merge(
             true,
             defaultAxisStyle.axis,
-            this.props.style.axis ? this.props.style.axis : {}
+            style && style.axis ? style.axis : {}
         );
-        if (!this.props.hideAxisLine) {
+        if (!hideAxisLine) {
             if (p === "left" || p === "right") {
                 return (
                     <line
                         key="axis"
                         className="axis"
                         style={axisStyle}
-                        x1={p === "left" ? this.props.width : 0}
-                        y1={this.props.margin}
-                        x2={p === "left" ? this.props.width : 0}
-                        y2={this.props.height - this.props.margin}
+                        x1={p === "left" ? width : 0}
+                        y1={margin}
+                        x2={p === "left" ? width : 0}
+                        y2={height - margin}
                     />
                 );
             } else {
@@ -170,14 +171,15 @@ export class Axis extends React.Component<AxisProps> {
                         key="axis"
                         className="axis"
                         style={axisStyle}
-                        x1={this.props.margin}
-                        y1={p === "bottom" ? 0 : this.props.height}
-                        x2={this.props.width - this.props.margin}
-                        y2={p === "bottom" ? 0 : this.props.height}
+                        x1={margin}
+                        y1={p === "bottom" ? 0 : height}
+                        x2={width - margin}
+                        y2={p === "bottom" ? 0 : height}
                     />
                 );
             }
         }
+        return null;
     }
 
     renderAxisTicks() {
@@ -214,18 +216,19 @@ export class Axis extends React.Component<AxisProps> {
                     );
                 break;
             default:
+                throw new Error(`Unexpected scale type: ${this.props.type.toLowerCase()}`);
         }
 
         const tickStyle = {
             ticks: _.merge(
                 true,
                 defaultAxisStyle.ticks,
-                this.props.style.ticks ? this.props.style.ticks : {}
+                this.props.style && this.props.style.ticks ? this.props.style.ticks : {}
             ),
             values: _.merge(
                 true,
                 defaultAxisStyle.values,
-                this.props.style.values ? this.props.style.values : {}
+                this.props.style && this.props.style.values ? this.props.style.values : {}
             )
         };
 
@@ -243,7 +246,7 @@ export class Axis extends React.Component<AxisProps> {
             // The user can specify the values all be positive
             const absolute = this.props.absolute;
 
-            const formatter = d => (absolute ? d3Format(Math.abs(d)) : d3Format(d));
+            const formatter = (d: number) => (absolute ? d3Format(Math.abs(d)) : d3Format(d));
             const label = formatter(tickValue);
 
             return (

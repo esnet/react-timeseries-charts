@@ -1,13 +1,3 @@
-/**
- *  Copyright (c) 2016, The Regents of the University of California,
- *  through Lawrence Berkeley National Laboratory (subject to receipt
- *  of any required approvals from the U.S. Dept. of Energy).
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
 import * as _ from "lodash";
 import * as React from "react";
 
@@ -86,7 +76,7 @@ export class Tick extends React.Component<TickProps> {
 
         const valueStyle = _.merge(
             defaultStyle.values,
-            this.props.style.values ? this.props.style.values : {}
+            this.props.style && this.props.style.values ? this.props.style.values : {}
         );
 
         if (direction === "horizontal") {
@@ -147,11 +137,14 @@ export class Tick extends React.Component<TickProps> {
                 );
             }
         }
+
+        return null;
     }
 
     renderVerticalTick(
         id: string,
         label: string,
+        // TODO:
         labelPosition: number,
         size: number,
         tickExtend: number,
@@ -172,7 +165,7 @@ export class Tick extends React.Component<TickProps> {
         const tickStyle = _.merge(
             true,
             defaultStyle.ticks,
-            this.props.style.ticks ? this.props.style.ticks : {}
+            this.props.style && this.props.style.ticks ? this.props.style.ticks : {}
         );
 
         const groupKey = `grp-${id}}`;
@@ -189,6 +182,7 @@ export class Tick extends React.Component<TickProps> {
     renderHorizontalTick(
         id: string,
         label: string,
+        // TODO:
         labelPosition: number,
         size: number,
         tickExtend: number,
@@ -205,16 +199,11 @@ export class Tick extends React.Component<TickProps> {
         const tickStyle = _.merge(
             true,
             defaultStyle.ticks,
-            this.props.style.ticks ? this.props.style.ticks : {}
+            this.props.style && this.props.style.ticks ? this.props.style.ticks : {}
         );
 
         const groupKey = `grp-${id}}`;
         const tickKey = `tick-${id}`;
-
-        const rotate = this.props.angled ? `rotate(-65)` : `rotate(0)`;
-
-        const dx = this.props.angled ? "-1.2em" : "0em";
-        const dy = "0em";
 
         const tickTransitionStyle = {
             transition: "transform 100ms"
@@ -241,7 +230,6 @@ export class Tick extends React.Component<TickProps> {
             smoothTransition = false
         } = this.props;
 
-        const shouldTransition = false;
         const transition = "transform 100ms";
 
         if (align === "top" || align === "bottom") {
