@@ -32,65 +32,9 @@ function pluck(array, prop) {
     });
 }
 
-// compact
-function compact(array) {
-    var ret = [];
-
-    _.each(array, function(item) {
-        if (item) {
-            ret.push(item);
-        }
-    });
-
-    return ret;
-}
-
-// unique
-function unique(array) {
-    var ret = [];
-
-    _.each(array, function(_a) {
-        if (!find(ret, _a)) {
-            ret.push(_a);
-        }
-    });
-
-    return ret;
-}
-
-// intersection
-function intersection(a, b) {
-    var ret = [];
-
-    _.each(a, function(_a) {
-        _.each(b, function(_b) {
-            if (_a === _b) {
-                ret.push(_a);
-            }
-        });
-    });
-
-    return unique(ret);
-}
-
-// rest
-function rest(array, callback) {
-    for (let [index, item] of array.entries()) {
-        if (!callback(item)) {
-            return array.slice(index);
-        }
-    }
-    return array;
-}
-
-// initial
-function initial(array, callback) {
-    var reversed = array.slice().reverse();
-    return rest(reversed, callback).reverse();
-}
-
 // extend
-function extend(a, b) {
+// TODO: merge?
+function extend<T extends object, U extends object>(a: T, b: U): T & U {
     for (var key in b) {
         if (b.hasOwnProperty(key)) {
             a[key] = b[key];
@@ -100,39 +44,29 @@ function extend(a, b) {
     return a;
 }
 
-// findLast
-function findLast(array, callback) {
-    let index = array.length;
+type Settings = {
+    escape: RegExp;
+    years: RegExp;
+    months: RegExp;
+    weeks: RegExp;
+    days: RegExp;
+    hours: RegExp;
+    minutes: RegExp;
+    seconds: RegExp;
+    milliseconds: RegExp;
+    general: RegExp;
 
-    while ((index -= 1)) {
-        if (callback(array[index])) {
-            return array[index];
-        }
-    }
-}
+    types: string | string[];
 
-// find
-function find(array, callback) {
-    var index = 0,
-        max = array.length,
-        match;
+    trim: "left" | "right" | false;
 
-    if (typeof callback !== "function") {
-        match = callback;
-        callback = function(item) {
-            return item === match;
-        };
-    }
+    precision: number;
+    forceLength: boolean | null;
 
-    while (index < max) {
-        if (callback(array[index])) {
-            return array[index];
-        }
-        index += 1;
-    }
-}
+    template: () => string;
+};
 
-const defaults = {
+const defaults: Settings = {
     // token definitions
     escape: /\[(.+?)\]/,
     years: /[Yy]+/,
@@ -148,6 +82,7 @@ const defaults = {
     // token type names
     // in order of descending magnitude
     // can be a space-separated token name list or an array of token names
+    // TODO: do we want better types here?
     types: "escape years months weeks days hours minutes seconds milliseconds general",
 
     // format options
@@ -176,7 +111,7 @@ const defaults = {
     template() {
         const settings = this;
         const types = settings.types;
-        const lastType = findLast(types, type => {
+        const lastType = _.findLast(types, type => {
             return settings.duration._data[type];
         });
 
@@ -202,51 +137,49 @@ const defaults = {
     }
 };
 
-export default function(duration, template?, precision?) {
-    let tokenizer;
-    let tokens;
-    let types;
-    let typeMap;
-    let momentTypes;
-    let foundFirst;
+type Token1 = {
+    index: number;
+    length: number;
+    token: string;
+    type: string | null;
+};
 
-    const settings = extend({}, defaults);
+type Token2 = {
+    value: number;
+    wholeValue: number;
+    decimalValue: number;
+    isLeast: boolean;
+    isMost: boolean;
+};
+
+export default function(duration, template?, precision?) {
+    // add a reference to this duration object to the settings for use
+    // in a template function
+    const settings: Settings = { ...defaults, duration, template, precision };
+    // const settings = extend({}, defaults, { template, precision });
 
     // keep a shadow copy of this moment for calculating remainders
     let remainder = moment.duration(duration);
 
-    // add a reference to this duration object to the settings for use
-    // in a template function
-    settings.duration = duration;
-
-    // args
-    if (template) {
-        settings.template = template;
-    }
-    if (precision) {
-        settings.precision = precision;
-    }
-
     // types
-    types = settings.types = _.isArray(settings.types) ? settings.types : settings.types.split(" ");
+    const types = (settings.types = _.isArray(settings.types)
+        ? settings.types
+        : settings.types.split(" "));
 
     // template
-    if (_.isFunction(settings.template)) {
-        settings.template = settings.template.apply(settings);
-    }
+    const templateStr = _.isFunction(settings.template)
+        ? settings.template.apply(settings)
+        : settings.template;
 
     // tokenizer regexp
-    tokenizer = new RegExp(_.map(types, type => settings[type].source).join("|"), "g");
+    const tokenizer = new RegExp(_.map(types, type => settings[type].source).join("|"), "g");
+    const tokenStrs: string[] = templateStr.match(tokenizer);
 
     // token type map function
-    typeMap = function(token) {
-        return find(types, function(type) {
-            return settings[type].test(token);
-        });
-    };
+    const typeMap = (token: string): string => _.find(types, type => settings[type].test(token));
 
     // tokens array
-    tokens = _.map(settings.template.match(tokenizer), (token, index) => {
+    let tokens: Token1[] = _.map(tokenStrs, (token, index) => {
         const type = typeMap(token);
         const length = token.length;
         return {
@@ -258,7 +191,7 @@ export default function(duration, template?, precision?) {
     });
 
     // unique moment token types in the template (in order of descending magnitude)
-    momentTypes = intersection(types, unique(compact(pluck(tokens, "type"))));
+    const momentTypes = _.intersection(types, _.uniq(_.compact(pluck(tokens, "type"))));
 
     // exit early if there are no momentTypes
     if (!momentTypes.length) {
@@ -267,19 +200,17 @@ export default function(duration, template?, precision?) {
 
     // calculate values for each token type in the template
     _.each(momentTypes, (momentType, index) => {
-        let value, wholeValue, decimalValue, isLeast, isMost;
-
         // calculate integer and decimal value portions
-        value = remainder.as(momentType);
+        const value = remainder.as(momentType);
 
-        wholeValue = value > 0 ? Math.floor(value) : Math.ceil(value);
-        decimalValue = value - wholeValue;
+        const wholeValue = value > 0 ? Math.floor(value) : Math.ceil(value);
+        const decimalValue = value - wholeValue;
 
         // is this the least-significant moment token found?
-        isLeast = index + 1 === momentTypes.length;
+        const isLeast = index + 1 === momentTypes.length;
 
         // is this the most-significant moment token found?
-        isMost = !index;
+        const isMost = !index;
 
         // update tokens array
         // using this algorithm to not assume anything about
@@ -322,7 +253,7 @@ export default function(duration, template?, precision?) {
     //
 
     if (settings.trim) {
-        tokens = (settings.trim === "left" ? rest : initial)(tokens, token => {
+        tokens = (settings.trim === "left" ? _.dropWhile : _.dropRightWhile)(tokens, token => {
             // return `true` if:
             //  - the token is not the least moment token
             //    (don't trim the least moment token)
@@ -338,7 +269,7 @@ export default function(duration, template?, precision?) {
     //
 
     // the first moment token can have special handling
-    foundFirst = false;
+    let foundFirst = false;
 
     // run the map in reverse order if trimming from the right
     if (settings.trim === "right") {
