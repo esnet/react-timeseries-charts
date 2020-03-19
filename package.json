@@ -10,7 +10,7 @@
         "build": "rollup -c",
         "lint": "standard",
         "test": "./chromatic.sh",
-        "format": "prettier-standard --format",
+        "format": "prettier --config .prettierrc --write 'src/**/*.ts*'",
         "storybook": "start-storybook",
         "build-storybook": "build-storybook",
         "chromatic": "CHROMATIC_APP_CODE=by4fmk54fc9 chromatic"
@@ -20,7 +20,7 @@
         "forms"
     ],
     "author": "ESnet Software Engineering Group",
-    "license": "BSD",
+    "license": "BSD-3-Clause-LBNL",
     "devDependencies": {
         "@babel/core": "^7.8.6",
         "@storybook/react": "^5.3.14",
@@ -29,14 +29,17 @@
         "@testing-library/react": "^9.5.0",
         "@types/classnames": "^2.2.10",
         "@types/d3-ease": "^1.0.9",
+        "@types/d3-format": "1.3.1",
         "@types/d3-scale": "^2.2.0",
         "@types/invariant": "^2.2.31",
         "@types/jest": "^25.1.4",
         "@types/lodash": "^4.14.149",
         "@types/moment-timezone": "^0.5.12",
+        "@types/react-transition-group": "4.2.4",
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.0.6",
         "jest": "^25.1.0",
+        "prettier": "1.19.1",
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
         "rollup": "^1.32.0",
@@ -46,7 +49,6 @@
         "rollup-plugin-peer-deps-external": "^2.2.2",
         "rollup-plugin-typescript2": "^0.26.0",
         "standard": "^14.3.1",
-        "standard-prettier": "^1.0.1",
         "storybook-chromatic": "^3.5.2",
         "ts-jest": "^25.2.1",
         "tslint": "^6.0.0",
@@ -82,9 +84,11 @@
         "@vx/scale": "^0.0.195",
         "classnames": "^2.2.6",
         "d3-ease": "^1.0.6",
+        "d3-format": "1.4.3",
         "d3-scale": "^3.2.1",
         "invariant": "^2.2.4",
         "lodash": "^4.17.15",
-        "pondjs": "1.0.0-alpha.10"
+        "pondjs": "1.0.0-alpha.10",
+        "react-transition-group": "4.3.0"
     }
 }
