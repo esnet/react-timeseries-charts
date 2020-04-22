@@ -53,7 +53,6 @@ export default class EventChart extends React.Component {
      * as a prop. It will be called with the event selected.
      */
     handleClick(e, event) {
-        e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(event);
         }

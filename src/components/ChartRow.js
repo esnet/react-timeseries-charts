@@ -47,6 +47,8 @@ function createScale(yaxis, type, min, max, y0, y1) {
     return scale;
 }
 
+export const ChartRowCssClass = "chart-row";
+
 /**
  * A ChartRow is a container for a set of YAxis and multiple charts
  * which are overlaid on each other in a central canvas.
@@ -456,7 +458,7 @@ export default class ChartRow extends React.Component {
         }
 
         return (
-            <g>
+            <g className={ChartRowCssClass}>
                 {clipper}
                 {axes}
                 {charts}

@@ -143,7 +143,6 @@ export default class AreaChart extends React.Component {
     }
 
     handleClick(e, column) {
-        e.stopPropagation();
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(column);
         }
@@ -401,9 +400,9 @@ AreaChart.propTypes = {
      *      down: ["out", ...]
      *  }
      *  ```
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     columns: PropTypes.shape({

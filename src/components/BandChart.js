@@ -312,7 +312,6 @@ export default class BandChart extends React.Component {
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(event);
         }
-        e.stopPropagation();
     }
 
     providedStyleArray(column) {
@@ -544,9 +543,9 @@ BandChart.propTypes = {
     /**
      * The column within the TimeSeries to plot. Unlike other charts, the BandChart
      * works on just a single column.
-     * 
-     * NOTE : Columns can't have periods because periods 
-     * represent a path to deep data in the underlying events 
+     *
+     * NOTE : Columns can't have periods because periods
+     * represent a path to deep data in the underlying events
      * (i.e. reference into nested data structures)
      */
     column: PropTypes.string,

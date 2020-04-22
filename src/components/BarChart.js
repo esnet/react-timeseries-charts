@@ -152,7 +152,6 @@ export default class BarChart extends React.Component {
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(bar);
         }
-        e.stopPropagation();
     }
 
     providedStyleMap(column, event) {
