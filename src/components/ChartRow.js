@@ -405,6 +405,17 @@ export default class ChartRow extends React.Component {
         );
 
         //
+        // Fill
+        //
+        const fill = (
+            <g key="fill-group" fill={this.props.fill}>
+                {this.props.fill != null ? (
+                    <rect x="0" y="0" width={this.props.width} height={innerHeight} />
+                ) : null}
+            </g>
+        );
+
+        //
         // Brush
         //
         const brushes = (
@@ -458,6 +469,7 @@ export default class ChartRow extends React.Component {
         return (
             <g>
                 {clipper}
+                {fill}
                 {axes}
                 {charts}
                 {brushes}
@@ -552,5 +564,10 @@ ChartRow.propTypes = {
     timeScale: PropTypes.func,
     trackerTimeFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     timeFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    trackerTime: PropTypes.instanceOf(Date)
+    trackerTime: PropTypes.instanceOf(Date),
+
+    /**
+     * The fill of entire chart row.
+     */
+    fill: PropTypes.string
 };
