@@ -491,10 +491,17 @@ EventMarker.defaultProps = {
     infoWidth: 90,
     infoHeight: 25,
     infoStyle: {
-        fill: "white",
-        opacity: 0.9,
-        stroke: "#999",
-        pointerEvents: "none"
+      "boxStyle": {
+        "fill": "#FEFEFE",
+        "stroke": "#DDD",
+        "opacity": 0.8
+      },
+      "labelStyle": {
+        "fontSize": 11,
+        "textAnchor": "left",
+        "fill": "#b0b0b0",
+        "pointerEvents": "none"
+      }
     },
     stemStyle: {
         stroke: "#999",
