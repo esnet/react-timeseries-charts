@@ -60,7 +60,10 @@ export default class EventHandler extends React.Component {
     //
 
     handleScrollWheel(e) {
-        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+        if (
+            this.props.disableWheelZoom ||
+            (!this.props.enablePanZoom && !this.props.enableDragZoom)
+        ) {
             return;
         }
 
@@ -338,6 +341,7 @@ EventHandler.propTypes = {
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     enablePanZoom: PropTypes.bool,
     enableDragZoom: PropTypes.bool,
+    disableWheelZoom: PropTypes.bool,
     scale: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
@@ -353,5 +357,6 @@ EventHandler.propTypes = {
 
 EventHandler.defaultProps = {
     enablePanZoom: false,
-    enableDragZoom: false
+    enableDragZoom: false,
+    disableWheelZoom: false
 };

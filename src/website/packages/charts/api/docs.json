@@ -1887,6 +1887,17 @@
           "computed": false
         }
       },
+      "disableWheelZoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Boolean to turn off interactive mouse wheel to zoom behavior for the chart.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "minDuration": {
         "type": {
           "name": "number"
@@ -2746,6 +2757,17 @@
         },
         "required": false,
         "description": "",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "disableWheelZoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Boolean to turn off interactive mouse wheel to zoom behavior for the chart.",
         "defaultValue": {
           "value": "false",
           "computed": false
