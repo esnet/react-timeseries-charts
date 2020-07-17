@@ -495,6 +495,7 @@ export default class ChartContainer extends React.Component {
                     scale={timeScale}
                     enablePanZoom={this.props.enablePanZoom}
                     enableDragZoom={this.props.enableDragZoom}
+                    disableWheelZoom={this.props.disableWheelZoom}
                     minDuration={this.props.minDuration}
                     minTime={this.props.minTime}
                     maxTime={this.props.maxTime}
@@ -602,6 +603,13 @@ ChartContainer.propTypes = {
      * Boolean to turn on interactive drag to zoom behavior for the chart.
      */
     enableDragZoom: PropTypes.bool,
+
+    /**
+     * Boolean to turn off scroll wheel to zoom behavior for the chart.
+     * By default, scroll wheel zooming is enabled if enableDragZoom or
+     * enablePanZoom are true.
+     */
+    disableWheelZoom: PropTypes.bool,
 
     /**
      * If this is set the timerange of the chart cannot be zoomed in further
@@ -823,6 +831,7 @@ ChartContainer.defaultProps = {
     padding: 0,
     enablePanZoom: false,
     enableDragZoom: false,
+    disableWheelZoom: false,
     utc: false,
     showGrid: false,
     showGridPosition: "over",
