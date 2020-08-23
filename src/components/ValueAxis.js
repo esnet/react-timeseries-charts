@@ -10,6 +10,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import merge from "merge";
 
 /**
  * Renders a 'axis' that display a label for a current tracker value:
@@ -28,23 +29,20 @@ import PropTypes from "prop-types";
 
 const defaultStyle = {
     label: {
-        // fill: "#666",
-        fill: '#FF0000',
+        fill: "#666",
         fontSize: 20,
         textAnchor: "middle"
     },
     detail: {
         fontSize: 12,
         textAnchor: "middle",
-        // fill: "#9a9a9a"
-        fill: "#008000"
+        fill: "#9a9a9a"
     }
 };
 
 const ValueAxis = ({ width, height, value, detail, style }) => {
-
-    const labelStyle = style.label ? style.label : defaultStyle.label;
-    const detailStyle = style.detail ? style.detail : defaultStyle.detail;
+    const labelStyle = merge(true, defaultStyle.label, style.label ? style.label : {});
+    const detailStyle = merge(true, defaultStyle.label, style.detail ? style.detail : {});
 
     return (
         <g>
@@ -97,11 +95,11 @@ ValueAxis.propTypes = {
     /**
      * [Internal] The height of the axis
      */
-    height: PropTypes.number, 
+    height: PropTypes.number,
     /**
      * Object specifying the CSS by which the label axis can be styled. The object can contain:
      * "label", "detail". Each of these is an inline CSS style applied
-     * to the text label and detail, respectively. 
+     * to the text label and detail, respectively.
      *
      */
     style: PropTypes.shape({
