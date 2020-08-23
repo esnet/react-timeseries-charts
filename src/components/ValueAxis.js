@@ -41,8 +41,8 @@ const defaultStyle = {
 
 const ValueAxis = ({ width, height, value, detail, style }) => {
 
-    const labelStyle = this.props.style.label ? this.props.style.label : defaultStyle.label;
-    const detailStyle = this.props.style.detail ? this.props.style.detail : defaultStyle.detail;
+    const labelStyle = style.label ? style.label : defaultStyle.label;
+    const detailStyle = style.detail ? style.detail : defaultStyle.detail;
 
     return (
         <g>
