@@ -98,8 +98,8 @@ ValueAxis.propTypes = {
     height: PropTypes.number, 
     /**
      * Object specifying the CSS by which the label axis can be styled. The object can contain:
-     * "label", "values" and "axis". Each of these is an inline CSS style applied
-     * to the axis label, axis values and axis line respectively.
+     * "label", "detail". Each of these is an inline CSS style applied
+     * to the text label and detail, respectively. 
      *
      */
     style: PropTypes.shape({
