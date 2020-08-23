@@ -10,6 +10,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import merge from "merge";
 
 /**
  * Renders a 'axis' that display a label for a current tracker value:
@@ -25,17 +26,24 @@ import PropTypes from "prop-types";
  * end of the row and supply it with the current value. See the cycling example
  * for how that would all work.
  */
-const ValueAxis = ({ width, height, value, detail }) => {
-    const labelStyle = {
+
+const defaultStyle = {
+    label: {
         fill: "#666",
         fontSize: 20,
         textAnchor: "middle"
-    };
-    const detailStyle = {
+    },
+    detail: {
         fontSize: 12,
         textAnchor: "middle",
         fill: "#9a9a9a"
-    };
+    }
+};
+
+const ValueAxis = ({ width, height, value, detail, style }) => {
+    const labelStyle = merge(true, defaultStyle.label, style.label ? style.label : {});
+    const detailStyle = merge(true, defaultStyle.label, style.detail ? style.detail : {});
+
     return (
         <g>
             <rect
@@ -87,11 +95,22 @@ ValueAxis.propTypes = {
     /**
      * [Internal] The height of the axis
      */
-    height: PropTypes.number
+    height: PropTypes.number,
+    /**
+     * Object specifying the CSS by which the label axis can be styled. The object can contain:
+     * "label", "detail". Each of these is an inline CSS style applied
+     * to the text label and detail, respectively.
+     *
+     */
+    style: PropTypes.shape({
+        label: PropTypes.object, // eslint-disable-line
+        detail: PropTypes.object // esline-disable-line
+    })
 };
 
 ValueAxis.defaultProps = {
-    visible: true
+    visible: true,
+    style: defaultStyle
 };
 
 export default ValueAxis;
