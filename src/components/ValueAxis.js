@@ -25,17 +25,25 @@ import PropTypes from "prop-types";
  * end of the row and supply it with the current value. See the cycling example
  * for how that would all work.
  */
-const ValueAxis = ({ width, height, value, detail }) => {
-    const labelStyle = {
+
+const defaultStyle = {
+    label: {
         fill: "#666",
         fontSize: 20,
         textAnchor: "middle"
-    };
-    const detailStyle = {
+    },
+    detail: {
         fontSize: 12,
         textAnchor: "middle",
         fill: "#9a9a9a"
-    };
+    }
+};
+
+const ValueAxis = ({ width, height, value, detail, style }) => {
+
+    const labelStyle = this.props.style.label ? this.props.style.label : defaultStyle.label;
+    const detailStyle = this.props.style.detail ? this.props.style.detail : defaultStyle.detail;
+
     return (
         <g>
             <rect
@@ -87,11 +95,22 @@ ValueAxis.propTypes = {
     /**
      * [Internal] The height of the axis
      */
-    height: PropTypes.number
+    height: PropTypes.number, 
+    /**
+     * Object specifying the CSS by which the label axis can be styled. The object can contain:
+     * "label", "values" and "axis". Each of these is an inline CSS style applied
+     * to the axis label, axis values and axis line respectively.
+     *
+     */
+    style: PropTypes.shape({
+        label: PropTypes.object, // eslint-disable-line
+        detail: PropTypes.object // esline-disable-line
+    })
 };
 
 ValueAxis.defaultProps = {
-    visible: true
+    visible: true,
+    style: defaultStyle
 };
 
 export default ValueAxis;
