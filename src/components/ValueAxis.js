@@ -28,14 +28,16 @@ import PropTypes from "prop-types";
 
 const defaultStyle = {
     label: {
-        fill: "#666",
+        // fill: "#666",
+        fill: '#FF0000',
         fontSize: 20,
         textAnchor: "middle"
     },
     detail: {
         fontSize: 12,
         textAnchor: "middle",
-        fill: "#9a9a9a"
+        // fill: "#9a9a9a"
+        fill: "#008000"
     }
 };
 
