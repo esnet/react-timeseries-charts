@@ -54,7 +54,6 @@ function mergeStyles(style, isCentered) {
 const ValueList = props => {
     const { align, style, width, height } = props;
     const { boxStyle, labelStyle } = mergeStyles(style, align === "center");
-    console.log(boxStyle);
 
     if (!props.values.length) {
         return <g />;
