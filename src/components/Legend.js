@@ -450,7 +450,7 @@ Legend.propTypes = {
     categories: PropTypes.arrayOf(
         PropTypes.shape({
             key: PropTypes.string.isRequired, // eslint-disable-line
-            label: PropTypes.string.isRequired, // eslint-disable-line
+            label: PropTypes.node.isRequired, // eslint-disable-line
             disabled: PropTypes.bool, // eslint-disable-line
             style: PropTypes.object, // eslint-disable-line
             labelStyle: PropTypes.object // eslint-disable-line
