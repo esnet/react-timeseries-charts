@@ -271,7 +271,7 @@ export default class BarChart extends React.Component {
                     const y = positiveBar ? yposPositive - height : yposNegative;
 
                     // Don't draw a rect when height and minBarHeight are both 0
-                    if (height === 0) break;
+                    if (height === 0) continue;
 
                     // Event marker if info provided and hovering
                     const isHighlighted =
