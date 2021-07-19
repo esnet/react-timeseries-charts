@@ -82,7 +82,7 @@
     "react-dom": "^16.2.0",
     "react-markdown": "^2.4.4",
     "react-router": "^3.2.0",
-    "react-scripts": "^2.1.1",
+    "react-scripts": "^4.0.0",
     "react-select": "^1.1.0",
     "ringjs": "0.0.1"
   },
