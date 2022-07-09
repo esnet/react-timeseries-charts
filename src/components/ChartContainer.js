@@ -100,6 +100,7 @@ export default class ChartContainer extends React.Component {
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleBackgroundClick = this.handleBackgroundClick.bind(this);
+        this.handlePanZoomEnd = this.handlePanZoomEnd.bind(this);
         this.handleZoom = this.handleZoom.bind(this);
         this.saveSvgRef = this.saveSvgRef.bind(this);
     }
@@ -118,6 +119,12 @@ export default class ChartContainer extends React.Component {
             );
         }
     }
+
+    handlePanZoomEnd() {
+        if (this.props.onPanZoomEnd) {
+          this.props.onPanZoomEnd();
+        }
+      }
 
     /**
      * Within the charts library the time range of the x axis is kept as a begin
@@ -502,6 +509,7 @@ export default class ChartContainer extends React.Component {
                     onMouseMove={this.handleMouseMove}
                     onMouseClick={this.handleBackgroundClick}
                     onContextMenu={this.handleContextMenu}
+                    onPanZoomEnd={e => this.handlePanZoomEnd(e)}
                     onZoom={this.handleZoom}
                 >
                     {chartRows}
@@ -746,6 +754,13 @@ ChartContainer.propTypes = {
      * useful when deselecting elements.
      */
     onBackgroundClick: PropTypes.func,
+
+    /**
+     * Called when the user finishing panning or zooming the chart. Useful
+     * to save expensive tasks until after panning is complete rather than doing
+     * them syncronously whilst panning.
+     */
+    onPanZoomEnd: React.PropTypes.func,
 
     /**
      * Called when the user context-clicks the chart

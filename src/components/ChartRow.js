@@ -314,6 +314,7 @@ export default class ChartRow extends React.Component {
             if (areComponentsEqual(child.type, Charts)) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
+                    if (!chart) return;
                     if (!_.has(chart.props, "visible") || chart.props.visible) {
                         let scale = null;
                         if (_.has(this.state.yAxisScalerMap, chart.props.axis)) {

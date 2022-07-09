@@ -124,7 +124,7 @@ export default class EventHandler extends React.Component {
     }
 
     handleMouseDown(e) {
-        if (!this.props.enablePanZoom && !this.props.enableDragZoom) {
+        if ((!this.props.enablePanZoom && !this.props.enableDragZoom) || this.state.isPanning) {
             return;
         }
 
@@ -185,6 +185,8 @@ export default class EventHandler extends React.Component {
 
         if (this.props.onMouseClick && !isPanning && !isDragging) {
             this.props.onMouseClick(offsetxy[0], offsetxy[1]);
+        } else {
+            if (this.props.onPanZoomEnd) this.props.onPanZoomEnd();
         }
 
         if (this.props.enableDragZoom) {
@@ -297,6 +299,55 @@ export default class EventHandler extends React.Component {
             onMouseMove: this.handleMouseMove,
             onMouseOut: this.handleMouseOut,
             onMouseUp: this.handleMouseUp,
+            onMouseUp: this.handleMouseUp,
+
+            onTouchStart: (e) => {
+                },
+
+            onTouchMove: (e) => {
+
+                let touch = e.targetTouches[0];
+                if (!touch) return;
+
+                const x = touch.pageX;
+                const y = touch.pageY;
+
+                const mockMouseEvent = {
+                preventDefault: () => {},
+                pageX: x,
+                pageY: y
+                };
+
+                const xy0 = [Math.round(x), Math.round(y)];
+
+                const begin = this.props.scale.domain()[0].getTime();
+                const end = this.props.scale.domain()[1].getTime();
+
+                if (!this.state.isPanning) {
+                this.setState({
+                    isPanning: true,
+                    initialPanBegin: begin,
+                    initialPanEnd: end,
+                    initialPanPosition: xy0
+                });
+                }
+
+                this.handleMouseMove(mockMouseEvent);
+                },
+
+            onTouchEnd: (e) => {
+                if (this.state.isPanning) {
+                this.setState({
+                    isPanning: false,
+                    initialPanBegin: null,
+                    initialPanEnd: null,
+                    initialPanPosition: null
+                });
+
+                if (this.props.onPanZoomEnd) this.props.onPanZoomEnd();
+
+                }
+            },
             onContextMenu: this.handleContextMenu
         };
         return (
@@ -348,6 +399,13 @@ EventHandler.propTypes = {
     onMouseMove: PropTypes.func,
     onMouseOut: PropTypes.func,
     onMouseClick: PropTypes.func,
+    onMouseClick: React.PropTypes.func,
+    /**
+     * Called when the user finishing panning or zooming the chart. Useful
+     * to save expensive tasks until after panning is complete rather than doing
+     * them syncronously whilst panning.
+     */
+    onPanZoomEnd: React.PropTypes.func,
     onContextMenu: PropTypes.func
 };
 
