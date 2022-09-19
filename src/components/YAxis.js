@@ -19,7 +19,6 @@ import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
 import { select } from "d3-selection";
-import "d3-selection-multi";
 
 import { scaleAsString } from "../js/util";
 
@@ -232,13 +231,13 @@ export default class YAxis extends React.Component {
             .select("g")
             .selectAll(".tick")
             .select("text")
-            .styles(valueStyle);
+            .style(valueStyle);
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("line")
-            .styles(tickStyle);
+            .style(tickStyle);
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
@@ -249,11 +248,11 @@ export default class YAxis extends React.Component {
             select(ReactDOM.findDOMNode(this))
                 .select("g")
                 .append("line")
-                .styles(axisStyle)
                 .attr("x1", 0)
                 .attr("y1", 0)
                 .attr("x2", 0)
-                .attr("y2", height);
+                .attr("y2", height)
+                .style(axisStyle);
         }
     }
 
@@ -347,21 +346,29 @@ export default class YAxis extends React.Component {
             .selectAll("*")
             .remove();
 
+        console.log(ReactDOM);
+        console.log(ReactDOM.findDOMNode(this));
+        console.log(select(ReactDOM.findDOMNode(this)));
+
         // Add the new axis
-        this.axis = select(ReactDOM.findDOMNode(this))
+        this.axis = select(ReactDOM.findDOMNode(this));
+
+        this.axis
             .append("g")
             .attr("transform", `translate(${x},0)`)
             .attr("class", "yaxis")
-            .styles(valueStyle)
             .call(axisGenerator.tickSize(tickSize))
+            .style(valueStyle);
+
+        this.axis
             .append("text")
             .text(label || this.props.label)
-            .styles(labelStyle)
             .attr("transform", "rotate(-90)")
             .attr("class", "yaxislabel")
             .attr("y", labelOffset)
             .attr("dy", ".71em")
-            .attr("text-anchor", "end");
+            .attr("text-anchor", "end")
+            .style(labelStyle);
 
         this.postSelect(style, hideAxisLine, height);
     }

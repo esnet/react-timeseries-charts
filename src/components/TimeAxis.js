@@ -16,7 +16,6 @@ import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
 import { axisBottom } from "d3-axis";
 import { select } from "d3-selection";
-import "d3-selection-multi";
 import { timeDay, utcDay, timeMonth, utcMonth, timeYear, utcYear } from "d3-time";
 import { timeFormat } from "d3-time-format";
 
@@ -177,8 +176,7 @@ export default class TimeAxis extends React.Component {
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .append("g")
             .attr("class", "x axis")
-            .style("stroke", "none")
-            .styles(valueStyle)
+            .style("stroke", "none", valueStyle)
             .call(axis.tickSize(tickSize));
 
         if (this.props.angled) {
@@ -186,25 +184,24 @@ export default class TimeAxis extends React.Component {
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .styles(valueStyle)
-                .style("text-anchor", "end")
                 .attr("dx", "-1.2em")
                 .attr("dy", "0em")
                 .attr("transform", function(d) {
                     return "rotate(-65)";
-                });
+                })
+                .style("text-anchor", "end", valueStyle);
         } else {
             select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .styles(valueStyle);
+                .style(valueStyle);
         }
         select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
             .select("line")
-            .styles(tickStyle);
+            .style(tickStyle);
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
