@@ -227,17 +227,19 @@ export default class YAxis extends React.Component {
 
     postSelect(style, hideAxisLine, height) {
         const { valueStyle, tickStyle, axisStyle } = style;
-        select(ReactDOM.findDOMNode(this))
+        let el = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
-            .select("text")
-            .style(valueStyle);
+            .select("text");
 
-        select(ReactDOM.findDOMNode(this))
+        Object.entries(valueStyle).forEach(([prop, val]) => el.attr(prop, val));
+
+        el = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
-            .select("line")
-            .style(tickStyle);
+            .select("line");
+
+        Object.entries(tickStyle).forEach(([prop, val]) => el.attr(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
@@ -245,14 +247,15 @@ export default class YAxis extends React.Component {
             .remove();
 
         if (!hideAxisLine) {
-            select(ReactDOM.findDOMNode(this))
+            el = select(ReactDOM.findDOMNode(this))
                 .select("g")
                 .append("line")
                 .attr("x1", 0)
                 .attr("y1", 0)
                 .attr("x2", 0)
-                .attr("y2", height)
-                .style(axisStyle);
+                .attr("y2", height);
+
+            Object.entries(axisStyle).forEach(([prop, val]) => el.attr(prop, val));
         }
     }
 
@@ -351,24 +354,21 @@ export default class YAxis extends React.Component {
         console.log(select(ReactDOM.findDOMNode(this)));
 
         // Add the new axis
-        this.axis = select(ReactDOM.findDOMNode(this));
-
-        this.axis
+        this.axis = select(ReactDOM.findDOMNode(this))
             .append("g")
             .attr("transform", `translate(${x},0)`)
             .attr("class", "yaxis")
             .call(axisGenerator.tickSize(tickSize))
-            .style(valueStyle);
-
-        this.axis
             .append("text")
             .text(label || this.props.label)
             .attr("transform", "rotate(-90)")
             .attr("class", "yaxislabel")
             .attr("y", labelOffset)
             .attr("dy", ".71em")
-            .attr("text-anchor", "end")
-            .style(labelStyle);
+            .attr("text-anchor", "end");
+
+        Object.entries(valueStyle).forEach(([prop, val]) => this.axis.attr(prop, val));
+        Object.entries(labelStyle).forEach(([prop, val]) => this.axis.attr(prop, val));
 
         this.postSelect(style, hideAxisLine, height);
     }

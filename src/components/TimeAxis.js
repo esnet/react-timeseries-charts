@@ -173,14 +173,16 @@ export default class TimeAxis extends React.Component {
         //
         // Draw the new axis
         //
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        let element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .append("g")
             .attr("class", "x axis")
-            .style("stroke", "none", valueStyle)
+            .style("stroke", "none")
             .call(axis.tickSize(tickSize));
 
+        Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
+
         if (this.props.angled) {
-            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+            element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
@@ -189,19 +191,24 @@ export default class TimeAxis extends React.Component {
                 .attr("transform", function(d) {
                     return "rotate(-65)";
                 })
-                .style("text-anchor", "end", valueStyle);
+                .style("text-anchor", "end");
+
+            Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
         } else {
-            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+            element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
-                .select("text")
-                .style(valueStyle);
+                .select("text");
+
+            Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
         }
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+
+        element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
-            .select("line")
-            .style(tickStyle);
+            .select("line");
+
+        Object.entries(tickStyle).forEach(([prop, val]) => element.attr(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
