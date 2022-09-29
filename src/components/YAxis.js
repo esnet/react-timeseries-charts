@@ -227,19 +227,19 @@ export default class YAxis extends React.Component {
 
     postSelect(style, hideAxisLine, height) {
         const { valueStyle, tickStyle, axisStyle } = style;
-        let el = select(ReactDOM.findDOMNode(this))
+        let element = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("text");
 
-        Object.entries(valueStyle).forEach(([prop, val]) => el.attr(prop, val));
+        Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
 
-        el = select(ReactDOM.findDOMNode(this))
+        element = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("line");
 
-        Object.entries(tickStyle).forEach(([prop, val]) => el.attr(prop, val));
+        Object.entries(tickStyle).forEach(([prop, val]) => element.attr(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
@@ -247,7 +247,7 @@ export default class YAxis extends React.Component {
             .remove();
 
         if (!hideAxisLine) {
-            el = select(ReactDOM.findDOMNode(this))
+            element = select(ReactDOM.findDOMNode(this))
                 .select("g")
                 .append("line")
                 .attr("x1", 0)
@@ -255,7 +255,7 @@ export default class YAxis extends React.Component {
                 .attr("x2", 0)
                 .attr("y2", height);
 
-            Object.entries(axisStyle).forEach(([prop, val]) => el.attr(prop, val));
+            Object.entries(axisStyle).forEach(([prop, val]) => element.attr(prop, val));
         }
     }
 
@@ -348,10 +348,6 @@ export default class YAxis extends React.Component {
         select(ReactDOM.findDOMNode(this))
             .selectAll("*")
             .remove();
-
-        console.log(ReactDOM);
-        console.log(ReactDOM.findDOMNode(this));
-        console.log(select(ReactDOM.findDOMNode(this)));
 
         // Add the new axis
         this.axis = select(ReactDOM.findDOMNode(this))
