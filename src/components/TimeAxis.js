@@ -179,7 +179,7 @@ export default class TimeAxis extends React.Component {
             .style("stroke", "none")
             .call(axis.tickSize(tickSize));
 
-        Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
+        Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
 
         if (this.props.angled) {
             element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
@@ -193,14 +193,14 @@ export default class TimeAxis extends React.Component {
                 })
                 .style("text-anchor", "end");
 
-            Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
+            Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
         } else {
             element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
                 .select("text");
 
-            Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
+            Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
         }
 
         element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
@@ -208,7 +208,7 @@ export default class TimeAxis extends React.Component {
             .selectAll(".tick")
             .select("line");
 
-        Object.entries(tickStyle).forEach(([prop, val]) => element.attr(prop, val));
+        Object.entries(tickStyle).forEach(([prop, val]) => element.style(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")

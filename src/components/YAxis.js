@@ -232,14 +232,14 @@ export default class YAxis extends React.Component {
             .selectAll(".tick")
             .select("text");
 
-        Object.entries(valueStyle).forEach(([prop, val]) => element.attr(prop, val));
+        Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
 
         element = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
             .select("line");
 
-        Object.entries(tickStyle).forEach(([prop, val]) => element.attr(prop, val));
+        Object.entries(tickStyle).forEach(([prop, val]) => element.style(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
@@ -255,7 +255,7 @@ export default class YAxis extends React.Component {
                 .attr("x2", 0)
                 .attr("y2", height);
 
-            Object.entries(axisStyle).forEach(([prop, val]) => element.attr(prop, val));
+            Object.entries(axisStyle).forEach(([prop, val]) => element.style(prop, val));
         }
     }
 
@@ -363,8 +363,8 @@ export default class YAxis extends React.Component {
             .attr("dy", ".71em")
             .attr("text-anchor", "end");
 
-        Object.entries(valueStyle).forEach(([prop, val]) => this.axis.attr(prop, val));
-        Object.entries(labelStyle).forEach(([prop, val]) => this.axis.attr(prop, val));
+        Object.entries(valueStyle).forEach(([prop, val]) => this.axis.style(prop, val));
+        Object.entries(labelStyle).forEach(([prop, val]) => this.axis.style(prop, val));
 
         this.postSelect(style, hideAxisLine, height);
     }
