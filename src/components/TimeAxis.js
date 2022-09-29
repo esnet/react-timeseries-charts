@@ -16,7 +16,6 @@ import ReactDOM from "react-dom"; // eslint-disable-line
 import PropTypes from "prop-types";
 import { axisBottom } from "d3-axis";
 import { select } from "d3-selection";
-import "d3-selection-multi";
 import { timeDay, utcDay, timeMonth, utcMonth, timeYear, utcYear } from "d3-time";
 import { timeFormat } from "d3-time-format";
 
@@ -174,37 +173,42 @@ export default class TimeAxis extends React.Component {
         //
         // Draw the new axis
         //
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+        let element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .append("g")
             .attr("class", "x axis")
             .style("stroke", "none")
-            .styles(valueStyle)
             .call(axis.tickSize(tickSize));
 
+        Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
+
         if (this.props.angled) {
-            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+            element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
                 .select("text")
-                .styles(valueStyle)
-                .style("text-anchor", "end")
                 .attr("dx", "-1.2em")
                 .attr("dy", "0em")
                 .attr("transform", function(d) {
                     return "rotate(-65)";
-                });
+                })
+                .style("text-anchor", "end");
+
+            Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
         } else {
-            select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+            element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
                 .select("g")
                 .selectAll(".tick")
-                .select("text")
-                .styles(valueStyle);
+                .select("text");
+
+            Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
         }
-        select(ReactDOM.findDOMNode(this)) // eslint-disable-line
+
+        element = select(ReactDOM.findDOMNode(this)) // eslint-disable-line
             .select("g")
             .selectAll(".tick")
-            .select("line")
-            .styles(tickStyle);
+            .select("line");
+
+        Object.entries(tickStyle).forEach(([prop, val]) => element.style(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
