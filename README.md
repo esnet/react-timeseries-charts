@@ -1,5 +1,12 @@
 <img src="https://raw.githubusercontent.com/esnet/react-timeseries-charts/master/src/website/packages/charts/logo.png" alt="logo" width="160px"/>
 
+# Note
+
+`docker-compose up -d`
+
+`docker-compose exec node /bin/bash`
+
+
 # React Timeseries Charts
 
 [![Build Status](https://travis-ci.org/esnet/react-timeseries-charts.svg)](https://travis-ci.org/esnet/react-timeseries-charts) [![npm version](https://badge.fury.io/js/react-timeseries-charts.svg)](https://badge.fury.io/js/react-timeseries-charts)

@@ -1,0 +1,12 @@
+version: "3"
+services:
+  node:
+    build: ./docker/node
+    command: bash -c "tail -f /dev/null"
+    container_name: node-docker
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
+    ports:
+      - 8080:3000
+    volumes:
+      - ./:/server
