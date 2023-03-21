@@ -12,6 +12,7 @@ export AreaChart from "./components/AreaChart";
 export BandChart from "./components/BandChart";
 export BarChart from "./components/BarChart";
 export Baseline from "./components/Baseline";
+export DraggableBaseline from "./components/DraggableBaseline";
 export BoxChart from "./components/BoxChart";
 export Brush from "./components/Brush";
 export ChartContainer from "./components/ChartContainer";

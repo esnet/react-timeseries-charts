@@ -18,11 +18,13 @@ import ChartRow from "../../../../../components/ChartRow";
 import Charts from "../../../../../components/Charts";
 import YAxis from "../../../../../components/YAxis";
 import LineChart from "../../../../../components/LineChart";
-import Baseline from "../../../../../components/Baseline";
+// import Baseline from "../../../../../components/Baseline";
+import DraggableBaseline from "../../../../../components/DraggableBaseline";
 import Resizable from "../../../../../components/Resizable";
 
 import baselines_docs from "./baselines_docs.md";
 import baselines_thumbnail from "./baselines_thumbnail.png";
+// import { scaleLinear } from 'd3-scale';
 
 // Data
 const data = require("./usd_vs_euro.json");
@@ -40,17 +42,17 @@ const style = {
     }
 };
 
-const baselineStyle = {
-    line: {
-        stroke: "steelblue",
-        strokeWidth: 1,
-        opacity: 0.4,
-        strokeDasharray: "none"
-    },
-    label: {
-        fill: "steelblue"
-    }
-};
+// const baselineStyle = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.4,
+//         strokeDasharray: "none"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
 
 const baselineStyleLite = {
     line: {
@@ -63,17 +65,17 @@ const baselineStyleLite = {
     }
 };
 
-const baselineStyleExtraLite = {
-    line: {
-        stroke: "steelblue",
-        strokeWidth: 1,
-        opacity: 0.2,
-        strokeDasharray: "1,1"
-    },
-    label: {
-        fill: "steelblue"
-    }
-};
+// const baselineStyleExtraLite = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.2,
+//         strokeDasharray: "1,1"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
 
 class baselines extends React.Component {
     state = {
@@ -90,6 +92,10 @@ class baselines extends React.Component {
     };
 
     render() {
+    //     const yScale = scaleLinear()
+    //   .domain([0, 100]) // Update domain based on your data
+    //   .range([200, 0]); // Update range based on the height of your chart
+
         return (
             <Resizable>
                 <ChartContainer
@@ -110,35 +116,11 @@ class baselines extends React.Component {
                         />
                         <Charts>
                             <LineChart axis="price" series={series} style={style} />
-                            <Baseline
+                            <DraggableBaseline
                                 axis="price"
                                 style={baselineStyleLite}
                                 value={series.max()}
                                 label="Max"
-                                position="right"
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyleLite}
-                                value={series.min()}
-                                label="Min"
-                                position="right"
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyleExtraLite}
-                                value={series.avg() - series.stdev()}
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyleExtraLite}
-                                value={series.avg() + series.stdev()}
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyle}
-                                value={series.avg()}
-                                label="Avg"
                                 position="right"
                             />
                         </Charts>
