@@ -18,11 +18,13 @@ import ChartRow from "../../../../../components/ChartRow";
 import Charts from "../../../../../components/Charts";
 import YAxis from "../../../../../components/YAxis";
 import LineChart from "../../../../../components/LineChart";
-import Baseline from "../../../../../components/Baseline";
+// import Baseline from "../../../../../components/Baseline";
+import DraggableBaseline from "../../../../../components/DraggableBaseline";
 import Resizable from "../../../../../components/Resizable";
 
-import baselines_docs from "./baselines_docs.md";
+import draggablebaselines_docs from "./draggable_baselines_docs.md";
 import baselines_thumbnail from "./baselines_thumbnail.png";
+// import { scaleLinear } from 'd3-scale';
 
 // Data
 const data = require("./usd_vs_euro.json");
@@ -40,17 +42,17 @@ const style = {
     }
 };
 
-const baselineStyle = {
-    line: {
-        stroke: "steelblue",
-        strokeWidth: 1,
-        opacity: 0.4,
-        strokeDasharray: "none"
-    },
-    label: {
-        fill: "steelblue"
-    }
-};
+// const baselineStyle = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.4,
+//         strokeDasharray: "none"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
 
 const baselineStyleLite = {
     line: {
@@ -58,27 +60,34 @@ const baselineStyleLite = {
         strokeWidth: 1,
         opacity: 0.5
     },
-    label: {
-        fill: "steelblue"
-    }
-};
-
-const baselineStyleExtraLite = {
-    line: {
+    highlightedLine: {
         stroke: "steelblue",
-        strokeWidth: 1,
-        opacity: 0.2,
-        strokeDasharray: "1,1"
+        strokeWidth: 2,
+        opacity: 0.5
     },
     label: {
         fill: "steelblue"
     }
 };
 
-class baselines extends React.Component {
+// const baselineStyleExtraLite = {
+//     line: {
+//         stroke: "steelblue",
+//         strokeWidth: 1,
+//         opacity: 0.2,
+//         strokeDasharray: "1,1"
+//     },
+//     label: {
+//         fill: "steelblue"
+//     }
+// };
+
+class draggablebaselines extends React.Component {
     state = {
         tracker: null,
-        timerange: series.range()
+        timerange: series.range(),
+        value: 0.75,
+        value1: 0.80
     };
 
     handleTrackerChanged = tracker => {
@@ -90,6 +99,7 @@ class baselines extends React.Component {
     };
 
     render() {
+
         return (
             <Resizable>
                 <ChartContainer
@@ -98,6 +108,7 @@ class baselines extends React.Component {
                     timeRange={series.range()}
                     format="%b '%y"
                     timeAxisTickCount={5}
+                    
                 >
                     <ChartRow height="150">
                         <YAxis
@@ -109,38 +120,27 @@ class baselines extends React.Component {
                             format="$,.2f"
                         />
                         <Charts>
-                            <LineChart axis="price" series={series} style={style} />
-                            <Baseline
+                        <LineChart axis="price" series={series} style={style} />
+
+                            <DraggableBaseline
                                 axis="price"
+                                id="foo"
                                 style={baselineStyleLite}
-                                value={series.max()}
-                                label="Max"
+                                value={this.state.value}
+                                label={this.state.value}
                                 position="right"
+                                onValueChanged={(id, oldValue, newValue) => this.setState({value: parseFloat(newValue.toFixed(3))})}
                             />
-                            <Baseline
+                            <DraggableBaseline
                                 axis="price"
+                                id="bar"
                                 style={baselineStyleLite}
-                                value={series.min()}
-                                label="Min"
+                                value={this.state.value1}
+                                label={this.state.value1}
                                 position="right"
+                                onValueChanged={(id, oldValue, newValue) => this.setState({value1: parseFloat(newValue.toFixed(3))})}
                             />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyleExtraLite}
-                                value={series.avg() - series.stdev()}
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyleExtraLite}
-                                value={series.avg() + series.stdev()}
-                            />
-                            <Baseline
-                                axis="price"
-                                style={baselineStyle}
-                                value={series.avg()}
-                                label="Avg"
-                                position="right"
-                            />
+                            
                         </Charts>
                     </ChartRow>
                 </ChartContainer>
@@ -150,4 +150,4 @@ class baselines extends React.Component {
 }
 
 // Export example
-export default { baselines, baselines_docs, baselines_thumbnail };
+export default { draggablebaselines, draggablebaselines_docs, baselines_thumbnail };

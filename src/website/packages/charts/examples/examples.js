@@ -13,6 +13,7 @@
 //
 
 import baselines from "./baselines/Index";
+import draggablebaselines from "./draggable_baselines/Index";
 import barchart from "./barchart/Index";
 import realtime from "./realtime/Index";
 import continents from "./continents/Index";
@@ -32,6 +33,7 @@ import trend from "./trend/Index";
 export default {
     ...realtime,
     ...baselines,
+    ...draggablebaselines,
     ...barchart,
     ...continents,
     ...currency,

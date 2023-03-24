@@ -88,6 +88,9 @@ class App extends Component {
                                 <Link to="/example/baselines">Baselines demo</Link>
                             </li>
                             <li>
+                                <Link to="/example/draggablebaselines">Draggable Baselines demo</Link>
+                            </li>
+                            <li>
                                 <Link to="/example/barchart">Simple BarChart example</Link>
                             </li>
                             <li>

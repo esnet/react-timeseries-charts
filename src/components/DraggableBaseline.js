@@ -181,6 +181,14 @@ export default class DraggableBaseline extends React.Component {
             fill: "white",
             opacity: 0,
         };
+
+        // 1つのチャートに複数のDraggableBaselineが存在すると一番上のレイヤーの rect だけが
+        // マウスイベントを取得でき下のレイヤーは取得できなくなる.
+        // それを避けるためにドラッグ中のみ pointerEvents = fill にしてマウスイベントを
+        // 取得できるようにして、ドラッグ中ではない時は pointerEvents = none にしてマウスイベントが
+        // 下のレイヤーに通過するようにしている.
+        const pointerEvents = this.state.isDragging ? "fill" : "none"
+
         return (
             <rect
                 ref={c => {
@@ -192,6 +200,7 @@ export default class DraggableBaseline extends React.Component {
                 height={height}
                 style={overlayStyle}
                 onMouseMove={this.handleMouseMove}
+                pointerEvents={pointerEvents}
             />
         );
     }

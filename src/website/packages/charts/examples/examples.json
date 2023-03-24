@@ -26,6 +26,14 @@
             "Baseline"
         ]
     },
+    "draggablebaselines": {
+        "title": "Draggable Baseline demo",
+        "description": "This example demonstrates drawing multiple Draggable Baselines.",
+        "tags": [
+            "pondjs",
+            "DraggableBaseline"
+        ]
+    },
     "continents": {
         "title": "Stacked AreaCharts",
         "description": "This example demonstrates stacking of AreaCharts along with use of the Styler.",
