@@ -36,11 +36,13 @@ const defaultStyle = {
     }
 };
 
-const defaultDraggingLabelFunc = (draggableBaseline, y) => {
-    if (draggableBaseline.props.transition) {
-        return draggableBaseline.props.transition.sourceScale.invert(y).toFixed(3)
-    }
-    return ""
+/**
+ * ドラッグ中のlabelの値を返す
+ * @param {*} valueOnYAxis Y軸上のマウスポインタ位置の値
+ * @returns labelの文字列
+ */
+const defaultDraggingLabelFunc = (valueOnYAxis) => {
+    return valueOnYAxis.toFixed(3)
 }
 
 /**
@@ -74,8 +76,6 @@ export default class DraggableBaseline extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("DraggableBaseline constructor")
-
         this.state = {
             isHovering: false,
             isDragging: false,
@@ -98,7 +98,6 @@ export default class DraggableBaseline extends React.Component {
     
     handleHover(e) {
         e.preventDefault();
-        console.log("handleHover")
 
         this.setState({
             isHovering: true,
@@ -107,7 +106,6 @@ export default class DraggableBaseline extends React.Component {
 
     handleHoverLeave(e) {
         e.preventDefault();
-        console.log("handleHoverLeave")
 
         this.setState({
             isHovering: false,
@@ -116,41 +114,51 @@ export default class DraggableBaseline extends React.Component {
 
     handleMouseDown(e) {
         e.preventDefault();
-        console.log("handleMouseDown")
 
         document.addEventListener("mouseup", this.handleMouseUp);
 
-        const x = e.pageX;
-        const y = e.pageY;
+        const offset = getElementOffset(this.overlay);
+        const mouseX = e.pageX - offset.left;
+        const mouseY = e.pageY - offset.top;
+        // console.log("handleMouseMove", mouseY)
         this.setState({
             isDragging: true,
-            draggingMouseX: x,
-            draggingMouseY: y,
-        });
+            draggingMouseX: mouseX,
+            draggingMouseY: mouseY
+        })
     }
 
     handleMouseUp(e) {
         e.preventDefault();
-        console.log("handleMouseUp")
 
         document.removeEventListener("mouseup", this.handleMouseUp);
 
         this.setState({
             isDragging: false,
         });
+
+        if (this.props.onValueChanged) {
+            if (this.props.transition) {
+                const newValue = this.props.transition.sourceScale.invert(this.state.draggingMouseY)
+                this.props.onValueChanged(this.props.id, this.props.value, newValue)
+            } else {
+                console.error("Cannot detect new value due to transition not found")
+            }
+        }
     }
 
     handleClick() {
-        console.log("handleClick")
 
     }
 
     handleMouseMove(e) {
         e.preventDefault();
+        if (!this.state.isDragging) {
+            return
+        }
         const offset = getElementOffset(this.overlay);
         const mouseX = e.pageX - offset.left;
         const mouseY = e.pageY - offset.top;
-        // console.log("handleMouseMove", mouseY)
         this.setState({
             draggingMouseX: mouseX,
             draggingMouseY: mouseY
@@ -167,10 +175,6 @@ export default class DraggableBaseline extends React.Component {
      * 何も存在しないと MouseMove Event が fire されないのでそれを防ぐため透明の rect を利用する.
      */
     renderOverlay() {
-        if (!this.state.isDragging) {
-            return <g />
-        }
-
         const { width, height } = this.props;
 
         const overlayStyle = {
@@ -231,8 +235,8 @@ export default class DraggableBaseline extends React.Component {
         const labelStyle = merge(true, baseLabelStyle, style.label ? style.label : {});
         let lineStyle = {}
 
-        // マウスが baseline 上にあるときは baseline を目立たせるため highlightedLine style を利用する
-        if (!this.state.isHovering) {
+        // マウスが(ドラッグ中ではなくて) baseline 上にあるときは baseline を目立たせるため highlightedLine style を利用する
+        if (this.state.isDragging || !this.state.isHovering) {
             lineStyle = merge(true, defaultStyle.line, style.line ? style.line : {});
         } else {
             lineStyle = merge(true, defaultStyle.highlightedLine, style.highlightedLine ? style.highlightedLine : {});
@@ -243,9 +247,10 @@ export default class DraggableBaseline extends React.Component {
             fill: "none",
             opacity: 0.0,
             strokeWidth: 6,
-            cursor: "ns-resize",
+            cursor: !this.state.isDragging ? "ns-resize" : "",
             pointerEvents: "stroke"
         };
+
 
         return (
             <g className="DraggableBaseline" transform={transform}>
@@ -281,9 +286,9 @@ export default class DraggableBaseline extends React.Component {
             return <g />
         }
 
-        const { vposition, yScale, value, style, width } = this.props;
+        const { vposition, yScale, style, width } = this.props;
 
-        if (!yScale || _.isUndefined(value)) {
+        if (!yScale) {
             return null;
         }
 
@@ -303,7 +308,14 @@ export default class DraggableBaseline extends React.Component {
         pts.push(`${width} 0`);
         const points = pts.join(" ");
 
-        const label = this.props.draggingLabelFunc ? this.props.draggingLabelFunc(this, mouseY) : defaultDraggingLabelFunc(this, mouseY)
+
+        let value = null;
+        if (this.props.transition) {
+            value = this.props.transition.sourceScale.invert(mouseY)
+        }
+
+        const label = this.props.draggingLabelFunc ? this.props.draggingLabelFunc(value) : defaultDraggingLabelFunc(value)
+
 
         //
         // Style
@@ -345,7 +357,8 @@ DraggableBaseline.defaultProps = {
     label: "",
     position: "left",
     vposition: "auto",
-    style: defaultStyle
+    style: defaultStyle,
+    onValueChanged: null,
 };
 
 DraggableBaseline.propTypes = {
@@ -372,6 +385,12 @@ DraggableBaseline.propTypes = {
     }),
 
     /**
+     * The unique id for identify data. 
+     * This id is given in the first argument of the onValueChanged callback function.
+     */
+    id: PropTypes.string,
+
+    /**
      * The y-value to display the line at.
      */
     value: PropTypes.number,
@@ -385,6 +404,13 @@ DraggableBaseline.propTypes = {
      * The label being dragged to display with the axis.
      */
     draggingLabelFunc: PropTypes.func,
+
+    /**
+     * Callback called when the line is dragged.
+     * 
+     * onValueChanged(id, originalValue, newValue).
+     */
+    onValueChanged: PropTypes.func,
 
     /**
      * Whether to display the label on the "left" or "right".
@@ -402,7 +428,6 @@ DraggableBaseline.propTypes = {
      * [Internal] The yScale supplied by the associated YAxis
      */
     yScale: PropTypes.func,
-
 
     /**
      * [Internal] The transition supplied by the associated YAxis
