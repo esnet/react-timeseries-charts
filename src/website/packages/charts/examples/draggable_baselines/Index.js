@@ -120,8 +120,7 @@ class draggablebaselines extends React.Component {
                             format="$,.2f"
                         />
                         <Charts>
-                        <LineChart axis="price" series={series} style={style} />
-
+                            <LineChart axis="price" series={series} style={style} />
                             <DraggableBaseline
                                 axis="price"
                                 id="foo"

@@ -11,11 +11,24 @@ In this simple `BaseLine` example we have a `TimeSeries` that we plot with a `Li
                 width="60" format="$,.2f"/>
             <Charts>
                 <LineChart axis="price" series={series} style={style}/>
-                <Baseline axis="price" style={baselineStyleLite} value={series.max()} label="Max" position="right"/>
-                <Baseline axis="price" style={baselineStyleLite} value={series.min()} label="Min" position="right"/>
-                <Baseline axis="price" style={baselineStyleLite} value={series.avg() - series.stdev()}/>
-                <Baseline axis="price" style={baselineStyleLite} value={series.avg() + series.stdev()}/>
-                <Baseline axis="price" style={baselineStyle} value={series.avg()} label="Avg"/>
+                <DraggableBaseline
+                                axis="price"
+                                id="foo"
+                                style={baselineStyleLite}
+                                value={this.state.value}
+                                label={this.state.value}
+                                position="right"
+                                onValueChanged={(id, oldValue, newValue) => this.setState({value: parseFloat(newValue.toFixed(3))})}
+                            />
+                <DraggableBaseline
+                                axis="price"
+                                id="bar"
+                                style={baselineStyleLite}
+                                value={this.state.value1}
+                                label={this.state.value1}
+                                position="right"
+                                onValueChanged={(id, oldValue, newValue) => this.setState({value1: parseFloat(newValue.toFixed(3))})}
+                            />
             </Charts>
         </ChartRow>
     </ChartContainer>
