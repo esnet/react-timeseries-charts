@@ -19,7 +19,6 @@ import { axisLeft, axisRight } from "d3-axis";
 import { easeSinOut } from "d3-ease";
 import { format } from "d3-format";
 import { select } from "d3-selection";
-import "d3-selection-multi";
 
 import { scaleAsString } from "../js/util";
 
@@ -228,17 +227,19 @@ export default class YAxis extends React.Component {
 
     postSelect(style, hideAxisLine, height) {
         const { valueStyle, tickStyle, axisStyle } = style;
-        select(ReactDOM.findDOMNode(this))
+        let element = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
-            .select("text")
-            .styles(valueStyle);
+            .select("text");
 
-        select(ReactDOM.findDOMNode(this))
+        Object.entries(valueStyle).forEach(([prop, val]) => element.style(prop, val));
+
+        element = select(ReactDOM.findDOMNode(this))
             .select("g")
             .selectAll(".tick")
-            .select("line")
-            .styles(tickStyle);
+            .select("line");
+
+        Object.entries(tickStyle).forEach(([prop, val]) => element.style(prop, val));
 
         select(ReactDOM.findDOMNode(this))
             .select("g")
@@ -246,14 +247,15 @@ export default class YAxis extends React.Component {
             .remove();
 
         if (!hideAxisLine) {
-            select(ReactDOM.findDOMNode(this))
+            element = select(ReactDOM.findDOMNode(this))
                 .select("g")
                 .append("line")
-                .styles(axisStyle)
                 .attr("x1", 0)
                 .attr("y1", 0)
                 .attr("x2", 0)
                 .attr("y2", height);
+
+            Object.entries(axisStyle).forEach(([prop, val]) => element.style(prop, val));
         }
     }
 
@@ -352,16 +354,17 @@ export default class YAxis extends React.Component {
             .append("g")
             .attr("transform", `translate(${x},0)`)
             .attr("class", "yaxis")
-            .styles(valueStyle)
             .call(axisGenerator.tickSize(tickSize))
             .append("text")
             .text(label || this.props.label)
-            .styles(labelStyle)
             .attr("transform", "rotate(-90)")
             .attr("class", "yaxislabel")
             .attr("y", labelOffset)
             .attr("dy", ".71em")
             .attr("text-anchor", "end");
+
+        Object.entries(valueStyle).forEach(([prop, val]) => this.axis.style(prop, val));
+        Object.entries(labelStyle).forEach(([prop, val]) => this.axis.style(prop, val));
 
         this.postSelect(style, hideAxisLine, height);
     }
